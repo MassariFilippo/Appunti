@@ -191,7 +191,7 @@ Campi principali dell'header:
 - **TRACEROUTE**:
   - Mostra il percorso dei pacchetti verso una destinazione, utilizzando pacchetti ICMP con TTL crescente. Mostra il nome DNS e l'indirizzo IP dei nodi intermedi.
 
-# Gestione della numerazione IP: DHCP**
+# **Gestione della numerazione IP: DHCP**
 - **DHCP (Dynamic Host Configuration Protocol)** consente la configurazione dinamica e automatica di un indirizzo IP per un host, assegnando:
   - Indirizzo IP, netmask, gateway predefinito, server DNS, ecc.
 - **Processo DHCP**:
