@@ -37,20 +37,26 @@ Il pacchetto IP è composto da:
 2. Payload (dati utente)
 
 Campi principali dell'header:
-- Version (4 bit): versione del protocollo IP (attualmente 4)
-- IHL (4 bit): lunghezza dell'intestazione in parole da 32 bit
-- Type of Service (8 bit): indica il tipo di servizio richiesto
-- Total Length (16 bit): lunghezza totale del datagramma in byte
-- Identification (16 bit): identificatore univoco del datagramma
-- Flags (3 bit): controllo della frammentazione
-- Fragment Offset (13 bit): posizione del frammento nel datagramma originale
-- Time to Live (TTL) (8 bit): numero massimo di hop consentiti
-- Protocol (8 bit): indica il protocollo di livello superiore
-- Header Checksum (16 bit): per il controllo degli errori nell'intestazione
-- Source Address (32 bit): indirizzo IP sorgente
-- Destination Address (32 bit): indirizzo IP destinazione
-- Options (variabile): opzioni aggiuntive
-- Padding: bit di riempimento per allineare l'intestazione a 32 bit
+- Prima riga (identificazione)
+  - Version (4 bit): versione del protocollo IP (attualmente 4)
+  - IHL (4 bit): lunghezza dell'intestazione in parole da 32 bit
+  - Type of Service (8 bit): indica il tipo di servizio richiesto (continua ad essere un problema non risolto)
+  - Total Length (16 bit): lunghezza totale del datagramma in byte (fino a 64 kByte)
+- Seconda riga (controllo di dimensione e segmemtazione del pacchetto)
+  - Identification (16 bit): identificatore univoco del datagramma (doto che un pacchetto potrebbe essere diviso in rete)
+  - Flags (3 bit): controllo della frammentazione (spiegati sotto)
+  - Fragment Offset (13 bit): posizione del frammento nel datagramma originale (mi permette di risalire alla posizione del primo byte rispetto all'inizio)
+- Terza riga (controllo dell'errore)
+  - Time to Live (TTL) (8 bit): numero massimo di hop consentiti(a livello funzionale potrebbe anche non esistere più perchè la reste è molto efficente ed i paccchetti non girano più a caso per essa, oggi vengono usati come trumenti di controllo)
+  - Protocol (8 bit): indica il protocollo di livello superiore
+  - Header Checksum (16 bit): per il controllo degli errori nell'intestazione
+- Quarta riga
+  - Source Address (32 bit): indirizzo IP sorgente
+- Quinta riga
+  - Destination Address (32 bit): indirizzo IP destinazione
+- Sesta riga opzionale (quasi mai usata)
+  - Options (variabile): opzioni aggiuntive
+  - Padding: bit di riempimento per allineare l'intestazione a 32 bit
 
 ## Frammentazione dei datagrammi
 
@@ -64,14 +70,14 @@ Campi principali dell'header:
 - Bit 0: sempre 0
 - Bit 1 (DF - Don't Fragment): 
   - 0 = si può frammentare
-  - 1 = non si può frammentare
+  - 1 = non si può frammentare (nel caso fosse a 1 e fosse necessario frammentarlo lo distruggo)
 - Bit 2 (MF - More Fragments):
-  - 0 = ultimo frammento
+  - 0 = ultimo frammento (aiuta a riordimare i paccheti in arrivo, è tecnicamente superfluo ma ci risparmia il calcolo di vedere quanto era lungo)
   - 1 = frammento intermedio
 
 ### Calcolo del Fragment Offset:
 - Il datagramma è diviso in blocchi di 8 byte (64 bit)
-- L'offset è calcolato in unità di 8 byte dall'inizio del datagramma originale
+- L'offset è calcolato in unità di 8 byte dall'inizio del datagramma originale( non ho bisogno di mappare tutti i bit ma posso mapparli a blocchi di 8 byte per ridurre a 13 il numero di bit necessari a tenerne traccai, ciò implica che la frammentazione non potra mai scendere sotto i 64 bit perchè non sarei pìù in grado di riconporre il pacchetto)
 
 ## Time to Live (TTL)
 
