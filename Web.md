@@ -383,7 +383,7 @@ Quale elemento è semanticamente corretto per il link `<a href="#primaparte">`?
  
 **Liste annidiate**  
 - Esempio di liste annidiate.
-
+ 
 ### Elemento `<form>`
 - **Attributo action**: specifica l'URL del server che riceverà i dati del form
 - **Attributo method**:
