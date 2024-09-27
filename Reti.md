@@ -36,29 +36,35 @@ Il pacchetto IP è composto da:
 1. Header (intestazione)
 2. Payload (dati utente)
 
-Campi principali dell'header:
-- Prima riga (identificazione)
-  - Version (4 bit): versione del protocollo IP (attualmente 4)
-  - IHL (4 bit): lunghezza dell'intestazione in parole da 32 bit
-  - Type of Service (8 bit): indica il tipo di servizio richiesto (continua ad essere un problema non risolto)
-  - Total Length (16 bit): lunghezza totale del datagramma in byte (fino a 64 kByte)
-- Seconda riga (controllo di dimensione e segmemtazione del pacchetto)
-  - Identification (16 bit): identificatore univoco del datagramma (doto che un pacchetto potrebbe essere diviso in rete)
-  - Flags (3 bit): controllo della frammentazione (spiegati sotto)
-  - Fragment Offset (13 bit): posizione del frammento nel datagramma originale (mi permette di risalire alla posizione del primo byte rispetto all'inizio)
-- Terza riga (controllo dell'errore)
-  - Time to Live (TTL) (8 bit): numero massimo di hop consentiti(a livello funzionale potrebbe anche non esistere più perchè la reste è molto efficente ed i paccchetti non girano più a caso per essa, oggi vengono usati come trumenti di controllo)
-  - Protocol (8 bit): indica il protocollo di livello superiore
-  - Header Checksum (16 bit): per il controllo degli errori nell'intestazione
-- Quarta riga
-  - Source Address (32 bit): indirizzo IP sorgente
-- Quinta riga
-  - Destination Address (32 bit): indirizzo IP destinazione
-- Sesta riga opzionale (quasi mai usata)
-  - Options (variabile): opzioni aggiuntive
-  - Padding: bit di riempimento per allineare l'intestazione a 32 bit
+## Campi principali dell'header IP
 
-## Frammentazione dei datagrammi
+- **Prima riga (identificazione)**
+  - **Version (4 bit)**: versione del protocollo IP (attualmente 4)
+  - **IHL (Internet Header Length) (4 bit)**: lunghezza dell'intestazione in parole da 32 bit
+  - **Type of Service (8 bit)**: indica il tipo di servizio richiesto (continua ad essere un problema non risolto)
+  - **Total Length (16 bit)**: lunghezza totale del datagramma in byte (fino a 65,535 byte)
+
+- **Seconda riga (controllo di dimensione e segmentazione del pacchetto)**
+  - **Identification (16 bit)**: identificatore univoco del datagramma (dato che un pacchetto potrebbe essere diviso in rete)
+  - **Flags (3 bit)**: controllo della frammentazione (spiegati sotto)
+  - **Fragment Offset (13 bit)**: posizione del frammento nel datagramma originale (indica la posizione del primo byte rispetto all'inizio)
+
+- **Terza riga (controllo dell'errore)**
+  - **Time to Live (TTL) (8 bit)**: numero massimo di hop consentiti (a livello funzionale potrebbe anche non esistere più perché la rete è molto efficiente ed i pacchetti non girano più a caso per essa, oggi vengono usati come strumenti di controllo)
+  - **Protocol (8 bit)**: indica il protocollo di livello superiore
+  - **Header Checksum (16 bit)**: per il controllo degli errori nell'intestazione
+
+- **Quarta riga**
+  - **Source Address (32 bit)**: indirizzo IP sorgente
+
+- **Quinta riga**
+  - **Destination Address (32 bit)**: indirizzo IP destinazione
+
+- **Sesta riga opzionale (quasi mai usata)**
+  - **Options (variabile)**: opzioni aggiuntive
+  - **Padding**: bit di riempimento per allineare l'intestazione a 32 bit
+
+### Frammentazione dei datagrammi
 
 - Necessaria quando il datagramma è troppo grande per essere trasmesso su una rete
 - Può essere effettuata da qualsiasi apparato di rete con protocollo IP
@@ -79,46 +85,50 @@ Campi principali dell'header:
 - Il datagramma è diviso in blocchi di 8 byte (64 bit)
 - L'offset è calcolato in unità di 8 byte dall'inizio del datagramma originale( non ho bisogno di mappare tutti i bit ma posso mapparli a blocchi di 8 byte per ridurre a 13 il numero di bit necessari a tenerne traccai, ciò implica che la frammentazione non potra mai scendere sotto i 64 bit perchè non sarei pìù in grado di riconporre il pacchetto)
 
-## Time to Live (TTL)
+### Time to Live (TTL)
 
 - Imposta un limite al numero di hop che un pacchetto può attraversare
 - Valore iniziale tipico: 64 (massimo 255)
 - Decrementato di 1 ad ogni hop
 - Se raggiunge 0, il pacchetto viene scartato
 
-## Riassemblaggio dei datagrammi
+### Riassemblaggio dei datagrammi
 
 - I frammenti possono arrivare fuori sequenza o con tempi diversi
 - Il riassemblaggio avviene solo al terminale di destinazione
 - Utilizza i campi Identification, Flags e Fragment Offset per ricostruire correttamente il datagramma originale
 
-#Istradamento IP
+# Istradamento IP
 
 ### Internet e il Modello di Instradamento IP
    - **Instradamento a pacchetto**: Internet utilizza la commutazione a pacchetto per trasmettere dati.
    - Esistono più percorsi per raggiungere una destinazione. Il routing (instradamento) avviene pacchetto per pacchetto, e i router decidono quale percorso seguire.
 
 ### Componenti della Rete
-   - **Network IP**: Internet è costituita da tante reti isolate (Network IP). Ogni network IP è un'isola, che contiene host (calcolatori terminali).
-   - **Router**: Collegano le isole e permettono la comunicazione tra reti diverse. Funzionano fino al livello 3 del modello OSI.
+  - **Network IP**: Internet è costituita da tante reti isolate (Network IP). Ogni network IP è un'isola che contiene host (calcolatori terminali). Questi host devono essere necessariamente in grado di comunicare tra di loro; il caso più estremo è un solo host (calcolatore) che parla con se stesso.
+  - **Router**: Detti anche Gateway, collegano le isole e permettono la comunicazione tra reti diverse. Funzionano fino al livello 3 del modello OSI. In molti casi, il trasferimento di dati compie un percorso che passa per più gateway e probabilmente anche per più network. Due router connessi che a loro volta connettono altrettante network IP possono essere visti, per semplificare il processo distributivo dei pacchetti, come network IP a loro volta. Così facendo, è possibile immaginare che il terminale funga da primo router che instrada il datagramma, e dunque ogni calcolatore risulterà un nodo, sia esso un PC, router, sensore, ecc. Ogni passaggio di datagramma è detto hop. Parlare con un gateway, a differenza di un contesto Wi-Fi (spiegato sotto), significa selezionarne uno che fungerà da intermediario per svolgere un compito che il terminale non sa fare.
 
 ### Tecnologie di Implementazione
-   - **Wi-Fi**: Wireless a breve distanza.
+   - **Wi-Fi**: Wireless a breve distanza. (dal punto di vista dell'ip è un tipo di comunicazione 1a1 che passa per il centro stella e viene poi smistata )
    - **ADSL/xDSL**: Connessioni via cavo a media distanza.
    - **Ethernet**: Connessioni cablate locali.
    - **GPRS/EDGE/LTE**: Connessioni radio fornite da operatori pubblici.
 
 ### Indirizzo IP
-   - L'indirizzo IP è composto da due parti:
-     - **Net ID**: Identifica la rete.
-     - **Host ID**: Identifica l'host all'interno della rete.
+   - L'indirizzo IP, usato per raggiungere una specifica network al dilà dell'plementazione su cui lavora, è composto da due parti:
+     - **Net ID**: Identifica la rete (network ip), parte di sinistra dell'indirizzo
+     - **Host ID**: Identifica l'host all'interno della rete (singolo calcolatore), parte destra dell'indirizzo.
    - La distinzione tra Net ID e Host ID è determinata dalla **Netmask**.
 
 ### Routing e Instradamento
-   - **Direct Delivery**: Quando l'IP sorgente e destinatario sono sulla stessa rete.
-   - **Indirect Delivery**: Se l'IP destinatario è su un'altra rete, il pacchetto viene inviato a un router intermedio.
-   - **Tabella di Instradamento**: Ogni nodo (host o router) ha una tabella che contiene informazioni su destinazioni possibili, netmask, gateway, e interfacce.
-   - **Longest Prefix Match**: Per selezionare il percorso corretto, il nodo confronta l'indirizzo di destinazione con la netmask più lunga disponibile nella tabella.
+
+- **Direct Delivery**: Quando l'IP sorgente e destinatario sono sulla stessa rete. Supponendo di essere in collegamento Ethernet in un network IP, inseriremo l'IP in un indirizzo di livello 2 contenente il MAC del calcolatore da raggiungere. Questo MAC viene reperito grazie a una tabella contenuta nel calcolatore che mette in relazione IP con MAC. Se non è presente, lo richiede partendo dall'IP che vuole raggiungere grazie al protocollo ARP, che fa una richiesta broadcast. Questo scambio è una consegna diretta.
+
+- **Indirect Delivery**: Se l'IP destinatario è su un'altra rete, il pacchetto viene inviato a un router intermedio. A livello 1 ci sarà l'IP del calcolatore obiettivo, ma a livello 2 ci sarà il MAC del gateway della propria network ID. Dato che esso è un router, non lo scarta nonostante non abbia il proprio IP, anzi lo instrada verso un altro router. Il primo e l'ultimo scambio, quindi, tra host spedente e rispettivo router e tra host ricevente e rispettivo router, sono scambi diretti. Tutti quelli che intercorrono nel mezzo sono indiretti e dovranno essere necessariamente meno di 255 per il TTL.
+
+- **Tabella di Instradamento**: Ogni nodo (host o router) ha una tabella che contiene informazioni su destinazioni possibili, netmask, gateway e interfacce.
+
+- **Longest Prefix Match**: Per selezionare il percorso corretto, il nodo confronta l'indirizzo di destinazione con la netmask più lunga disponibile nella tabella.
 
 ### Protocolli ARP e Risoluzione degli Indirizzi
    - **ARP (Address Resolution Protocol)**: Utilizzato per trovare l'indirizzo fisico (MAC) di un host a partire dall'indirizzo IP. Il processo coinvolge:
@@ -127,9 +137,9 @@ Campi principali dell'header:
    - **Cache ARP**: Ogni host mantiene una tabella di cache con le corrispondenze IP-MAC.
 
 ### Subnetting
-   - Esempio di **Netmask**: 
-     - **Net-ID**: 192.168.1.0/24 indica una rete con Net-ID di 24 bit.
-     - Può essere suddivisa in sottoreti usando la netmask per identificare la parte Net e Host dell'indirizzo.
+- Esempio di **Netmask**: Una netmask è composta da 32 bit che sono in locale e rimangono affibiati al singolo calcolatore, tutti i calcolatori della stessa network avranno la stessa netmask, con tutti 1 a sinistra e tutti 0 a destra. Il punto in cui avviene il cambio rappresenta la separazione tra Net-ID e Host-ID nell'indirizzo IP. Per la parte di host, indipendentemente dalla dimensione, gli indirizzi con tutti 0 e tutti 1 non vengono assegnati e sono riservati a compiti specifici. Quindi, si perdono 2 indirizzi: quello con tutti 0 identifica la network ID senza la parte di host, mentre con tutti gli 1 è riservato al gateway predefinito.
+  - **Net-ID**: 192.168.1.0/24 indica una rete con Net-ID di 24 bit.
+  - Può essere suddivisa in sottoreti usando la netmask per identificare la parte Net e Host dell'indirizzo.
 
 ### Routing Aggregato
    - La **semplificazione delle tabelle di routing** avviene aggregando più network in un’unica voce, riducendo la complessità per i router.
