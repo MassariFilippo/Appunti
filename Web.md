@@ -266,8 +266,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Nome</title>
-  <meta charset="UTF-8" />
+  <title>Nome</title>  <!-- Unico obbligatorio, sancisce il nome che sarà presente nel tab del browser -->
+  <meta charset="UTF-8" /> <!-- inserimento di metacaratteri in questo caso il tipo di char utilizzati -->
 </head>
 <body>
   Content of the document...
@@ -277,10 +277,23 @@
 
 #### Metadati in HTML5
 - Elementi che descrivono il documento o il suo comportamento:
-  - **<title>:** Titolo del documento
-  - **<base>:** Path base del documento
-  - **<link>:** Relazione con altri documenti (es. fogli di stile)
-  - **<meta>:** Informazioni per i motori di ricerca
+    - **`<title>`:** Titolo del documento, unico obbligatorio, utile per la search engine optimization (SEO).
+        ```html
+        <title>Il mio sito web</title> <!-- Titolo che appare nella scheda del browser e nei risultati di ricerca -->
+        ```
+    - **`<base>`:** Path base del documento.
+        ```html
+        <base href="https://www.example.com/"> <!-- Definisce l'URL base per tutti i link relativi nel documento, se per esempio avessimo avuto in href nome_file.css avrebbe voluto dire che quella risorsa si trova nella stessa cartella della pagina html -->
+        ```
+    - **`<link>`:** Relazione con altri documenti (es. molto usato per collegare fogli di stile).
+        ```html
+        <link rel="stylesheet" href="styles.css"> <!-- Collega un foglio di stile esterno al documento -->
+        ```
+    - **`<meta>`:** Informazioni per i motori di ricerca.
+        ```html
+        <meta name="description" content="Descrizione del contenuto della pagina"> <!-- Fornisce una descrizione della pagina per i motori di ricerca -->
+        <meta charset="UTF-8"> <!-- Specifica la codifica dei caratteri del documento -->
+        ```
 
 #### Codifica dei caratteri
 - **ASCII:** Codifica a 7 bit, definita nel 1961, standardizzata ISO nel 1972.
@@ -315,7 +328,256 @@
   <p>Testo dell'articolo...</p>
 </article>
 ```
- 
+**Elementi di blocco e Elementi in linea**
+
+### Elementi di blocco
+Gli elementi di blocco occupano l'intera larghezza disponibile del loro contenitore e iniziano su una nuova riga. Sono utilizzati per strutturare il layout della pagina.
+
+#### Esempi di elementi di blocco:
+- `<div>`: Un contenitore generico per contenuti di blocco.
+- `<p>`: Un paragrafo di testo.
+- `<h1>` - `<h6>`: Intestazioni di vari livelli.
+- `<ul>` e `<ol>`: Liste non ordinate e ordinate.
+- `<li>`: Un elemento di lista.
+- `<table>`: Una tabella.
+- `<header>`, `<footer>`, `<section>`, `<article>`: Elementi semantici per la struttura della pagina.
+
+```html
+<div>
+    <h1>Intestazione</h1>
+    <p>Questo è un paragrafo di testo.</p>
+</div>
+```
+
+### Elementi in linea
+Gli elementi in linea occupano solo lo spazio necessario per il loro contenuto e non iniziano su una nuova riga. Sono utilizzati per stilizzare parti di testo all'interno di elementi di blocco.
+
+#### Esempi di elementi in linea:
+- `<span>`: Un contenitore generico per contenuti in linea.
+- `<a>`: Un collegamento ipertestuale.
+- `<strong>`: Testo in grassetto.
+- `<em>`: Testo in corsivo.
+- `<img>`: Un'immagine.
+- `<br>`: Un'interruzione di riga.
+- `<code>`: Un frammento di codice.
+
+```html
+<p>Questo è un <strong>testo in grassetto</strong> e questo è un <em>testo in corsivo</em>.</p>
+<p>Visita il nostro <a href="https://www.example.com">sito web</a> per maggiori informazioni.</p>
+```
+
+### Sectioning
+Tali elementi dividono la pagina in parti semanticamente diberse assumono dunque un ruolo strutturale.
+#### `<article>`
+- **Descrizione**: Rappresenta un contenuto autonomo e indipendente che potrebbe essere distribuito separatamente, come un articolo di giornale, un post di blog, un commento, o un widget.
+- **Esempio**:
+    ```html
+    <article>
+        <h2>Titolo dell'articolo</h2>
+        <p>Contenuto dell'articolo...</p>
+    </article>
+    ```
+
+#### `<section>`
+- **Descrizione**: Utilizzato per raggruppare contenuti tematicamente correlati, tipicamente con un'intestazione.
+- **Esempio**:
+    ```html
+    <section>
+        <h2>Sezione del sito</h2>
+        <p>Contenuto della sezione...</p>
+    </section>
+    ```
+
+#### `<header>`
+- **Descrizione**: Contiene l'intestazione di una sezione o di una pagina, spesso include titoli, sottotitoli, loghi, e strumenti di navigazione.
+- **Esempio**:
+    ```html
+    <header>
+        <h1>Intestazione del sito</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+    ```
+
+#### `<footer>`
+- **Descrizione**: Contiene il piè di pagina di una sezione o di una pagina, spesso include informazioni di contatto, copyright, e link a documenti correlati.
+- **Esempio**:
+    ```html
+    <footer>
+        <p>&copy; 2023 Il Mio Sito Web</p>
+        <nav>
+            <ul>
+                <li><a href="#privacy">Privacy</a></li>
+                <li><a href="#terms">Terms</a></li>
+            </ul>
+        </nav>
+    </footer>
+    ```
+
+#### `<nav>`
+- **Descrizione**: Rappresenta una sezione della pagina destinata alla navigazione, contenente link a altre sezioni della stessa pagina o a pagine diverse.
+- **Esempio**:
+    ```html
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+    ```
+
+#### `<aside>`
+- **Descrizione**: Contiene contenuti tangenzialmente correlati al contenuto principale, come barre laterali, note a margine, o pubblicità.
+- **Esempio**:
+    ```html
+    <aside>
+        <h2>Barra Laterale</h2>
+        <p>Contenuto della barra laterale...</p>
+    </aside>
+    ```
+
+**Heading**
+Tag per evidenziare i titoli indentati che vanno per livelli da 1 a 6
+
+**Parsing**
+Tag che rappresentano del testo.
+
+#### Esempio 1: Tag di Paragrafo
+```html
+<p>Questo è un paragrafo di testo.</p>
+```
+
+#### Esempio 2: Tag di Line Break
+```html
+<p>Questa è una linea di un paragrafo di testo.<br/>
+Questa è una linea di un paragrafo di testo.</p>
+```
+
+#### Esempio 3: Tag di Enfasi
+```html
+<strong>Questo testo è in grassetto.</strong>
+<em>Questo testo è in corsivo.</em>
+```
+
+#### Esempio 4: Tag di Link
+```html
+<a href="https://www.example.com">Questo è un link</a>
+```
+
+#### Esempio 5: Tag di Lista
+```html
+<ul>
+    <li>Elemento della lista 1</li>
+    <li>Elemento della lista 2</li>
+</ul>
+```
+
+#### Esempio 6: Tag di Immagine
+```html
+<img src="immagine.jpg" alt="Descrizione dell'immagine">
+```
+
+#### Esempio 7: Tag di Divisione
+```html
+<div>
+    <h2>Intestazione della sezione</h2>
+    <p>Questo è un paragrafo all'interno di un div.</p>
+</div>
+```
+
+#### Esempio 8: Tag di Sezione Principale
+```html
+<main>
+    <h1>Contenuto Principale</h1>
+    <p>Questo è il contenuto principale della pagina.</p>
+</main>
+```
+
+#### Esempio 9: Tag di Span
+```html
+<p>Questo è un <span style="color: red;">testo evidenziato</span> all'interno di un paragrafo.</p>
+```
+
+#### Esempio 10: Tag di Sub e Sup
+```html
+<p>Questo è un testo con un indice inferiore <sub>2</sub> e un esponente <sup>2</sup>.</p>
+```
+
+**Embedded e Fallback**
+
+### Embedded e Fallback
+
+L'elemento **embedded** in HTML5 permette di incorporare contenuti multimediali come immagini, audio, video, e altri oggetti direttamente nelle pagine web. Il **fallback** è una tecnica utilizzata per fornire contenuti alternativi nel caso in cui il browser non supporti il formato originale.
+
+#### Esempi di elementi embedded con fallback:
+
+1. **Immagine (`<img>`)**
+    ```html
+    <!-- Figura con immagine e didascalia -->
+    <figure>
+        <!-- Immagine con testo alternativo per il fallback -->
+        <img src="immagine.jpg" alt="Descrizione dell'immagine">
+        <!-- alt, insieme ad src, è obbligatorio e riporta il testo sulla pagina in caso non fosse possibile caricare la foto, nel caso l'immagine fosse puramente decorativa alt si lascia vuoto per non appesantire il file -->
+        <!-- longdesc specifica una descrizione lunga dell'immagine contenuta in un file txt esterno associato al file html, è deprecato ma ancora in uso in alcuni contesti -->
+        <figcaption>Descrizione dell'immagine</figcaption>
+    </figure>
+    <!-- Il tag <figure> viene utilizzato per raggruppare l'immagine e la sua didascalia, migliorando la semantica e l'accessibilità del contenuto -->
+    ```
+    DA QUI ALLA FINE DELLE RISORSE MULTIMEDIALI NON HO SEGUTO LA REGISTRAZIONE PERCHE' ASSENTE
+
+2. **Audio (`<audio>`)**
+    ```html
+    <!-- Audio con fallback per browser che non supportano l'elemento audio -->
+    <audio controls>
+      <source src="audio.mp3" type="audio/mpeg">
+      <source src="audio.ogg" type="audio/ogg">
+      Il tuo browser non supporta l'elemento audio.
+    </audio>
+    ```
+
+3. **Video (`<video>`)**
+    ```html
+    <!-- Video con fallback per browser che non supportano l'elemento video -->
+    <video controls>
+      <source src="video.mp4" type="video/mp4">
+      <source src="video.ogg" type="video/ogg">
+      Il tuo browser non supporta l'elemento video.
+    </video>
+    ```
+
+4. **Embed (`<embed>`)**
+    ```html
+    <!-- Embed di un file PDF con fallback -->
+    <embed src="documento.pdf" type="application/pdf" width="600" height="400">
+    ```
+
+5. **Object (`<object>`)**
+    ```html
+    <!-- Object con fallback per browser che non supportano l'elemento object -->
+    <object data="documento.pdf" type="application/pdf" width="600" height="400">
+      <p>Il tuo browser non supporta l'elemento object. <a href="documento.pdf">Scarica il PDF</a>.</p>
+    </object>
+    ```
+
+6. **Canvas (`<canvas>`)**
+    ```html
+    <!-- Canvas con fallback per browser che non supportano l'elemento canvas -->
+    <canvas id="myCanvas" width="200" height="100">
+      Il tuo browser non supporta l'elemento canvas.
+    </canvas>
+    <script>
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+      context.fillStyle = 'blue';
+      context.fillRect(10, 10, 150, 75);
+    </script>
+    ```
+
 **Risorsa**
 - Una risorsa è qualsiasi struttura oggetto di scambio tra applicazioni nel Web.
 - Le risorse possono essere:
@@ -353,13 +615,6 @@
  
 **URI Shortener**
 - Strumenti come bit.ly e goo.gl accorciano gli URL lunghi, utili per piattaforme come Twitter.
- 
-**Domanda 1:**  
-Quale elemento è semanticamente corretto per il link `<a href="#primaparte">`?
-- `<span id="primaparte">`
-- `<a name="primaparte">`
-- `<section id="primaparte">`
-- `<br name="primaparte"/>`
 
 **Struttura delle tabelle**
 - Le tabelle HTML5 sono realizzate con l'elemento `<table>`, organizzate per righe `<tr>`.
