@@ -576,7 +576,25 @@ L'elemento **embedded** in HTML5 permette di incorporare contenuti multimediali 
       context.fillStyle = 'blue';
       context.fillRect(10, 10, 150, 75);
     </script>
-    ```
+
+**Elemento `<a>`**
+  - Consente di inserire àncore nel documento, ovvero punti di partenza di un link.
+  - La destinazione si specifica con un URI attraverso l’attributo `href`.
+  - Nelle precedenti versioni di HTML, con `<a>` si realizzavano anche i punti di arrivo di un link (raggiungibili con `#` come frammento interno di un URI), usando l’attributo `name`. Questa soluzione in HTML5 è stata superata: al suo posto si usa l’attributo `id`, associandolo a qualunque elemento.
+
+```html
+<nav>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/news">News</a></li>
+    <li><a href="http://www.google.it">Google</a></li>
+    <li><a href="#articolo">Articolo</a></li>
+  </ul>
+</nav>
+<article id="articolo">
+  <p>Testo dell'articolo...</p>
+</article>
+```
 
 **Risorsa**
 - Una risorsa è qualsiasi struttura oggetto di scambio tra applicazioni nel Web.
@@ -585,6 +603,7 @@ L'elemento **embedded** in HTML5 permette di incorporare contenuti multimediali 
   - In un database
   - Il risultato dell’elaborazione di un’applicazione
   - Risorse non elettroniche o concetti astratti
+
  
 **URI (Uniform Resource Identifier)**
 - Gli URI identificano nomi e indirizzi di oggetti su Internet.
@@ -607,8 +626,16 @@ L'elemento **embedded** in HTML5 permette di incorporare contenuti multimediali 
 
 **Caratteri ammessi negli URI**
 - Caratteri non riservati: alfanumerici e punteggiatura specifica.
-- Caratteri riservati: `%`, `/`, `.`, `#`, `?`, `+`, `*`, `!`.
-  
+- Caratteri riservati:
+  - **%**: Utilizzato per codificare caratteri speciali in un URI.
+  - **/**: Separatore di directory o path in un URI.
+  - **.**: Indica l'estensione di un file o separa i componenti di un nome di dominio.
+  - **#**: Utilizzato per identificare un frammento all'interno di una risorsa.
+  - **?**: Inizia la query string in un URI.
+  - **+**: Rappresenta uno spazio in una query string codificata.
+  - **\***: Carattere jolly utilizzato in vari contesti, come nei pattern di ricerca.
+  - **!**: Utilizzato in vari contesti, come nei pattern di ricerca o nei linguaggi di programmazione.
+    
 **URI Reference**
 - Un URI assoluto contiene tutte le parti necessarie.
 - Un URI reference è un URI relativo che si riferisce a un URI di base.
@@ -624,20 +651,99 @@ L'elemento **embedded** in HTML5 permette di incorporare contenuti multimediali 
 **Esempio di tabella**
 - Tabella con nome, email e telefono, ottimizzata per evitare ripetizioni tramite `rowspan`.
 
-
 **Esempio con scope**
 - Utilizzo dell’attributo `scope` per rendere le tabelle più accessibili.  
 - Scope incolonna e scope per righe.
- 
-**Esempio reale**  
-- Esempio di una tabella reale con thead, td, e div nidificati.
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Telefono</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mario Rossi</td>
+      <td>mario.rossi@example.com</td>
+      <td>+39 123 456 7890</td>
+    </tr>
+    <tr>
+      <td>Luigi Bianchi</td>
+      <td>luigi.bianchi@example.com</td>
+      <td>+39 098 765 4321</td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <div>
+          <p>Informazioni aggiuntive:</p>
+          <ul>
+            <li>Mario è un cliente VIP.</li>
+            <li>Luigi ha richiesto una chiamata di follow-up.</li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+```
  
 **Liste in HTML5**
-- Tipi di liste: non ordinate (`<ul>`), ordinate (`<ol>`), e di definizioni (`<dl>`).
-- Esempi di strutture di liste.
- 
-**Liste annidiate**  
-- Esempio di liste annidiate.
+- Tipi di liste:
+  - **Non ordinate (`<ul>`)**: Utilizzate per elenchi di elementi senza un ordine specifico.
+  - **Ordinate (`<ol>`)**: Utilizzate per elenchi di elementi con un ordine specifico.
+  - **Di definizioni (`<dl>`)**: Utilizzate per elenchi di termini e le loro definizioni.
+
+**Esempi di strutture di liste**
+
+1. **Lista non ordinata**
+    ```html
+    <ul>
+      <li>Elemento 1</li>
+      <li>Elemento 2</li>
+      <li>Elemento 3</li>
+    </ul>
+    ```
+
+2. **Lista ordinata**
+    ```html
+    <ol>
+      <li>Primo elemento</li>
+      <li>Secondo elemento</li>
+      <li>Terzo elemento</li>
+    </ol>
+    ```
+
+3. **Lista di definizioni**
+    ```html
+    <dl>
+      <dt>Termine 1</dt>
+      <dd>Definizione del termine 1</dd>
+      <dt>Termine 2</dt>
+      <dd>Definizione del termine 2</dd>
+    </dl>
+    ```
+
+**Liste annidiate**
+- Esempio di liste annidiate:
+    ```html
+    <ul>
+      <li>Elemento 1
+        <ul>
+          <li>Sotto-elemento 1.1</li>
+          <li>Sotto-elemento 1.2</li>
+        </ul>
+      </li>
+      <li>Elemento 2
+        <ol>
+          <li>Sotto-elemento 2.1</li>
+          <li>Sotto-elemento 2.2</li>
+        </ol>
+      </li>
+    </ul>
+    ```
  
 ### Elemento `<form>`
 - **Attributo action**: specifica l'URL del server che riceverà i dati del form
