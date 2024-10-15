@@ -128,8 +128,8 @@ Il pacchetto IP è composto da:
 - **Tabella di Instradamento**: Ogni nodo (host o router) ha una tabella che contiene informazioni sulle destinazioni possibili, netmask, gateway e interfacce. Le righe della tabella rappresentano le singole istanze di instradamento, mentre le colonne contengono le opzioni di instradamento. Tipicamente, la tabella ha cinque colonne principali:
   - **Destination**: Contiene gli indirizzi IP o i gruppi di IP raggiungibili.
   - **Netmask**: Indica la netmask che permette di interpretare correttamente l'IP.
-  - **Gateway**: L'IP del gateway successivo a cui fare riferimento.
-  - **Interface**: L'interfaccia di rete attraverso cui inviare il pacchetto.
+  - **Gateway**: L'IP del gateway successivo a cui fare riferimento.(Se si dovesse essere già un host finale ci possono esere più possibilità come per esempio il proprio ip, la scritta self ecc)
+  - **Interface**: L'interfaccia di rete attraverso cui inviare il pacchetto.(Mi dice da dove fare la richiesta Arp qualora fosse necessarai)
   - **Metric**: Rappresenta il costo del percorso, utilizzato per determinare il percorso migliore quando sono disponibili più opzioni.
 Questa struttura permette ai nodi di instradare i pacchetti in modo efficiente, scegliendo il percorso ottimale basato sulle informazioni disponibili nella tabella di instradamento.
 
@@ -151,7 +151,20 @@ Questa struttura permette ai nodi di instradare i pacchetti in modo efficiente, 
   - Può essere suddivisa in sottoreti usando la netmask per identificare la parte Net e Host dell'indirizzo.
 
 ### Routing Aggregato
-   - La **semplificazione delle tabelle di routing** avviene aggregando più network in un’unica voce, riducendo la complessità per i router.
+La **semplificazione delle tabelle di routing** avviene aggregando più network in un’unica voce, riducendo la complessità per i router. Questo processo è noto come **supernetting** o **route aggregation**.
+
+#### Come si aggregano le reti
+1. **Identificazione delle reti contigue**: Per aggregare le reti, è necessario che queste siano contigue, ovvero che gli indirizzi IP siano consecutivi.
+2. **Calcolo della supernet**: Si determina una nuova netmask che copra tutte le reti contigue. Ad esempio, se si hanno le reti 192.168.1.0/24 e 192.168.2.0/24, si può aggregarle in una singola rete 192.168.0.0/22.
+3. **Aggiornamento delle tabelle di routing**: Le voci delle singole reti vengono sostituite da una voce unica che rappresenta la supernet.
+
+#### Vantaggi del Routing Aggregato
+- **Riduzione delle voci nelle tabelle di routing**: Aggregando le reti, si diminuisce il numero di voci che i router devono gestire, semplificando il processo di instradamento.
+- **Miglioramento delle prestazioni**: Con meno voci da esaminare, i router possono prendere decisioni di instradamento più rapidamente, migliorando le prestazioni complessive della rete.
+- **Minore utilizzo di memoria**: Le tabelle di routing più piccole richiedono meno memoria, liberando risorse per altre operazioni.
+- **Scalabilità**: La rete diventa più scalabile, poiché l'aggiunta di nuove reti contigue può essere gestita facilmente attraverso l'aggiornamento della supernet esistente.
+- **Riduzione del traffico di aggiornamento**: Con meno voci da aggiornare, si riduce il traffico di aggiornamento delle tabelle di routing tra i router, migliorando l'efficienza della rete.
+
 
 ### Uso del Gateway
    - **Gateway**: Il nodo che connette due network IP. È responsabile dell'instradamento dei pacchetti verso la destinazione finale.
@@ -171,26 +184,52 @@ Questa struttura permette ai nodi di instradare i pacchetti in modo efficiente, 
 
 ### Classi di indirizzi IP (Classfull)
 - Durante le fasi iniziali di Internet, gli indirizzi IP erano suddivisi in **classi**:
-  - **Classe A**: grandi reti (da 0.0.0.0 a 127.255.255.255).
-  - **Classe B**: reti di medie dimensioni (da 128.0.0.0 a 191.255.255.255).
-  - **Classe C**: piccole reti (da 192.0.0.0 a 223.255.255.255).
-  - **Classe D**: indirizzi multicast (da 224.0.0.0 a 239.255.255.255).
-  - **Classe E**: sperimentale (da 240.0.0.0 a 255.255.255.255).
+  - **Classe A**: grandi reti (da 0.0.0.0 a 127.255.255.255) ed andavano letti come se avessero un netmask /8.
+  - **Classe B**: reti di medie dimensioni (da 128.0.0.0 a 191.255.255.255) ed andavano letti come se avessero un netmask /16.
+  - **Classe C**: piccole reti (da 192.0.0.0 a 223.255.255.255) ed andavano letti come se avessero un netmask /24.
+  - **Classe D**: indirizzi multicast (da 224.0.0.0 a 239.255.255.255), riservati al multicast.
+  - **Classe E**: sperimentale (da 240.0.0.0 a 255.255.255.255), riservati a casi sperimentali.
   - **Indirizzi riservati**: ad esempio, 127.x.x.x per loopback e 255.255.255.255 per broadcast.
+- Dunque, la netmask dell'indirizzo era implicita nella classe dell'indirizzo stesso. Tuttavia,
+ questo approccio presentava limitazioni significative, come la scarsa flessibilità nella gestione 
+ degli indirizzi IP e l'inefficienza nell'allocazione degli indirizzi. Per risolvere questi problemi, 
+ è stato introdotto il **Classless Inter-Domain Routing (CIDR)**, che permette una gestione più efficiente 
+ e flessibile degli indirizzi IP, eliminando la rigida suddivisione in classi e utilizzando netmask variabili.
+- Con CIDR, la netmask è specificata esplicitamente utilizzando la notazione **slash** (ad esempio, /24), 
+permettendo una suddivisione più granulare e ottimizzata degli indirizzi IP.
+- Inoltre, CIDR facilita l'aggregazione delle rotte (supernetting), riducendo la complessità delle tabelle di 
+routing e migliorando l'efficienza della rete.
+- Per esempio, un indirizzo IP come 192.168.1.0/24 indica che i primi 24 bit dell'indirizzo sono utilizzati per 
+identificare la rete, mentre i restanti 8 bit sono utilizzati per identificare gli host all'interno di quella rete.
+- Questa flessibilità consente di adattare meglio la dimensione delle reti alle esigenze specifiche, evitando 
+sprechi di indirizzi IP e migliorando la scalabilità della rete.
 
 ### Subnetting
-- La **subdivisione in sottoreti (subnetting)** consente di frammentare una rete principale in reti più piccole (subnet) per assegnarle a diverse sotto-amministrazioni all'interno di un'organizzazione.
-  - La **subnet mask** permette di personalizzare l'assegnazione dell'indirizzo IP, suddividendo l'Host-ID in due parti: una parte per la subnet e l'altra per l'host.
-  - **Esempio**: L'Università di Bologna utilizza una rete di classe B (137.204.0.0) e divide l'Host-ID per creare 254 sottoreti di classe C, utilizzando la netmask 255.255.255.0.
+- La **subdivisione in sottoreti (subnetting)** consente di frammentare una rete principale in reti più piccole 
+(subnet) per assegnarle a diverse sotto-amministrazioni all'interno di un'organizzazione.
+  - La **subnet mask** permette di personalizzare l'assegnazione dell'indirizzo IP, suddividendo 
+  l'Host-ID in due parti: una parte per la subnet e l'altra per l'host.
+  - **Esempio**: L'Università di Bologna utilizza una rete di classe B (137.204.0.0) e divide 
+  l'Host-ID per creare 254 sottoreti di classe C, utilizzando la netmask 255.255.255.0.
 
-### CIDR (Classless InterDomain Routing)
-- Con la diffusione di Internet, la suddivisione rigida in classi si è dimostrata inefficiente, portando alla creazione di CIDR (**RFC 1519**).
-  - CIDR elimina la logica delle classi nei router e consente la **definizione variabile della dimensione del Net-ID**.
+### CIDR (Classless Inter-Domain Routing)
+- Con la diffusione di Internet, la suddivisione rigida in classi si è dimostrata inefficiente, 
+portando alla creazione di CIDR (**RFC 1519**).
+  - CIDR elimina la logica delle classi nei router e consente la 
+  **definizione variabile della dimensione del Net-ID**.
   - Le tabelle di routing includono le netmask per una gestione più flessibile delle reti.
   - **Obiettivi**:
     - Ottimizzazione dello spazio di indirizzi IP.
     - Aggregazione delle informazioni di routing (supernetting).
     - Gestione di reti di classe A e B limitate e della crescita delle tabelle di routing.
+- Oggi, la distinzione tra host e net è locale a tal punto che dipende dal punto in cui si guarda, 
+punto nel quale è contenuta la netmask di riferimento per quella specifica istanza. Dunque, 
+uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
+  - **Esempio**: Un indirizzo IP come 192.168.1.0/24 può essere visto come una singola rete 
+  in un contesto, mentre in un altro contesto, con una netmask diversa, può rappresentare una 
+  parte di una rete più grande o essere suddiviso in sottoreti più piccole.
+  - Questo approccio flessibile permette una gestione più efficiente e scalabile degli indirizzi IP, 
+  adattandosi meglio alle esigenze specifiche delle diverse reti.
 
 ### Supernetting
 - Il **supernetting** consente di unire più reti contigue per ridurre le voci nelle tabelle di routing. Ad esempio:
