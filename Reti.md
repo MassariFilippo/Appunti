@@ -1,7 +1,7 @@
-APPUNTI RETI DI TELECOMUNICAZIONE
-# Protocolli di Internet e IP
+# APPUNTI RETI DI TELECOMUNICAZIONE
+## Protocolli di Internet e IP
 
-## Architettura di Internet
+### Architettura di Internet
 
 L'architettura di Internet è organizzata in strati:
 
@@ -13,7 +13,7 @@ L'architettura di Internet è organizzata in strati:
 
 Questa struttura corrisponde al modello OSI semplificato, con IP che opera al livello di rete (strato 3).
 
-## Internet Protocol (IP) - RFC 791
+### Internet Protocol (IP) - RFC 791
 
 Caratteristiche principali:
 - Funziona a commutazione di pacchetto in modalità connectionless
@@ -22,21 +22,21 @@ Caratteristiche principali:
 - Frammenta e riassembla i datagrammi quando necessario
 - Offre un servizio "best effort" senza garanzie di affidabilità o controllo di flusso
 
-## Struttura degli indirizzi IP
+### Struttura degli indirizzi IP
 
 - Lunghezza fissa di 32 bit
 - Rappresentazione in formato dotted decimal (es. 137.204.212.1)
 - Numero massimo teorico di indirizzi: 2^32 = 4.294.967.296
 - Assegnati dalla IANA (Internet Assigned Numbers Authority)
 
-## Formato del pacchetto IP
+### Formato del pacchetto IP
 
 Il pacchetto IP è composto da:
 
 1. Header (intestazione)
 2. Payload (dati utente)
 
-## Campi principali dell'header IP
+### Campi principali dell'header IP
 
 - **Prima riga (identificazione)**
   - **Version (4 bit)**: versione del protocollo IP (attualmente 4)
@@ -98,7 +98,7 @@ Il pacchetto IP è composto da:
 - Il riassemblaggio avviene solo al terminale di destinazione
 - Utilizza i campi Identification, Flags e Fragment Offset per ricostruire correttamente il datagramma originale
 
-# Istradamento IP
+## Istradamento IP
 
 ### Internet e il Modello di Instradamento IP
    - **Instradamento a pacchetto**: Internet utilizza la commutazione a pacchetto per trasmettere dati.
@@ -153,12 +153,12 @@ Questa struttura permette ai nodi di instradare i pacchetti in modo efficiente, 
 ### Routing Aggregato
 La **semplificazione delle tabelle di routing** avviene aggregando più network in un’unica voce, riducendo la complessità per i router. Questo processo è noto come **supernetting** o **route aggregation**.
 
-#### Come si aggregano le reti
+### Come si aggregano le reti
 1. **Identificazione delle reti contigue**: Per aggregare le reti, è necessario che queste siano contigue, ovvero che gli indirizzi IP siano consecutivi.
 2. **Calcolo della supernet**: Si determina una nuova netmask che copra tutte le reti contigue. Ad esempio, se si hanno le reti 192.168.1.0/24 e 192.168.2.0/24, si può aggregarle in una singola rete 192.168.0.0/22.
 3. **Aggiornamento delle tabelle di routing**: Le voci delle singole reti vengono sostituite da una voce unica che rappresenta la supernet.
 
-#### Vantaggi del Routing Aggregato
+### Vantaggi del Routing Aggregato
 - **Riduzione delle voci nelle tabelle di routing**: Aggregando le reti, si diminuisce il numero di voci che i router devono gestire, semplificando il processo di instradamento.
 - **Miglioramento delle prestazioni**: Con meno voci da esaminare, i router possono prendere decisioni di instradamento più rapidamente, migliorando le prestazioni complessive della rete.
 - **Minore utilizzo di memoria**: Le tabelle di routing più piccole richiedono meno memoria, liberando risorse per altre operazioni.
@@ -175,7 +175,7 @@ La **semplificazione delle tabelle di routing** avviene aggregando più network 
      - **Gateway**: L'indirizzo IP del router da usare.
      - **Interface**: L'interfaccia di rete attraverso cui inviare il pacchetto.
 
-# Classless vs Classfull IP
+### Classless vs Classfull IP
 - **Indirizzi IP e Netmask**:
   - Gli indirizzi IP pubblici devono essere unici su Internet e identificano sorgente e destinazione nel datagramma IP.
   - La **netmask** è locale a ciascun nodo, utilizzata per determinare la porzione di indirizzo che rappresenta la rete e l'host. Non viene trasportata nel datagramma, ma è parte della tabella di routing del nodo.
@@ -329,18 +329,85 @@ fisicamente sarebbero state più comode 3 reti.
   proponendo i parametri di configurazione. L'host seleziona una delle offerte e invia un **DHCPREQUEST** 
   al server scelto. Il server risponde con un **DHCPACK**, confermando i parametri di configurazione.
 
-### Filtraggio dei Pacchetti e Firewall
-- **Packet Filter**: Controlla l'accesso a determinati servizi o indirizzi in base alle regole 
-impostate sugli IP, protocolli o porte.
-- **Stateful Packet Inspection (SPI)**: Monitora lo stato delle connessioni e adatta dinamicamente le regole di filtraggio.
-- **Application Layer Gateway (Proxy)**: Monitora le connessioni applicative (FTP, HTTP, SIP), 
-garantendo controllo e sicurezza a livello applicativo.
+### Filtraggio dei Pacchetti
+### Metodologie di Filtraggio dei Datagrammi
+- Le metodologie di filtraggio dei datagrammi sono tecniche utilizzate per controllare il traffico di rete 
+in base a criteri predefiniti. Questi criteri possono includere indirizzi IP, numeri di porta, protocolli e 
+altre informazioni contenute nei pacchetti. In questo contesto, i gateway fungono da punti di controllo per 
+il traffico di rete, applicando le regole di filtraggio per garantire che solo il traffico autorizzato possa 
+attraversare la rete. Queste metodologie sono fondamentali per implementare firewall e altre soluzioni di sicurezza 
+di rete, garantendo che solo il traffico autorizzato possa attraversare i confini della rete.
+  - **Packet Filter**: Controlla l'accesso a determinati servizi o indirizzi in base alle regole 
+  impostate sugli IP, protocolli o porte. È detto instradamento selettivo e opera a livello IP basando 
+  le sue decisioni sulla natura dell'IP stesso come il TTL, i tipi di indirizzi ecc. Il vantaggio è che 
+  a livello di gateway basta implementare il filtro a livello software, ma esistono situazioni in cui i 
+  filtri a livello IP non sono sufficienti.
+  - **Stateful Packet Inspection (SPI)**: Monitora lo stato delle connessioni e adatta dinamicamente le regole 
+  di filtraggio. Adattando opportunamente il software, si può andare più a fondo nel pacchetto guardando, per 
+  esempio, il tipo di protocollo, attuando così filtri semanticamente più efficaci. Ciò viola il protocollo OSI 
+  dato che vado a leggere dati più profondi del livello IP.
+  - **Application Layer Gateway (Proxy)**: Monitora le connessioni applicative (ad esempio, FTP, HTTP, SIP), 
+  garantendo controllo e sicurezza a livello applicativo. In questo caso, il gateway agisce come un host che 
+  scompone il pacchetto fino al livello applicativo e poi lo reinstrada se non è destinato a lui. A differenza 
+  dei normali gateway con implementazioni specifiche, un proxy a livello applicativo è più complesso sia a livello 
+  hardware che software.
+
+- Le tre differenti versioni vengono adottate a necessità dato che la prima è la più leggera a 
+livello computazionale e la più facile da implementare ma quella meno efficace, e viceversa per la terza.
+
+### Firewall
+Il firewall o portatagliafuoco ci difende combinando le tecnologie precedentemente descritte:
+- **Packet Filter**: Filtra i pacchetti seguendo le politiche stabilite.
+  - Filtri: Generalmente configurati staticamente.
+  - La maggioranza delle configurazioni non permettono pacchetti per porte "non-standard" 
+  (Internet Assigned Numbers Authority – IANA).
+- **Stateful Packet Inspection**:
+  - Mantiene il contesto dei pacchetti sia nel trasporto che nello strato applicativo.
+  - Adatta dinamicamente le specifiche dei filtri.
+- **Application Layer Gateway (trasparente o proxy esplicito)**:
+  - Monitora le connessioni: Analizza il contenuto dei protocolli applicativi.
+  - A scapito della sicurezza di comunicazione end-to-end.
+  - Adatta dinamicamente le specifiche dei filtri.
+- **Per ogni strato (layer) dello stack possono essere applicate politiche (policies) differenti**.
+- Protezione Host: funge da filto software/hardware per accessi indesiderati dall'esterno della rete. 
+(sevono architetture di difesa più complesse). Dunque si potrebbero usare configurazioni di packet filter 
+e proxy per migliorare la sicurezza della rete. Un'architettura di difesa multilivello può includere:
+
+1. **Packet Filter**: Filtra i pacchetti in base a regole predefinite sugli indirizzi IP, protocolli e porte. 
+È il primo livello di difesa e agisce a livello di rete.
+2. **Stateful Packet Inspection (SPI)**: Monitora lo stato delle connessioni e adatta dinamicamente le regole 
+di filtraggio. Fornisce un controllo più approfondito rispetto ai semplici packet filter.
+3. **Application Layer Gateway (Proxy)**: Monitora e controlla le connessioni a livello applicativo, 
+garantendo un controllo dettagliato sui protocolli specifici come HTTP, FTP, e SIP. Questo livello può 
+bloccare attacchi che sfruttano vulnerabilità a livello applicativo.
+
+Combinando queste tecnologie, si ottiene una protezione più robusta contro una vasta gamma di minacce, 
+migliorando la sicurezza complessiva della rete.
 
 ### Network Address Translation (NAT)
+E' un gateway con funzione di paket filter che si interpone tra 2 networ e può cambiare il contenuto dei pacchetti 
+in partivolare gli indirizzi sia ip che di porta.
+Viene definito a livello concettuale ma non a livelli fisico/implementativo dato che ci sono molteplici modi di farlo.
 - **Funzioni**: Maschera gli indirizzi IP interni, permettendo a reti private di accedere a reti pubbliche. 
 - I tipi di NAT principali:
-  - **Basic NAT**: Converte solo gli indirizzi IP.
-  - **Port Address Translation (PAT)**: Converte indirizzi IP e porte.
+  - **Basic NAT - Conversione di indirizzo**: Converte solo gli indirizzi IP. Si trova tra 2 network e funge da gateway e modifica gli 
+  indirizzi sorgente modificando IP e porta per poi reindirizzare al destinatario per poi fare il 
+  contrario al ritorno grazie a una tabella delle conversioni. Questo permette di rendere il flusso monodirezionale, 
+  ovvero chi è dietro al basic NAT comunica con l'esterno solo se ha richiesto qualcosa da fuori, 
+  dunque costruito in questa maniera permette di essere uno strumento di protezione anche se è stato 
+  concepito per risparmiare numeri.
+  - **Port Address Translation (PAT) (VERIFICARE CHE SIA QUESTO IL NOME)**: Tecnica utilizzata nei router per mappare più indirizzi IP privati su un singolo 
+  indirizzo IP pubblico, utilizzando numeri di porta univoci per distinguere le connessioni. Questo processo consente a 
+  più dispositivi all'interno di una rete locale (LAN) di condividere un singolo indirizzo IP pubblico per accedere a Internet.
+  Quando un dispositivo all'interno della rete locale invia un pacchetto verso Internet, il router sostituisce l'indirizzo 
+  IP privato del dispositivo con l'indirizzo IP pubblico del router e assegna un numero di porta univoco. 
+  Quando il pacchetto di risposta ritorna, il router utilizza il numero di porta per determinare a quale dispositivo 
+  interno inoltrare il pacchetto. PAT è una forma di Network Address Translation (NAT) ed è particolarmente 
+  utile per conservare gli indirizzi IP pubblici, che sono una risorsa limitata. Inoltre, offre un livello aggiuntivo 
+  di sicurezza, poiché gli indirizzi IP privati non sono visibili dall'esterno della rete locale. Qui effettivamente 
+  vado a risparmiare indirizzi IP poiché possiamo internamente vedere più indirizzi come fossero lo stesso, 
+  così facendo però riduco i possibili flussi distinguibili a 2^16 dato che vengono distinti dalle porte. 
+  (VERIFICARE SE SEMANTICAMENTE CORRETTO)
   - **Full Cone NAT, Restricted Cone NAT, Symmetric NAT**: Definiscono il tipo di traffico permesso.
 
 ### Considerazioni sui Firewall
