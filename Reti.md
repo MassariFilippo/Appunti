@@ -165,7 +165,6 @@ La **semplificazione delle tabelle di routing** avviene aggregando più network 
 - **Scalabilità**: La rete diventa più scalabile, poiché l'aggiunta di nuove reti contigue può essere gestita facilmente attraverso l'aggiornamento della supernet esistente.
 - **Riduzione del traffico di aggiornamento**: Con meno voci da aggiornare, si riduce il traffico di aggiornamento delle tabelle di routing tra i router, migliorando l'efficienza della rete.
 
-
 ### Uso del Gateway
    - **Gateway**: Il nodo che connette due network IP. È responsabile dell'instradamento dei pacchetti verso la destinazione finale.
 
@@ -253,9 +252,10 @@ uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
   - Verifica se un host è raggiungibile inviando pacchetti ICMP di tipo "echo" e ricevendo "echo reply".
   - Opzioni: definire il numero di pacchetti, timeout, dimensione pacchetti, ecc.
 - **TRACEROUTE**:
-  - Mostra il percorso dei pacchetti verso una destinazione, utilizzando pacchetti ICMP con TTL crescente. Mostra il nome DNS e l'indirizzo IP dei nodi intermedi.
+  - Mostra il percorso dei pacchetti verso una destinazione, utilizzando pacchetti ICMP con TTL crescente. 
+  Mostra il nome DNS e l'indirizzo IP dei nodi intermedi.
 
-# **Gestione della numerazione IP: DHCP**
+### **Gestione della numerazione IP: DHCP**
 - **DHCP (Dynamic Host Configuration Protocol)** consente la configurazione dinamica e automatica di un indirizzo IP per un host, assegnando:
   - Indirizzo IP, netmask, gateway predefinito, server DNS, ecc.
 - **Processo DHCP**:
@@ -263,3 +263,88 @@ uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
   - **DHCPOFFER**: i server DHCP rispondono proponendo un indirizzo IP.
   - **DHCPREQUEST**: l'host accetta una delle offerte e richiede l'indirizzo IP.
   - **DHCPACK**: il server DHCP conferma la configurazione con un messaggio di risposta.
+
+### Progettazione di Reti Aziendali
+
+- **Esempio di rete aziendale**: Tre siti aziendali (S1, S2, S3) devono essere interconnessi con una rete a maglia completa. 
+Gli indirizzi di classe C assegnati sono basati su 196.200.96.0/24. Con questa rete ho più IP del necessario, 
+dato che ho 256 IP, ma con una /25 ne avrei avuti 128 e sarei stato troppo di misura.
+
+- **Soluzione 1**: Non avendo una sola rete fisica, non possiamo avere consegna diretta. 
+Dovremmo usare dei gateway con una rete "comune" di collegamento tra questi ultimi. Avendo una /24, 
+posso ottenere 4 reti /26, dunque 62 IP per blocco. Questa soluzione provoca un grande spreco nel 
+blocco usato per il collegamento (uso 3 numeri per i gateway e i restanti 58 non servono a niente). 
+Inoltre, se devo crescere, sarò in difficoltà perché se creo una nuova sede essa necessiterà di un nuovo 
+blocco che non ho modo di creare. Se aumento i terminali nelle sedi già esistenti, posso arrivare solo a 62.
+
+- **Soluzione 2**: Potrei valutare netmask a grandezza differenziata. Ricordiamoci che più divido, 
+più mi mangio numeri, dato che per ogni divisione il primo e l'ultimo numero sono non utilizzabili. 
+Creerò dunque 2 reti /26 (metà degli indirizzi), 3 reti /27 (3/4 dei restanti indirizzi), 
+1 rete /28 (1/2 dei restanti indirizzi) e /30 con le quali completerò gli indirizzi. Così facendo, 
+le 2 reti /26 saranno usate per 2 sedi, 1 rete /27 per la terza sede e 3 reti /30 per i 3 gateway, 
+mantenendo disponibili tutti gli altri indirizzi per il futuro.
+Se possibile, un'unica rete per tutti i gateway è preferibile a questa seconda soluzione, perché se 
+dobbiamo fisicamente creare l'infrastruttura urbana, è più facile da realizzare. Fossero state 3 isole, forse 
+fisicamente sarebbero state più comode 3 reti.
+
+### ICMP (Internet Control Message Protocol)
+  - **Struttura pacchetto ICMP**:
+    1. **IP Header**: Intestazione del protocollo IP.
+    2. **Message Type**: Tipo di messaggio ICMP (8 bit).
+    3. **Message Code**: Codice del messaggio ICMP (8 bit).
+    4. **Checksum**: Controllo degli errori per l'intestazione ICMP (16 bit).
+    5. **Additional Fields**: Campi aggiuntivi specifici per il tipo di messaggio ICMP.
+    6. **Data**: Dati del messaggio ICMP.
+
+- **Tipi di messaggi ICMP**:
+  - **Destination Unreachable (Type 3)**: Notifica l'inaccessibilità di host o sottorete.
+    - **Code 0**: Network Unreachable
+    - **Code 1**: Host Unreachable
+    - **Code 2**: Protocol Unreachable
+    - **Code 3**: Port Unreachable
+    - **Code 4**: Fragmentation Needed and Don't Fragment was Set
+    - **Code 5**: Source Route Failed
+    - **Code 11**: Destination Network Unreachable for Type of Service
+  - **Time Exceeded (Type 11)**: Notifica il superamento del TTL o il timeout per il riassemblaggio dei frammenti.
+  - **Echo/Echo Reply (Type 8/0)**: Utilizzati per determinare lo stato di raggiungibilità di un host.
+  - **Timestamp Request/Reply (Type 13/14)**: Misura il tempo di transito nella rete.
+
+### Comandi di Rete
+- **PING**: Verifica la raggiungibilità di un host inviando pacchetti di tipo ICMP Echo Request.
+  - Parametri principali: `-n` (numero di pacchetti), `-t` (ping continuo), `-a` (risoluzione DNS), 
+  `-l` (dimensione del pacchetto).
+- **TRACEROUTE**: Identifica il percorso seguito dai pacchetti verso una destinazione tramite la gestione del TTL.
+  - **Come funziona**: Traceroute invia pacchetti con un valore TTL (Time To Live) inizialmente impostato a 1. 
+  Ogni router lungo il percorso decrementa il TTL di 1. Quando il TTL raggiunge 0, il router scarta il pacchetto 
+  e invia un messaggio ICMP "Time Exceeded" al mittente. Traceroute incrementa quindi il TTL e invia un nuovo pacchetto, 
+  ripetendo il processo fino a raggiungere la destinazione finale. Questo permette di identificare ogni hop (router) 
+  lungo il percorso.
+  - Parametri principali: `-m` (TTL massimo), `-q` (numero di query per hop), `-w` (timeout per risposta).
+
+### Gestione degli Indirizzi IP
+- **DHCP (Dynamic Host Configuration Protocol)**: Automatizza l'assegnazione dinamica di IP, netmask, gateway e DNS. Processo chiave:
+  - **DHCPDISCOVER** → **DHCPOFFER** → **DHCPREQUEST** → **DHCPACK**.
+  - Il processo inizia con un messaggio broadcast di livello 2 (come ARP) chiamato **DHCPDISCOVER**, 
+  inviato sulla rete per cercare un server DHCP. I server DHCP rispondono con un messaggio **DHCPOFFER**, 
+  proponendo i parametri di configurazione. L'host seleziona una delle offerte e invia un **DHCPREQUEST** 
+  al server scelto. Il server risponde con un **DHCPACK**, confermando i parametri di configurazione.
+
+### Filtraggio dei Pacchetti e Firewall
+- **Packet Filter**: Controlla l'accesso a determinati servizi o indirizzi in base alle regole 
+impostate sugli IP, protocolli o porte.
+- **Stateful Packet Inspection (SPI)**: Monitora lo stato delle connessioni e adatta dinamicamente le regole di filtraggio.
+- **Application Layer Gateway (Proxy)**: Monitora le connessioni applicative (FTP, HTTP, SIP), 
+garantendo controllo e sicurezza a livello applicativo.
+
+### Network Address Translation (NAT)
+- **Funzioni**: Maschera gli indirizzi IP interni, permettendo a reti private di accedere a reti pubbliche. 
+- I tipi di NAT principali:
+  - **Basic NAT**: Converte solo gli indirizzi IP.
+  - **Port Address Translation (PAT)**: Converte indirizzi IP e porte.
+  - **Full Cone NAT, Restricted Cone NAT, Symmetric NAT**: Definiscono il tipo di traffico permesso.
+
+### Considerazioni sui Firewall
+- **Protezione degli host**: Il firewall può essere software (per accessi domestici) o hardware (per reti aziendali).
+- **Politiche di sicurezza**:
+  - **Default deny**: Blocca tutto eccetto ciò che è esplicitamente permesso.
+  - **Default permit**: Permette tutto eccetto ciò che è esplicitamente bloccato.
