@@ -83,7 +83,7 @@ Il pacchetto IP è composto da:
 
 ### Calcolo del Fragment Offset:
 - Il datagramma è diviso in blocchi di 8 byte (64 bit)
-- L'offset è calcolato in unità di 8 byte dall'inizio del datagramma originale( non ho bisogno di mappare tutti i bit ma posso mapparli a blocchi di 8 byte per ridurre a 13 il numero di bit necessari a tenerne traccai, ciò implica che la frammentazione non potra mai scendere sotto i 64 bit perchè non sarei pìù in grado di riconporre il pacchetto)
+- L'offset è calcolato in unità di 8 byte dall'inizio del datagramma originale (non ho bisogno di mappare tutti i bit ma posso mapparli a blocchi di 8 byte per ridurre a 13 il numero di bit necessari a tenerne traccia, ciò implica che la frammentazione non potrà mai scendere sotto i 64 bit perché non sarei più in grado di ricomporre il pacchetto)
 
 ### Time to Live (TTL)
 
@@ -101,12 +101,12 @@ Il pacchetto IP è composto da:
 ## Istradamento IP
 
 ### Internet e il Modello di Instradamento IP
-   - **Instradamento a pacchetto**: Internet utilizza la commutazione a pacchetto per trasmettere dati.
-   - Esistono più percorsi per raggiungere una destinazione. Il routing (instradamento) avviene pacchetto per pacchetto, e i router decidono quale percorso seguire.
+- **Instradamento a pacchetto**: Internet utilizza la commutazione a pacchetto per trasmettere dati.
+- Esistono più percorsi per raggiungere una destinazione. Il routing (instradamento) avviene pacchetto per pacchetto, e i router decidono quale percorso seguire.
 
 ### Componenti della Rete
-  - **Network IP**: Internet è costituita da tante reti isolate (Network IP). Ogni network IP è un'isola che contiene host (calcolatori terminali). Questi host devono essere necessariamente in grado di comunicare tra di loro; il caso più estremo è un solo host (calcolatore) che parla con se stesso.
-  - **Router**: Detti anche Gateway, collegano le isole e permettono la comunicazione tra reti diverse. Funzionano fino al livello 3 del modello OSI. In molti casi, il trasferimento di dati compie un percorso che passa per più gateway e probabilmente anche per più network. Due router connessi che a loro volta connettono altrettante network IP possono essere visti, per semplificare il processo distributivo dei pacchetti, come network IP a loro volta. Così facendo, è possibile immaginare che il terminale funga da primo router che instrada il datagramma, e dunque ogni calcolatore risulterà un nodo, sia esso un PC, router, sensore, ecc. Ogni passaggio di datagramma è detto hop. Parlare con un gateway, a differenza di un contesto Wi-Fi (spiegato sotto), significa selezionarne uno che fungerà da intermediario per svolgere un compito che il terminale non sa fare.
+- **Network IP**: Internet è costituita da tante reti isolate (Network IP). Ogni network IP è un'isola che contiene host (calcolatori terminali). Questi host devono essere necessariamente in grado di comunicare tra di loro; il caso più estremo è un solo host (calcolatore) che parla con se stesso.
+- **Router**: Detti anche Gateway, collegano le isole e permettono la comunicazione tra reti diverse. Funzionano fino al livello 3 del modello OSI. In molti casi, il trasferimento di dati compie un percorso che passa per più gateway e probabilmente anche per più network. Due router connessi che a loro volta connettono altrettante network IP possono essere visti,
 
 ### Tecnologie di Implementazione
    - **Wi-Fi**: Wireless a breve distanza. (dal punto di vista dell'ip è un tipo di comunicazione 1a1 che passa per il centro stella e viene poi smistata )
@@ -415,3 +415,88 @@ Viene definito a livello concettuale ma non a livelli fisico/implementativo dato
 - **Politiche di sicurezza**:
   - **Default deny**: Blocca tutto eccetto ciò che è esplicitamente permesso.
   - **Default permit**: Permette tutto eccetto ciò che è esplicitamente bloccato.
+
+(MANCANO 24 MIN DELLA LEZIONE DEL 16 OTTOBRE POICHè NON HO TROVATO LE SLIDE)
+
+## Routing
+
+### Funzioni di IP
+- **Indirizzamento**: L'IP fornisce un sistema di indirizzamento univoco per identificare dispositivi sulla rete.
+- **Frammentazione**: L'IP può dividere i pacchetti di dati in frammenti più piccoli per adattarsi alla dimensione massima del pacchetto supportata dai vari segmenti della rete.
+- **Instradamento**:
+  - Decidere che percorso un datagramma deve seguire per raggiungere la destinazione.
+  - Utilizza le PCI dei datagrammi, in particolare l'indirizzo di destinazione.
+  - Determina il comportamento della funzione di commutazione nei nodi.
+  - Il problema dell'instradamento è più generale rispetto al protocollo di livello 3.
+
+### Algoritmi e protocolli di instradamento
+- **Instradamento**: scelta del percorso.
+  - Spesso significa scegliere il prossimo router (next hop).
+- **Algoritmo di instradamento**:
+  - Obiettivi: semplicità, robustezza, stabilità, efficienza.
+
+### Tabella di instradamento
+- I nodi di commutazione utilizzano tabelle predisposte localmente.
+- **Algoritmi senza tabella e con tabella**:
+  - **Senza tabella**: Flooding, Random, Deflection routing, Source routing.
+  - **Con tabella**:
+    - **Instradamento fisso e centralizzato**: Utilizzato per sistemi estremamente statici, dove i dati rimangono invariati per un tempo molto più lungo della singola comunicazione. Questo metodo risulta sempre uguale dal punto di vista dell'utente.
+    - **Instradamento dinamico a distanza minima**: I percorsi vengono aggiornati periodicamente per adattarsi ai cambiamenti della rete dunque risulta più dinaico del precedente.
+
+### Flooding
+- Flooding è una tecnica di instradamento in cui ogni nodo della rete ritrasmette ogni pacchetto ricevuto su tutte le sue porte, eccetto quella da cui il pacchetto è arrivato. Questo metodo garantisce che tutte le possibili strade vengano percorse, assicurando che almeno una copia del pacchetto raggiunga la destinazione.
+- Garantisce:
+  - **Affidabilità**: Flooding garantisce che il pacchetto raggiunga la destinazione anche se alcuni percorsi sono interrotti.
+  - **Percorso più breve**: Il primo pacchetto che raggiunge la destinazione lo fa percorrendo il percorso più breve disponibile.
+  - **Semplicità**: L'algoritmo è semplice da implementare poiché non richiede tabelle di instradamento complesse.
+- Contro:
+  - **Proliferazione dei pacchetti**: La rete può essere sovraccaricata da un numero eccessivo di pacchetti duplicati, causando congestione.
+  - **Inefficienza**: L'invio di pacchetti su tutte le porte può risultare inefficiente in termini di utilizzo della larghezza di banda.
+- UTilizzato:
+  - **Broadcasting**: Flooding è utile per inviare messaggi di broadcast, dove l'obiettivo è raggiungere tutti i nodi della rete.
+  - **Scenari di emergenza**: In situazioni in cui è cruciale che il messaggio raggiunga la destinazione, indipendentemente dall'efficienza.
+
+### Soluzioni per il Flooding
+- Non ritrasmettere il pacchetto da dove è arrivato.
+- Identificazione dei pacchetti (indirizzo sorgente + numero di sequenza).
+- Uso di un TTL per evitare pacchetti infiniti.
+È importante ricordare che all'aumentare di queste soluzioni il protocollo si complica, andando via via a perdere di utilità a causa del suo complicarsi.
+
+### Instradamento dinamico e statico
+- **Statico**: percorsi predefiniti all'inizializzazione.
+- **Dinamico**: percorsi aggiornati periodicamente per adattarsi ai cambiamenti.
+
+### Random e Deflection Routing
+- **Random Routing**: Il prossimo hop è scelto casualmente. Questo metodo è molto inefficiente e raramente utilizzato.
+- **Deflection Routing**: Il pacchetto viene inviato sulla linea con meno pacchetti in attesa. Questo metodo è stato studiato per reti a griglia (Manhattan), dove si dimostra essere una buona soluzione.
+  - **Problemi**: I pacchetti possono arrivare fuori sequenza o entrare in cicli infiniti.
+
+### Store-and-Forward
+Il pacchetto viene verificato, memorizzato e confrontato con la tabella di instradamento. Dopo l'elaborazione, si seleziona un'uscita e il pacchetto viene inserito in coda. Tutto questo avviene in una coda che gestisce l'elaborazione.
+
+### Shortest Path Routing
+L'instradamento a percorso più breve implica l'associazione di una lunghezza a ciascun collegamento e la ricerca dei percorsi a costo minimo utilizzando algoritmi come Bellman-Ford e Dijkstra. Questo può essere implementato in modo centralizzato o distribuito, sia in maniera sincrona che asincrona. Quando i nodi di rete vengono accesi, conoscono solo la configurazione delle loro interfacce, che può essere statica o dinamica tramite DHCP. Con queste informazioni, popolano la tabella di instradamento iniziale. Per implementare il routing a percorso più breve (shortest path) verso qualsiasi destinazione, devono utilizzare uno o più protocolli di routing per scambiarsi informazioni e apprendere la topologia della rete, e uno o più algoritmi per il calcolo dei percorsi più brevi basati sulle informazioni ottenute.
+
+### Teoria dei grafi e rappresentazione della rete
+- Le reti possono essere rappresentate come grafi orientati o non orientati.
+- Il peso degli archi rappresenta il costo del collegamento.
+
+### Routing Distance Vector
+Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono direttamente collegati i propri dati, aggiornando così le tabelle dei vicini. Questo processo continua finché non si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema.
+- **Problemi**: convergenza lenta, conteggio all'infinito.
+
+### Split Horizon e Triggered Update
+- **Split Horizon**: evitare di informare un nodo su una destinazione raggiungibile solo tramite esso.
+- **Triggered Update**: inviare aggiornamenti immediatamente in caso di modifica.
+
+### Routing Link State
+- Ogni nodo costruisce un'immagine della rete tramite informazioni scambiate con i vicini.
+- Si utilizza Dijkstra per calcolare i percorsi minimi.
+
+### Router IP
+- **Funzioni dei router**: Routing, Forwarding, Switching, Trasmissione.
+- **Classificazione dei router**: SOHO, Access, Enterprise, Backbone.
+
+### Tabelle di Routing e Forwarding
+- **Routing table**: contiene route prefix, next hop, e metric.
+- **Forwarding table**: ottimizzata per l'inoltro rapido dei datagrammi.
