@@ -468,26 +468,57 @@ Viene definito a livello concettuale ma non a livelli fisico/implementativo dato
 
 ### Random e Deflection Routing
 - **Random Routing**: Il prossimo hop è scelto casualmente. Questo metodo è molto inefficiente e raramente utilizzato.
-- **Deflection Routing**: Il pacchetto viene inviato sulla linea con meno pacchetti in attesa. Questo metodo è stato studiato per reti a griglia (Manhattan), dove si dimostra essere una buona soluzione.
+- **Deflection Routing**: Il pacchetto viene inviato sulla linea con meno pacchetti in attesa. Questo metodo è stato 
+studiato per reti a griglia (Manhattan), dove si dimostra essere una buona soluzione.
   - **Problemi**: I pacchetti possono arrivare fuori sequenza o entrare in cicli infiniti.
 
 ### Store-and-Forward
-Il pacchetto viene verificato, memorizzato e confrontato con la tabella di instradamento. Dopo l'elaborazione, si seleziona un'uscita e il pacchetto viene inserito in coda. Tutto questo avviene in una coda che gestisce l'elaborazione.
+Il pacchetto viene verificato, memorizzato e confrontato con la tabella di instradamento. 
+Dopo l'elaborazione, si seleziona un'uscita e il pacchetto viene inserito in coda. 
+Tutto questo avviene in una coda che gestisce l'elaborazione.
 
 ### Shortest Path Routing
-L'instradamento a percorso più breve implica l'associazione di una lunghezza a ciascun collegamento e la ricerca dei percorsi a costo minimo utilizzando algoritmi come Bellman-Ford e Dijkstra. Questo può essere implementato in modo centralizzato o distribuito, sia in maniera sincrona che asincrona. Quando i nodi di rete vengono accesi, conoscono solo la configurazione delle loro interfacce, che può essere statica o dinamica tramite DHCP. Con queste informazioni, popolano la tabella di instradamento iniziale. Per implementare il routing a percorso più breve (shortest path) verso qualsiasi destinazione, devono utilizzare uno o più protocolli di routing per scambiarsi informazioni e apprendere la topologia della rete, e uno o più algoritmi per il calcolo dei percorsi più brevi basati sulle informazioni ottenute.
+L'instradamento a percorso più breve implica l'associazione di una lunghezza a ciascun 
+collegamento e la ricerca dei percorsi a costo minimo utilizzando algoritmi come Bellman-Ford e 
+Dijkstra. Questo può essere implementato in modo centralizzato o distribuito, sia in maniera sincrona che asincrona. 
+Quando i nodi di rete vengono accesi, conoscono solo la configurazione delle loro interfacce, che può essere statica 
+o dinamica tramite DHCP. Con queste informazioni, popolano la tabella di instradamento iniziale. Per implementare il 
+routing a percorso più breve (shortest path) verso qualsiasi destinazione, devono utilizzare uno o più protocolli di 
+routing per scambiarsi informazioni e apprendere la topologia della rete, e uno o più algoritmi per il calcolo dei 
+percorsi più brevi basati sulle informazioni ottenute.
 
 ### Teoria dei grafi e rappresentazione della rete
 - Le reti possono essere rappresentate come grafi orientati o non orientati.
 - Il peso degli archi rappresenta il costo del collegamento.
 
 ### Routing Distance Vector
-Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono direttamente collegati i propri dati, aggiornando così le tabelle dei vicini. Questo processo continua finché non si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema.
-- **Problemi**: convergenza lenta, conteggio all'infinito.
-
-### Split Horizon e Triggered Update
-- **Split Horizon**: evitare di informare un nodo su una destinazione raggiungibile solo tramite esso.
-- **Triggered Update**: inviare aggiornamenti immediatamente in caso di modifica.
+Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. 
+Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, 
+rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, 
+e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. 
+In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta 
+solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono 
+direttamente collegati i propri dati detti **Distance vector**, aggiornando così le tabelle dei vicini. Questo processo continua finché non 
+si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema.
+- **Problemi**:
+  - **Cold start e convergenza lenta**: La convergenza si raggiunge dopo un numero di iterazioni pari al numero di nodi. 
+  Questo comporta una lenta convergenza su reti grandi, poiché gli aggiornamenti tra nodi non possono essere inviati 
+  continuamente, ma devono lasciare che anche i messaggi circolino, ritardando così la convergenza.
+  - **Conteggio all'infinito**: In alcuni casi, si potrebbe tentare di convergere all'infinito. 
+  Ad esempio, se ci sono tre router in fila e si rompe il collegamento tra due di essi, gli altri due potrebbero 
+  scambiarsi aggiornamenti di distanza dal terzo all'infinito. Questo li porta a convincersi reciprocamente che 
+  per raggiungere il terzo router debbano usare l'altro a cui sono collegati, finendo per passarsi all'infinito 
+  pacchetti e aggiornamenti di distanza, andando a bruciare capacità computazionale. Per ovviare, si sceglie una 
+  distanza tra nodi superata la quale si considera la distanza come infinita ed implementare un Triggered Update,
+  ovvero un aggiornamento istantaneo del distance vector qualora ci fosse una variazione di distanza.
+  - **Bouncing effect**: Situazione in cui un router si "convince" che sia opportuno mandare i propri pacchetti 
+  a un altro router che poi glieli rimanderà. Questo è solitamente dovuto a una rottura e, fino a quando non viene 
+  inviato un aggiornamento, i router si rimpallano i pacchetti.
+- **Soluzioni**
+  - **Split Horizon**: evitare di informare un nodo su una destinazione raggiungibile solo tramite esso, 
+  inviando distance vector differrnziati in cui ometto tutte le distanze da nodi che vedono il ricevente come gateway.
+  - **Triggered Update**: inviare aggiornamenti immediatamente in caso di modifica.
+Queste solozioni non sono definitive in quanto avendo una rete con dei cicli vanno a perdere di efficacia.
 
 ### Routing Link State
 - Ogni nodo costruisce un'immagine della rete tramite informazioni scambiate con i vicini.
