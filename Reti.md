@@ -658,15 +658,14 @@ Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente
      senza necessità di acquistare connettività.
      - **Tier 2**: Acquista connettività da Tier 1.
      - **Tier 3**: ISP locali che acquistano connettività da Tier 2 o altri ISP locali.
-   - **Peering e interconnessione**: Il peering tra ISP non implica pagamenti diretti; è una relazione neutrale. 
-   Gli IXP facilitano l’interconnessione tra ISP.
-   Gli ISP nelle loro zone di pertinenza hanno dei POP che sono dei punti diraccolta collegati tra loro da maglie,
-   tali POP si troveranno in punti strategici come città e snodi commerciali, ciò significa che se ci sono più ISP in una stessa 
-   internet region tali pop saranno in posizioni limitrofe per entrambi gli ISP, ciò nonostante non è quasi mai possibile 
-   farli cominicare direttamente dato che gli ISP si propongono come AS e quindi sarà necessario fare avvenire la cominicazione 
-   in un punto di "contatto" che talvolta potrebbe essere molto distante dal reale POP più geograficamente vicino.
-   Tale collegamento unico dovà essere molto robusta data la sua unicita, esso è feornito da compagnie dette **Internet Excahnge** 
-   che forniscono tale infrastruttura detta **Internet Excahnge Point** IXP.
+  - **Peering e interconnessione**: Il peering tra ISP non implica pagamenti diretti; è una relazione neutrale. 
+  Gli IXP facilitano l’interconnessione tra ISP. Gli ISP nelle loro zone di pertinenza hanno dei POP (Points of Presence) 
+  che sono punti di raccolta collegati tra loro da maglie. Tali POP si trovano in punti strategici come città e snodi 
+  commerciali. Se ci sono più ISP in una stessa internet region, i POP saranno in posizioni limitrofe per entrambi gli ISP. 
+  Tuttavia, non è quasi mai possibile farli comunicare direttamente, poiché gli ISP si propongono come AS (Autonomous Systems) 
+  e quindi sarà necessario far avvenire la comunicazione in un punto di "contatto" che talvolta potrebbe essere molto distante 
+  dal POP geograficamente più vicino. Tale collegamento unico deve essere molto robusto data la sua unicità. Esso è fornito da 
+  compagnie dette **Internet Exchange** che forniscono tale infrastruttura detta **Internet Exchange Point** (IXP).
 
    (MANCA REGISTRAZIONE DELLA LEZIONE DEL 28 OTTOBRE)
 
