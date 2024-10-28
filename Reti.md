@@ -518,16 +518,106 @@ si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i
   - **Split Horizon**: evitare di informare un nodo su una destinazione raggiungibile solo tramite esso, 
   inviando distance vector differrnziati in cui ometto tutte le distanze da nodi che vedono il ricevente come gateway.
   - **Triggered Update**: inviare aggiornamenti immediatamente in caso di modifica.
-Queste solozioni non sono definitive in quanto avendo una rete con dei cicli vanno a perdere di efficacia.
+Queste solozioni non sono definitive in quanto avendo una rete con dei cicli vanno 
+a perdere di efficacia, dunque si è reso indispensabile trovare un' alternativa alla soluzione del routing distance vector.
 
 ### Routing Link State
-- Ogni nodo costruisce un'immagine della rete tramite informazioni scambiate con i vicini.
-- Si utilizza Dijkstra per calcolare i percorsi minimi.
+In questa nuova soluzione, si separano nettamente il protocollo e l'algoritmo. 
+Abbiamo una logica in cui, tramite uno specifico protocollo, i nodi scoprono altri nodi, 
+estrapolano informazioni da questi ultimi e condividono tali informazioni con altri nodi. 
+Questo processo permette a tutti i nodi di avere una visione completa della rete.
+Solo a questo punto si utilizzano algoritmi di routing come Dijkstra per scoprire i percorsi più rapidi. 
+Questo approccio comporta un maggiore utilizzo di memoria e una maggiore complessità computazionale. 
+Tuttavia, se ogni nodo conosce tutta la rete, sarà in grado di reagire opportunamente in caso di guasto.
+
+#### Vantaggi del Routing Link State
+- **Convergenza rapida**: Poiché ogni nodo ha una visione completa della rete, le modifiche nella topologia 
+vengono propagate rapidamente.
+- **Percorsi ottimali**: Utilizzando algoritmi come Dijkstra, i percorsi calcolati sono generalmente più efficienti.
+- **Maggiore affidabilità**: La conoscenza completa della rete permette di gestire meglio 
+i guasti e le variazioni nella topologia.
+
+#### Svantaggi del Routing Link State
+- **Maggiore utilizzo di memoria**: Ogni nodo deve memorizzare una copia completa della topologia della rete.
+- **Maggiore complessità computazionale**: Gli algoritmi di calcolo dei percorsi, come Dijkstra, 
+richiedono più risorse computazionali.
+- **Overhead di comunicazione**: La necessità di scambiare informazioni di stato tra i nodi può generare 
+un significativo overhead di comunicazione.
+
+#### Processo di Routing Link State
+1. **Scoperta dei vicini**: Ogni nodo scopre i nodi vicini tramite messaggi di "Hello Packet".
+2. **Misurazione della distanza dai vicini**: Calcolo della distanza dai vicini tramite un messaggio "Echo Packet".
+3. **Scambio di informazioni**: I nodi scambiano informazioni di stato tramite pacchetti di Link State Advertisement (LSA) 
+contenenti:
+  - La lista dei propri vicini
+  - Il peso del loro collegamento
+I pacchetti LSA sono trasmessi con il flooding (simile al broadcast con alcune attenzioni in più), 
+facendo attenzione a non rimandarli da dove sono già provenuti, a scartare pacchetti già visti o 
+temporalmente più vecchi di altri già ricevuti.
+4. **Dijkstra** : A questo pinto abbiamo il nostro grafo su cui applicare Dijkstra:
+    1. **Inizializzazione**:
+      - Assegna una distanza iniziale di 0 al nodo sorgente e di infinito a tutti gli altri nodi.
+      - Crea un insieme di nodi non visitati.
+    2. **Selezione del nodo corrente**:
+      - Seleziona il nodo non visitato con la distanza minore (inizialmente il nodo sorgente).
+    3. **Aggiornamento delle distanze**:
+      - Per ogni nodo adiacente al nodo corrente, calcola la distanza totale dal nodo sorgente passando per il nodo corrente.
+      - Se questa distanza è minore della distanza attualmente registrata per il nodo adiacente, aggiorna la distanza.
+    4. **Marcatura del nodo come visitato**:
+      - Una volta esaminati tutti i nodi adiacenti, marca il nodo corrente come visitato (non sarà più considerato).
+    5. **Ripetizione**:
+      - Ripeti i passaggi 2-4 fino a quando tutti i nodi sono stati visitati o la distanza minore tra i nodi non visitati è infinita.
+    6. **Costruzione del percorso**:
+      - Una volta completato l'algoritmo, la distanza registrata per ogni nodo rappresenta la distanza minima dal nodo sorgente.
+      - È possibile ricostruire il percorso più breve tracciando indietro dai nodi di destinazione al nodo sorgente utilizzando le distanze registrate.
+
+#### Esempi di Protocolli Link State
+- **OSPF (Open Shortest Path First)**: Un protocollo di routing link state ampiamente utilizzato nelle reti IP.
+- **IS-IS (Intermediate System to Intermediate System)**: Un altro protocollo di routing link state utilizzato principalmente nelle reti di grandi dimensioni.
+
+In sintesi, il routing link state offre una soluzione robusta e efficiente per il calcolo dei percorsi in reti complesse, a scapito di un maggiore utilizzo di risorse di memoria e computazionali.
 
 ### Router IP
-- **Funzioni dei router**: Routing, Forwarding, Switching, Trasmissione.
-- **Classificazione dei router**: SOHO, Access, Enterprise, Backbone.
+- **Funzioni dei router**:
+  - **Routing**: Determina il percorso ottimale per i pacchetti di dati attraverso la rete utilizzando algoritmi e 
+  tabelle di instradamento volto allo scambio di informazioni in maniera ottimale.
+  - **Forwarding**: Inoltra i pacchetti di dati ricevuti verso la loro destinazione finale basandosi sulle 
+  informazioni contenute nella tabella di forwarding.
+  - **Switching**: Gestisce il trasferimento dei pacchetti tra le diverse interfacce del router, garantendo un 
+  flusso di dati efficiente, ovvero l'istaradamento fisico sull'opportuna interfaccia.
+  - **Trasmissione**: Invio fisico dei pacchetti di dati attraverso la rete utilizzando i protocolli di livello inferiore, 
+  come Ethernet o Wi-Fi.
+
+### Classificazione dei Router
+ - **SOHO (Small Office/Home Office)**:
+    - **Descrizione**: Router progettati per piccoli uffici o ambienti domestici.
+    - **Caratteristiche**: Solitamente offrono funzionalità di base come NAT, firewall, e supporto per connessioni Wi-Fi.
+    - **Prestazioni**: Capacità di gestire un numero limitato di dispositivi e traffico moderato. Velocità di throughput tipicamente tra 100 Mbps e 1 Gbps.
+
+  - **Access Router**:
+    - **Descrizione**: Router utilizzati per connettere dispositivi finali a una rete più ampia.
+    - **Caratteristiche**: Supportano funzionalità avanzate come QoS (Quality of Service), VPN (Virtual Private Network), e gestione delle VLAN (Virtual Local Area Network).
+    - **Prestazioni**: Progettati per gestire un numero maggiore di dispositivi rispetto ai router SOHO, con throughput che può variare da 1 Gbps a 10 Gbps.
+
+  - **Enterprise Router**:
+    - **Descrizione**: Router destinati a grandi aziende e organizzazioni.
+    - **Caratteristiche**: Offrono funzionalità avanzate di sicurezza, gestione del traffico, e supporto per protocolli di routing complessi come OSPF e BGP.
+    - **Prestazioni**: Capacità di gestire un elevato volume di traffico e numerosi dispositivi. Velocità di throughput tipicamente superiori a 10 Gbps, con supporto per connessioni multiple ad alta velocità.
+
+  - **Backbone Router**:
+    - **Descrizione**: Router utilizzati nelle dorsali di rete per instradare il traffico tra diverse reti.
+    - **Caratteristiche**: Progettati per alta affidabilità e prestazioni, con supporto per protocolli di routing avanzati e capacità di gestire grandi volumi di traffico.
+    - **Prestazioni**: Velocità di throughput estremamente elevate, spesso superiori a 100 Gbps. Capacità di gestire migliaia di connessioni simultanee e instradare traffico su lunghe distanze.
 
 ### Tabelle di Routing e Forwarding
-- **Routing table**: contiene route prefix, next hop, e metric.
-- **Forwarding table**: ottimizzata per l'inoltro rapido dei datagrammi.
+- **Routing table**: Conosciuta anche come RIB (Routing Information Base), contiene i prefissi di routing, 
+i next hop, e le metriche. È quindi un insieme di dati grezzi su cui si basano i calcoli di instradamento. 
+Queste informazioni derivano da una serie di protocolli o canali considerati affidabili, sia in termini assoluti 
+che relativi rispetto ad altri.
+- **Forwarding table**: Nota anche come FIB (Forwarding Information Base), è ottimizzata per l'inoltro rapido 
+dei datagrammi. Su di essa si basa lo scambio di pacchetti, ed è generata a partire dalla RIB. Da quest'ultima 
+si estraggono, tra tutte le informazioni considerate affidabili, quelle più utili all'inoltro dei pacchetti. 
+Questo processo avviene grazie alla funzione chiamata **Route Selection Process**, che seleziona le rotte migliori per la FIB. 
+Contestualmente, la produzione della FIB genera anche dati di output per i protocolli, consentendo di decidere 
+quali informazioni comunicare agli altri nodi. Questo meccanismo offre una notevole flessibilità nel recepire, 
+filtrare e inviare informazioni in base alle esigenze specifiche di ogni singolo router. 
