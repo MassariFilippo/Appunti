@@ -601,8 +601,10 @@ In sintesi, il routing link state offre una soluzione robusta e efficiente per i
 
   - **Enterprise Router**:
     - **Descrizione**: Router destinati a grandi aziende e organizzazioni.
-    - **Caratteristiche**: Offrono funzionalità avanzate di sicurezza, gestione del traffico, e supporto per protocolli di routing complessi come OSPF e BGP.
-    - **Prestazioni**: Capacità di gestire un elevato volume di traffico e numerosi dispositivi. Velocità di throughput tipicamente superiori a 10 Gbps, con supporto per connessioni multiple ad alta velocità.
+    - **Caratteristiche**: Offrono funzionalità avanzate di sicurezza, gestione del traffico, 
+    e supporto per protocolli di routing complessi come OSPF e BGP.
+    - **Prestazioni**: Capacità di gestire un elevato volume di traffico e numerosi dispositivi. 
+    Velocità di throughput tipicamente superiori a 10 Gbps, con supporto per connessioni multiple ad alta velocità.
 
   - **Backbone Router**:
     - **Descrizione**: Router utilizzati nelle dorsali di rete per instradare il traffico tra diverse reti.
@@ -621,3 +623,69 @@ Questo processo avviene grazie alla funzione chiamata **Route Selection Process*
 Contestualmente, la produzione della FIB genera anche dati di output per i protocolli, consentendo di decidere 
 quali informazioni comunicare agli altri nodi. Questo meccanismo offre una notevole flessibilità nel recepire, 
 filtrare e inviare informazioni in base alle esigenze specifiche di ogni singolo router. 
+
+## Instradamento nell’Internet globale
+
+### 1. **Instradamento (Routing) nell’Internet globale**
+  - **Routing gerarchico**: In Internet, il routing è organizzato gerarchicamente in **sistemi autonomi (AS)**, 
+  ciascuno identificato da un numero progressivo. Ogni AS gestisce autonomamente le proprie politiche di routing, 
+  risolvendo internamente i problemi e importando solo le soluzioni identificate all'esterno. Questo approccio è 
+  necessario per gestire la rete in modo efficiente, data la diversità degli oggetti operanti in rete.
+  - **Protocolli di routing**:
+    - **Interior Gateway Protocol (IGP)**: Gestisce il routing all’interno di un AS.
+    - **Exterior Gateway Protocol (EGP)**: Gestisce il routing tra AS diversi, ad esempio tramite i protocolli EGP e BGP.
+
+### 2. **Sistemi Autonomi (AS)**
+   - Definizione: Un AS è un insieme di router gestiti da un’unica amministrazione 
+   e usa un unico protocollo di routing. Con CIDR, un AS è 
+   identificato da un insieme di prefissi IP gestiti in modo unitario. 
+   In sintesi estrema potremmo dire che è l'insieme di un prefisso di network.
+   - **Esempi di AS**: GARR (rete italiana degli enti di ricerca), infatti l'Unibo da sola non 
+   è un AS ma passa attraverso il GARR come tante altre università finendo per risultare un unico AS.
+  - Un AS svolge compiti di import e di export rispettivamente:
+    - **Import**: L'AS riceve e accetta le rotte pubblicizzate da altri AS ritenuti affidabili, 
+    aggiornando le proprie tabelle di routing per includere queste nuove rotte.
+    - **Export**: L'AS pubblicizza le proprie rotte e le rotte apprese da altri AS verso i 
+    suoi vicini che, qualora lo ritenessero affidabile, permetterebbero loro di aggiornare le proprie 
+    tabelle di routing con queste informazioni. 
+  (RADb sito per sperimentare questo genere di cose)
+
+### 3. **Internet Service Provider (ISP)**
+Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente si registra come AS.
+   - **Classificazione**:
+     - **Tier 1**: ISP con copertura globale, non necessariamente tutto il mondo, ma grandi coperture su intere 
+     **internet region**, ovvero porzioni di aree geografiche coperte da una connessione internet, 
+     senza necessità di acquistare connettività.
+     - **Tier 2**: Acquista connettività da Tier 1.
+     - **Tier 3**: ISP locali che acquistano connettività da Tier 2 o altri ISP locali.
+   - **Peering e interconnessione**: Il peering tra ISP non implica pagamenti diretti; è una relazione neutrale. 
+   Gli IXP facilitano l’interconnessione tra ISP.
+   Gli ISP nelle loro zone di pertinenza hanno dei POP che sono dei punti diraccolta collegati tra loro da maglie,
+   tali POP si troveranno in punti strategici come città e snodi commerciali, ciò significa che se ci sono più ISP in una stessa 
+   internet region tali pop saranno in posizioni limitrofe per entrambi gli ISP, ciò nonostante non è quasi mai possibile 
+   farli cominicare direttamente dato che gli ISP si propongono come AS e quindi sarà necessario fare avvenire la cominicazione 
+   in un punto di "contatto" che talvolta potrebbe essere molto distante dal reale POP più geograficamente vicino.
+   Tale collegamento unico dovà essere molto robusta data la sua unicita, esso è feornito da compagnie dette **Internet Excahnge** 
+   che forniscono tale infrastruttura detta **Internet Excahnge Point** IXP.
+
+### 4. **Protocollo RIP (Routing Information Protocol)**
+   - **Caratteristiche**:
+     - Protocollo di tipo **distance vector**.
+     - Usa messaggi **Request** e **Response** per aggiornare le informazioni di routing.
+     - Limiti: non supporta CIDR e ha problemi di sicurezza e di convergenza in reti ampie.
+
+### 5. **Open Shortest Path First (OSPF)**
+   - **OSPF** è un IGP di tipo **link state** progettato per reti di grandi dimensioni, con suddivisione in aree.
+   - **Tipi di router**: Internal Router, Area Border Router, Backbone Router e AS Boundary Router.
+   - **Aree di OSPF**:
+     - **Stub Area**: accetta solo route interne e una route di default verso l’esterno.
+     - **Totally Stubby Area** e **Not-so-stubby Area**: accettano solo route specifiche.
+   - **Funzionalità aggiuntive**: Bilanciamento del carico, autenticazione e gestione di più livelli di servizio.
+
+### 6. **Multicast e IP Multicast**
+   - **Multicast**: riduce il traffico di routing grazie all'invio simultaneo di informazioni a più router.
+   - **Indirizzi multicast**: range da 224.0.0.0 a 239.255.255.255.
+
+### 7. **Internet Group Management Protocol (IGMP)**
+   - Protocollo per la gestione dei gruppi multicast: consente a host e router di dichiarare l’appartenenza o 
+   di abbandonare un gruppo multicast.
