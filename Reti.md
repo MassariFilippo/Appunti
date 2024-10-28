@@ -668,6 +668,8 @@ Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente
    Tale collegamento unico dovà essere molto robusta data la sua unicita, esso è feornito da compagnie dette **Internet Excahnge** 
    che forniscono tale infrastruttura detta **Internet Excahnge Point** IXP.
 
+   (MANCA REGISTRAZIONE DELLA LEZIONE DEL 28 OTTOBRE)
+
 ### 4. **Protocollo RIP (Routing Information Protocol)**
    - **Caratteristiche**:
      - Protocollo di tipo **distance vector**.
