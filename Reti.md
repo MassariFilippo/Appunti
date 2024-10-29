@@ -422,7 +422,8 @@ Viene definito a livello concettuale ma non a livelli fisico/implementativo dato
 
 ### Funzioni di IP
 - **Indirizzamento**: L'IP fornisce un sistema di indirizzamento univoco per identificare dispositivi sulla rete.
-- **Frammentazione**: L'IP può dividere i pacchetti di dati in frammenti più piccoli per adattarsi alla dimensione massima del pacchetto supportata dai vari segmenti della rete.
+- **Frammentazione**: L'IP può dividere i pacchetti di dati in frammenti più piccoli per adattarsi alla dimensione 
+massima del pacchetto supportata dai vari segmenti della rete.
 - **Instradamento**:
   - Decidere che percorso un datagramma deve seguire per raggiungere la destinazione.
   - Utilizza le PCI dei datagrammi, in particolare l'indirizzo di destinazione.
@@ -626,7 +627,7 @@ filtrare e inviare informazioni in base alle esigenze specifiche di ogni singolo
 
 ## Instradamento nell’Internet globale
 
-### 1. **Instradamento (Routing) nell’Internet globale**
+### Instradamento (Routing) nell’Internet globale
   - **Routing gerarchico**: In Internet, il routing è organizzato gerarchicamente in **sistemi autonomi (AS)**, 
   ciascuno identificato da un numero progressivo. Ogni AS gestisce autonomamente le proprie politiche di routing, 
   risolvendo internamente i problemi e importando solo le soluzioni identificate all'esterno. Questo approccio è 
@@ -635,7 +636,7 @@ filtrare e inviare informazioni in base alle esigenze specifiche di ogni singolo
     - **Interior Gateway Protocol (IGP)**: Gestisce il routing all’interno di un AS.
     - **Exterior Gateway Protocol (EGP)**: Gestisce il routing tra AS diversi, ad esempio tramite i protocolli EGP e BGP.
 
-### 2. **Sistemi Autonomi (AS)**
+### Sistemi Autonomi (AS)
    - Definizione: Un AS è un insieme di router gestiti da un’unica amministrazione 
    e usa un unico protocollo di routing. Con CIDR, un AS è 
    identificato da un insieme di prefissi IP gestiti in modo unitario. 
@@ -650,7 +651,7 @@ filtrare e inviare informazioni in base alle esigenze specifiche di ogni singolo
     tabelle di routing con queste informazioni. 
   (RADb sito per sperimentare questo genere di cose)
 
-### 3. **Internet Service Provider (ISP)**
+### Internet Service Provider (ISP)
 Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente si registra come AS.
    - **Classificazione**:
      - **Tier 1**: ISP con copertura globale, non necessariamente tutto il mondo, ma grandi coperture su intere 
@@ -669,24 +670,114 @@ Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente
 
    (MANCA REGISTRAZIONE DELLA LEZIONE DEL 28 OTTOBRE)
 
-### 4. **Protocollo RIP (Routing Information Protocol)**
-   - **Caratteristiche**:
-     - Protocollo di tipo **distance vector**.
-     - Usa messaggi **Request** e **Response** per aggiornare le informazioni di routing.
-     - Limiti: non supporta CIDR e ha problemi di sicurezza e di convergenza in reti ampie.
+### Protocollo RIP (Routing Information Protocol)
 
-### 5. **Open Shortest Path First (OSPF)**
-   - **OSPF** è un IGP di tipo **link state** progettato per reti di grandi dimensioni, con suddivisione in aree.
-   - **Tipi di router**: Internal Router, Area Border Router, Backbone Router e AS Boundary Router.
-   - **Aree di OSPF**:
-     - **Stub Area**: accetta solo route interne e una route di default verso l’esterno.
-     - **Totally Stubby Area** e **Not-so-stubby Area**: accettano solo route specifiche.
-   - **Funzionalità aggiuntive**: Bilanciamento del carico, autenticazione e gestione di più livelli di servizio.
+- **Caratteristiche**:  
+  RIP è un protocollo di routing di tipo **distance vector**, il che significa che le sue decisioni di routing si basano sulla 
+  distanza in termini di hop count. Utilizza messaggi di tipo **Request** per richiedere informazioni di routing e **Response** 
+  per inviare aggiornamenti agli altri router della rete. Questi aggiornamenti vengono inviati periodicamente, come risposta a 
+  una richiesta esplicita e quando un'informazione di routing cambia (triggered update). RIP è semplice da configurare e gestire, 
+  ma presenta limiti significativi. Non supporta il **Classless Inter-Domain Routing (CIDR)**, che consente un uso più 
+  efficiente degli indirizzi IP, e ha problemi di sicurezza poiché le informazioni di routing vengono trasmesse in chiaro. 
+  Inoltre, in reti di grandi dimensioni, il tempo necessario per convergere può diventare critico, portando a potenziali 
+  loop di routing e inefficienze.
 
-### 6. **Multicast e IP Multicast**
-   - **Multicast**: riduce il traffico di routing grazie all'invio simultaneo di informazioni a più router.
-   - **Indirizzi multicast**: range da 224.0.0.0 a 239.255.255.255.
+- **Struttura del pacchetto**:
+  I pacchetti RIP hanno una lunghezza variabile fino a 512 byte e sono strutturati su parole da 32 bit:
+  - **Command**: Indica se il pacchetto è una richiesta (Request) o una risposta (Response).
+  - **Version**: Specifica la versione del protocollo RIP utilizzata.
+  - **Zero**: Campo riservato, impostato a zero.
+  - **Address Family Identifier (AFI)**: Indica il tipo di indirizzo contenuto nel campo di indirizzo IP.
+  - **IP Address**: L'indirizzo IP della rete di destinazione.
+  - **Metric**: Il numero di hop necessari per raggiungere la rete di destinazione.
 
-### 7. **Internet Group Management Protocol (IGMP)**
-   - Protocollo per la gestione dei gruppi multicast: consente a host e router di dichiarare l’appartenenza o 
-   di abbandonare un gruppo multicast.
+  Ogni pacchetto RIP può contenere fino a 25 voci di routing, ciascuna delle quali descrive una singola rotta.
+
+- **Tabella di routing**:
+  Ogni tabella di routing contiene:
+  - **Indirizzo di destinazione**: Un indirizzo IP a 32 bit.
+  - **Distanza dalla destinazione (metrica)**: In termini di hop-count (ogni link ha peso = 1). La distanza massima (∞) per RIP 
+  è pari a 16, al fine di limitare il conteggio all’infinito, rendendolo adatto per reti relativamente piccole.
+  - **Next-hop**: Il router vicino a cui inviare i datagrammi per la destinazione.
+  - **Timeout**: Se una route non viene aggiornata dopo un certo numero di secondi (default 180 s), la sua distanza è posta 
+  all’infinito (si ipotizza una perdita di connettività).
+  - **Garbage-collection timer**: Se dopo ulteriori secondi (default 120 s) la route non viene aggiornata, viene eliminata 
+  del tutto dalla tabella.
+
+- **Aggiornamento delle tabelle di routing con RIP**:
+  I router RIP inviano periodicamente aggiornamenti delle loro tabelle di routing a tutti i router vicini. 
+  Quando un router riceve un aggiornamento, confronta le nuove informazioni con la propria tabella di routing. 
+  Se trova una rotta più breve o una nuova rotta, aggiorna la propria tabella di conseguenza. Questo processo continua 
+  finché tutte le tabelle di routing nella rete non sono sincronizzate.
+
+- **Problematiche del Protocollo RIP**
+  Il protocollo RIP presenta diverse problematiche che ne limitano l'efficacia e la sicurezza, 
+  specialmente nelle reti di grandi dimensioni:
+  - **Split Horizon**: RIP utilizza la tecnica dello split horizon per prevenire loop di routing. 
+  Tuttavia, le risposte (RESPONSE) inviate dalle diverse interfacce possono variare, complicando la gestione delle tabelle 
+  di routing.
+  - **Triggered Update**: RIP supporta gli aggiornamenti immediati (triggered update) per ridurre il tempo di convergenza. 
+  In questi aggiornamenti, non è necessario includere tutte le voci della tabella di routing, ma solo quelle appena modificate.
+   Questo può portare a una maggiore efficienza, ma anche a una complessità aggiuntiva nella gestione degli aggiornamenti.
+  - **Mancanza di Supporto per CIDR**: RIP non supporta il **Classless Inter-Domain Routing (CIDR)**, limitando la flessibilità 
+  nella gestione degli indirizzi IP e portando a un uso inefficiente dello spazio di indirizzamento.
+  - **Sicurezza**: RIP è considerato un protocollo insicuro. Chiunque trasmetta datagrammi dalla porta UDP 520 viene 
+  considerato come un router autorizzato. Questo può portare a vulnerabilità significative, come nel seguente esempio di 
+  malfunzionamento indotto:
+    - Un router non autorizzato trasmette messaggi indicando una distanza di 0 tra se stesso e tutti gli altri nodi della rete.
+    - Dopo un certo periodo, tutti i percorsi ottimali convergono su questo router non autorizzato, causando potenziali 
+    disservizi e problemi di sicurezza.
+
+### RIP versione 2
+RIP versione 2 introduce miglioramenti significativi rispetto alla versione 1, affrontando alcune delle sue 
+limitazioni principali. Le modifiche includono:
+  - **Supporto per Subnetting e CIDR**: RIP v2 supporta il subnetting e il Classless Inter-Domain Routing (CIDR), permettendo una gestione più efficiente degli indirizzi IP.
+  - **Autenticazione**: RIP v2 include meccanismi di autenticazione per migliorare la sicurezza delle informazioni di routing. Questo aiuta a prevenire l'inserimento di informazioni di routing non autorizzate.
+  - **Trasporto di Maschere di Sottorete**: RIP v2 trasporta le maschere di sottorete insieme agli indirizzi IP, consentendo una maggiore flessibilità nella configurazione delle reti.
+  
+  - **Struttura dei Pacchetti RIP v2**:
+  I pacchetti RIP v2 mantengono una struttura simile a quella della versione 1, ma con alcune aggiunte:
+    - **Command**: Indica se il pacchetto è una richiesta (Request) o una risposta (Response).
+    - **Version**: Specifica la versione del protocollo RIP utilizzata (2 per RIP v2).
+    - **Zero**: Campo riservato, impostato a zero.
+    - **Address Family Identifier (AFI)**: Indica il tipo di indirizzo contenuto nel campo di indirizzo IP.
+    - **Route Tag**: Campo aggiuntivo per identificare le rotte esterne.
+    - **IP Address**: L'indirizzo IP della rete di destinazione.
+    - **Subnet Mask**: La maschera di sottorete associata all'indirizzo IP.
+    - **Next Hop**: L'indirizzo IP del prossimo hop verso la destinazione.
+    - **Metric**: Il numero di hop necessari per raggiungere la rete di destinazione.
+
+Questi miglioramenti rendono RIP v2 più adatto per l'uso in reti moderne, 
+offrendo maggiore flessibilità e sicurezza rispetto alla versione precedente.
+
+### Open Shortest Path First (OSPF)
+   - **OSPF** è un protocollo di routing interno (IGP) di tipo **link state**, progettato per affrontare le esigenze delle 
+   reti di grandi dimensioni. La sua architettura supporta la suddivisione della rete in aree, consentendo una gestione più 
+   efficiente delle informazioni di routing. Esistono diversi tipi di router all'interno di OSPF, tra cui gli 
+   **Internal Router**, che operano all'interno di un'unica area, e gli **Area Border Router**, che connettono più aree. 
+   I **Backbone Router** gestiscono la rete centrale, mentre gli **AS Boundary Router** operano tra Autonomous Systems diversi.  
+   - **Aree di OSPF**: La suddivisione in aree migliora la scalabilità e l'efficienza. Una **Stub Area** è progettata per 
+   accettare solo rotte interne e una rotte di default verso l'esterno, limitando il numero di aggiornamenti. La 
+   **Totally Stubby Area** e la **Not-so-stubby Area** hanno regole più restrittive, accettando solo rotte specifiche, 
+   il che aiuta a ridurre ulteriormente il traffico di routing.  
+   - **Funzionalità aggiuntive**: OSPF offre anche il bilanciamento del carico su più percorsi, migliorando l'efficienza 
+   della rete. Inoltre, supporta meccanismi di autenticazione per garantire la sicurezza delle informazioni di routing e 
+   gestisce diversi livelli di servizio, permettendo una maggiore flessibilità nella progettazione della rete.
+
+### Multicast e IP Multicast
+   - **Multicast** rappresenta una soluzione efficace per la trasmissione di dati a più destinatari simultaneamente, 
+   riducendo il carico di traffico di routing. A differenza del broadcast, che invia informazioni a tutti i nodi della rete, 
+   il multicast consente di inviare pacchetti solo ai gruppi specifici di destinatari che si sono registrati per riceverli. 
+   Questo approccio è particolarmente utile in applicazioni come lo streaming video e le videoconferenze.  
+   - **Indirizzi multicast**: Gli indirizzi IP multicast sono assegnati a un intervallo specifico, compreso tra 224.0.0.0 e 
+   239.255.255.255. Questi indirizzi permettono l'identificazione di gruppi multicast e sono utilizzati dai router per 
+   instradare i pacchetti solo ai nodi interessati, contribuendo così a una gestione più efficiente della larghezza di banda.
+
+### Internet Group Management Protocol (IGMP)
+   - L'**Internet Group Management Protocol (IGMP)** è un protocollo fondamentale per la gestione dei gruppi multicast. 
+   Consente agli host di comunicare con i router multicast, dichiarando la loro appartenenza a specifici gruppi. 
+   Attraverso IGMP, gli host possono anche abbandonare i gruppi a cui non desiderano più partecipare. Questo processo è 
+   cruciale per mantenere l'efficienza della rete, poiché garantisce che solo gli host interessati ricevano i dati multicast.  
+   - IGMP opera in diverse versioni, ciascuna con miglioramenti rispetto alla precedente, per gestire meglio la congestione e 
+   ottimizzare l'uso delle risorse di rete. Inoltre, il protocollo facilita la comunicazione tra i router e gli host, 
+   consentendo un aggiornamento dinamico delle informazioni sui gruppi multicast attivi nella rete.
