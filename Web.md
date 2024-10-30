@@ -1,3 +1,5 @@
+# Appunti Tecnologie WEB
+
 ### Cosa è il Web?
 - Definiamolo attraverso l’esperienza:
   - Come lo usiamo
@@ -172,32 +174,32 @@
 - **JS**: Client-side.
 - **PHP**: Server-side.
 
-#### Markup
+### Markup
 - Un linguaggio di **markup** è un linguaggio (con una specifica sintassi) che consente di annotare un documento fornendone una interpretazione delle sue parti.
 - Il termine "markup" deriva dalla tipografia, dove si usava marcare con annotazioni le parti del testo da evidenziare o correggere.
 
-#### Tipi di markup
+### Tipi di markup
 - **Procedurale/Descrittivo:**
   - I linguaggi di markup **procedurali** indicano le procedure di trattamento del testo. Il markup specifica le istruzioni da eseguire per visualizzare una porzione di testo (es. TEX).
   - I linguaggi di markup **descrittivi** identificano strutturalmente il tipo di ogni elemento del contenuto. Esempi: HTML, XML, SGML.
 
-#### Metamarkup e XML
+### Metamarkup e XML
 - **Metamarkup** fornisce regole di interpretazione del markup, permettendo di definire nuovi linguaggi di markup.
 - **XML (Extensible Markup Language):** Linguaggio progettato per lo scambio e la riusabilità di documenti strutturati su Internet.
 
-#### XML e Document Publishing
+### XML e Document Publishing
 - **Documenti strutturati:** XML è ideale per definire e esprimere documenti strutturati o semi-strutturati in modo indipendente dalla destinazione finale.
 - Lo stesso documento XML può essere trasformato per diverse destinazioni (es. Web, smartphone).
 
-#### XML e Data Management
+### XML e Data Management
 - **Uso in W3C:** XML come mezzo per descrivere formati di dati per la comunicazione e memorizzazione (ad es. database basati su formati XML).
 - Attuale tendenza: Uso di tecnologie come JSON e MongoDB.
 
-#### Well-Formed vs Valid (XML)
+### Well-Formed vs Valid (XML)
 - **Well-Formed:** Documenti conformi alle specifiche generiche XML.
 - **Valid:** Documenti conformi a una DTD specifica.
 
-#### Esempio di file XML valido e ben formattato
+### Esempio di file XML valido e ben formattato
 ```xml
 <?xml version="1.0" ?>
 <!DOCTYPE tesi SYSTEM "tesi.dtd">
@@ -213,46 +215,46 @@
 </tesi>
 ```
 
-#### Dal primo HTML a HTML5
+### Dal primo HTML a HTML5
 - La prima versione di HTML viene proposta all'IETF nel 1995 (rfc1866, HTML 2.0).
 - La standardizzazione di HTML è stata lenta e inadeguata per l'evoluzione rapida del web.
 
-#### Mosaic e Netscape
+### Mosaic e Netscape
 - **Mosaic (1992):** Primo browser di successo, sviluppato dal NCSA.
 - **Netscape Navigator (1994):** Browser che ottenne rapidamente successo e guidò lo sviluppo del web.
 
-#### La prima guerra dei browser
+### La prima guerra dei browser
 - **Microsoft (1995):** Lancio di Internet Explorer (IE) per competere con Netscape.
 - Entrambi i browser introdussero piccoli miglioramenti a HTML per migliorare l'esperienza utente.
 - **Fine della guerra:** Microsoft vinse distribuendo IE con Windows 95. Netscape rilasciò il codice sorgente del suo browser in open-source, dando vita a Mozilla (Firefox).
 
-#### Seconda guerra dei browser
+### Seconda guerra dei browser
 - A partire dal 2004, nuovi browser open source come Firefox iniziarono a erodere la quota di mercato di IE.
 - **Google Chrome (2008):** Da aprile 2016, è il browser più utilizzato al mondo.
 
-#### W3C e la standardizzazione del Web
+### W3C e la standardizzazione del Web
 - Fondato da Tim Berners-Lee e Robert Cailliau, il W3C è responsabile dello sviluppo degli standard web più importanti (URI, HTTP, CSS, XML).
 - W3C ha smesso di evolvere l'HTML e si è concentrato su linguaggi basati su XML, come XHTML.
 
-#### WHAT WG e HTML5
+### WHAT WG e HTML5
 - **2004:** Nasce il WHAT WG (Web Hypertext Application Technology) che si occupa di sviluppare HTML, CSS, DOM, e Javascript.
 - **2007:** W3C riapre il gruppo di lavoro su HTML e collabora con WHAT WG per creare HTML5.
 - **HTML5 (2014):** Pubblicazione della prima specifica di HTML5.
 
-#### HTML, the Living Standard
+### HTML, the Living Standard
 - HTML5 è uno "standard vivente", costantemente aggiornato dal WHAT WG.
 - Il processo di aggiornamento continuo è visto come un vantaggio piuttosto che un problema.
 
-#### Prospettiva per lo sviluppo in HTML5
+### Prospettiva per lo sviluppo in HTML5
 - Scrivere codice **ben formato** e **semantico**.
 - Separare la presentazione dal contenuto, utilizzando CSS per gli aspetti grafici.
 - Garantire che il codice sia **accessibile**.
 
-#### Nuovi elementi di HTML5
+### Nuovi elementi di HTML5
 - **Strutturazione del contenuto:** Elementi come `<article>`, `<section>`, `<header>`, e `<footer>` consentono di strutturare semanticamente il documento.
 - **Accessibilità:** Introduzione di nuovi attributi e tecniche per migliorare l'accessibilità delle pagine web.
 
-#### Elementi HTML5
+### Elementi HTML5
 - Ogni elemento HTML5 appartiene a una o più categorie:
   - **Metadata:** `<title>`, `<meta>`, `<base>`, `<link>`, `<style>`
   - **Flow:** La maggior parte degli elementi usati nel body del documento
@@ -261,7 +263,7 @@
   - **Embedded:** Contenuti come audio, video, e grafici
   - **Interactive:** Elementi per l'interazione con l'utente (es. form)
 
-#### Prima pagina HTML5 (esempio)
+### Prima pagina HTML5 (esempio)
 ```html
 <!DOCTYPE html>
 <html>
@@ -275,7 +277,7 @@
 </html>
 ```
 
-#### Metadati in HTML5
+### Metadati in HTML5
 - Elementi che descrivono il documento o il suo comportamento:
     - **`<title>`:** Titolo del documento, unico obbligatorio, utile per la search engine optimization (SEO).
         ```html
@@ -295,12 +297,12 @@
         <meta charset="UTF-8"> <!-- Specifica la codifica dei caratteri del documento -->
         ```
 
-#### Codifica dei caratteri
+### Codifica dei caratteri
 - **ASCII:** Codifica a 7 bit, definita nel 1961, standardizzata ISO nel 1972.
 - **ISO 8859/1 (Latin 1):** Standard a 8 bit per i caratteri latini.
 - **Unicode e ISO/IEC 10646:** Standard per la codifica di alfabeti non latini. Utilizzano schemi di codifica a più byte (UCS-2 e UCS-4).
 
-#### UCS e UTF
+### UCS e UTF
 - **UTF-8:** Codifica a lunghezza variabile che consente di usare i caratteri di UCS senza consumare troppa memoria.
   
 **Commenti**
@@ -333,7 +335,7 @@
 ### Elementi di blocco
 Gli elementi di blocco occupano l'intera larghezza disponibile del loro contenitore e iniziano su una nuova riga. Sono utilizzati per strutturare il layout della pagina.
 
-#### Esempi di elementi di blocco:
+### Esempi di elementi di blocco:
 - `<div>`: Un contenitore generico per contenuti di blocco.
 - `<p>`: Un paragrafo di testo.
 - `<h1>` - `<h6>`: Intestazioni di vari livelli.
@@ -352,7 +354,7 @@ Gli elementi di blocco occupano l'intera larghezza disponibile del loro contenit
 ### Elementi in linea
 Gli elementi in linea occupano solo lo spazio necessario per il loro contenuto e non iniziano su una nuova riga. Sono utilizzati per stilizzare parti di testo all'interno di elementi di blocco.
 
-#### Esempi di elementi in linea:
+### Esempi di elementi in linea:
 - `<span>`: Un contenitore generico per contenuti in linea.
 - `<a>`: Un collegamento ipertestuale.
 - `<strong>`: Testo in grassetto.
@@ -368,7 +370,7 @@ Gli elementi in linea occupano solo lo spazio necessario per il loro contenuto e
 
 ### Sectioning
 Tali elementi dividono la pagina in parti semanticamente diberse assumono dunque un ruolo strutturale.
-#### `<article>`
+### `<article>`
 - **Descrizione**: Rappresenta un contenuto autonomo e indipendente che potrebbe essere distribuito separatamente, come un articolo di giornale, un post di blog, un commento, o un widget.
 - **Esempio**:
     ```html
@@ -378,7 +380,7 @@ Tali elementi dividono la pagina in parti semanticamente diberse assumono dunque
     </article>
     ```
 
-#### `<section>`
+### `<section>`
 - **Descrizione**: Utilizzato per raggruppare contenuti tematicamente correlati, tipicamente con un'intestazione.
 - **Esempio**:
     ```html
@@ -388,7 +390,7 @@ Tali elementi dividono la pagina in parti semanticamente diberse assumono dunque
     </section>
     ```
 
-#### `<header>`
+### `<header>`
 - **Descrizione**: Contiene l'intestazione di una sezione o di una pagina, spesso include titoli, sottotitoli, loghi, e strumenti di navigazione.
 - **Esempio**:
     ```html
@@ -403,7 +405,7 @@ Tali elementi dividono la pagina in parti semanticamente diberse assumono dunque
     </header>
     ```
 
-#### `<footer>`
+### `<footer>`
 - **Descrizione**: Contiene il piè di pagina di una sezione o di una pagina, spesso include informazioni di contatto, copyright, e link a documenti correlati.
 - **Esempio**:
     ```html
@@ -418,7 +420,7 @@ Tali elementi dividono la pagina in parti semanticamente diberse assumono dunque
     </footer>
     ```
 
-#### `<nav>`
+### `<nav>`
 - **Descrizione**: Rappresenta una sezione della pagina destinata alla navigazione, contenente link a altre sezioni della stessa pagina o a pagine diverse.
 - **Esempio**:
     ```html
@@ -431,7 +433,7 @@ Tali elementi dividono la pagina in parti semanticamente diberse assumono dunque
     </nav>
     ```
 
-#### `<aside>`
+### `<aside>`
 - **Descrizione**: Contiene contenuti tangenzialmente correlati al contenuto principale, come barre laterali, note a margine, o pubblicità.
 - **Esempio**:
     ```html
@@ -447,29 +449,29 @@ Tag per evidenziare i titoli indentati che vanno per livelli da 1 a 6
 **Parsing**
 Tag che rappresentano del testo.
 
-#### Esempio 1: Tag di Paragrafo
+### Esempio 1: Tag di Paragrafo
 ```html
 <p>Questo è un paragrafo di testo.</p>
 ```
 
-#### Esempio 2: Tag di Line Break
+### Esempio 2: Tag di Line Break
 ```html
 <p>Questa è una linea di un paragrafo di testo.<br/>
 Questa è una linea di un paragrafo di testo.</p>
 ```
 
-#### Esempio 3: Tag di Enfasi
+### Esempio 3: Tag di Enfasi
 ```html
 <strong>Questo testo è in grassetto.</strong>
 <em>Questo testo è in corsivo.</em>
 ```
 
-#### Esempio 4: Tag di Link
+### Esempio 4: Tag di Link
 ```html
 <a href="https://www.example.com">Questo è un link</a>
 ```
 
-#### Esempio 5: Tag di Lista
+### Esempio 5: Tag di Lista
 ```html
 <ul>
     <li>Elemento della lista 1</li>
@@ -477,12 +479,12 @@ Questa è una linea di un paragrafo di testo.</p>
 </ul>
 ```
 
-#### Esempio 6: Tag di Immagine
+### Esempio 6: Tag di Immagine
 ```html
 <img src="immagine.jpg" alt="Descrizione dell'immagine">
 ```
 
-#### Esempio 7: Tag di Divisione
+### Esempio 7: Tag di Divisione
 ```html
 <div>
     <h2>Intestazione della sezione</h2>
@@ -490,7 +492,7 @@ Questa è una linea di un paragrafo di testo.</p>
 </div>
 ```
 
-#### Esempio 8: Tag di Sezione Principale
+### Esempio 8: Tag di Sezione Principale
 ```html
 <main>
     <h1>Contenuto Principale</h1>
@@ -498,12 +500,12 @@ Questa è una linea di un paragrafo di testo.</p>
 </main>
 ```
 
-#### Esempio 9: Tag di Span
+### Esempio 9: Tag di Span
 ```html
 <p>Questo è un <span style="color: red;">testo evidenziato</span> all'interno di un paragrafo.</p>
 ```
 
-#### Esempio 10: Tag di Sub e Sup
+### Esempio 10: Tag di Sub e Sup
 ```html
 <p>Questo è un testo con un indice inferiore <sub>2</sub> e un esponente <sup>2</sup>.</p>
 ```
@@ -514,7 +516,7 @@ Questa è una linea di un paragrafo di testo.</p>
 
 L'elemento **embedded** in HTML5 permette di incorporare contenuti multimediali come immagini, audio, video, e altri oggetti direttamente nelle pagine web. Il **fallback** è una tecnica utilizzata per fornire contenuti alternativi nel caso in cui il browser non supporti il formato originale.
 
-#### Esempi di elementi embedded con fallback:
+### Esempi di elementi embedded con fallback:
 
 1. **Immagine (`<img>`)**
     ```html
@@ -825,3 +827,84 @@ L'elemento **embedded** in HTML5 permette di incorporare contenuti multimediali 
 - **Form di registrazione** con campi per nome, email, password
 - **Tabella HTML accessibile** con uso corretto di `<th>`, `<td>`, e attributi `scope`
 
+## WEB Design
+
+### Web Design
+1. **Concetti di base**: Il web design implica la pianificazione e creazione di un sito web. 
+Il designer cura aspetti tecnici, grafici, e l'esperienza utente, incluse accessibilità e coinvolgimento.
+2. **Elementi principali**: 
+   - **Tipografia** (scelta dei font e codifica del testo),
+   - **Colore** (schemi e codifica RGB, psicologia dei colori),
+   - **Layout** (disposizione degli elementi),
+   - **Responsive e Mobile First** (priorità al design per dispositivi mobili).
+
+### Tipografia
+- **Glifi e Font**: Un font è un insieme di glifi con caratteristiche grafiche simili. 
+Esistono font **serif** (con grazie) e **sans-serif** (senza grazie), con ulteriori varianti di peso e inclinazione.
+- **Famiglie di Font**: Comprendono vari stili di un carattere, distinguibili per 
+peso (es. bold), inclinazione (italic), e presenza di grazie.
+
+### Colori
+- **Schema di Colori**: Codificati in RGB per il web. Gli schemi includono monocromatico, analoghi e complementari (incluso schema triadico e tetradico).
+- **Codifica esadecimale**: Colori rappresentati da una terna di valori (es. #000000 per nero).
+- **Color Wheel**: Utilizzata per creare combinazioni armoniche; include colori primari (rosso, verde, blu) e secondari.
+
+### Accessibilità e Daltonismo
+- **Accessibilità cromatica**: Importante per inclusività, tenendo conto dei vari tipi di daltonismo (protanopia, deuteranopia, tritanopia).
+
+### Layout di Pagina e Mobile First
+- **Mobile First**: Si basa sul principio del *progressive enhancement*, progettando prima per dispositivi mobili, successivamente adattando ai desktop.
+- **Graceful Degradation**: Al contrario, parte da layout per desktop adattandoli poi per il mobile, ma oggi è meno utilizzato rispetto al *mobile first*.
+
+## Usabilità
+
+### **Introduzione a User Experience (UX) e Usabilità**
+   - **Human-Computer Interaction (HCI)**: integra aspetti ergonomici e psicologici per facilitare l'uso delle tecnologie.
+   - **Obiettivi del Corso**: Definire concetti principali e individuare le best practices per la creazione di siti e servizi usabili.
+
+### **Concetto di Usabilità**
+   - Origina dagli anni '60 nell'ergonomia delle interazioni uomo-artefatto.
+   - **ISO 9241** definisce l'usabilità come la capacità di un prodotto di consentire agli utenti di raggiungere obiettivi con efficacia, efficienza e soddisfazione.
+   - Importanza del modello mentale dell'utente, che deve allinearsi a quello progettuale (user vs. design model).
+
+### **Verso la User Experience (UX)**
+   - **Evoluzione dell'usabilità**: da necessità tecnica per esperti a requisito per l'uso quotidiano.
+   - **Donald Norman** nel 1988 introduce il concetto di UX, andando oltre la pura funzionalità.
+   - **Dimensioni della UX**:
+     - **Pragmatica**: funzionalità e usabilità.
+     - **Estetica/Edonica**: piacere visivo ed emotivo.
+     - **Simbolica**: aspetti sociali e di identità.
+
+### **Differenze tra Usabilità e UX**
+   - **Metafora**: una superstrada è usabile (funzionale e semplice), mentre una strada di montagna offre un’esperienza più emozionante ma meno semplice.
+   - L'usabilità si concentra sull’efficacia e semplicità, la UX include anche emozioni e aspetti esperienziali.
+
+### **Processi di UX Design**
+   - **Ciclo di Design UX**:
+     - **Studio** delle necessità utente,
+     - **Design** dell'interfaccia e del sistema,
+     - **Valutazione** tramite prototipi e redesign.
+   - **Tecniche di UX**:
+     - **Personas e Scenarios**: descrizioni dettagliate di utenti tipo e situazioni d’uso.
+     - **Experience Prototypes**: test prima dello sviluppo.
+     - **Mock-up**: rappresentazioni visive dell’interfaccia per test senza sviluppo effettivo.
+
+### **Strumenti di UX Design**
+   - **Mock-up Software**: strumenti come Balsamiq Mockup (disponibile per il corso) e Figma.
+   - **UX Prototyping**: simula l'interazione utente per valutare le reazioni prima dello sviluppo completo.
+
+### **Focus Group e Test con gli Utenti**
+   - **Focus Group**: raccolgono opinioni su prototipi con gruppi di utenti (8-12 partecipanti).
+   - **Obiettivi**: esplorare vantaggi/svantaggi di proposte e definire il target utente; si differenziano dai test perché analizzano ciò che gli utenti dicono, non come effettivamente operano.
+
+### **Esempi Pratici di Applicazione**
+   - **Caso myUnibo**: app per studenti Unibo, con servizi come gestione libretto, orari, esami e miglioramenti suggeriti (es. accesso a risorse e informazioni in tempo reale).
+   - **Sviluppo di Personas**: creazione di personaggi tipo, come “Martina”, studentessa che usa l’app per gestire la carriera universitaria e partecipare alla vita accademica.
+
+### **Conclusioni sulla UX**
+   - La UX rappresenta un approccio centrato sull’utente e sul contesto d’uso, fondamentale per creare applicazioni funzionali ed emozionanti.
+   - L'importanza di iterare continuamente il processo di design per ottenere il miglior compromesso tra usabilità ed esperienza complessiva dell’utente.
+
+## Uso colore
+
+   
