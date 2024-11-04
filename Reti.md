@@ -751,18 +751,80 @@ Questi miglioramenti rendono RIP v2 più adatto per l'uso in reti moderne,
 offrendo maggiore flessibilità e sicurezza rispetto alla versione precedente.
 
 ### Open Shortest Path First (OSPF)
-   - **OSPF** è un protocollo di routing interno (IGP) di tipo **link state**, progettato per affrontare le esigenze delle 
-   reti di grandi dimensioni. La sua architettura supporta la suddivisione della rete in aree, consentendo una gestione più 
-   efficiente delle informazioni di routing. Esistono diversi tipi di router all'interno di OSPF, tra cui gli 
-   **Internal Router**, che operano all'interno di un'unica area, e gli **Area Border Router**, che connettono più aree. 
-   I **Backbone Router** gestiscono la rete centrale, mentre gli **AS Boundary Router** operano tra Autonomous Systems diversi.  
-   - **Aree di OSPF**: La suddivisione in aree migliora la scalabilità e l'efficienza. Una **Stub Area** è progettata per 
-   accettare solo rotte interne e una rotte di default verso l'esterno, limitando il numero di aggiornamenti. La 
-   **Totally Stubby Area** e la **Not-so-stubby Area** hanno regole più restrittive, accettando solo rotte specifiche, 
-   il che aiuta a ridurre ulteriormente il traffico di routing.  
-   - **Funzionalità aggiuntive**: OSPF offre anche il bilanciamento del carico su più percorsi, migliorando l'efficienza 
-   della rete. Inoltre, supporta meccanismi di autenticazione per garantire la sicurezza delle informazioni di routing e 
-   gestisce diversi livelli di servizio, permettendo una maggiore flessibilità nella progettazione della rete.
+**Open Shortest Path First (OSPF)** è un **protocollo di routing** largamente adottato, standardizzato nella versione 2 (RFC 2328), e tra i più diffusi nell’ambito delle **reti interne (IGP)**. È di tipo **link-state** e usa pacchetti **Link State Advertisement (LSA)** per condividere informazioni di rete con altri router. OSPF è incapsulato direttamente nel **protocollo IP**, con un protocol number di valore 89 per distinguere i pacchetti OSPF dagli altri.
+
+### Struttura Gerarchica e Aree di OSPF
+OSPF semplifica il **routing** in reti complesse suddividendole in **aree**, interconnesse tramite un’**area backbone** (Area 0). Questa suddivisione crea una struttura **gerarchica** che riduce il carico sui router e consente la **comunicazione tra aree** tramite router specifici. I principali tipi di router in OSPF includono:
+- **Internal Router**, interni a un’area specifica
+- **Area Border Router (ABR)**, che collegano più aree
+- **Backbone Router**, che gestiscono le connessioni con l’area centrale
+- **AS Boundary Router (ASBR)**, responsabili della comunicazione con **Autonomous Systems (AS)** esterni utilizzando protocolli **EGP**
+
+### Tipi di Route
+OSPF gestisce vari tipi di **route**:
+- **Route intra-area**: informazioni di routing interne all’area
+- **Route inter-area**: aggiornamenti tra aree diverse
+- **Route esterne**: route da altri protocolli o AS, inoltrate tramite l’**ASBR**
+
+### Tipologie di Aree
+Le aree di OSPF possono assumere configurazioni diverse per ottimizzare il routing:
+- **Area normale**: accetta tutte le route
+- **Stub area**: utilizza un **default route** per destinazioni esterne, con minori requisiti di memoria
+- **Totally stub area**: consente solo route interne e il default route
+- **Not So Stubby Area (NSSA)**: permette di importare alcune route esterne, mantenendo limitata la propagazione
+
+### Funzionalità Avanzate di OSPF
+OSPF offre funzionalità aggiuntive per migliorare l’efficienza della rete:
+- **Bilanciamento del carico**: ripartisce il traffico su percorsi multipli di uguale costo
+- **Autenticazione**: protegge lo scambio di informazioni con **password** o **crittografia**
+- **Quality of Service (QoS)**: seleziona percorsi in base al **Type of Service**, consentendo livelli di servizio differenziati
+
+### Tipologie di Reti Supportate
+OSPF supporta **reti punto-punto** e **reti multi-accesso**, tra cui **Broadcast Multi-Access (LAN 802)** e **Non-Broadcast Multi-Access** (ad esempio, X.25, ATM). In queste reti, utilizza una struttura a **stella virtuale** per ridurre le connessioni necessarie. In reti multi-accesso, si usano due ruoli chiave:
+- **Designated Router (DR)**, per ottimizzare la comunicazione. Qui i nodi si accorderanno su che debba essere considerato 
+il disegnato in modo tale da usarlo come centro ed evitare di sovraccaricare gli altri con un flusso inutilmente elevato di pacchetti.
+- **Backup Designated Router (BDR)**, per garantire **affidabilità** dato che di fatto il diseganto non ha alcuna peculiarità rispetto agli altri.
+
+### Identificatori e Priorità dei Router
+Ogni router OSPF ha un **Router ID** univoco e può avere una **priorità** (da 0 a 255) per determinare l’elezione del DR, tolti coloro che hanno priorità scelto si va a sciegliere chi ha la priorità più alta e lo si elegge. Nelle reti multi-accesso, il **DR** coordina le comunicazioni e ottimizza lo scambio di informazioni tra router **adiacenti** ovvero tutti quei router connessi in maniaera diretta e che utilizzano effettivamente tale connessione per comunicsre, se non lo facessere nonostante siano collegati direttamente sarebbero detti **vicini**.
+
+### Struttura del Pacchetto OSPF
+
+Il pacchetto OSPF è composto da diverse sezioni chiave, ciascuna con un ruolo specifico nel protocollo:
+
+1. **Header OSPF**:
+  - **Version**: La versione del protocollo OSPF.
+  - **Type**: Il tipo di pacchetto OSPF (Hello, Database Description, Link State Request, Link State Update, Link State Acknowledge).
+  - **Packet Length**: La lunghezza totale del pacchetto OSPF.
+  - **Router ID**: L'identificatore univoco del router che invia il pacchetto.
+  - **Area ID**: L'identificatore dell'area OSPF da cui proviene il pacchetto.
+  - **Checksum**: Un valore di controllo per verificare l'integrità del pacchetto.
+  - **Authentication Type**: Il tipo di autenticazione utilizzato.
+  - **Authentication**: I dati di autenticazione.
+
+2. **Dati Specifici del Tipo di Pacchetto**:
+  - **Hello Packet**: Contiene informazioni sui vicini, l'intervallo Hello, e il Dead Interval.
+  - **Database Description Packet**: Include una descrizione del database di stato dei collegamenti.
+  - **Link State Request Packet**: Richiede informazioni specifiche sullo stato dei collegamenti.
+  - **Link State Update Packet**: Trasporta aggiornamenti sullo stato dei collegamenti.
+  - **Link State Acknowledge Packet**: Conferma la ricezione degli aggiornamenti sullo stato dei collegamenti.
+
+Questa struttura modulare consente a OSPF di gestire efficacemente la comunicazione e la sincronizzazione delle informazioni di routing tra i router.
+
+### Protocolli di Comunicazione in OSPF
+OSPF utilizza tre **sottoprotocolli** principali:
+- **Hello**: scopre i router vicini e far sapere della propria presenza agli altri, avvia l’elezione del DR e del BDR e costantemente verifica la presenza dei vicini
+- **Exchange**: sincronizza i database di **link-state** tra router adiacenti ed avviene solo all'inizio
+- **Update**: diffonde le informazioni di routing in tutta la rete via flooding, così facendo si vaa costruire debtro ad ogni router la mappa intera della rete.
+
+I **pacchetti principali** di OSPF includono:
+- **Hello** (Tipo 1), per rilevare i vicini
+- **Database Description** (Tipo 2), per descrivere il database
+- **Link State Request** (Tipo 3) e **Link State Update** (Tipo 4) per l’aggiornamento delle informazioni di routing
+- **Link State Acknowledge** (Tipo 5), per confermare la ricezione
+
+### Stub Area e Routing verso l’Esterno
+Le **stub area** sono progettate per ottimizzare le risorse di rete in configurazioni con un solo punto di uscita. Il routing verso l’esterno si basa su un **default route**, riducendo la dimensione delle **tabelle di routing** e il carico sui router di bordo, ideali per le aree con basse risorse di memoria.
 
 ### Multicast e IP Multicast
    - **Multicast** rappresenta una soluzione efficace per la trasmissione di dati a più destinatari simultaneamente, 
