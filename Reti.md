@@ -843,3 +843,105 @@ Le **stub area** sono progettate per ottimizzare le risorse di rete in configura
    - IGMP opera in diverse versioni, ciascuna con miglioramenti rispetto alla precedente, per gestire meglio la congestione e 
    ottimizzare l'uso delle risorse di rete. Inoltre, il protocollo facilita la comunicazione tra i router e gli host, 
    consentendo un aggiornamento dinamico delle informazioni sui gruppi multicast attivi nella rete.
+
+### Exterior Gateway Protocols (EGP)
+I protocolli di tipo EGP si distinguono dai protocolli di tipo IGP per le loro finalità e logiche operative:
+- All’interno di un Autonomous System (AS), si mira principalmente all’ottimizzazione dei percorsi.
+- Nel routing tra AS, si devono considerare soprattutto le politiche di instradamento:
+  - Ogni AS preserva la propria autonomia e indipendenza dalle decisioni di altri.
+  - Alcuni AS limitano il transito del traffico da altri AS attraverso le loro reti, ciò può dipendere da diversi fattori come per esempio dinamiche geopolitiche o più generalmente da accordi tra AS rendendo dunque lo shorter path non prioritario.
+  - In determinati contesti, si seguono accordi internazionali per la gestione del traffico.
+  
+Due protocolli principali di tipo EGP utilizzati in Internet sono:
+- **Exterior Gateway Protocol (EGP)**, molto vecchio e praticamente abbandonato.
+- **Border Gateway Protocol (BGP)**
+
+### Border Gateway Protocol (BGP)
+**BGP** è stato sviluppato per sostituire EGP e attualmente è disponibile nella versione 4 (RFC 1771). I router BGP utilizzano connessioni TCP (porta 179), chiamate sessioni BGP, per uno scambio affidabile delle informazioni di routing:
+- **Sessioni BGP esterne (eBGP)** tra router in AS diversi.
+- **Sessioni BGP interne (iBGP)** tra router nello stesso AS.
+  
+BGP scambia informazioni di raggiungibilità per reti IP secondo lo schema *classless* (CIDR), permettendo un instradamento flessibile e dettagliato.
+
+### BGP e Path Vector
+BGP utilizza un protocollo di tipo *Path Vector*, un’evoluzione del distance vector, che offre:
+- **Elenco degli AS nel percorso**: Contiene l'elenco esaustivo degli AS da attraversare per raggiungere uno specifico AS, risolvendo i cicli e permettendo politiche di routing più efficaci. 
+La necessità di conoscere nel dettaglio tutte le path ha portato a un problema di grandezza delle tabelle. La frammentazione degli indirizzi ha reso necessario conservare in memoria "fette" di indirizzi sempre più frammentate, portando a tabelle con righe nell'ordine di quasi 10^6. Questo comporta una lettura di tali tabelle per l'instradamento di ogni singolo pacchetto. Inoltre, il fenomeno della crescita esponenziale della banda dei collegamenti aggrava la situazione. La combinazione di aumento esponenziale della grandezza delle tabelle e del numero di pacchetti trasportati per secondo rischia di mettere in crisi l'infrastruttura di collegamento.
+  
+- **Politiche di routing**:
+  - **Export policies**: permette il transito solo verso destinazioni consentite.
+  - **Import policies**: esclude percorsi che coinvolgono AS non conformi alle politiche di routing o non considera le informazioni da esso ricevute.
+
+Questo approccio richiede maggiore larghezza di banda per il routing e memoria nei router per memorizzare i path vector.
+
+### Ifrastruutura regionale italiana
+In Italia, l'infrastruttura degli Autonomous Systems (AS) è distribuita tra reti private, reti pubbliche e diversi punti di interscambio fondamentali per il traffico Internet nazionale e internazionale. Gli AS italiani sono numerosi e variano per dimensione e scopo: dai provider di servizi Internet (ISP) alle reti aziendali, fino alle reti gestite dalle pubbliche amministrazioni. Due strutture cardine che facilitano l'interconnessione e migliorano l'efficienza del traffico Internet in Italia sono il **Milan Internet Exchange (MIX)** e la rete **LEPIDA**.
+
+### Il Ruolo del MIX
+Il Milan Internet Exchange (MIX) è uno dei più importanti punti di interscambio di traffico Internet in Italia e uno dei maggiori a livello europeo. Situato a Milano, MIX permette l’interconnessione diretta tra AS di vari operatori, riducendo la latenza e ottimizzando il routing del traffico Internet a livello nazionale e internazionale. MIX è una struttura neutrale e indipendente che offre servizi di peering pubblico e privato, consentendo ai provider di scambiarsi traffico direttamente. Ciò riduce la necessità di instradare il traffico verso AS esteri, favorendo una maggiore autonomia della rete italiana e migliorando l’efficienza di trasmissione tra reti locali. Questo snodo è particolarmente importante per garantire la connettività tra le grandi reti italiane e l’infrastruttura globale di Internet.
+
+### La Rete LEPIDA
+LEPIDA è una rete regionale di proprietà pubblica, gestita dalla società Lepida S.p.A., che supporta il sistema di interconnessione digitale per le pubbliche amministrazioni dell’Emilia-Romagna. Nasce con l’obiettivo di interconnettere le amministrazioni pubbliche regionali, migliorando la qualità dei servizi digitali rivolti ai cittadini e garantendo la sicurezza e la gestione diretta delle reti di pubblica utilità. LEPIDA opera anche come AS e stabilisce connessioni con altri AS nazionali e internazionali, facilitando l'accesso a risorse e servizi pubblici in tutta Italia. Grazie a LEPIDA, la Regione Emilia-Romagna gode di un’infrastruttura autonoma e indipendente, riducendo la dipendenza da operatori privati e aumentando la resilienza della rete regionale.
+
+In questo scenario, MIX e LEPIDA contribuiscono a una maggiore autonomia e resilienza della rete italiana. Il MIX facilita l'interconnessione tra grandi reti commerciali e nazionali, mentre LEPIDA supporta un’infrastruttura dedicata alla pubblica amministrazione, assicurando una comunicazione efficiente e sicura per il settore pubblico e migliorando il servizio per i cittadini e le imprese a livello regionale.
+
+### Scambio di Path Vector
+Ogni path vector scambiato con i vicini include i seguenti attributi:
+- **Origin**: indica l’origine del percorso (IGP, EGP o incomplete).
+- **AS path**: elenca gli AS da attraversare per raggiungere una destinazione.
+- **Next hop**: specifica l’indirizzo del router di bordo dell’AS che deve essere utilizzato come prossimo passo verso la destinazione.
+Questi attributi possono avere diverse caratteristiche:
+- **Well-known**: attributi che devono essere riconosciuti da tutti i router BGP.
+  - **Mandatory**: attributi well-known che devono essere presenti in ogni aggiornamento BGP.
+  - **Discretionary**: attributi well-known che possono essere presenti o meno in un aggiornamento BGP.
+- **Optional**: attributi che non devono essere necessariamente riconosciuti da tutti i router BGP.
+  - **Transitive**: attributi optional che devono essere trasmessi anche se non riconosciuti.
+  - **Non-transitive**: attributi optional che non devono essere trasmessi se non riconosciuti.
+
+### Formato dei Messaggi BGP
+I messaggi BGP sono strutturati in un formato specifico per garantire la corretta comunicazione tra i router. Ogni messaggio BGP inizia con un header comune, seguito da campi specifici a seconda del tipo di messaggio. L'header comune include:
+- **Marker (16 byte)**: Campo utilizzato per la sincronizzazione e la sicurezza.
+- **Length (2 byte)**: Lunghezza totale del messaggio BGP, compreso l'header.
+- **Type (1 byte)**: Tipo di messaggio BGP (Open, Update, Notification, Keepalive).
+A seconda del tipo di messaggio, l'header è seguito da campi specifici:
+- **Open**: Include l'ID dell'AS, il numero di versione BGP, il tempo di hold, l'ID del router e i parametri opzionali.
+- **Update**: Contiene informazioni sulle rotte da aggiungere o rimuovere, inclusi i prefissi IP e gli attributi del percorso.
+- **Notification**: Fornisce dettagli sugli errori riscontrati e chiude la connessione.
+- **Keepalive**: Messaggio semplice utilizzato per mantenere attiva la connessione senza trasmettere nuove informazioni di routing.
+Questa struttura modulare consente a BGP di gestire in modo efficiente e sicuro la comunicazione tra router in diverse reti autonome.
+
+### BGP: Tipi di Messaggi
+I messaggi di BGP includono un header comune (marker, length, type) e possono assumere i seguenti tipi:
+- **Open**: inizia una connessione BGP e include identificazione dell’AS, timeout e autenticazione.
+- **Update**: trasmette il path vector e relativi attributi.
+- **Notification**: notifica errori e chiusura della connessione.
+- **Keepalive**: conferma la connessione attiva senza nuove informazioni di routing.
+
+## Virtualizzazione di Rete
+
+### Virtualizzazione di Rete
+La virtualizzazione di rete permette la creazione di versioni virtuali di infrastrutture di computazione, memorizzazione e reti, realizzando componenti che si comportano come sistemi software indipendenti dall'hardware fisico. Questo approccio garantisce vantaggi significativi come la condivisione delle risorse fisiche e il disaccoppiamento tra progetto software e hardware, migliorando flessibilità, mobilità e scalabilità. Tuttavia, la virtualizzazione comporta criticità legate alla sicurezza e all'isolamento dei sistemi che condividono lo stesso hardware fisico.
+
+### Obiettivo e Tecniche della Virtualizzazione di Rete
+La virtualizzazione di rete risponde alla crescente complessità dei requisiti di servizio dell’utenza, consentendo di realizzare topologie o funzionalità su infrastrutture esistenti, altrimenti difficili da modificare. Questo approccio spesso si basa su "reti overlay", ovvero reti logiche sovrapposte all'infrastruttura fisica per creare funzionalità aggiuntive, le network IP nel loro piccolo ne sono un esempio. Tra le tecnologie che consentono questo tipo di virtualizzazione troviamo VLAN (IEEE 802.1Q), GRE (RFC 1701), VXLAN (RFC 7348) e VPN, che rappresentano alcune delle soluzioni per segmentare, incapsulare e isolare il traffico di rete virtuale.
+
+### Reti Overlay: VLAN, GRE e VXLAN
+- **VLAN**: Le Virtual Local Area Network (VLAN) creano domini di broadcast separati all'interno della stessa rete fisica, migliorando sicurezza e prestazioni. VLAN statiche e dinamiche permettono una gestione ottimizzata delle risorse, mentre l'uso del protocollo IEEE 802.1Q facilita l'instradamento su più switch.
+- **GRE (Generic Routing Encapsulation)**: GRE permette l'incapsulamento di pacchetti su protocollo IP, creando un overlay di routing che separa logica e rete fisica, se analizzassimo dunque il pacchetto non vedremmo l'originale indirizzo IP ma quello che gli abbiamo attribito. Il GRE ho un header specifico che gli permette di specificare il protocollo contenuto ed altri parametri opzionali. Grazie al GRE potrò creare dei tunnel fittizi che vanno a modellare la topologia della rete, così facendo posso astrarre una rete fittizia che non varia al variare, dovuto per esempio ad una rottura, della rete fisica.
+- **VXLAN (Virtual eXtensible LAN)**: VXLAN, ampiamente usato nel cloud computing, consente l'incapsulamento di traffico Layer 2 in pacchetti UDP, garantendo un isolamento scalabile con identificatori unici per ciascun segmento. Creado un tunnel VXLAN ottengo la fusione di 2 LAN distinte dato che grazie al tunnel esse risponderanno alla stessa ARP request. 
+Il tunnel VXLAN funziona incapsulando i frame Ethernet in pacchetti UDP, che vengono poi trasmessi attraverso una rete IP. Ogni segmento VXLAN è identificato da un VXLAN Network Identifier (VNI), che consente di isolare il traffico tra diversi segmenti. I dispositivi che terminano i tunnel VXLAN, noti come VXLAN Tunnel Endpoints (VTEP), aggiungono e rimuovono l'incapsulamento VXLAN. Quando un frame Ethernet entra in un VTEP, viene incapsulato in un pacchetto UDP con un header VXLAN e inviato attraverso la rete IP. Il VTEP di destinazione rimuove l'incapsulamento e inoltra il frame Ethernet alla rete locale.
+Nonostante i vantaggi, l'uso di VXLAN può introdurre alcuni problemi di prestazione:
+- **Overhead di Incapsulamento**: L'aggiunta di header VXLAN e UDP aumenta la dimensione dei pacchetti, riducendo l'efficienza della trasmissione e aumentando il carico sulla rete.
+- **Latenza**: L'incapsulamento e il decapsulamento dei pacchetti richiedono tempo di elaborazione aggiuntivo, che può aumentare la latenza end-to-end.
+- **Fragmentazione dei Pacchetti**: L'aumento della dimensione dei pacchetti può causare la frammentazione, che a sua volta può ridurre le prestazioni e aumentare il rischio di perdita di pacchetti.
+
+### Reti Private Virtuali (VPN) e la Sicurezza del Tunneling
+Le VPN sono reti sovrapposte su reti pubbliche che garantiscono connessioni sicure attraverso il tunneling cifrato e l'autenticazione. Esistono principalmente due tipologie di VPN: le Roadwarrior VPN e le VPN Net-to-Net:
+- **Roadwarrior VPN**: Questo tipo di VPN è configurato per offrire accesso sicuro a utenti singoli che si collegano da punti remoti, creando connessioni sicure punto-punto verso un server VPN dedicato. Tuttavia, questa configurazione, se utilizzata da un elevato numero di dispositivi, può comportare un overhead significativo poiché richiede un tunnel per ogni dispositivo.
+- **Net-to-Net VPN**: Le Net-to-Net VPN collegano intere LAN o reti IP tramite un unico tunnel cifrato, sfruttando un canale sicuro su rete pubblica. I pacchetti vengono criptati nel tunnel, mentre l’indirizzamento IP reale può essere mascherato, garantendo così privacy e sicurezza nelle connessioni tra sedi aziendali distribuite. Questo tipo di VPN è particolarmente adatto per reti aziendali, poiché consente di ridurre il numero di connessioni dirette necessarie.
+
+### Il Ruolo di IPsec per la Sicurezza delle VPN
+IPsec (Internet Protocol Security) è il principale protocollo per la cifratura e autenticazione dei dati trasmessi su reti pubbliche tramite VPN. Offre due modalità principali: **Transport Mode** (che protegge solo i dati dell'utente) e **Tunnel Mode** (che protegge l'intero pacchetto IP). Gli elementi principali di IPsec sono:
+- **IKE (Internet Key Exchange)**: È il protocollo di negoziazione che autentica i partecipanti alla VPN, negoziando algoritmi crittografici e chiavi.
+- **AH (Authentication Header)** e **ESP (Encapsulating Security Payload)**: AH assicura autenticità e integrità dei pacchetti, mentre ESP include anche la riservatezza attraverso la cifratura.
+Grazie a queste caratteristiche, le VPN realizzate con IPsec garantiscono alti livelli di sicurezza e sono la soluzione preferita per interconnettere reti aziendali che devono trasmettere dati sensibili su Internet, offrendo riservatezza, autenticazione e una protezione costante dei dati attraverso reti pubbliche.
