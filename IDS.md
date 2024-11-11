@@ -47,16 +47,35 @@ I **Function Points** (FP) rappresentano una metrica per valutare la **dimension
 
 ### Conteggio e Tipi di Function Points
 Il conteggio dei Function Points prevede l’identificazione di:
-- **Funzioni di tipo dati**: file interni ed esterni.
+- **Funzioni di tipo dati**: file interni logici ed esterni di interfaccia.
 - **Funzioni di tipo transazione**: input, output, e interrogazioni.
 Questo metodo può essere utilizzato in **progetti di sviluppo**, **manutenzione evolutiva** e **software esistenti**, permettendo una valutazione continua del software nel tempo.
 
+### Calcolo del Numero di Function Points Non Pesato
+Per calcolare il numero di Function Points non pesato, è necessario seguire questi passaggi:
+
+1. **Identificare le funzionalità**: Determinare tutte le funzionalità del sistema, suddividendole in funzioni di tipo dati e funzioni di tipo transazione.
+2. **Assegnare un peso a ciascuna funzionalità**: Ogni funzionalità viene classificata in base alla sua complessità (bassa, media, alta) e viene assegnato un peso corrispondente. I pesi tipici sono:
+(DA VERIFICARE)
+   - **Funzioni di tipo dati**:
+     - File interni logici (ILF): Basso (7), Medio (10), Alto (15)
+     - File esterni di interfaccia (EIF): Basso (5), Medio (7), Alto (10)
+   - **Funzioni di tipo transazione**:
+     - Input esterni (EI): Basso (3), Medio (4), Alto (6)
+     - Output esterni (EO): Basso (4), Medio (5), Alto (7)
+     - Interrogazioni esterne (EQ): Basso (3), Medio (4), Alto (6)
+3. **Calcolare il totale dei Function Points non pesato**: Moltiplicare il numero di ciascun tipo di funzionalità per il peso assegnato e sommare i risultati.
+
 ### Ambito del Conteggio e Confine delle Applicazioni
 - **Definizione dell'Ambito del Conteggio**: L’ambito del conteggio definisce le funzionalità che devono essere considerate in un conteggio.
-- **Definizione del Confine**: Il confine è la linea di separazione tra le applicazioni che si stanno misurando e le applicazioni esterne o l’utente.
-- **Regole per Definire il Confine**:
-  - Il confine è stabilito dal punto di vista dell’utente.
-  - Tra applicazioni collegate, il confine si basa su aree funzionali distinte per l’utente, indipendentemente dagli aspetti tecnologici.
+
+- **Progetti di Sviluppo e Preservazione dei Vecchi Dati**
+  - **Progetti di Sviluppo**: Includono tutte le nuove funzionalità che devono essere sviluppate. Il conteggio deve considerare tutte le nuove funzionalità richieste dal progetto.
+  - **Preservazione dei Vecchi Dati**: Includono le attività necessarie per garantire che i dati esistenti siano mantenuti e accessibili. Il conteggio deve considerare le funzionalità necessarie per la migrazione e l'integrazione dei vecchi dati.
+
+- **Manutenzione Evolutiva**: Riguarda le modifiche e gli aggiornamenti che migliorano o estendono le funzionalità esistenti di un'applicazione. Il conteggio deve includere tutte le nuove funzionalità e le modifiche alle funzionalità esistenti, dunque sommo i FP aggiunti e tolti.
+
+- **Applicazione Esistente**: Si riferisce a un'applicazione già in uso che potrebbe richiedere aggiornamenti, correzioni di bug o miglioramenti. Il conteggio deve considerare tutte le attività necessarie per mantenere e migliorare l'applicazione esistente, nel calcolo dei FP vado a quntificare il valore del software allo stato attuale dunqui sapendo i FP di partenza aggiungerò quelli di un eventuale manutenzione evulutiva sottraendo quelli accociati ad eventuali funzionalità tolte che quindi non fanno più parte del valore del sofware.
 
 ### Funzioni di Tipo Dati
 - **File Interno Logico (ILF)**: È un insieme di dati o informazioni di controllo logicamente collegati, riconoscibili dall’utente e mantenuti all’interno dell’applicazione.
@@ -80,14 +99,38 @@ Questo metodo può essere utilizzato in **progetti di sviluppo**, **manutenzione
 
 ### Fattore di Aggiustamento
 - **Scopo**: Adatta il totale dei Function Points per rappresentare funzionalità generali del sistema non coperte dalle funzioni dati e transazionali.
-- **Calcolo**: Si basa sul Total Degree of Influence (TDI), con il fattore di aggiustamento che varia tra 0.65 e 1.35.
-  - **Formula**: \( \text{fattore di aggiustamento} = 0.65 + (TDI \times 0.01) \).
+- **Calcolo**: Si basa sul Total Degree of Influence (TDI) calcolati su una serie di fattori, con il fattore di aggiustamento che varia tra 0.65 e 1.35.
+  - **Formula**: \( \text{fattore di aggiustamento} = 0.65 + (TDI \times 0.01) \). Per semplificare si assume statisticamente che il fattore sia 1.
 
-### Numero Ciclomatico
-- **Definizione**: È una metrica proposta da McCabe (1976) che misura la complessità del flusso di controllo di un programma.
-- **Calcolo del Numero Ciclomatico**:
-  - Formula base per un grafo connesso: \( v(G) = e - n + 2 \), dove \( e \) è il numero degli archi e \( n \) dei nodi.
-- **Teorema di Mills**: \( v(G) = d + 1 \), con \( d \) pari ai punti di decisione. Se il programma ha procedure, il numero ciclomatico complessivo è la somma dei numeri ciclomatici dei grafi indipendenti.
+**Early & Quick FP** (versione più snella e rapida che restitusce i FP e la forbice di errore)
+
+### Il Numero Ciclomatico
+
+Il numero ciclomatico è una metrica del software proposta da McCabe nel 1976, che misura la complessità del flusso di controllo di un programma. Questa metrica è utile per identificare tutti i cammini che permettono di raggiungere una copertura accettabile del programma, considerando solo il flusso di controllo e non la complessità dei dati.
+
+**Calcolo del Numero Ciclomatico**
+Il numero ciclomatico di un grafo fortemente connesso si calcola come:
+\[ v(G) = e - n + 2 \]
+dove:
+- \( e \) è il numero degli archi
+- \( n \) è il numero dei nodi
+
+Per un programma ben formato, esistono sempre un nodo iniziale e uno terminale, con almeno un cammino che collega il nodo iniziale a qualsiasi altro nodo e viceversa. Aggiungendo un arco dal nodo terminale al nodo iniziale, il numero ciclomatico del grafo modificato esprime il numero di cammini linearmente indipendenti.
+
+**Teorema di Mills**
+Secondo il teorema di Mills:
+\[ v(G) = d + 1 \]
+dove:
+- \( d \) è il numero di punti di decisione del programma
+
+**Programmi con Procedure Interne**
+Se il programma ha procedure interne, il numero ciclomatico totale è la somma dei numeri ciclomatici dei singoli grafi indipendenti:
+\[ v(G) = e - n + 2p \]
+dove:
+- \( p \) è il numero di grafi indipendenti
+
+**Importanza del Numero Ciclomatico**
+Il numero ciclomatico cattura la complessità del flusso di controllo e sperimentalmente si correla con il numero di errori riscontrati. Si raccomanda che la complessità ciclomatica di un modulo non superi il valore 10.
 
 ### Modello Intermedio per Stima dei Costi
 1. **Stima della Dimensione del Software**: Basata sul numero di linee di codice o Function Points (FP), utilizzando tabelle di conversione per linguaggi specifici.
