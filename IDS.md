@@ -370,7 +370,7 @@ Un tipo specifico di code inspection è l’**analisi di flusso dei dati**, che 
 
 L’analisi riduce sequenze di comandi a successioni di queste operazioni per ogni variabile, permettendo di identificare anomalie come l’uso di valori non definiti e definizioni non utilizzate. Per esempio, in una procedura `swap` che utilizza la variabile locale `x`, la sequenza risultante per `x` potrebbe essere **auu**, dove il valore viene usato senza essere definito in precedenza. Errori simili emergono quando sequenze di operazioni non seguono le regole.
 
-#### Esempio di Analisi di Flusso dei Dati
+### Esempio di Analisi di Flusso dei Dati
 
 Consideriamo il seguente programma `swap`:
 
