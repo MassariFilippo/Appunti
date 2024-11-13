@@ -150,9 +150,9 @@ Consiste nelle fasi per costruire, consegnare e modificare un prodotto. Viene ge
 - **Benefici**: Rende evidenti ambiguità e migliora la comprensione dei requisiti.
 - **Tipologie**:
   - **Prototipazione Evolutiva**: Evoluzione del prototipo nel prodotto finale.
-  ![immagine in locale](img\Work_flow_rototipazione_evolutiva.PNG)
+  ![immagine in locale](img\IDS\Work_flow_rototipazione_evolutiva.PNG)
   - **Prototipo Usa e Getta**: Valida o deriva i requisiti, senza integrazione nel prodotto finale.
-  ![immagine in locale](img\work_flow_prototipazione_usa_e_getta.PNG)
+  ![immagine in locale](img\IDS\work_flow_prototipazione_usa_e_getta.PNG)
 
 ### Prototipazione di Interfaccia
 - **Importanza**: È impossibile specificare in anticipo il look and feel di una interfaccia utente in maniera efficace, quindi prototipare è essenziale.
@@ -176,7 +176,7 @@ reazioni da parte del cliente
 
 ### MDD (Model-Driven Development)
 Tipo di sviluppo in cui si creano modelli formali del software che vengono poi fatti evolvere mentre il sistema viene progettato e implementato. I modelli diventano la guida del processo di sviluppo; infatti, MDD prevede l’uso di strumenti per la generazione automatica del codice e dei test case a partire dai modelli.
-![immagine in locale](img\Schema_MDD.PNG)
+![immagine in locale](img\IDS\Schema_MDD.PNG)
 
 ### I modelli agili
 
@@ -301,7 +301,7 @@ Ogni fase prevede una milestone (punto cardine) che rappresenta il completamento
 - **Construction**: versione del sistema in pre-produzione (Beta).
 - **Transition**: rilascio del sistema in produzione per gli utenti finali.
 
-![immagine locale](img\fasi_UP.PNG)
+![immagine locale](img\IDS\fasi_UP.PNG)
 
 ## Verifica del software
 
@@ -399,3 +399,108 @@ Sequenze come `aduduu` e `duadudu` rispettano queste regole, mentre `aduddu` e `
 Non tutte le sequenze apparentemente anomale indicano errori: ad esempio, una sequenza `au` potrebbe apparire in un generatore di numeri casuali, mentre una sequenza `dd` potrebbe essere giustificata da strutture programmatiche più complesse che usano lo stesso valore in diverse esecuzioni. 
 
 Questa analisi approfondisce le relazioni tra i valori delle variabili e i comandi del programma, contribuendo all’identificazione di problemi di utilizzo delle variabili, a vantaggio della sicurezza e robustezza del codice.
+
+## Certificazione
+
+### Sistema di Controllo della Qualità in Europa
+
+La Comunità Europea regola la qualità nei vari settori produttivi attraverso due classi di norme:
+
+1. **Regole Tecniche**  
+   Emanate da enti statali tramite leggi, decreti e regolamenti, queste norme sono obbligatorie e devono rispettare le direttive comunitarie.
+
+2. **Norme Tecniche Consensuali**  
+   Queste norme sono sviluppate da enti di normazione riconosciuti (nazionali come UNI e CEI, europei come EN, e internazionali come ISO e IEC) e coinvolgono rappresentanti governativi e industriali. La loro applicazione è facoltativa, salvo disposizioni legali che ne rendano obbligatoria l’adozione. Un esempio è la famiglia **ISO 9000**, destinata alla gestione e assicurazione della qualità.
+
+### ISO 9000: Obiettivi Principali
+
+La famiglia ISO 9000 comprende norme per:
+
+- **Gestione della Qualità**  
+  Fornisce una guida alle aziende per sviluppare o migliorare un sistema di qualità, con l'obiettivo di ottimizzare processi e attività aziendali.
+
+- **Assicurazione della Qualità**  
+  Stabilisce i requisiti per permettere ai clienti di valutare l’idoneità del sistema qualità del fornitore, in relazione alla capacità di soddisfare le esigenze stabilite.
+
+### Certificazione e Accreditamento
+
+- **Certificazione**  
+   La certificazione è il riconoscimento ufficiale, rilasciato da un ente accreditato, che attesta la conformità di un prodotto, processo o sistema qualità ai requisiti di una specifica norma.
+
+- **Accreditamento**  
+   È il riconoscimento formale che un laboratorio o un organismo certificatore possiede la competenza necessaria per svolgere prove specifiche o certificazioni.
+
+### Processo di Certificazione ISO 9000
+
+La certificazione ISO 9000 può coprire intere aziende o solo alcune porzioni; l'estensione viene decisa dall'organismo di certificazione in accordo con l'azienda. Gli elementi e processi inclusi nella certificazione sono documentati nel **manuale qualità**, che descrive sia i processi soggetti al sistema di qualità sia la documentazione di supporto.
+
+### Fasi della Certificazione
+
+- **Verifica Ispettiva**  
+   È una fase cruciale in cui i valutatori, sulla base del manuale qualità, visitano l'azienda e verificano l'applicazione delle procedure aziendali. Durante l’ispezione, vari responsabili aziendali (direzione, ufficio acquisti, laboratori, ecc.) vengono intervistati e le unità produttive vengono ispezionate.
+
+- **Visite di Sorveglianza**  
+   Dopo la certificazione, l’organismo effettua visite periodiche di controllo (da 1 a 4 volte l’anno) per assicurarsi che l’azienda continui a rispettare i requisiti.
+
+![immagine locale](img\IDS\workflow_ISO_9000_certificazione.PNG)
+
+### Non Conformità
+
+La **non conformità** è definita come il "non soddisfacimento dei requisiti specificati" e può riferirsi alla mancanza di una caratteristica di qualità o di un elemento del sistema qualità. Durante le verifiche, le non conformità riscontrate si classificano in:
+
+- **Non Conformità ai Requisiti della Norma**: requisiti della norma non rispettati.
+- **Non Conformità Documentale**: mancanza di procedure documentate o non rispetto delle procedure formalizzate.
+- **Non Conformità nell’Attuazione delle Procedure**: le procedure non sono applicate correttamente.
+
+![immagine locale](img\IDS\documenti_progetto.PNG)
+
+## Manutenzione Software
+
+### Tipi di manutenzione
+La manutenzione software comprende vari interventi per migliorare o adattare i sistemi, assicurandone la funzionalità e prolungandone il ciclo di vita. Le principali tipologie di manutenzione sono:
+
+1. **Manutenzione Correttiva**
+   - **Obiettivo**: Correggere malfunzionamenti derivanti da errori di analisi, progettazione, codifica e test.
+   - **Cause**:
+     - **Errori**: Derivano da attività umane e possono insorgere in qualsiasi fase dello sviluppo.
+     - **Difetti**: Problemi nel programma che causano risultati errati.
+     - **Malfunzionamenti**: Riguardano il sistema nel suo complesso, compromettendo funzionalità e affidabilità.
+   - **Costi**: Elevati (fino al 40% dei costi di manutenzione), specialmente se i difetti non vengono risolti alla radice.
+   - **Risultati**: Riduzione dell'affidabilità e aumento dell'entropia del programma, ma ripristino della qualità originaria.
+
+2. **Manutenzione Adattiva**
+   - **Obiettivo**: Mantenere inalterato il livello di servizio del sistema in risposta a mutamenti dell'ambiente operativo.
+   - **Esempi**:
+     - Aggiornamenti di calcoli per imposte e tariffe.
+     - Modifiche nei listini prezzi.
+   - **Costi**: Significativi (20-30%), spesso classificati come costi di sviluppo.
+   - **Risultati**: Conservazione della qualità senza aumento del valore informativo del sistema.
+
+3. **Manutenzione Perfettiva**
+   - **Obiettivo**: Aumentare qualitativamente le funzionalità o le caratteristiche tecniche del sistema.
+   - **Esempi**:
+     - Ottimizzazione delle prestazioni.
+     - Introduzione di nuove interfacce o funzionalità.
+     - Modifiche strutturali.
+   - **Costi**: Generalmente inclusi nei costi di sviluppo.
+   - **Risultati**: Miglioramento del valore informativo e usabilità del sistema, ma con potenziale aumento della complessità e rischio di degradazione della qualità.
+
+4. **Manutenzione Evolutiva**
+   - **Obiettivo**: Migliorare qualitativamente e quantitativamente il sistema, adattandolo a nuove esigenze.
+   - **Esempi**:
+     - Aggiunta di funzioni avanzate.
+     - Transizione a interfacce grafiche o a DBMS relazionali.
+     - Potenziamento delle capacità di reporting.
+   - **Costi**: Elevati e spesso occulti fino alla fase operativa.
+   - **Risultati**: Maggiore potenza e funzionalità, ma anche aumento dell’entropia e rischio di riduzione della robustezza, a meno di un’attenta pianificazione.
+
+### Manutenibilità del Sistema: L'Importanza dell'Architettura
+
+La manutenibilità di un sistema è determinata dalla qualità della sua architettura originale, progettata per facilitare interventi successivi e adattamenti. Alcuni esempi includono:
+
+- **Automobili**: Architettura modulare e smontabile per interventi facili, con funzioni stabili nel tempo.
+- **Hi-Fi**: Struttura a moduli, ma con componenti strettamente integrati e difficilmente aggiornabili.
+- **Case**: Architettura non modulare con elementi nascosti (tubi, cavi), progettate per un impianto fisso piuttosto che per frequenti modifiche.
+
+Spesso i programmi software sono progettati come case (non modulari), ma devono essere manutenuti come automobili, rendendo essenziale un’architettura che ne faciliti l’adattamento e la lunga durata.
+
