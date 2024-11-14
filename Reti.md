@@ -575,7 +575,7 @@ si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i
 Queste solozioni non sono definitive in quanto avendo una rete con dei cicli vanno 
 a perdere di efficacia, dunque si è reso indispensabile trovare un' alternativa alla soluzione del routing distance vector.
 
-### Routing Link State
+## Routing Link State
 In questa nuova soluzione, si separano nettamente il protocollo e l'algoritmo. 
 Abbiamo una logica in cui, tramite uno specifico protocollo, i nodi scoprono altri nodi, 
 estrapolano informazioni da questi ultimi e condividono tali informazioni con altri nodi. 
@@ -584,21 +584,21 @@ Solo a questo punto si utilizzano algoritmi di routing come Dijkstra per scoprir
 Questo approccio comporta un maggiore utilizzo di memoria e una maggiore complessità computazionale. 
 Tuttavia, se ogni nodo conosce tutta la rete, sarà in grado di reagire opportunamente in caso di guasto.
 
-#### Vantaggi del Routing Link State
+### Vantaggi del Routing Link State
 - **Convergenza rapida**: Poiché ogni nodo ha una visione completa della rete, le modifiche nella topologia 
 vengono propagate rapidamente.
 - **Percorsi ottimali**: Utilizzando algoritmi come Dijkstra, i percorsi calcolati sono generalmente più efficienti.
 - **Maggiore affidabilità**: La conoscenza completa della rete permette di gestire meglio 
 i guasti e le variazioni nella topologia.
 
-#### Svantaggi del Routing Link State
+### Svantaggi del Routing Link State
 - **Maggiore utilizzo di memoria**: Ogni nodo deve memorizzare una copia completa della topologia della rete.
 - **Maggiore complessità computazionale**: Gli algoritmi di calcolo dei percorsi, come Dijkstra, 
 richiedono più risorse computazionali.
 - **Overhead di comunicazione**: La necessità di scambiare informazioni di stato tra i nodi può generare 
 un significativo overhead di comunicazione.
 
-#### Processo di Routing Link State
+### Processo di Routing Link State
 1. **Scoperta dei vicini**: Ogni nodo scopre i nodi vicini tramite messaggi di "Hello Packet".
 2. **Misurazione della distanza dai vicini**: Calcolo della distanza dai vicini tramite un messaggio "Echo Packet".
 3. **Scambio di informazioni**: I nodi scambiano informazioni di stato tramite pacchetti di Link State Advertisement (LSA) 
@@ -625,13 +625,13 @@ temporalmente più vecchi di altri già ricevuti.
       - Una volta completato l'algoritmo, la distanza registrata per ogni nodo rappresenta la distanza minima dal nodo sorgente.
       - È possibile ricostruire il percorso più breve tracciando indietro dai nodi di destinazione al nodo sorgente utilizzando le distanze registrate.
 
-#### Esempi di Protocolli Link State
+### Esempi di Protocolli Link State
 - **OSPF (Open Shortest Path First)**: Un protocollo di routing link state ampiamente utilizzato nelle reti IP.
 - **IS-IS (Intermediate System to Intermediate System)**: Un altro protocollo di routing link state utilizzato principalmente nelle reti di grandi dimensioni.
 
 In sintesi, il routing link state offre una soluzione robusta e efficiente per il calcolo dei percorsi in reti complesse, a scapito di un maggiore utilizzo di risorse di memoria e computazionali.
 
-### Router IP
+## Router IP
 - **Funzioni dei router**:
   - **Routing**: Determina il percorso ottimale per i pacchetti di dati attraverso la rete utilizzando algoritmi e 
   tabelle di instradamento volto allo scambio di informazioni in maniera ottimale.
