@@ -964,3 +964,22 @@ L'attenuazione è la riduzione della potenza del segnale man mano che si propaga
   La propagazione ionosferica è un fenomeno in cui le onde radio vengono riflesse o rifratte dalla ionosfera, uno strato dell'atmosfera terrestre carico di particelle ionizzate. Questo tipo di propagazione permette alle onde radio di coprire distanze molto maggiori rispetto alla propagazione diretta, rendendola utile per le comunicazioni a lunga distanza, come quelle utilizzate nelle trasmissioni radio a onde corte.
 
   Attualmente, l'utilizzo della ionosfera è stato superato grazie ai satelliti in orbita geostazionaria, che svolgono lo stesso lavoro ad un'altezza maggiore e con una portata più ampia. Tuttavia, poiché le orbite geostazionarie sono limitate, si possono utilizzare satelliti non stazionari che orbitano più vicino alla Terra. Questi satelliti sono più facili da installare ma non rimangono fissi, quindi è necessario averne un numero maggiore per garantire una copertura continua.
+
+### Telefonia Cellulare
+
+- L'obiettivo iniziale della telefonia cellulare era incrementare il numero di terminali per ridurre i costi elevati della tecnologia e delle infrastrutture, rendendo il servizio più accessibile a un numero crescente di utenti.
+- **Sviluppo delle Celle**: per aumentare l’efficienza e ridurre i costi, le reti cellulari sono state organizzate in celle, piccole aree coperte ciascuna da un’antenna. Questa struttura permette di servire molti utenti all'interno di un'area circoscritta, migliorando la capacità complessiva della rete e permettendo un uso efficiente delle frequenze disponibili.
+- **Gestione della Copertura**: ogni cella è progettata per supportare un certo numero di chiamate simultanee, e le celle sono posizionate in modo da garantire che, anche se un utente si sposta da una cella all’altra, il servizio rimanga continuo. Le celle si sovrapporrano dunque in alcuni punti, questo va però ad evitare che si formino degli spazi non coperti.
+
+![immagine locale](img\Reti\celle_di_copertura_cellulare.PNG)
+
+### Fibra Ottica
+
+- La fibra ottica ha rivoluzionato le reti di telecomunicazione, sostituendo progressivamente il rame nella rete di trasporto a partire dagli anni 2000. Con una larghezza di banda significativamente superiore, la fibra ottica supporta la trasmissione di grandi quantità di dati su lunghe distanze con una minima perdita di segnale, migliorando drasticamente la qualità e l'affidabilità delle comunicazioni.
+- **Caratteristiche**: le fibre ottiche sono sottili filamenti di vetro o plastica che trasportano dati sotto forma di impulsi luminosi. La fibra offre un'elevata capacità di trasporto dati e una bassa attenuazione, rendendola ideale per le tratte di lunga distanza. Negli anni, la tecnologia della fibra ha permesso di superare i limiti fisici delle trasmissioni terrestri e transoceaniche, anche in condizioni complesse come il fondo marino.
+- **Innovazioni**: grazie alla tecnica del **multiplexing a lunghezza d'onda** (WDM), è possibile trasmettere simultaneamente più flussi di dati su diverse frequenze di luce all'interno dello stesso cavo in fibra ottica. Questo approccio sfrutta la scarsa selettività della fibra rispetto al colore della luce, permettendo a una singola fibra di trasportare diversi flussi di dati ad alta velocità, aumentando così la capacità totale di trasmissione senza necessità di nuovi cavi.
+
+### Manutenzione e Sicurezza della Fibra Ottica
+
+- **Giunzione e Allineamento**: le fibre ottiche devono essere giuntate con estrema precisione per evitare perdite di segnale e dispersione della luce, che potrebbero compromettere la qualità della trasmissione. Le giunzioni possono essere permanenti o temporanee, ma in entrambi i casi è fondamentale un allineamento perfetto tra i segmenti di fibra per garantire un'efficienza ottimale.
+- **Problemi di Sicurezza nelle Lunghe Tratte**: nelle tratte di lunga distanza, specialmente nelle trasmissioni transoceaniche, emergono problemi di sicurezza e manutenzione. Le lunghe distanze e la difficoltà di accesso rendono complicato il monitoraggio e la protezione delle fibre da potenziali danni o manomissioni. Per garantire sicurezza e affidabilità, sono necessari sistemi di sorveglianza avanzati e misure di protezione che preservino l'integrità del segnale su queste distanze estese.
