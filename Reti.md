@@ -10,7 +10,6 @@ L'architettura di Internet è organizzata in strati:
 3. IP (Strato di Rete)
 4. Collegamento dati (es. Ethernet, X25, Aloha)
 5. Fisico
-
 Questa struttura corrisponde al modello OSI semplificato, con IP che opera al livello di rete (strato 3).
 
 ### Internet Protocol (IP) - RFC 791
@@ -32,7 +31,6 @@ Caratteristiche principali:
 ### Formato del pacchetto IP
 
 Il pacchetto IP è composto da:
-
 1. Header (intestazione)
 2. Payload (dati utente)
 
@@ -123,7 +121,11 @@ Il pacchetto IP è composto da:
 ### Routing e Instradamento
 - **Direct Delivery**: Quando l'IP sorgente e destinatario sono sulla stessa rete. Supponendo di essere in collegamento Ethernet in un network IP, inseriremo l'IP in un indirizzo di livello 2 contenente il MAC del calcolatore da raggiungere. Il MAC è fondamentale perché evita che tutti i calcolatori debbano ricevere tutti i pacchetti e verificare se l'IP è il loro, cosa che renderebbe gli host incapaci di fare qualsiasi altra cosa data la mole di lavoro. Questo MAC viene reperito grazie a una tabella contenuta nel calcolatore che mette in relazione IP con MAC. Se non è presente, lo richiede partendo dall'IP che vuole raggiungere grazie al protocollo ARP, che fa una richiesta broadcast. Questo scambio è una consegna diretta.
 
+![immagine locale](img\Reti\direct_delivery.PNG)
+
 - **Indirect Delivery**: Se l'IP destinatario è su un'altra rete, il pacchetto viene inviato a un router intermedio. A livello 1, l'IP di destinazione sarà quello del calcolatore obiettivo, ma a livello 2, il MAC sarà quello del gateway della propria rete. Poiché il gateway è un router, non scarterà il pacchetto nonostante l'IP di destinazione non corrisponda al proprio; invece, lo instraderà verso un altro router. Il primo e l'ultimo scambio, tra l'host spedente e il rispettivo router e tra l'host ricevente e il rispettivo router, sono scambi diretti. Tutti gli scambi intermedi sono indiretti e devono essere completati entro il limite di 255 hop imposto dal TTL. La decisione nei passaggi indiretti è simile a quella nei passaggi diretti: il router utilizzerà il protocollo ARP (pacchetti broadcast a livello data link) per ottenere l'indirizzo del gateway successivo, ovvero l'unico altro calcolatore della loro rete, per passargli il pacchetto. In questi casi, è opportuno avere un indirizzo IP /30, in modo tale che, tolti i 2 indirizzi proibiti, ne restino 2 per i 2 gateway della rete. Per determinare se è possibile effettuare una consegna diretta, si utilizza la tabella di instradamento IP. Grazie a essa, è possibile inviare una richiesta ARP, nella speranza di una ARP reply, attraverso l'interfaccia corretta e agli indirizzi che contengono l'IP dell'host, evitando una richiesta ARP broadcast che appesantirebbe eccessivamente l'infrastruttura di rete. In caso di mancanza di reply, dato che l'IP è un protocollo best effort, si scarta il pacchetto e si segnala l'errore.
+
+![immagine locale](img\Reti\indirect_delivery.PNG)
 
 - **Tabella di Instradamento**: Ogni nodo (host o router) ha una tabella che contiene informazioni sulle destinazioni possibili, netmask, gateway e interfacce. Le righe della tabella rappresentano le singole istanze di instradamento, mentre le colonne contengono le opzioni di instradamento. Tipicamente, la tabella ha cinque colonne principali:
   - **Destination**: Contiene gli indirizzi IP o i gruppi di IP raggiungibili.
@@ -144,6 +146,8 @@ Questa struttura permette ai nodi di instradare i pacchetti in modo efficiente, 
      1. Un messaggio broadcast ARP request.
      2. La risposta dell'host con il proprio indirizzo MAC.
    - **Cache ARP**: Ogni host mantiene una tabella di cache con le corrispondenze IP-MAC.
+
+## Classless VS Classfull
 
 ### Subnetting
 - Esempio di **Netmask**: Una netmask è composta da 32 bit che sono in locale e rimangono affibiati al singolo calcolatore, tutti i calcolatori della stessa network avranno la stessa netmask, con tutti 1 a sinistra e tutti 0 a destra. Il punto in cui avviene il cambio rappresenta la separazione tra Net-ID e Host-ID nell'indirizzo IP. Per la parte di host, indipendentemente dalla dimensione, gli indirizzi con tutti 0 e tutti 1 non vengono assegnati e sono riservati a compiti specifici. Quindi, si perdono 2 indirizzi: quello con tutti 0 identifica la network ID senza la parte di host, mentre con tutti gli 1 è riservato al gateway predefinito.
@@ -264,6 +268,8 @@ uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
   - **DHCPREQUEST**: l'host accetta una delle offerte e richiede l'indirizzo IP.
   - **DHCPACK**: il server DHCP conferma la configurazione con un messaggio di risposta.
 
+## Pianificazione di numerazione IP
+
 ### Progettazione di Reti Aziendali
 
 - **Esempio di rete aziendale**: Tre siti aziendali (S1, S2, S3) devono essere interconnessi con una rete a maglia completa. 
@@ -277,6 +283,8 @@ blocco usato per il collegamento (uso 3 numeri per i gateway e i restanti 58 non
 Inoltre, se devo crescere, sarò in difficoltà perché se creo una nuova sede essa necessiterà di un nuovo 
 blocco che non ho modo di creare. Se aumento i terminali nelle sedi già esistenti, posso arrivare solo a 62.
 
+![immagine locale](img\Reti\rete_azz_sol_1.PNG)
+
 - **Soluzione 2**: Potrei valutare netmask a grandezza differenziata. Ricordiamoci che più divido, 
 più mi mangio numeri, dato che per ogni divisione il primo e l'ultimo numero sono non utilizzabili. 
 Creerò dunque 2 reti /26 (metà degli indirizzi), 3 reti /27 (3/4 dei restanti indirizzi), 
@@ -287,7 +295,11 @@ Se possibile, un'unica rete per tutti i gateway è preferibile a questa seconda 
 dobbiamo fisicamente creare l'infrastruttura urbana, è più facile da realizzare. Fossero state 3 isole, forse 
 fisicamente sarebbero state più comode 3 reti.
 
-### ICMP (Internet Control Message Protocol)
+![immagine locale](img\Reti\rete_azz_sol_2.PNG)
+
+## Protocollo ICMP (Internet Control Message Protocol)
+
+### ICMP
   - **Struttura pacchetto ICMP**:
     1. **IP Header**: Intestazione del protocollo IP.
     2. **Message Type**: Tipo di messaggio ICMP (8 bit).
@@ -309,17 +321,22 @@ fisicamente sarebbero state più comode 3 reti.
   - **Echo/Echo Reply (Type 8/0)**: Utilizzati per determinare lo stato di raggiungibilità di un host.
   - **Timestamp Request/Reply (Type 13/14)**: Misura il tempo di transito nella rete.
 
-### Comandi di Rete
-- **PING**: Verifica la raggiungibilità di un host inviando pacchetti di tipo ICMP Echo Request.
+## Comandi di Rete
+
+### PING
+ Verifica la raggiungibilità di un host inviando pacchetti di tipo ICMP Echo Request.
   - Parametri principali: `-n` (numero di pacchetti), `-t` (ping continuo), `-a` (risoluzione DNS), 
   `-l` (dimensione del pacchetto).
-- **TRACEROUTE**: Identifica il percorso seguito dai pacchetti verso una destinazione tramite la gestione del TTL.
+### TRACEROUTE
+ Identifica il percorso seguito dai pacchetti verso una destinazione tramite la gestione del TTL.
   - **Come funziona**: Traceroute invia pacchetti con un valore TTL (Time To Live) inizialmente impostato a 1. 
   Ogni router lungo il percorso decrementa il TTL di 1. Quando il TTL raggiunge 0, il router scarta il pacchetto 
   e invia un messaggio ICMP "Time Exceeded" al mittente. Traceroute incrementa quindi il TTL e invia un nuovo pacchetto, 
   ripetendo il processo fino a raggiungere la destinazione finale. Questo permette di identificare ogni hop (router) 
   lungo il percorso.
   - Parametri principali: `-m` (TTL massimo), `-q` (numero di query per hop), `-w` (timeout per risposta).
+
+## Gestione della numerazione
 
 ### Gestione degli Indirizzi IP
 - **DHCP (Dynamic Host Configuration Protocol)**: Automatizza l'assegnazione dinamica di IP, netmask, gateway e DNS. Processo chiave:
@@ -329,7 +346,7 @@ fisicamente sarebbero state più comode 3 reti.
   proponendo i parametri di configurazione. L'host seleziona una delle offerte e invia un **DHCPREQUEST** 
   al server scelto. Il server risponde con un **DHCPACK**, confermando i parametri di configurazione.
 
-### Filtraggio dei Pacchetti
+## Filtraggio dei Pacchetti
 ### Metodologie di Filtraggio dei Datagrammi
 - Le metodologie di filtraggio dei datagrammi sono tecniche utilizzate per controllare il traffico di rete 
 in base a criteri predefiniti. Questi criteri possono includere indirizzi IP, numeri di porta, protocolli e 
@@ -342,17 +359,21 @@ di rete, garantendo che solo il traffico autorizzato possa attraversare i confin
   le sue decisioni sulla natura dell'IP stesso come il TTL, i tipi di indirizzi ecc. Il vantaggio è che 
   a livello di gateway basta implementare il filtro a livello software, ma esistono situazioni in cui i 
   filtri a livello IP non sono sufficienti.
+  ![immagine locale](img\Reti\packet_filter.PNG)
   - **Stateful Packet Inspection (SPI)**: Monitora lo stato delle connessioni e adatta dinamicamente le regole 
   di filtraggio. Adattando opportunamente il software, si può andare più a fondo nel pacchetto guardando, per 
   esempio, il tipo di protocollo, attuando così filtri semanticamente più efficaci. Ciò viola il protocollo OSI 
   dato che vado a leggere dati più profondi del livello IP.
+  ![immagine locale](img\Reti\packet_inspection.PNG)
   - **Application Layer Gateway (Proxy)**: Monitora le connessioni applicative (ad esempio, FTP, HTTP, SIP), 
   garantendo controllo e sicurezza a livello applicativo. In questo caso, il gateway agisce come un host che 
   scompone il pacchetto fino al livello applicativo e poi lo reinstrada se non è destinato a lui. A differenza 
   dei normali gateway con implementazioni specifiche, un proxy a livello applicativo è più complesso sia a livello 
   hardware che software.
+  ![immagine locale](img\Reti\proxy.PNG)
+  ![immagine locale](img\Reti\proxy_2.PNG)
 
-- Le tre differenti versioni vengono adottate a necessità dato che la prima è la più leggera a 
+Le tre differenti versioni vengono adottate a necessità dato che la prima è la più leggera a 
 livello computazionale e la più facile da implementare ma quella meno efficace, e viceversa per la terza.
 
 ### Firewall
@@ -384,7 +405,9 @@ bloccare attacchi che sfruttano vulnerabilità a livello applicativo.
 Combinando queste tecnologie, si ottiene una protezione più robusta contro una vasta gamma di minacce, 
 migliorando la sicurezza complessiva della rete.
 
-### Network Address Translation (NAT)
+## Network Address Translation (NAT)
+
+### NAT
 E' un gateway con funzione di paket filter che si interpone tra 2 networ e può cambiare il contenuto dei pacchetti 
 in partivolare gli indirizzi sia ip che di porta.
 Viene definito a livello concettuale ma non a livelli fisico/implementativo dato che ci sono molteplici modi di farlo.
@@ -415,6 +438,36 @@ Viene definito a livello concettuale ma non a livelli fisico/implementativo dato
 - **Politiche di sicurezza**:
   - **Default deny**: Blocca tutto eccetto ciò che è esplicitamente permesso.
   - **Default permit**: Permette tutto eccetto ciò che è esplicitamente bloccato.
+
+## IPV6
+
+### Problematiche dell’indirizzamento IP
+
+- **Mobilità**
+  - **Indirizzi riferiti alla rete di appartenenza**: Gli indirizzi IP sono legati alla rete a cui appartengono. Se un host viene spostato in un’altra rete, il suo indirizzo IP deve cambiare.
+  - **Configurazione automatica con DHCP**: Il Dynamic Host Configuration Protocol (DHCP) permette la configurazione automatica degli indirizzi IP, facilitando la gestione degli indirizzi in reti dinamiche.
+  - **Mobile IP**: Mobile IP è una tecnologia che permette agli utenti di spostarsi tra diverse reti mantenendo lo stesso indirizzo IP, garantendo la continuità delle sessioni di rete.
+
+- **Sicurezza**
+  - **Scarsa protezione del datagramma IP**: L'intestazione dei datagrammi IP è in chiaro, rendendo vulnerabili i dati in transito.
+  - **IPSec**: Il protocollo IPSec può essere applicato anche a IPv4 per migliorare la sicurezza delle comunicazioni, fornendo autenticazione e cifratura dei dati.
+
+- **Dimensioni delle reti prefissate**
+  - **Subnetting e CIDR**: Il subnetting e il Classless Inter-Domain Routing (CIDR) sono tecniche utilizzate per suddividere le reti in sottoreti più piccole e per ottimizzare l'uso degli indirizzi IP.
+
+- **Esaurimento degli indirizzi IPv4**
+  - **Reti IP private e NAT**: A causa dell'enorme diffusione di Internet, il numero di indirizzi IPv4 disponibili è insufficiente. Le reti IP private e il Network Address Translation (NAT) sono soluzioni temporanee per mitigare questo problema.
+
+### IPv6
+
+- **Supportare molti miliardi di host**: IPv6 è stato progettato per supportare un numero molto maggiore di indirizzi rispetto a IPv4.
+- **Semplificare il routing**: IPv6 mira a rendere il routing più efficiente e scalabile.
+- **Offrire meccanismi di sicurezza**: IPv6 include nativamente il supporto per IPSec, migliorando la sicurezza delle comunicazioni.
+- **Offrire qualità di servizio (QoS)**: IPv6 fornisce meccanismi per garantire la qualità del servizio, essenziale per applicazioni multimediali.
+- **Gestire bene multicast e broadcast**: IPv6 migliora la gestione del multicast e del broadcast rispetto a IPv4.
+- **Consentire la mobilità**: IPv6 supporta la mobilità degli host, permettendo agli utenti di spostarsi tra diverse reti senza cambiare indirizzo IP.
+- **Evoluzione futura e compatibilità**: IPv6 è progettato per consentire future evoluzioni e garantire la compatibilità con le versioni precedenti.
+
 
 (MANCANO 24 MIN DELLA LEZIONE DEL 16 OTTOBRE POICHè NON HO TROVATO LE SLIDE)
 
@@ -844,7 +897,10 @@ Le **stub area** sono progettate per ottimizzare le risorse di rete in configura
    ottimizzare l'uso delle risorse di rete. Inoltre, il protocollo facilita la comunicazione tra i router e gli host, 
    consentendo un aggiornamento dinamico delle informazioni sui gruppi multicast attivi nella rete.
 
-### Exterior Gateway Protocols (EGP)
+## Exterior Gateway Protocols (EGP)
+
+### Protocolli EGP
+
 I protocolli di tipo EGP si distinguono dai protocolli di tipo IGP per le loro finalità e logiche operative:
 - All’interno di un Autonomous System (AS), si mira principalmente all’ottimizzazione dei percorsi.
 - Nel routing tra AS, si devono considerare soprattutto le politiche di instradamento:
@@ -856,8 +912,10 @@ Due protocolli principali di tipo EGP utilizzati in Internet sono:
 - **Exterior Gateway Protocol (EGP)**, molto vecchio e praticamente abbandonato.
 - **Border Gateway Protocol (BGP)**
 
-### Border Gateway Protocol (BGP)
-**BGP** è stato sviluppato per sostituire EGP e attualmente è disponibile nella versione 4 (RFC 1771). I router BGP utilizzano connessioni TCP (porta 179), chiamate sessioni BGP, per uno scambio affidabile delle informazioni di routing:
+## Border Gateway Protocol (BGP)
+
+### BGP
+sviluppato per sostituire EGP e attualmente è disponibile nella versione 4 (RFC 1771). I router BGP utilizzano connessioni TCP (porta 179), chiamate sessioni BGP, per uno scambio affidabile delle informazioni di routing:
 - **Sessioni BGP esterne (eBGP)** tra router in AS diversi.
 - **Sessioni BGP interne (iBGP)** tra router nello stesso AS.
   
@@ -873,17 +931,6 @@ La necessità di conoscere nel dettaglio tutte le path ha portato a un problema 
   - **Import policies**: esclude percorsi che coinvolgono AS non conformi alle politiche di routing o non considera le informazioni da esso ricevute.
 
 Questo approccio richiede maggiore larghezza di banda per il routing e memoria nei router per memorizzare i path vector.
-
-### Ifrastruutura regionale italiana
-In Italia, l'infrastruttura degli Autonomous Systems (AS) è distribuita tra reti private, reti pubbliche e diversi punti di interscambio fondamentali per il traffico Internet nazionale e internazionale. Gli AS italiani sono numerosi e variano per dimensione e scopo: dai provider di servizi Internet (ISP) alle reti aziendali, fino alle reti gestite dalle pubbliche amministrazioni. Due strutture cardine che facilitano l'interconnessione e migliorano l'efficienza del traffico Internet in Italia sono il **Milan Internet Exchange (MIX)** e la rete **LEPIDA**.
-
-### Il Ruolo del MIX
-Il Milan Internet Exchange (MIX) è uno dei più importanti punti di interscambio di traffico Internet in Italia e uno dei maggiori a livello europeo. Situato a Milano, MIX permette l’interconnessione diretta tra AS di vari operatori, riducendo la latenza e ottimizzando il routing del traffico Internet a livello nazionale e internazionale. MIX è una struttura neutrale e indipendente che offre servizi di peering pubblico e privato, consentendo ai provider di scambiarsi traffico direttamente. Ciò riduce la necessità di instradare il traffico verso AS esteri, favorendo una maggiore autonomia della rete italiana e migliorando l’efficienza di trasmissione tra reti locali. Questo snodo è particolarmente importante per garantire la connettività tra le grandi reti italiane e l’infrastruttura globale di Internet.
-
-### La Rete LEPIDA
-LEPIDA è una rete regionale di proprietà pubblica, gestita dalla società Lepida S.p.A., che supporta il sistema di interconnessione digitale per le pubbliche amministrazioni dell’Emilia-Romagna. Nasce con l’obiettivo di interconnettere le amministrazioni pubbliche regionali, migliorando la qualità dei servizi digitali rivolti ai cittadini e garantendo la sicurezza e la gestione diretta delle reti di pubblica utilità. LEPIDA opera anche come AS e stabilisce connessioni con altri AS nazionali e internazionali, facilitando l'accesso a risorse e servizi pubblici in tutta Italia. Grazie a LEPIDA, la Regione Emilia-Romagna gode di un’infrastruttura autonoma e indipendente, riducendo la dipendenza da operatori privati e aumentando la resilienza della rete regionale.
-
-In questo scenario, MIX e LEPIDA contribuiscono a una maggiore autonomia e resilienza della rete italiana. Il MIX facilita l'interconnessione tra grandi reti commerciali e nazionali, mentre LEPIDA supporta un’infrastruttura dedicata alla pubblica amministrazione, assicurando una comunicazione efficiente e sicura per il settore pubblico e migliorando il servizio per i cittadini e le imprese a livello regionale.
 
 ### Scambio di Path Vector
 Ogni path vector scambiato con i vicini include i seguenti attributi:
@@ -917,6 +964,17 @@ I messaggi di BGP includono un header comune (marker, length, type) e possono as
 - **Notification**: notifica errori e chiusura della connessione.
 - **Keepalive**: conferma la connessione attiva senza nuove informazioni di routing.
 
+## Ifrastruutura regionale italiana
+In Italia, l'infrastruttura degli Autonomous Systems (AS) è distribuita tra reti private, reti pubbliche e diversi punti di interscambio fondamentali per il traffico Internet nazionale e internazionale. Gli AS italiani sono numerosi e variano per dimensione e scopo: dai provider di servizi Internet (ISP) alle reti aziendali, fino alle reti gestite dalle pubbliche amministrazioni. Due strutture cardine che facilitano l'interconnessione e migliorano l'efficienza del traffico Internet in Italia sono il **Milan Internet Exchange (MIX)** e la rete **LEPIDA**.
+
+### Il Ruolo del MIX
+Il Milan Internet Exchange (MIX) è uno dei più importanti punti di interscambio di traffico Internet in Italia e uno dei maggiori a livello europeo. Situato a Milano, MIX permette l’interconnessione diretta tra AS di vari operatori, riducendo la latenza e ottimizzando il routing del traffico Internet a livello nazionale e internazionale. MIX è una struttura neutrale e indipendente che offre servizi di peering pubblico e privato, consentendo ai provider di scambiarsi traffico direttamente. Ciò riduce la necessità di instradare il traffico verso AS esteri, favorendo una maggiore autonomia della rete italiana e migliorando l’efficienza di trasmissione tra reti locali. Questo snodo è particolarmente importante per garantire la connettività tra le grandi reti italiane e l’infrastruttura globale di Internet.
+
+### La Rete LEPIDA
+LEPIDA è una rete regionale di proprietà pubblica, gestita dalla società Lepida S.p.A., che supporta il sistema di interconnessione digitale per le pubbliche amministrazioni dell’Emilia-Romagna. Nasce con l’obiettivo di interconnettere le amministrazioni pubbliche regionali, migliorando la qualità dei servizi digitali rivolti ai cittadini e garantendo la sicurezza e la gestione diretta delle reti di pubblica utilità. LEPIDA opera anche come AS e stabilisce connessioni con altri AS nazionali e internazionali, facilitando l'accesso a risorse e servizi pubblici in tutta Italia. Grazie a LEPIDA, la Regione Emilia-Romagna gode di un’infrastruttura autonoma e indipendente, riducendo la dipendenza da operatori privati e aumentando la resilienza della rete regionale.
+
+In questo scenario, MIX e LEPIDA contribuiscono a una maggiore autonomia e resilienza della rete italiana. Il MIX facilita l'interconnessione tra grandi reti commerciali e nazionali, mentre LEPIDA supporta un’infrastruttura dedicata alla pubblica amministrazione, assicurando una comunicazione efficiente e sicura per il settore pubblico e migliorando il servizio per i cittadini e le imprese a livello regionale.
+
 ## Virtualizzazione di Rete
 
 ### Virtualizzazione di Rete
@@ -940,7 +998,6 @@ Nonostante i vantaggi, l'uso di VXLAN può introdurre alcuni problemi di prestaz
 Le **VPN** sono reti sovrapposte su reti pubbliche che garantiscono connessioni sicure attraverso il **tunneling cifrato** e l'**autenticazione**. Esistono principalmente due tipologie di VPN: le **Roadwarrior VPN** e le **VPN Net-to-Net**:
 - **Roadwarrior VPN**: Questo tipo di VPN è configurato per offrire accesso sicuro a utenti singoli che si collegano da punti remoti, creando connessioni sicure punto-punto verso un server VPN dedicato capace di gestire una rete a stella tra client molteplici. Tuttavia, questa configurazione, se utilizzata da un elevato numero di dispositivi, può comportare un overhead significativo poiché richiede un tunnel per ogni dispositivo. Lo si può utilizzare per emulare un'altra posizione geografica grazie al fatto che, se il server si trova in un'internet region diversa dalla propria, il ricevente è convinto che i propri messaggi arrivino da quell'internet region. Questa metodologia è funzionale solo se gli host si trovano de-localizzati sulla rete; se invece sono co-localizzati ci sarà un grande spreco di computazione.
 - **Net-to-Net VPN**: Le Net-to-Net VPN collegano intere LAN o reti IP tramite un unico tunnel cifrato, sfruttando un canale sicuro su rete pubblica, agendo sui gateway di uscita dalla nostra network IP e quelli di ingresso dell'host ricevente. I pacchetti vengono criptati nel tunnel, mentre l’indirizzamento IP reale può essere mascherato, garantendo così privacy e sicurezza nelle connessioni tra sedi aziendali distribuite. Questo tipo di VPN è particolarmente adatto per reti aziendali, poiché consente di ridurre il numero di connessioni dirette necessarie.
-
 
 ### Il Ruolo di IPsec per la Sicurezza delle VPN
 Lo standard IPsec (Internet Protocol Security) è il principale protocollo per la cifratura e autenticazione dei dati trasmessi su reti pubbliche tramite VPN. Offre due modalità principali: **Transport Mode** (che protegge solo i dati dell'utente) e **Tunnel Mode** (che protegge l'intero pacchetto IP). Gli elementi principali di IPsec sono:
