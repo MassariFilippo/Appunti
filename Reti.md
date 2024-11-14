@@ -964,7 +964,7 @@ I messaggi di BGP includono un header comune (marker, length, type) e possono as
 - **Notification**: notifica errori e chiusura della connessione.
 - **Keepalive**: conferma la connessione attiva senza nuove informazioni di routing.
 
-## Ifrastruutura regionale italiana
+## Ifrastruttura regionale italiana
 In Italia, l'infrastruttura degli Autonomous Systems (AS) è distribuita tra reti private, reti pubbliche e diversi punti di interscambio fondamentali per il traffico Internet nazionale e internazionale. Gli AS italiani sono numerosi e variano per dimensione e scopo: dai provider di servizi Internet (ISP) alle reti aziendali, fino alle reti gestite dalle pubbliche amministrazioni. Due strutture cardine che facilitano l'interconnessione e migliorano l'efficienza del traffico Internet in Italia sono il **Milan Internet Exchange (MIX)** e la rete **LEPIDA**.
 
 ### Il Ruolo del MIX
