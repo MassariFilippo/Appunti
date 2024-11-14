@@ -405,6 +405,12 @@ bloccare attacchi che sfruttano vulnerabilità a livello applicativo.
 Combinando queste tecnologie, si ottiene una protezione più robusta contro una vasta gamma di minacce, 
 migliorando la sicurezza complessiva della rete.
 
+### Considerazioni sui Firewall
+- **Protezione degli host**: Il firewall può essere software (per accessi domestici) o hardware (per reti aziendali).
+- **Politiche di sicurezza**:
+  - **Default deny**: Blocca tutto eccetto ciò che è esplicitamente permesso.
+  - **Default permit**: Permette tutto eccetto ciò che è esplicitamente bloccato.
+
 ## Network Address Translation (NAT)
 
 ### NAT
@@ -432,12 +438,6 @@ Viene definito a livello concettuale ma non a livelli fisico/implementativo dato
   così facendo però riduco i possibili flussi distinguibili a 2^16 dato che vengono distinti dalle porte. 
   (VERIFICARE SE SEMANTICAMENTE CORRETTO)
   - **Full Cone NAT, Restricted Cone NAT, Symmetric NAT**: Definiscono il tipo di traffico permesso.
-
-### Considerazioni sui Firewall
-- **Protezione degli host**: Il firewall può essere software (per accessi domestici) o hardware (per reti aziendali).
-- **Politiche di sicurezza**:
-  - **Default deny**: Blocca tutto eccetto ciò che è esplicitamente permesso.
-  - **Default permit**: Permette tutto eccetto ciò che è esplicitamente bloccato.
 
 ## IPV6
 
