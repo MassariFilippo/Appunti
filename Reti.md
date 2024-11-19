@@ -1039,3 +1039,73 @@ L'attenuazione è la riduzione della potenza del segnale man mano che si propaga
 - **Manutenzione e Sicurezza della Fibra Ottica**
   - **Giunzione e Allineamento**: le fibre ottiche devono essere giuntate con estrema precisione per evitare perdite di segnale e dispersione della luce, che potrebbero compromettere la qualità della trasmissione. Le giunzioni possono essere permanenti o temporanee, ma in entrambi i casi è fondamentale un allineamento perfetto tra i segmenti di fibra per garantire un'efficienza ottimale.
   - **Problemi di Sicurezza nelle Lunghe Tratte**: nelle tratte di lunga distanza, specialmente nelle trasmissioni transoceaniche, emergono problemi di sicurezza e manutenzione. Le lunghe distanze e la difficoltà di accesso rendono complicato il monitoraggio e la protezione delle fibre da potenziali danni o manomissioni. Per garantire sicurezza e affidabilità, sono necessari sistemi di sorveglianza avanzati e misure di protezione che preservino l'integrità del segnale su queste distanze estese.
+
+### MEM (Micro-Electro-Mechanical Systems)
+I MEM (Micro-Electro-Mechanical Systems) sono dispositivi miniaturizzati che combinano componenti meccanici ed elettrici su un singolo chip di silicio. Funzionano attraverso l'integrazione di sensori, attuatori e circuiti elettronici, permettendo la rilevazione e la manipolazione di segnali fisici. Nei sistemi di telecomunicazione, i MEM vengono applicati in matrici per creare switch ottici, utilizzati per instradare segnali luminosi nelle reti in fibra ottica. Questi switch sfruttano micro-specchi mobili per deviare i fasci di luce, consentendo una commutazione rapida e precisa dei segnali ottici senza conversione elettrica, migliorando l'efficienza e la velocità delle reti di comunicazione.
+
+### Arrayed Waveguide Grating (AWG)
+L'Arrayed Waveguide Grating (AWG) è un dispositivo ottico utilizzato nelle reti di telecomunicazione per la multiplazione e demultiplazione di segnali ottici. Funziona sfruttando la differenza di percorso ottico tra una serie di guide d'onda disposte in modo da creare interferenze costruttive e distruttive. Questo permette di separare o combinare diverse lunghezze d'onda della luce, rendendo l'AWG fondamentale per il Wavelength Division Multiplexing (WDM). Grazie alla sua capacità di gestire molteplici canali ottici simultaneamente, l'AWG è essenziale per aumentare la capacità di trasmissione delle reti in fibra ottica, migliorando l'efficienza e la scalabilità delle comunicazioni ottiche.
+
+### Divisione Geografica in Zone Bianche, Grigie e Nere
+La divisione geografica in zone bianche, grigie e nere è una classificazione utilizzata per identificare le aree in base alla disponibilità e alla qualità delle infrastrutture di rete a banda larga. Le **zone bianche** sono aree in cui non esiste alcuna infrastruttura di rete a banda larga e non sono previsti investimenti privati nei prossimi tre anni qui sarà necessario un interveto publico per costruire un infrastruttura che ad un ente privato potrebbe risultare non conveniente. Le **zone grigie** sono aree in cui è presente un solo operatore di rete a banda larga, con una copertura limitata e una qualità del servizio che potrebbe non essere sufficiente per soddisfare le esigenze future. Le **zone nere** sono aree in cui sono presenti almeno due operatori di rete a banda larga che offrono servizi competitivi e di alta qualità. Questa classificazione è utilizzata per indirizzare gli investimenti pubblici e privati, promuovendo lo sviluppo delle infrastrutture di rete nelle zone meno servite e garantendo un accesso equo e diffuso alla banda larga su tutto il territorio.
+
+## MPLS (Multiprotocol Label Switching)
+
+MPLS mira a combinare la velocità dello switching con la flessibilità dell'instradamento IP, migliorando il costo/prestazioni nella rete.
+
+### Router e Switch
+- **Router**: instrada datagrammi IP usando la tecnica del **longest prefix match** e supporta funzionalità come il filtering dei pacchetti e la qualità del servizio (QoS).
+- **Switch**: instradamento semplice in base ad indirizzi statici, con un rapporto costo/prestazioni più vantaggioso rispetto ai router.
+
+### Label Switching
+- **Componenti**: All'inizio degli anni 2000 si tenta di scomporre la funzione di instradamento in 2 componenti:
+  - **Controllo**: basato sui protocolli di rete convenzionali e associazione delle etichette (label).
+  - **Trasferimento**: utilizza hardware veloce per l’identificazione basata su etichette.
+- **Vantaggi di MPLS**:
+  - Supporta protocolli standard di routing (OSPF, BGP) mantenendo scalabilità e flessibilità.
+  - Trasferimento veloce dei pacchetti tramite l’utilizzo di tecniche di switching veloce.
+- **Realizzazione**:
+  - MPLS utilizza la commutazione orientata alla connessione.
+  - La **label** è una breve entità che identifica i flussi di dati e non codifica gli indirizzi IP, essa viene aggiunta al pacchetto, attraverso un header aggiuntivo con dimensione 32 bit, e la usiamo per instradare sostituendola all'indirizzo IP.
+Questa struttura ci permetterà di utilizzare quei router che per via del routing rimanevano a disposizione per mera ridondanza.
+![immagine locale](img\Reti\routing_classico.PNG)
+![immagine locale](img\Reti\routing_mpls.PNG)
+
+### Flusso di pacchetti
+Un **flusso (flow)** è una sequenza di datagrammi inviati da una particolare sorgente a una particolare destinazione, accomunati da:
+- Medesimo instradamento (route)
+- Uniformi richieste di qualità di servizio
+- Insieme delle politiche di gestione richieste nei router (priorità, ecc.)
+
+Appare evidente come il livello di astrazione sia variabile e dunque maggiprmente adattabile alle situszioni specifiche
+
+### Forwarding Equivalence Classes (FEC)
+- **FEC**: raggruppamento di flussi con destinazione e requisiti di qualità di servizio simili.
+- Ogni pacchetto o flusso associato a una FEC viene instradato nella stessa direzione attraverso i router. Questo permette ai router di ragionare per "percorsi" e non più per destinazioni, riducendo le tabelle di instradamento da milioni di voci a decine di voci. Inoltre, nel mondo IP, la dinamicità deve essere calcolata di volta in volta, mentre con le FEC possiamo scegliere in base alle necessità.
+
+### Nomenclatura in MPLS
+- **Label-Switching Router (LSR)**: router che supporta MPLS.
+- **Label Edge Router (LER)**: router che collega la rete MPLS con reti esterne, attribuendo o rimuovendo le etichette.
+- **Label-Switched Path (LSP)**: percorso seguito dai pacchetti appartenenti a una FEC, stabilito tramite etichette.
+
+### LSR e LER Funzioni
+- **LSR**: utilizza una tabella di instradamento (LFIB) per associare label in ingresso e in uscita ai pacchetti.
+- **LER**: all’ingresso assegna una label al pacchetto e alla sua uscita rimuove la label.
+
+### Instradamento e Label Swapping
+- MPLS evita di valutare la FEC ad ogni hop grazie all'assegnazione delle label.
+- L'instradamento dei pacchetti si basa su label swapping, che associa una label di uscita al pacchetto per il prossimo hop.
+
+### Label Stacking
+- MPLS supporta l’**innestamento di domini** (label stacking), che permette di sovrapporre livelli di instradamento, simile al routing gerarchico.
+- Le label possono essere aggiunte (push) o rimosse (pop) in base all’ingresso o uscita dal dominio.
+![immagine locale](img\Reti\label_stacking.PNG)
+![immagine locale](img\Reti\label_stacking1.PNG)
+![immagine locale](img\Reti\label_stacking2.PNG)
+
+### Label Allocation
+Le label vengono sempre gestite dal router a valle. I router MPLS avranno una fase di "handshake" in cui decideranno su quale interfaccia accogliere un flusso e quale etichetta attribuire al flusso in ingresso su quell'interfaccia e viceversa sull'uscita. In questo modo, dal momento in cui i dati inizieranno a circolare, si lavorerà solo sulle etichette e non più sugli indirizzi IP.
+
+### Aggregazione e Gestione delle Label
+- La **aggregazione** (label merging) consente di unire flussi di traffico in un unico flusso, ottimizzando l'uso delle risorse.
+- Il **TTL** (Time to Live) viene gestito all’interno di MPLS per mantenere il controllo sul numero di hop attraversati, decrementando il valore a ogni passaggio attraverso un LSR e ripristinandolo alla fine del percorso MPLS.
