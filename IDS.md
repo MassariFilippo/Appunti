@@ -504,3 +504,115 @@ La manutenibilità di un sistema è determinata dalla qualità della sua archite
 
 Spesso i programmi software sono progettati come case (non modulari), ma devono essere manutenuti come automobili, rendendo essenziale un’architettura che ne faciliti l’adattamento e la lunga durata.
 
+## Progettazione di Interfacce Utente
+
+### Cos’è un’interfaccia?
+Un’interfaccia consente il dialogo tra due entità o sistemi. Nel contesto informatico, permette il transito di informazioni tra dispositivi, supportando la comunicazione e l’interazione.
+
+### Tecnologia ed ergonomia
+La progettazione di un’interfaccia combina aspetti tecnologici, legati al funzionamento fisico, e aspetti ergonomici, che riguardano l’interazione cognitiva con l’utente. Questo equilibrio è essenziale per garantire usabilità e accessibilità.
+
+### Paradigmi di interazione
+Esistono diversi approcci che guidano l'interazione utente-sistema:
+- Terminali scriventi basati su scrittura e lettura.
+- Terminali video che consentono di scegliere e compilare informazioni.
+- Personal Computer orientati alla simulazione e all’ipotesi ("what if").
+- Sistemi multimediali che supportano la comunicazione vocale.
+- Realtà virtuale che permette all’utente di agire direttamente in un ambiente simulato.
+
+### L’importanza delle GUI per l’utente
+Le interfacce grafiche (GUI) sfruttano le capacità cognitive umane, come il riconoscimento, l’associazione, la generalizzazione e la deduzione. Utilizzano metafore visive, colori e la capacità di presentare molte informazioni simultaneamente per semplificare la navigazione e l’interazione.
+
+### Riconoscere vs ricordare
+Gli utenti trovano più semplice riconoscere informazioni già viste rispetto a ricordarle. Le interfacce basate su icone o associazioni con oggetti reali sono particolarmente efficaci nel facilitare il riconoscimento, riducendo il carico mnemonico.
+
+### Progettazione di un’interfaccia
+La progettazione deve considerare:
+- **Utenti**: numero, esperienza, età, motivazione e frequenza d’uso.
+- **Obiettivi**: rapidità, efficacia, flessibilità e qualità.
+- **Tecnologia**: compatibilità con le esigenze specifiche.
+
+### Tipologie di interfacce
+1. **Interfacce code-based**: utilizzano comandi testuali, ideali per compiti ripetitivi e complessi.
+![immagine locale](img\IDS\interfaccai_code_base.PNG)
+2. **Interfacce 3270**: caratteri testuali per data-entry strutturati e flussi predefiniti.
+![immagine locale](img\IDS\interfacca_3270.PNG)
+3. **Pseudo-GUI**: grafiche che richiamano interfacce testuali, adatte per dati strutturati con flessibilità.
+![immagine locale](img\IDS\interfacca_pseudogui.PNG)
+4. **Standard GUI**: ambienti grafici con manipolazione diretta, ottimali per applicazioni guidate dall’utente.
+![immagine locale](img\IDS\interfaccai_gui.PNG)
+5. **Special GUI**: enfatizzano la presentazione grafica, pensate per utenti inesperti e applicazioni self-service.
+![immagine locale](img\IDS\interfacca_special_gui.PNG)
+
+### Strutturazione delle interfacce
+![immagine locale](img\IDS\struttura_2d.PNG)
+
+Le interfacce possono essere progettate con diversi modelli:
+- **Multi-Window**: finestre principali indipendenti, flessibili ma complesse da navigare.
+- **Multi-Document**: una finestra principale che gestisce documenti secondari, più semplice da usare.
+- **Multi-Paned**: una finestra suddivisa in aree monofunzionali, rigida ma adatta per self-service.
+
+![immagine locale](img\IDS\strtture_std.PNG)
+
+### Standard progettuale
+Gli standard progettuali sono fondamentali per garantire un'interfaccia utente coerente e intuitiva. Ecco una spiegazione dettagliata dei concetti chiave:
+
+- **Definizione degli standard per:**
+  - **Terminologia**: Utilizzare termini coerenti e comprensibili per l'utente in tutta l'interfaccia. Questo include etichette dei pulsanti, messaggi di errore, e descrizioni delle funzionalità.
+  - **Metafore, icone**: Le metafore visive e le icone devono essere scelte in modo che rappresentino chiaramente le azioni o gli oggetti a cui si riferiscono. Ad esempio, un'icona a forma di cestino per l'eliminazione.
+  - **Caratteristiche delle finestre**: Stabilire standard per elementi come menu, bottoni, dimensioni e posizione delle finestre. Questo aiuta a creare un'esperienza utente uniforme e prevedibile.
+
+- **Obiettivo prioritario:** agevolare l’utilizzo da parte dell’utente
+  - **Consistenza esterna**: Assicurarsi che l'interfaccia sia coerente con i tool già utilizzati in azienda (standard de facto). Questo riduce il tempo di apprendimento e aumenta l'efficienza.
+  - **Consistenza interna subordinata all’usabilità**: Mantenere la coerenza interna dell'interfaccia, ma sempre con l'obiettivo principale di migliorare l'usabilità. Se una modifica interna può migliorare significativamente l'esperienza utente, dovrebbe essere considerata.
+
+Questi standard progettuali aiutano a creare interfacce che non solo sono facili da usare, ma anche efficienti e piacevoli per l'utente.
+### Elementi visivi
+- **Affordance**: evidenzia come interagire con un oggetto tramite aspetti visivi come ombreggiatura o tridimensionalità.
+- **Metafore**: collegano concetti del mondo reale con funzioni digitali per migliorare la comprensione (es. cestino = elimina).
+- **Layout**: la posizione degli elementi aiuta a stabilire relazioni visive.
+- **Colori**: comunicano significato e catturano l’attenzione. È importante usarli con moderazione, massimo 3-5 colori distinti per codice visivo.
+- **Icone**: devono essere semplici, autoesplicative e distinguibili, arricchite da colori e, se necessario, testo.
+- **Font**: devono essere leggibili e coerenti con lo stile dell'interfaccia. Utilizzare al massimo 2-3 tipi di font per mantenere la coerenza visiva.
+
+### Metodologia di progettazione
+La progettazione di un’interfaccia segue un processo articolato:
+1. **Fase preliminare**: definire attività, criteri di usabilità e modello concettuale.
+2. **Fase di analisi e progettazione**: stabilire strutture base, standard e prototipi per verificare l’allineamento con gli obiettivi.
+3. **Fase di sviluppo**: completare l’interfaccia e integrarla con la logica applicativa.
+
+### Test con l’utente
+I test valutano se l’interfaccia soddisfa gli standard progettuali e gli obiettivi di usabilità. Possono includere:
+- **Simulatore**: l’utente osserva.
+- **Dimostratore**: l’utente interagisce con parti critiche.
+- **Prototipo**: l’utente utilizza l’intero sistema in una versione beta.
+
+## Criteri di Usabilità nelle Interfacce
+
+### Usabilità
+L’usabilità si misura in termini di efficacia, efficienza e soddisfazione:
+- **Efficacia**: in che misura i compiti previsti vengono svolti.
+- **Efficienza**: risorse necessarie per completare un compito.
+- **Soddisfazione**: quanto gli utenti trovano piacevole e accettabile il sistema.
+Criteri come facilità di apprendimento, navigazione intuitiva, prevenzione degli errori e velocità d’uso sono fondamentali.
+
+### Apprendibilità
+L’apprendibilità di un sistema mira a garantire che i nuovi utenti possano imparare rapidamente a utilizzare l’applicazione. L’obiettivo specifico è che almeno l’80% degli utenti inesperti riesca a completare una singola attività in meno di 30 minuti. Questo aspetto è particolarmente rilevante in contesti caratterizzati da un elevato turnover del personale, dove il tempo dedicato alla formazione deve essere ridotto al minimo, o quando gli utenti interagiscono con il sistema solo saltuariamente. L’apprendibilità è fondamentale anche per sistemi con cicli di vita brevi o frequentemente sottoutilizzati per mancanza di training.
+
+### Velocità
+Un’interfaccia ben progettata deve consentire l’esecuzione rapida delle operazioni. L’obiettivo tipico è raggiungere una velocità di 10 inserimenti ogni 2 minuti, rendendo il sistema adatto a utilizzi intensivi e attività ripetitive, come l’inserimento dati in ambienti lavorativi quotidiani. La velocità operativa diventa cruciale per garantire efficienza in questi contesti.
+
+### Soddisfazione
+La soddisfazione degli utenti è un criterio essenziale per il successo di un sistema. L’obiettivo è che almeno il 90% degli utenti trovi l’applicazione piacevole da utilizzare. Questo aspetto è particolarmente importante in sistemi self-service, dove l’interazione è autonoma, e in iniziative di rinnovamento aziendale, come il Business Process Reengineering, dove la soddisfazione degli utenti può influire significativamente sull’adozione e l’efficacia del sistema.
+
+### Facilità di Navigazione
+La navigazione deve essere intuitiva e consentire all’utente di accedere a diverse funzionalità senza dover continuamente tornare al menu principale. Un sistema ben progettato dovrebbe permettere di avviare fino a sei attività differenti su un singolo oggetto. Questo criterio è particolarmente utile quando il cliente guida il processo decisionale, come in un ristorante, o in applicazioni con procedure strutturate, ad esempio nelle mense aziendali. La facilità di navigazione diventa inoltre fondamentale in ambienti con elevato turnover del personale, dove gli utenti hanno bisogno di imparare rapidamente a muoversi nel sistema.
+
+### Memorabilità
+Un’interfaccia memorabile permette agli utenti di riprendere confidenza con il sistema anche dopo lunghi periodi di inattività, senza necessità di ulteriore formazione. Questo criterio è rilevante per applicazioni utilizzate raramente o in circostanze eccezionali, come strumenti attivati in momenti specifici (es. durante scadenze) o applicazioni secondarie.
+
+### Prevenzione degli Errori
+La prevenzione degli errori si concentra sulla riduzione di quelli irreparabili, noti come errori catastrofici. Questo aspetto è cruciale in contesti dove i risultati richiedono un impegno significativo, come attività correlate alla sicurezza o risultati immediatamente visibili ai clienti. Ridurre al minimo questi errori migliora la fiducia e la qualità percepita del sistema.
+
+
+
