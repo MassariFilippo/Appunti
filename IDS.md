@@ -613,6 +613,3 @@ Un’interfaccia memorabile permette agli utenti di riprendere confidenza con il
 
 ### Prevenzione degli Errori
 La prevenzione degli errori si concentra sulla riduzione di quelli irreparabili, noti come errori catastrofici. Questo aspetto è cruciale in contesti dove i risultati richiedono un impegno significativo, come attività correlate alla sicurezza o risultati immediatamente visibili ai clienti. Ridurre al minimo questi errori migliora la fiducia e la qualità percepita del sistema.
-
-
-

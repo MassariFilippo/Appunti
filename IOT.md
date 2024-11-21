@@ -36,8 +36,7 @@ Per rappresentare i task in maniera modulare, si utilizza una classe astratta `T
 
 Ogni task concreto estende questa classe e implementa il proprio comportamento all’interno di `tick()`. In questo modo, i task possono essere gestiti da un loop principale che periodicamente invoca `tick()`.
 
-#### Esempio Implementativo: LED-Show su Arduino
-
+### Esempio Implementativo: LED-Show su Arduino
 Di seguito, una versione implementativa del "LED-Show" su Arduino:
 
 1. **BlinkTask**: rappresenta un LED che lampeggia.
@@ -89,8 +88,7 @@ Di seguito, una versione implementativa del "LED-Show" su Arduino:
 
 Quando si ha la necessità di gestire task con periodi differenti, è utile implementare uno scheduler cooperativo che tenga traccia dei task da eseguire e li chiami al proprio periodo specifico. Lo scheduler utilizza una strategia **round-robin cooperativa**, con un periodo base pari al massimo comun divisore dei periodi dei task. Ad ogni periodo base, lo scheduler richiama `tick()` per ciascun task.
 
-#### Implementazione del Scheduler
-
+### Implementazione del Scheduler
 Lo scheduler è definito dalla classe `Scheduler`:
    ```cpp
    class Scheduler {
@@ -137,8 +135,7 @@ Nei sistemi FSM sincroni, si suppone che le azioni siano istantanee. Tuttavia, i
    U = \left(\frac{\text{tempo utilizzato dal task}}{\text{tempo totale}}\right) * 100\%
    \]
 
-#### Esempio di Calcolo di U con più Task
-
+### Esempio di Calcolo di U con più Task
 Per il caso di più task con lo stesso periodo, il WCET totale è la somma dei WCET di ciascun task. Ad esempio, nel caso del LED-Show con `BlinkLed` e `ThreeLeds`, entrambi con periodo 500 ms:
 
 - **WCET** per `BlinkLed` = 3 istruzioni → 0.03 s.
@@ -147,8 +144,7 @@ Per il caso di più task con lo stesso periodo, il WCET totale è la somma dei W
 
 Se il WCET totale superasse il 100%, si verificherebbe un **overrun**, che può essere risolto aumentando il periodo della FSM, ottimizzando il codice, utilizzando un MCU più veloce, o rimuovendo funzionalità.
 
-#### Gestione di Task con Periodi Diversi
-
+### Gestione di Task con Periodi Diversi
 Per task con periodi diversi, si calcola il WCET sull’**iperperiodo** (minimo comune multiplo dei periodi). Ad esempio, per `BlinkLed` con periodo 300 ms e `ThreeLeds` con periodo 200 ms, l'iperperiodo è 600 ms, in cui `BlinkLed` viene eseguito 2 volte e `ThreeLeds` 3 volte. Il parametro U diventa:
 
    \[
@@ -158,3 +154,186 @@ Per task con periodi diversi, si calcola il WCET sull’**iperperiodo** (minimo 
 ### Conclusione
 
 L'approccio task-based semplifica la gestione di sistemi embedded complessi grazie a modularità, facilità di debugging e possibilità di riutilizzo. Tuttavia, richiede una gestione attenta delle variabili condivise, del consumo energetico e dell’utilizzo della CPU per evitare overrun e garantire l’affidabilità del sistema.
+
+## Embedded basati su SoC e RTOS
+
+### Introduzione 
+- I sistemi embedded basati su **SoC (System-On-a-Chip)** superano i microcontrollori tradizionali, integrando una CPU, memoria sufficiente e componenti per ospitare un sistema operativo, spesso **RTOS (Real-Time Operating System)**.
+- **RTOS**: sistema operativo progettato per rispondere a eventi in tempo reale, ottimizzato per sistemi con vincoli temporali stringenti.
+
+
+### **SoC: System-On-a-Chip**
+- **Definizione**: circuito integrato che combina componenti essenziali di un computer o sistema elettronico (CPU, memoria, controller I/O, interfacce di rete, ecc.).
+- **Esempi**:
+  - BROADCOM BCM2837 (Raspberry Pi 3).
+  - ARM Sitara AM335x (BeagleBone, Arduino Tre).
+  - ESP8266 e ESP32 (IoT).
+
+- **Architettura di un SoC**
+    - **Processori**: microcontroller, microprocessori, DSP.
+    - **Memoria**: moduli integrati (ROM, RAM, EEPROM, FLASH).
+    - **Interfacce standard**: USB, Ethernet, I²C, SPI.
+    - **Connettività**: interfacce radio (Wi-Fi, Bluetooth).
+    - **Componenti aggiuntivi**: DAC, ADC, timer, GPIO.
+
+![immagine locale](img\IOT\architettura_SoC.PNG)
+
+- **SoC per IoT**
+    - **ESP8266**: processore RISC 32-bit a 80 MHz, 64 KiB RAM istruzioni, Wi-Fi integrato IEEE 802.11 b/g/n.
+    - **ESP32**: evoluzione dell’ESP8266, dual-core a 240 MHz, RAM 320 KiB, con Wi-Fi e Bluetooth v4.2, fino a 34 GPIO, ADC e DAC avanzati.
+
+![immagine locale](img\IOT\architettura_ESP32.PNG)
+![immagine locale](img\IOT\architettura_raspberry.PNG)
+
+### Sistemi Operativi Embedded e RTOS
+- I SoC forniscono le risorse necessarie per ospitare sistemi operativi completi, come RTOS, progettati per sistemi embedded.
+- Gli **RTOS** ottimizzano la gestione di eventi e risorse, garantendo tempi di risposta deterministici.
+
+- **Ruolo del Sistema Operativo**
+    - Orchestrare l’esecuzione dei programmi applicativi.
+    - Mediare l’accesso alle risorse hardware.
+    - Fornire astrazione, controllo e protezione delle risorse.
+
+- **Obiettivi principali dell’OS**
+    1. **Esecuzione e controllo dei programmi**: gestione delle risorse hardware.
+    2. **Ottimizzazione**: uso efficace delle risorse.
+    3. **Coordinamento**: interazione tra applicazioni, utenti e risorse.
+
+
+### Architettura a Livelli nei Sistemi Embedded
+- La progettazione di un sistema è basata su una struttura gerarchica, composta da moduli che incapsulano funzionalità specifiche, organizzati su più livelli:
+  - **Hardware**: circuiti logici, CPU, memoria.
+  - **Sistema Operativo**: interfaccia tra hardware e software applicativo.
+  - **Software Applicativo**: programmi e applicazioni.
+
+(NON SICURO DELLA POSIZIONE DI QUESTA FORO SULLE SLIDEI CE NE SONO ALTRE DA VALUTARE)
+![immagine locale](img\IOT\overall.PNG)
+
+- **Livelli e Interfacce Principali**
+    1. **ISA (Instruction Set Architecture)**:
+    - Interfaccia tra hardware e software.
+    - Divisa in:
+        - **User ISA**: istruzioni accessibili dai programmi utente.
+        - **System ISA**: istruzioni privilegiate riservate all’OS.
+    2. **ABI (Application Binary Interface)**:
+    - Interfaccia che consente l’accesso a risorse hardware e servizi di sistema.
+    - Composta da User ISA + System Call Interface.
+    3. **System Call Interface**:
+    - Funzionalità fondamentali offerte dall’OS ai programmi.
+    - Permette il controllo dell’OS e l’accesso sicuro all’hardware.
+
+
+### API e Mediatore OS
+- **API (Application Programming Interface)**:
+  - Fornisce una serie di funzioni o primitive OS (system calls) per interfacciarsi con le risorse hardware.
+  - Garantisce indipendenza tra software applicativo e hardware.
+
+- **Ruolo di Mediazione dell’OS**
+    - Coordina e controlla l’accesso alle risorse hardware richiesto dalle applicazioni.
+    - Converte richieste applicative in operazioni eseguibili sull’hardware.
+    - Favorisce indipendenza tra applicazioni e hardware.
+
+### Virtualizzazione e Astrazione
+- **Macchina Virtuale**: permette di astrarre l’hardware fisico, fornendo un ambiente di esecuzione uniforme per le applicazioni.
+- La virtualizzazione consente di suddividere il sistema in livelli più gestibili:
+  - **Macchina fisica**: hardware reale.
+  - **Macchina virtuale**: strato intermedio tra hardware e software.
+
+### Organizzazione del Sistema Operativo
+- **Driver**: gestione periferiche.
+- **Gestore della memoria**: allocazione e traduzione della memoria.
+- **Scheduler**: gestione della pianificazione dei processi.
+
+### Sistema Operativo come Macchina Virtuale
+- Il sistema operativo (OS) nasconde la complessità dell’hardware sottostante, presentando agli sviluppatori una macchina virtuale o astratta:
+  - Più semplice rispetto alla macchina fisica.
+  - Fornisce un livello superiore di astrazione.
+  - Accessibile tramite chiamate di sistema (*system calls*), che fungono da interfaccia della macchina virtuale.
+
+- **Vantaggi**
+    1. **Facilità di sviluppo**: gli sviluppatori non devono conoscere i dettagli dell’hardware per accedere alle risorse.
+    2. **Portabilità dei programmi**: lo stesso programma può essere eseguito su diverse macchine virtuali, semplificando il passaggio da un OS all’altro.
+
+
+### Sistema Operativo come Gestore delle Risorse
+- **Gestione delle risorse**:
+  - Condivisione delle risorse tra più programmi, eventualmente in esecuzione concorrente.
+  - Protezione e sicurezza per evitare interferenze tra programmi.
+- **Funzioni principali**:
+  1. Ottimizzazione dell’accesso (*scheduling*).
+  2. Sicurezza e protezione dei dati.
+  3. Gestione multi-utente e multi-programmazione.
+
+### Virtualizzazione delle Risorse
+- **Memoria virtuale**: ogni programma vede uno spazio di memoria lineare e teoricamente illimitato.
+- **File system virtuale**: accesso uniforme ai file indipendentemente dal loro tipo o posizione (locale o remota).
+
+- **Esecuzione dei Programmi**
+    - **Multi-programmazione**:
+    - Permette di caricare più programmi in memoria centrale e di eseguirli per ottimizzare l’uso della CPU.
+    - Se un programma è in attesa di un’operazione I/O, la CPU viene assegnata a un altro programma.
+    - **Time-sharing**:
+    - Estende la multi-programmazione consentendo l’esecuzione concorrente di programmi che richiedono interazione con l’utente.
+    - La CPU è condivisa tra i programmi in base a specifici algoritmi di scheduling.
+
+
+### Sistemi Embedded e RTOS
+- **Caratteristiche generali**:
+  - Compattezza, efficienza, affidabilità.
+  - Determinismo e prevedibilità (soprattutto nei sistemi hard real-time).
+- **Differenze rispetto agli OS desktop**:
+  - Un RTOS è progettato per eseguire una singola applicazione, solitamente multi-threaded.
+- **Esempi**:
+  - Open-source: FreeRTOS, eCos, RT Linux.
+  - Commerciali: VxWorks, QNX, Windows IoT Core.
+
+
+### Sistemi Real-Time
+- **Classificazione**:
+  - **Hard real-time**: le scadenze temporali devono essere rigorosamente rispettate (es. sistemi di sicurezza critici).
+  - **Soft real-time**: le scadenze possono essere violate occasionalmente, ma devono essere gestite.
+- **Determinismo**:
+  - Essenziale per prevedere il tempo massimo necessario per completare un’azione.
+  - Il sistema deve garantire tempi di latenza e di cambio contesto noti.
+
+
+### Funzioni del Kernel di un RTOS
+1. **Gestione dei task**:
+   - Scheduling preemptivo per massimizzare l’uso della CPU.
+   - Supporto per multi-threading e sincronizzazione (semafori, mutex).
+2. **Gestione della memoria**:
+   - Allocazione e deallocazione dinamica.
+3. **Gestione I/O**:
+   - Accesso controllato alle periferiche.
+4. **Sicurezza e protezione**:
+   - Prevenzione di problemi come il priority inversion.
+
+
+### Scheduling nei Sistemi Real-Time
+1. **Algoritmi principali**:
+   - **Rate Monotonic (RM)**: assegna priorità fisse, dove i task con periodo più breve hanno priorità più alta.
+   - **Earliest Deadline First (EDF)**: priorità dinamiche basate sulle scadenze temporali più vicine.
+2. **Categorie di task**:
+   - **Periodici**: rilasciati a intervalli regolari.
+   - **Aperiodici**: rilasciati a tempi arbitrari.
+   - **Sporadici**: come gli aperiodici, ma con scadenze rigide.
+3. **Parametri temporali**:
+   - Tempo di rilascio (r): quando il task è pronto per l’esecuzione.
+   - Tempo di esecuzione (e): tempo massimo necessario per completare il task.
+   - Scadenza (D): limite massimo entro cui il task deve essere completato.
+   - Tempo di risposta (res): intervallo tra rilascio e completamento.
+
+- **Vantaggi dell’RTOS**
+    1. **Miglioramento della reattività**:
+    - Evita il polling continuo sfruttando il cambio di contesto.
+    2. **Facilitazione dello sviluppo**:
+    - Fornisce un’astrazione che semplifica l’accesso all’hardware.
+    3. **Modularità**:
+    - Permette lo sviluppo modulare delle applicazioni.
+    4. **Portabilità**:
+    - Le applicazioni sono indipendenti dall’hardware sottostante grazie all’interfaccia RTOS.
+
+- **Quando un RTOS non è necessario**
+    - Applicazioni semplici basate su *super-loop*.
+    - Applicazioni a singolo scopo o singolo task (es. dimensioni < 32 KiB).
+
