@@ -2,7 +2,6 @@
 ## Protocolli di Internet e IP
 
 ### Architettura di Internet
-
 L'architettura di Internet è organizzata in strati:
 
 1. Applicazioni (e-mail, ftp, telnet, www)
@@ -13,7 +12,6 @@ L'architettura di Internet è organizzata in strati:
 Questa struttura corrisponde al modello OSI semplificato, con IP che opera al livello di rete (strato 3).
 
 ### Internet Protocol (IP) - RFC 791
-
 Caratteristiche principali:
 - Funziona a commutazione di pacchetto in modalità connectionless
 - Gestisce la trasmissione di datagrammi da sorgente a destinazione attraverso reti eterogenee
@@ -22,20 +20,17 @@ Caratteristiche principali:
 - Offre un servizio "best effort" senza garanzie di affidabilità o controllo di flusso
 
 ### Struttura degli indirizzi IP
-
 - Lunghezza fissa di 32 bit
 - Rappresentazione in formato dotted decimal (es. 137.204.212.1)
 - Numero massimo teorico di indirizzi: 2^32 = 4.294.967.296
 - Assegnati dalla IANA (Internet Assigned Numbers Authority)
 
 ### Formato del pacchetto IP
-
 Il pacchetto IP è composto da:
 1. Header (intestazione)
 2. Payload (dati utente)
 
 ### Campi principali dell'header IP
-
 - **Prima riga (identificazione)**
   - **Version (4 bit)**: versione del protocollo IP (attualmente 4)
   - **IHL (Internet Header Length) (4 bit)**: lunghezza dell'intestazione in parole da 32 bit
@@ -63,7 +58,6 @@ Il pacchetto IP è composto da:
   - **Padding**: bit di riempimento per allineare l'intestazione a 32 bit
 
 ### Frammentazione dei datagrammi
-
 - Necessaria quando il datagramma è troppo grande per essere trasmesso su una rete
 - Può essere effettuata da qualsiasi apparato di rete con protocollo IP
 - I frammenti vengono riassemblati solo dal terminale ricevente
@@ -84,14 +78,12 @@ Il pacchetto IP è composto da:
 - L'offset è calcolato in unità di 8 byte dall'inizio del datagramma originale (non ho bisogno di mappare tutti i bit ma posso mapparli a blocchi di 8 byte per ridurre a 13 il numero di bit necessari a tenerne traccia, ciò implica che la frammentazione non potrà mai scendere sotto i 64 bit perché non sarei più in grado di ricomporre il pacchetto)
 
 ### Time to Live (TTL)
-
 - Imposta un limite al numero di hop che un pacchetto può attraversare
 - Valore iniziale tipico: 64 (massimo 255)
 - Decrementato di 1 ad ogni hop
 - Se raggiunge 0, il pacchetto viene scartato
 
 ### Riassemblaggio dei datagrammi
-
 - I frammenti possono arrivare fuori sequenza o con tempi diversi
 - Il riassemblaggio avviene solo al terminale di destinazione
 - Utilizza i campi Identification, Flags e Fragment Offset per ricostruire correttamente il datagramma originale
@@ -1109,3 +1101,75 @@ Le label vengono sempre gestite dal router a valle. I router MPLS avranno una fa
 ### Aggregazione e Gestione delle Label
 - La **aggregazione** (label merging) consente di unire flussi di traffico in un unico flusso, ottimizzando l'uso delle risorse.
 - Il **TTL** (Time to Live) viene gestito all’interno di MPLS per mantenere il controllo sul numero di hop attraversati, decrementando il valore a ogni passaggio attraverso un LSR e ripristinandolo alla fine del percorso MPLS.
+
+## Prestazioni
+
+### **Affidabilità nei protocolli**  
+I **protocolli** di comunicazione sono progettati per garantire la **trasmissione affidabile** dei dati. Questo risultato si ottiene attraverso:  
+- **Controllo degli errori**, che comprende:  
+  - **CRC (Cyclic Redundancy Check)**, una tecnica per verificare la correttezza dei dati trasmessi.  
+  - **Internet checksum**, utilizzato per rilevare errori nei pacchetti.  
+- **Recupero degli errori**, realizzato mediante:  
+  - **ARQ (Automatic Repeat reQuest)**, una tecnica che richiede la ritrasmissione dei dati non ricevuti correttamente.  
+  - **Ritrasmissione**, per garantire che i dati siano ricevuti senza errori.  
+- **Controllo di flusso e sequenza**, che assicura l'ordine corretto dei dati inviati e ricevuti:  
+  - **Acknowledgment (ACK)**, una conferma di ricezione per ogni pacchetto.  
+  - **ARQ**, che gestisce ritardi e ripetizioni.  
+
+### **Funzionalità e Prestazioni**  
+I protocolli devono soddisfare due esigenze fondamentali:  
+- **Funzionalità**: devono risolvere problemi legati all’**accesso** e all’**utilizzo del canale** per garantire una trasmissione affidabile.  
+- **Prestazioni**: devono ottimizzare l’uso della **capacità dello strato fisico**, assicurando che la trasmissione avvenga in modo efficiente e senza perdite significative.
+
+### **Gestione delle richieste in un sistema**  
+Un sistema di comunicazione deve gestire diverse tipologie di **richieste**:  
+- **Richieste offerte** (\( a(t) \)): rappresentano il flusso di dati inviati al sistema.  
+- **Richieste accettate** (\( s(t) \)): sono quelle che il sistema può effettivamente processare.  
+- **Richieste perdute** (\( r(t) \)): sono richieste rifiutate o non accettate, calcolate come \( r(t) = a(t) - s(t) \).  
+
+Il **tempo di servizio** è un parametro cruciale che rappresenta il tempo necessario a completare una PDU (Protocol Data Unit). La **frequenza media di servizio** (\( \mu \)) indica quanto velocemente il sistema smaltisce le richieste in condizioni operative.
+
+### **Sistema a coda**  
+Nelle **reti a pacchetto**, un modello frequente è quello di un sistema a **coda** con un singolo servitore. In questo contesto:  
+- L’utente trascorre un **tempo totale nel sistema**, che comprende:  
+  - **Attesa in coda** (\( T_A \)): il tempo prima di essere servito.  
+  - **Tempo di servizio** (\( \bar{\Theta} \)): il tempo effettivo per completare l’operazione.  
+  - Relazione complessiva: \( \bar{\Theta}_{totale} = \bar{\Theta} + T_A \).  
+- Le prestazioni del sistema dipendono da:  
+  - **Frequenza media degli arrivi** (\( \lambda \)), cioè il ritmo con cui le richieste entrano nel sistema.  
+  - **Tempo medio di servizio** (\( \bar{\Theta} \)), ovvero la durata media per completare ogni richiesta.  
+  - Il prodotto \( A = \lambda \cdot \bar{\Theta} \) determina il traffico medio, secondo il **teorema di Little**.  
+
+### **Efficienza del protocollo**  
+L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rapporto tra risorse utilizzate e dati utili trasmessi:  
+- **Capacità teorica**: è determinata dalla velocità del **canale** (\( C \)) e dalla lunghezza del **pacchetto** (\( L \)), calcolata come \( \bar{\Theta}_{min} = \frac{L}{C} \).  
+- **Riduzione di efficienza**: si verifica in presenza di fattori come:  
+  - Segnalazioni aggiuntive (PCI).  
+  - **Errori di trasmissione** che richiedono ritrasmissioni.  
+  - **Tempi morti** dovuti a dinamiche del protocollo o attese per l’accesso al canale.  
+
+### **Reti Local Area Network (LAN)**  
+Le **LAN** consentono la comunicazione tra dispositivi indipendenti in aree geografiche limitate, utilizzando un canale condiviso ad alta velocità con tassi di errore contenuti.  
+- **Caratteristiche principali delle LAN**:  
+  - **Canale condiviso**, che consente l’accesso simultaneo da parte di più dispositivi.  
+  - **Trasmissioni broadcast**, che permettono la comunicazione da uno a tutti.  
+  - **Meccanismi di indirizzamento**, per evitare interferenze tra comunicazioni multiple.  
+  - **Collisioni**, problematiche comuni nei mezzi condivisi, che richiedono strategie di controllo.  
+
+### **Scelte progettuali delle LAN**  
+La progettazione delle **LAN** richiede decisioni su:  
+- **Mezzo trasmissivo**:  
+  - Le **fibre ottiche** stanno progressivamente sostituendo il rame grazie alla maggiore banda e minore interferenza.  
+  - Le **twisted pairs** restano comuni nei collegamenti brevi.  
+- **Topologie**:  
+  - Nelle **WAN** sono comuni configurazioni a stella o maglia.  
+  - Le **LAN iniziali** utilizzavano configurazioni punto-multipunto come bus o anelli.  
+
+### **Accesso multiplo**  
+Per ottimizzare l’utilizzo di un canale condiviso, sono adottate tecniche di **accesso multiplo**:  
+- **Canalizzazione**:  
+  - FDMA (Frequency Division Multiple Access).  
+  - TDMA (Time Division Multiple Access).  
+  - CDMA (Code Division Multiple Access).  
+- **Accesso dinamico**: basato sull’allocazione delle risorse in tempo reale.  
+- **Accesso ordinato**: include meccanismi come il trasferimento di permesso o prenotazione per evitare collisioni.
