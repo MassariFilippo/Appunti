@@ -176,14 +176,14 @@ L'approccio task-based semplifica la gestione di sistemi embedded complessi graz
     - **Connettività**: interfacce radio (Wi-Fi, Bluetooth).
     - **Componenti aggiuntivi**: DAC, ADC, timer, GPIO.
 
-![immagine locale](img\IOT\architettura_SoC.PNG)
+![](img\IOT\architettura_SoC.PNG)
 
 - **SoC per IoT**
     - **ESP8266**: processore RISC 32-bit a 80 MHz, 64 KiB RAM istruzioni, Wi-Fi integrato IEEE 802.11 b/g/n.
     - **ESP32**: evoluzione dell’ESP8266, dual-core a 240 MHz, RAM 320 KiB, con Wi-Fi e Bluetooth v4.2, fino a 34 GPIO, ADC e DAC avanzati.
 
-![immagine locale](img\IOT\architettura_ESP32.PNG)
-![immagine locale](img\IOT\architettura_raspberry.PNG)
+![](img\IOT\architettura_ESP32.PNG)
+![](img\IOT\architettura_raspberry.PNG)
 
 ### Sistemi Operativi Embedded e RTOS
 - I SoC forniscono le risorse necessarie per ospitare sistemi operativi completi, come RTOS, progettati per sistemi embedded.
@@ -207,7 +207,7 @@ L'approccio task-based semplifica la gestione di sistemi embedded complessi graz
   - **Software Applicativo**: programmi e applicazioni.
 
 (NON SICURO DELLA POSIZIONE DI QUESTA FORO SULLE SLIDEI CE NE SONO ALTRE DA VALUTARE)
-![immagine locale](img\IOT\overall.PNG)
+![](img\IOT\overall.PNG)
 
 - **Livelli e Interfacce Principali**
     1. **ISA (Instruction Set Architecture)**:

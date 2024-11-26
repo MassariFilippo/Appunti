@@ -1,3 +1,7 @@
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
 # APPUNTI RETI DI TELECOMUNICAZIONE
 ## Protocolli di Internet e IP
 
@@ -113,11 +117,11 @@ Il pacchetto IP è composto da:
 ### Routing e Instradamento
 - **Direct Delivery**: Quando l'IP sorgente e destinatario sono sulla stessa rete. Supponendo di essere in collegamento Ethernet in un network IP, inseriremo l'IP in un indirizzo di livello 2 contenente il MAC del calcolatore da raggiungere. Il MAC è fondamentale perché evita che tutti i calcolatori debbano ricevere tutti i pacchetti e verificare se l'IP è il loro, cosa che renderebbe gli host incapaci di fare qualsiasi altra cosa data la mole di lavoro. Questo MAC viene reperito grazie a una tabella contenuta nel calcolatore che mette in relazione IP con MAC. Se non è presente, lo richiede partendo dall'IP che vuole raggiungere grazie al protocollo ARP, che fa una richiesta broadcast. Questo scambio è una consegna diretta.
 
-![immagine locale](img\Reti\direct_delivery.PNG)
+![](img\Reti\direct_delivery.PNG)
 
 - **Indirect Delivery**: Se l'IP destinatario è su un'altra rete, il pacchetto viene inviato a un router intermedio. A livello 1, l'IP di destinazione sarà quello del calcolatore obiettivo, ma a livello 2, il MAC sarà quello del gateway della propria rete. Poiché il gateway è un router, non scarterà il pacchetto nonostante l'IP di destinazione non corrisponda al proprio; invece, lo instraderà verso un altro router. Il primo e l'ultimo scambio, tra l'host spedente e il rispettivo router e tra l'host ricevente e il rispettivo router, sono scambi diretti. Tutti gli scambi intermedi sono indiretti e devono essere completati entro il limite di 255 hop imposto dal TTL. La decisione nei passaggi indiretti è simile a quella nei passaggi diretti: il router utilizzerà il protocollo ARP (pacchetti broadcast a livello data link) per ottenere l'indirizzo del gateway successivo, ovvero l'unico altro calcolatore della loro rete, per passargli il pacchetto. In questi casi, è opportuno avere un indirizzo IP /30, in modo tale che, tolti i 2 indirizzi proibiti, ne restino 2 per i 2 gateway della rete. Per determinare se è possibile effettuare una consegna diretta, si utilizza la tabella di instradamento IP. Grazie a essa, è possibile inviare una richiesta ARP, nella speranza di una ARP reply, attraverso l'interfaccia corretta e agli indirizzi che contengono l'IP dell'host, evitando una richiesta ARP broadcast che appesantirebbe eccessivamente l'infrastruttura di rete. In caso di mancanza di reply, dato che l'IP è un protocollo best effort, si scarta il pacchetto e si segnala l'errore.
 
-![immagine locale](img\Reti\indirect_delivery.PNG)
+![](img\Reti\indirect_delivery.PNG)
 
 - **Tabella di Instradamento**: Ogni nodo (host o router) ha una tabella che contiene informazioni sulle destinazioni possibili, netmask, gateway e interfacce. Le righe della tabella rappresentano le singole istanze di instradamento, mentre le colonne contengono le opzioni di instradamento. Tipicamente, la tabella ha cinque colonne principali:
   - **Destination**: Contiene gli indirizzi IP o i gruppi di IP raggiungibili.
@@ -275,7 +279,7 @@ blocco usato per il collegamento (uso 3 numeri per i gateway e i restanti 58 non
 Inoltre, se devo crescere, sarò in difficoltà perché se creo una nuova sede essa necessiterà di un nuovo 
 blocco che non ho modo di creare. Se aumento i terminali nelle sedi già esistenti, posso arrivare solo a 62.
 
-![immagine locale](img\Reti\rete_azz_sol_1.PNG)
+![](img\Reti\rete_azz_sol_1.PNG)
 
 - **Soluzione 2**: Potrei valutare netmask a grandezza differenziata. Ricordiamoci che più divido, 
 più mi mangio numeri, dato che per ogni divisione il primo e l'ultimo numero sono non utilizzabili. 
@@ -287,7 +291,7 @@ Se possibile, un'unica rete per tutti i gateway è preferibile a questa seconda 
 dobbiamo fisicamente creare l'infrastruttura urbana, è più facile da realizzare. Fossero state 3 isole, forse 
 fisicamente sarebbero state più comode 3 reti.
 
-![immagine locale](img\Reti\rete_azz_sol_2.PNG)
+![](img\Reti\rete_azz_sol_2.PNG)
 
 ## Protocollo ICMP (Internet Control Message Protocol)
 
@@ -351,19 +355,19 @@ di rete, garantendo che solo il traffico autorizzato possa attraversare i confin
   le sue decisioni sulla natura dell'IP stesso come il TTL, i tipi di indirizzi ecc. Il vantaggio è che 
   a livello di gateway basta implementare il filtro a livello software, ma esistono situazioni in cui i 
   filtri a livello IP non sono sufficienti.
-  ![immagine locale](img\Reti\packet_filter.PNG)
+  ![](img\Reti\packet_filter.PNG)
   - **Stateful Packet Inspection (SPI)**: Monitora lo stato delle connessioni e adatta dinamicamente le regole 
   di filtraggio. Adattando opportunamente il software, si può andare più a fondo nel pacchetto guardando, per 
   esempio, il tipo di protocollo, attuando così filtri semanticamente più efficaci. Ciò viola il protocollo OSI 
   dato che vado a leggere dati più profondi del livello IP.
-  ![immagine locale](img\Reti\packet_inspection.PNG)
+  ![](img\Reti\packet_inspection.PNG)
   - **Application Layer Gateway (Proxy)**: Monitora le connessioni applicative (ad esempio, FTP, HTTP, SIP), 
   garantendo controllo e sicurezza a livello applicativo. In questo caso, il gateway agisce come un host che 
   scompone il pacchetto fino al livello applicativo e poi lo reinstrada se non è destinato a lui. A differenza 
   dei normali gateway con implementazioni specifiche, un proxy a livello applicativo è più complesso sia a livello 
   hardware che software.
-  ![immagine locale](img\Reti\proxy.PNG)
-  ![immagine locale](img\Reti\proxy_2.PNG)
+  ![](img\Reti\proxy.PNG)
+  ![](img\Reti\proxy_2.PNG)
 
 Le tre differenti versioni vengono adottate a necessità dato che la prima è la più leggera a 
 livello computazionale e la più facile da implementare ma quella meno efficace, e viceversa per la terza.
@@ -1020,7 +1024,7 @@ L'attenuazione è la riduzione della potenza del segnale man mano che si propaga
 - **Sviluppo delle Celle**: per aumentare l’efficienza e ridurre i costi, le reti cellulari sono state organizzate in celle, piccole aree coperte ciascuna da un’antenna. Questa struttura permette di servire molti utenti all'interno di un'area circoscritta, migliorando la capacità complessiva della rete e permettendo un uso efficiente delle frequenze disponibili.
 - **Gestione della Copertura**: ogni cella è progettata per supportare un certo numero di chiamate simultanee, e le celle sono posizionate in modo da garantire che, anche se un utente si sposta da una cella all’altra, il servizio rimanga continuo. Le celle si sovrapporrano dunque in alcuni punti, questo va però ad evitare che si formino degli spazi non coperti.
 
-![immagine locale](img\Reti\celle_di_copertura_cellulare.PNG)
+![](img\Reti\celle_di_copertura_cellulare.PNG)
 
 ### Fibra Ottica
 
@@ -1060,8 +1064,8 @@ MPLS mira a combinare la velocità dello switching con la flessibilità dell'ins
   - MPLS utilizza la commutazione orientata alla connessione.
   - La **label** è una breve entità che identifica i flussi di dati e non codifica gli indirizzi IP, essa viene aggiunta al pacchetto, attraverso un header aggiuntivo con dimensione 32 bit, e la usiamo per instradare sostituendola all'indirizzo IP.
 Questa struttura ci permetterà di utilizzare quei router che per via del routing rimanevano a disposizione per mera ridondanza.
-![immagine locale](img\Reti\routing_classico.PNG)
-![immagine locale](img\Reti\routing_mpls.PNG)
+![](img\Reti\routing_classico.PNG)
+![](img\Reti\routing_mpls.PNG)
 
 ### Flusso di pacchetti
 Un **flusso (flow)** è una sequenza di datagrammi inviati da una particolare sorgente a una particolare destinazione, accomunati da:
@@ -1091,9 +1095,9 @@ Appare evidente come il livello di astrazione sia variabile e dunque maggiprment
 ### Label Stacking
 - MPLS supporta l’**innestamento di domini** (label stacking), che permette di sovrapporre livelli di instradamento, simile al routing gerarchico.
 - Le label possono essere aggiunte (push) o rimosse (pop) in base all’ingresso o uscita dal dominio.
-![immagine locale](img\Reti\label_stacking.PNG)
-![immagine locale](img\Reti\label_stacking1.PNG)
-![immagine locale](img\Reti\label_stacking2.PNG)
+![](img\Reti\label_stacking.PNG)
+![](img\Reti\label_stacking1.PNG)
+![](img\Reti\label_stacking2.PNG)
 
 ### Label Allocation
 Le label vengono sempre gestite dal router a valle. I router MPLS avranno una fase di "handshake" in cui decideranno su quale interfaccia accogliere un flusso e quale etichetta attribuire al flusso in ingresso su quell'interfaccia e viceversa sull'uscita. In questo modo, dal momento in cui i dati inizieranno a circolare, si lavorerà solo sulle etichette e non più sugli indirizzi IP.
@@ -1104,7 +1108,7 @@ Le label vengono sempre gestite dal router a valle. I router MPLS avranno una fa
 
 ## Prestazioni
 
-### **Affidabilità nei protocolli**  
+### Affidabilità nei protocolli
 I **protocolli** di comunicazione sono progettati per garantire la **trasmissione affidabile** dei dati. Questo risultato si ottiene attraverso:  
 - **Controllo degli errori**, che comprende:  
   - **CRC (Cyclic Redundancy Check)**, una tecnica per verificare la correttezza dei dati trasmessi.  
@@ -1116,39 +1120,40 @@ I **protocolli** di comunicazione sono progettati per garantire la **trasmission
   - **Acknowledgment (ACK)**, una conferma di ricezione per ogni pacchetto.  
   - **ARQ**, che gestisce ritardi e ripetizioni.  
 
-### **Funzionalità e Prestazioni**  
+### Funzionalità e Prestazioni
 I protocolli devono soddisfare due esigenze fondamentali:  
 - **Funzionalità**: devono risolvere problemi legati all’**accesso** e all’**utilizzo del canale** per garantire una trasmissione affidabile.  
 - **Prestazioni**: devono ottimizzare l’uso della **capacità dello strato fisico**, assicurando che la trasmissione avvenga in modo efficiente e senza perdite significative.
 
-### **Gestione delle richieste in un sistema**  
+### Gestione delle richieste in un sistema  
 Un sistema di comunicazione deve gestire diverse tipologie di **richieste**:  
-- **Richieste offerte** (\( a(t) \)): rappresentano il flusso di dati inviati al sistema.  
-- **Richieste accettate** (\( s(t) \)): sono quelle che il sistema può effettivamente processare.  
-- **Richieste perdute** (\( r(t) \)): sono richieste rifiutate o non accettate, calcolate come \( r(t) = a(t) - s(t) \).  
+- **Richieste offerte** ($ a(t) $): rappresentano il flusso di dati inviati al sistema.  
+- **Richieste accettate** ($ s(t) $): sono quelle che il sistema può effettivamente processare.  
+- **Richieste perdute** ($ r(t) $): sono richieste rifiutate o non accettate, calcolate come $ r(t) = a(t) - s(t) $.  
 
-Il **tempo di servizio** è un parametro cruciale che rappresenta il tempo necessario a completare una PDU (Protocol Data Unit). La **frequenza media di servizio** (\( \mu \)) indica quanto velocemente il sistema smaltisce le richieste in condizioni operative.
+Il **tempo di servizio** ($\Theta$) è un parametro cruciale che rappresenta il tempo necessario a completare una PDU (Protocol Data Unit), esso potrà essere deterministico (dimensione dei pacchetti fissa) o aleatorio (dimesione dei pacchetti variabile). 
+La **frequenza media di servizio** ($ \mu = \frac{1}{\Theta}  $) indica quanto velocemente il sistema smaltisce le richieste in condizioni operative, dunque potrà essere considerato come la capacità massima di servizio offribile.
 
-### **Sistema a coda**  
+### Sistema a coda
 Nelle **reti a pacchetto**, un modello frequente è quello di un sistema a **coda** con un singolo servitore. In questo contesto:  
 - L’utente trascorre un **tempo totale nel sistema**, che comprende:  
-  - **Attesa in coda** (\( T_A \)): il tempo prima di essere servito.  
-  - **Tempo di servizio** (\( \bar{\Theta} \)): il tempo effettivo per completare l’operazione.  
-  - Relazione complessiva: \( \bar{\Theta}_{totale} = \bar{\Theta} + T_A \).  
+  - **Attesa in coda** ($ T_A $): il tempo prima di essere servito.  
+  - **Tempo di servizio** ($ \bar{\Theta} $): il tempo effettivo per completare l’operazione.  
+  - Relazione complessiva: $ \bar{\Theta}_{totale} = \bar{\Theta} + T_A $.  
 - Le prestazioni del sistema dipendono da:  
-  - **Frequenza media degli arrivi** (\( \lambda \)), cioè il ritmo con cui le richieste entrano nel sistema.  
-  - **Tempo medio di servizio** (\( \bar{\Theta} \)), ovvero la durata media per completare ogni richiesta.  
-  - Il prodotto \( A = \lambda \cdot \bar{\Theta} \) determina il traffico medio, secondo il **teorema di Little**.  
+  - **Frequenza media degli arrivi** ($ \lambda $), cioè il ritmo con cui le richieste entrano nel sistema.  
+  - **Tempo medio di servizio** ($ \bar{\Theta} $), ovvero la durata media per completare ogni richiesta.  
+  - Il prodotto $ A = \lambda \cdot \bar{\Theta} $ determina il traffico medio, secondo il **teorema di Little**, il traffico è determinato dal rapporto tra la capacità di trasporto e la quantità di dati trasportati. 
 
-### **Efficienza del protocollo**  
+### Efficienza del protocollo
 L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rapporto tra risorse utilizzate e dati utili trasmessi:  
-- **Capacità teorica**: è determinata dalla velocità del **canale** (\( C \)) e dalla lunghezza del **pacchetto** (\( L \)), calcolata come \( \bar{\Theta}_{min} = \frac{L}{C} \).  
+- **Capacità teorica**: è determinata dalla velocità del **canale** ($ C $) e dalla lunghezza del **pacchetto** ($ L $), calcolata come $ \bar{\Theta}_{min} = \frac{L}{C} $.  
 - **Riduzione di efficienza**: si verifica in presenza di fattori come:  
   - Segnalazioni aggiuntive (PCI).  
   - **Errori di trasmissione** che richiedono ritrasmissioni.  
   - **Tempi morti** dovuti a dinamiche del protocollo o attese per l’accesso al canale.  
 
-### **Reti Local Area Network (LAN)**  
+### Reti Local Area Network (LAN)
 Le **LAN** consentono la comunicazione tra dispositivi indipendenti in aree geografiche limitate, utilizzando un canale condiviso ad alta velocità con tassi di errore contenuti.  
 - **Caratteristiche principali delle LAN**:  
   - **Canale condiviso**, che consente l’accesso simultaneo da parte di più dispositivi.  
@@ -1156,7 +1161,7 @@ Le **LAN** consentono la comunicazione tra dispositivi indipendenti in aree geog
   - **Meccanismi di indirizzamento**, per evitare interferenze tra comunicazioni multiple.  
   - **Collisioni**, problematiche comuni nei mezzi condivisi, che richiedono strategie di controllo.  
 
-### **Scelte progettuali delle LAN**  
+### Scelte progettuali delle LAN
 La progettazione delle **LAN** richiede decisioni su:  
 - **Mezzo trasmissivo**:  
   - Le **fibre ottiche** stanno progressivamente sostituendo il rame grazie alla maggiore banda e minore interferenza.  
@@ -1165,7 +1170,7 @@ La progettazione delle **LAN** richiede decisioni su:
   - Nelle **WAN** sono comuni configurazioni a stella o maglia.  
   - Le **LAN iniziali** utilizzavano configurazioni punto-multipunto come bus o anelli.  
 
-### **Accesso multiplo**  
+### Accesso multiplo 
 Per ottimizzare l’utilizzo di un canale condiviso, sono adottate tecniche di **accesso multiplo**:  
 - **Canalizzazione**:  
   - FDMA (Frequency Division Multiple Access).  
@@ -1173,3 +1178,6 @@ Per ottimizzare l’utilizzo di un canale condiviso, sono adottate tecniche di *
   - CDMA (Code Division Multiple Access).  
 - **Accesso dinamico**: basato sull’allocazione delle risorse in tempo reale.  
 - **Accesso ordinato**: include meccanismi come il trasferimento di permesso o prenotazione per evitare collisioni.
+
+![](img\Reti\trasmissione_sistema_ideale.PNG)
+![](img\Reti\trasmissione_sistema_reale.PNG)

@@ -301,7 +301,7 @@ Ogni fase prevede una milestone (punto cardine) che rappresenta il completamento
 - **Construction**: versione del sistema in pre-produzione (Beta).
 - **Transition**: rilascio del sistema in produzione per gli utenti finali.
 
-![immagine locale](img\IDS\fasi_UP.PNG)
+![](img\IDS\fasi_UP.PNG)
 
 ## Verifica del software
 
@@ -442,7 +442,7 @@ La certificazione ISO 9000 può coprire intere aziende o solo alcune porzioni; l
 - **Visite di Sorveglianza**  
    Dopo la certificazione, l’organismo effettua visite periodiche di controllo (da 1 a 4 volte l’anno) per assicurarsi che l’azienda continui a rispettare i requisiti.
 
-![immagine locale](img\IDS\workflow_ISO_9000_certificazione.PNG)
+![](img\IDS\workflow_ISO_9000_certificazione.PNG)
 
 ### Non Conformità
 
@@ -452,7 +452,7 @@ La **non conformità** è definita come il "non soddisfacimento dei requisiti sp
 - **Non Conformità Documentale**: mancanza di procedure documentate o non rispetto delle procedure formalizzate.
 - **Non Conformità nell’Attuazione delle Procedure**: le procedure non sono applicate correttamente.
 
-![immagine locale](img\IDS\documenti_progetto.PNG)
+![](img\IDS\documenti_progetto.PNG)
 
 ## Manutenzione Software
 
@@ -534,25 +534,25 @@ La progettazione deve considerare:
 
 ### Tipologie di interfacce
 1. **Interfacce code-based**: utilizzano comandi testuali, ideali per compiti ripetitivi e complessi.
-![immagine locale](img\IDS\interfaccai_code_base.PNG)
+![](img\IDS\interfaccai_code_base.PNG)
 2. **Interfacce 3270**: caratteri testuali per data-entry strutturati e flussi predefiniti.
-![immagine locale](img\IDS\interfacca_3270.PNG)
+![](img\IDS\interfacca_3270.PNG)
 3. **Pseudo-GUI**: grafiche che richiamano interfacce testuali, adatte per dati strutturati con flessibilità.
-![immagine locale](img\IDS\interfacca_pseudogui.PNG)
+![](img\IDS\interfacca_pseudogui.PNG)
 4. **Standard GUI**: ambienti grafici con manipolazione diretta, ottimali per applicazioni guidate dall’utente.
-![immagine locale](img\IDS\interfaccai_gui.PNG)
+![](img\IDS\interfaccai_gui.PNG)
 5. **Special GUI**: enfatizzano la presentazione grafica, pensate per utenti inesperti e applicazioni self-service.
-![immagine locale](img\IDS\interfacca_special_gui.PNG)
+![](img\IDS\interfacca_special_gui.PNG)
 
 ### Strutturazione delle interfacce
-![immagine locale](img\IDS\struttura_2d.PNG)
+![](img\IDS\struttura_2d.PNG)
 
 Le interfacce possono essere progettate con diversi modelli:
 - **Multi-Window**: finestre principali indipendenti, flessibili ma complesse da navigare.
 - **Multi-Document**: una finestra principale che gestisce documenti secondari, più semplice da usare.
 - **Multi-Paned**: una finestra suddivisa in aree monofunzionali, rigida ma adatta per self-service.
 
-![immagine locale](img\IDS\strtture_std.PNG)
+![](img\IDS\strtture_std.PNG)
 
 ### Standard progettuale
 Gli standard progettuali sono fondamentali per garantire un'interfaccia utente coerente e intuitiva. Ecco una spiegazione dettagliata dei concetti chiave:
