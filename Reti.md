@@ -1164,30 +1164,83 @@ L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rappor
   - L'ideale sarebbe avere un'utilizzazione media che si discosta del 20-30% da quella massima per evitare che si creino disservizi legati all'immissione in coda di utenti.
 - Al diminuire del tempo di servizio ovvero della lunghezza dei pacchetti dimunuirà il tempo di attesa in coda, dunque conviene mandare tanti piccoli pacchetti su pochi router con una grandissima capacità piuttosto che distribuire quella capacità su molti più router lenti.
 
-(MANCA UNA PARTE LEZIONE DEL 25 NON REGISTRATA)
+## Reti Local Area Network (LAN)
 
-### Reti Local Area Network (LAN)
-Le **LAN** consentono la comunicazione tra dispositivi indipendenti in aree geografiche limitate, utilizzando un canale condiviso ad alta velocità con tassi di errore contenuti.  
-- **Caratteristiche principali delle LAN**:  
-  - **Canale condiviso**, che consente l’accesso simultaneo da parte di più dispositivi.  
-  - **Trasmissioni broadcast**, che permettono la comunicazione da uno a tutti.  
-  - **Meccanismi di indirizzamento**, per evitare interferenze tra comunicazioni multiple.  
-  - **Collisioni**, problematiche comuni nei mezzi condivisi, che richiedono strategie di controllo.  
+Le **LAN** (Local Area Network) rappresentano un'infrastruttura di telecomunicazioni progettata per consentire la comunicazione tra dispositivi indipendenti in un’area geografica limitata. Queste reti sfruttano un canale condiviso ad alta velocità, garantendo tassi di errore contenuti. 
+
+### Caratteristiche principali delle LAN
+1. **Area limitata**:  
+   - Le LAN operano in un contesto geografico circoscritto, spesso privato, come uffici, abitazioni o campus.  
+   - Questo consente prestazioni elevate grazie alla vicinanza fisica tra i dispositivi.  
+
+2. **Canale fisico condiviso**:  
+   - Un unico canale è utilizzato da tutti i dispositivi connessi.  
+   - Questa condivisione consente trasmissioni simultanee, ma richiede meccanismi per evitare collisioni.  
+
+3. **Trasmissioni broadcast**:  
+   - La rete supporta comunicazioni "da uno a tutti".  
+   - Ogni dispositivo può trasmettere dati che tutti gli altri possono potenzialmente ricevere, a meno che non siano filtrati.  
+
+4. **Elevata bit rate e bassi tassi di errore**:  
+   - Le LAN offrono velocità di trasmissione elevate con tassi di errore contenuti, grazie alle brevi distanze fisiche e alla qualità del canale.
+
+5. **Indipendenza**:  
+   - I dispositivi nelle LAN non seguono un'architettura master-slave, operando invece come entità autonome.  
+
+### Traffico offerto e capacità del sistema
+- Quando il numero di utenti che utilizzano il servizio supera la capacità massima del servitore, il sistema accumula lavoro in coda.  
+  - Anche quando gli utenti diventano zero, il servitore continua a lavorare per smaltire le richieste accumulate.  
+  - **Media del traffico**:  
+    - Le curve temporali di utenti attivi e lavoro del servitore differiscono, ma la loro media coincide.  
+    - Questa media è chiamata **traffico offerto** ($ A_0 $) e rappresenta un valore centrale per il dimensionamento delle reti.  
+
+- **Scenario pratico**:  
+  - La curva degli utenti può eccedere temporaneamente la capacità massima del servitore (espressa dalla linea rossa).  
+  - Il servitore compensa il sovraccarico continuando a elaborare i dati accumulati fino al completo smaltimento.  
 
 ### Scelte progettuali delle LAN
-La progettazione delle **LAN** richiede decisioni su:  
-- **Mezzo trasmissivo**:  
-  - Le **fibre ottiche** stanno progressivamente sostituendo il rame grazie alla maggiore banda e minore interferenza.  
-  - Le **twisted pairs** restano comuni nei collegamenti brevi.  
-- **Topologie**:  
-  - Nelle **WAN** sono comuni configurazioni a stella o maglia.  
-  - Le **LAN iniziali** utilizzavano configurazioni punto-multipunto come bus o anelli.  
 
-### Accesso multiplo 
-Per ottimizzare l’utilizzo di un canale condiviso, sono adottate tecniche di **accesso multiplo**:  
-- **Canalizzazione**:  
-  - FDMA (Frequency Division Multiple Access).  
-  - TDMA (Time Division Multiple Access).  
-  - CDMA (Code Division Multiple Access).  
-- **Accesso dinamico**: basato sull’allocazione delle risorse in tempo reale.  
-- **Accesso ordinato**: include meccanismi come il trasferimento di permesso o prenotazione per evitare collisioni.
+- **Mezzo trasmissivo**
+1. **Fibre ottiche**:  
+   - Offrono maggiore banda, minore interferenza e una maggiore affidabilità rispetto al rame.  
+   - Tuttavia, il costo di interconnessione e installazione può risultare più elevato, rallentandone l’adozione per le LAN.
+
+2. **Coppie intrecciate (twisted pairs)**:  
+   - Continuano a essere utilizzate per gli "ultimi metri" di connessione grazie al costo contenuto e alla semplicità di utilizzo.  
+
+3. **Mezzo radio**:  
+   - Negli anni recenti, le tecnologie wireless stanno guadagnando importanza per la flessibilità e i costi ridotti.  
+
+- **Topologie**  
+1. **Configurazioni comuni**:  
+   - **Stella**: un nodo centrale collega tutti i dispositivi.  
+   - **Maglia**: garantisce alta ridondanza, con ogni nodo collegato a più nodi vicini.  
+   - **Gerarchica**: struttura a livelli, utile per ambienti complessi.  
+
+2. **Punto-multipunto**:  
+   - Utilizzato nelle prime LAN con mezzi condivisi, come bus bidirezionali o anelli.  
+   - Non adatto alle WAN per i limiti di distanza e interferenze.  
+
+### Accesso multiplo
+Le LAN utilizzano tecniche specifiche per gestire l’accesso al canale condiviso:
+
+1. **Canalizzazione**:  
+   - **FDMA** (Frequency Division Multiple Access): divisione delle risorse per frequenze.  
+   - **TDMA** (Time Division Multiple Access): divisione temporale del canale.  
+   - **CDMA** (Code Division Multiple Access): utilizzo di codici univoci per separare le comunicazioni.  
+
+2. **Accesso dinamico**: Basato sull'allocazione delle risorse in tempo reale.  
+  - **Accesso ordinato**: Include meccanismi come il trasferimento di permessi o la prenotazione per evitare collisioni. 
+  - **Accesso a contesa** 
+
+### Prestazioni e parametri chiave delle LAN
+La scelta dell’algoritmo di controllo e accesso è determinata da un compromesso tra **complessità** e **prestazioni**.  
+
+- **Parametri chiave**:
+  1. $ L $: lunghezza del pacchetto.  
+  2. $ C $: velocità di trasmissione del canale.  
+  3. $ D $: distanza massima tra due nodi della rete.  
+  4. $ v $: velocità di propagazione del segnale (tipicamente vicino alla velocità della luce nell’aria).  
+
+- **LAN ideale**:
+  - In un sistema senza collisioni e con coordinamento perfetto, tutte le richieste ($ A_0 $) vengono soddisfatte ($ A_s = A_0 $) fino alla saturazione del canale.
