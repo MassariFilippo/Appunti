@@ -1145,6 +1145,17 @@ Nelle **reti a pacchetto**, un modello frequente è quello di un sistema a **cod
   - **Tempo medio di servizio** ($ \bar{\Theta} $), ovvero la durata media per completare ogni richiesta.  
   - Il prodotto $ A = \lambda \cdot \bar{\Theta} $ determina il traffico medio, secondo il **teorema di Little**, il traffico è determinato dal rapporto tra la capacità di trasporto e la quantità di dati trasportati ed essendo una quantità a dimensionale  ne è preferibile l'utilizzo (si usa come unità di misura lo Erlang). 
 
+### Efficienza del protocollo
+L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rapporto tra risorse utilizzate e dati utili trasmessi:  
+- **Capacità teorica**: è determinata dalla velocità del **canale** ($ C $) e dalla lunghezza del **pacchetto** ($ L $), calcolata come $ \bar{\Theta}_{min} = \frac{L}{C} $.  
+- **Riduzione di efficienza**: si verifica in presenza di fattori come:  
+  - Segnalazioni aggiuntive (PCI).  
+  - **Errori di trasmissione** che richiedono ritrasmissioni.  
+  - **Tempi morti** dovuti a dinamiche del protocollo o attese per l’accesso al canale. 
+
+![](img\Reti\trasmissione_sistema_ideale.PNG)
+![](img\Reti\trasmissione_sistema_reale.PNG) 
+
 ### Utilizzazione
   - L'**utilizzazione** di un sistema di comunicazione rappresenta la misura dell'efficienza con cui le risorse del sistema vengono impiegate per trasmettere dati utili.
   - È definita come il rapporto tra il tempo in cui effettivamente trasporto delle informazioni ed il tempo totale misurato ($p=\frac{B(T)}{T}$) e potrà assumere un valore che oscilla tra 0 e 1.
@@ -1153,13 +1164,7 @@ Nelle **reti a pacchetto**, un modello frequente è quello di un sistema a **cod
   - L'ideale sarebbe avere un'utilizzazione media che si discosta del 20-30% da quella massima per evitare che si creino disservizi legati all'immissione in coda di utenti.
 - Al diminuire del tempo di servizio ovvero della lunghezza dei pacchetti dimunuirà il tempo di attesa in coda, dunque conviene mandare tanti piccoli pacchetti su pochi router con una grandissima capacità piuttosto che distribuire quella capacità su molti più router lenti.
 
-### Efficienza del protocollo
-L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rapporto tra risorse utilizzate e dati utili trasmessi:  
-- **Capacità teorica**: è determinata dalla velocità del **canale** ($ C $) e dalla lunghezza del **pacchetto** ($ L $), calcolata come $ \bar{\Theta}_{min} = \frac{L}{C} $.  
-- **Riduzione di efficienza**: si verifica in presenza di fattori come:  
-  - Segnalazioni aggiuntive (PCI).  
-  - **Errori di trasmissione** che richiedono ritrasmissioni.  
-  - **Tempi morti** dovuti a dinamiche del protocollo o attese per l’accesso al canale.  
+(MANCA UNA PARTE LEZIONE DEL 25 NON REGISTRATA)
 
 ### Reti Local Area Network (LAN)
 Le **LAN** consentono la comunicazione tra dispositivi indipendenti in aree geografiche limitate, utilizzando un canale condiviso ad alta velocità con tassi di errore contenuti.  
@@ -1186,6 +1191,3 @@ Per ottimizzare l’utilizzo di un canale condiviso, sono adottate tecniche di *
   - CDMA (Code Division Multiple Access).  
 - **Accesso dinamico**: basato sull’allocazione delle risorse in tempo reale.  
 - **Accesso ordinato**: include meccanismi come il trasferimento di permesso o prenotazione per evitare collisioni.
-
-![](img\Reti\trasmissione_sistema_ideale.PNG)
-![](img\Reti\trasmissione_sistema_reale.PNG)
