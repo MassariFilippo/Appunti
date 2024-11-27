@@ -1143,7 +1143,15 @@ Nelle **reti a pacchetto**, un modello frequente è quello di un sistema a **cod
 - Le prestazioni del sistema dipendono da:  
   - **Frequenza media degli arrivi** ($ \lambda $), cioè il ritmo con cui le richieste entrano nel sistema.  
   - **Tempo medio di servizio** ($ \bar{\Theta} $), ovvero la durata media per completare ogni richiesta.  
-  - Il prodotto $ A = \lambda \cdot \bar{\Theta} $ determina il traffico medio, secondo il **teorema di Little**, il traffico è determinato dal rapporto tra la capacità di trasporto e la quantità di dati trasportati. 
+  - Il prodotto $ A = \lambda \cdot \bar{\Theta} $ determina il traffico medio, secondo il **teorema di Little**, il traffico è determinato dal rapporto tra la capacità di trasporto e la quantità di dati trasportati ed essendo una quantità a dimensionale  ne è preferibile l'utilizzo (si usa come unità di misura lo Erlang). 
+
+### Utilizzazione
+  - L'**utilizzazione** di un sistema di comunicazione rappresenta la misura dell'efficienza con cui le risorse del sistema vengono impiegate per trasmettere dati utili.
+  - È definita come il rapporto tra il tempo in cui effettivamente trasporto delle informazioni ed il tempo totale misurato ($p=\frac{B(T)}{T}$) e potrà assumere un valore che oscilla tra 0 e 1.
+  - **Alta Utilizzazione**: Indica che il sistema sta operando vicino alla sua capacità massima.
+  - **Bassa Utilizzazione**: Può suggerire un uso inefficiente delle risorse disponibili, di conseguenza indica anche il numero medio di utenti serviti nel tempo.
+  - L'ideale sarebbe avere un'utilizzazione media che si discosta del 20-30% da quella massima per evitare che si creino disservizi legati all'immissione in coda di utenti.
+- Al diminuire del tempo di servizio ovvero della lunghezza dei pacchetti dimunuirà il tempo di attesa in coda, dunque conviene mandare tanti piccoli pacchetti su pochi router con una grandissima capacità piuttosto che distribuire quella capacità su molti più router lenti.
 
 ### Efficienza del protocollo
 L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rapporto tra risorse utilizzate e dati utili trasmessi:  
