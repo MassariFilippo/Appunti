@@ -207,6 +207,7 @@ L'approccio task-based semplifica la gestione di sistemi embedded complessi graz
   - **Software Applicativo**: programmi e applicazioni.
 
 (NON SICURO DELLA POSIZIONE DI QUESTA FORO SULLE SLIDEI CE NE SONO ALTRE DA VALUTARE)
+
 ![](img\IOT\overall.PNG)
 
 - **Livelli e Interfacce Principali**
@@ -337,3 +338,145 @@ L'approccio task-based semplifica la gestione di sistemi embedded complessi graz
     - Applicazioni semplici basate su *super-loop*.
     - Applicazioni a singolo scopo o singolo task (es. dimensioni < 32 KiB).
 
+## Internet of Things (IoT)  
+
+### Definizione e Origini
+- Il termine **Internet of Things (IoT)** è stato introdotto nel 1999 da Kevin Ashton, durante progetti sull'RFID al MIT.  
+  - Obiettivo iniziale: digitalizzare automaticamente il mondo fisico (oggetti, identificazioni, misurazioni, eventi) tramite sensori che inviano dati in tempo reale a Internet, evitando errori manuali.   
+- L'IoT ha un impatto significativo non solo sul piano tecnico ma anche sulla società, contribuendo a trasformazioni in vari settori.   
+
+### Elementi Principali  
+1. **“Things” (oggetti fisici)**:  
+   - Tipicamente sistemi embedded dotati di sensori e attuatori.  
+2. **Connettività e Comunicazione**:  
+   - Uso di protocolli specifici come MQTT e CoAP per comunicare tramite Internet.  
+   - Sfida nell'interoperabilità: l’IoT è considerato un sistema di sistemi.  
+3. **Aspetti Critici**:  
+   - **Sicurezza**: Identità, autenticazione e autorizzazione.  
+   - **Privacy e proprietà dei dati**: Protezione delle informazioni sensibili.   
+
+### Smart Things
+- Gli oggetti smart combinano oggetti fisici, sensori e connessione Internet.  
+- **Esempi di oggetti smart**:  
+  - Interruttori WeMo, termostati Google Nest, smartwatch Fitbit.  
+- Gli oggetti sono "incantati" (enchanted), secondo la visione di David Rose, integrando tecnologia avanzata in oggetti comuni.  
+
+### Il Ruolo degli Smartphone nell'IoT
+- Gli smartphone possono essere:  
+  - **Sistemi embedded**: Dotati di sensori per raccogliere dati e inviarli a Internet.  
+  - **Controller universali**: Interfacce utente per gestire dispositivi smart.  
+  - **Unità di controllo**: Governano dispositivi vicini tramite Bluetooth e connessioni con dispositivi indossabili.   
+
+### 5 Fasi dell’Evoluzione
+1. **Prodotti base**: Dispositivi semplici come un condizionatore.  
+2. **Prodotti smart**: Dispositivi programmabili, come un condizionatore con programmazione automatica.  
+3. **Prodotti connessi**: Dispositivi controllabili via Internet, con manutenzione predittiva basata sui dati raccolti.  
+4. **Sistemi di prodotti**: Dispositivi che collaborano (es. termostati che comunicano con tapparelle e pavimenti riscaldati).  
+   - **Standard e piattaforme**:  
+     - Iniziative come il Web of Things (WoT).  
+     - Piattaforme come Apple HomeKit, Amazon Echo, e Samsung SmartThings.  
+5. **Sistemi di sistemi**: Collaborazione tra elettrodomestici, sistemi di sicurezza, automobili e dispositivi medici.  
+
+### Dall’IoT all’IoT Industriale e Aziendale  
+- **Industry 4.0**  
+  - La quarta rivoluzione industriale si basa sull’integrazione di sensori, Big Data e sistemi in tempo reale per ottimizzare la produzione e i processi aziendali.  
+  - **Differenze tra Enterprise IoT e Industrial IoT (I-IoT)**:  
+    - **Enterprise IoT**: Termine generico per applicazioni IoT nel contesto aziendale.  
+    - **I-IoT**: Specifico per il settore manifatturiero e industriale.  
+
+### Architettura e Sistemi SCADA  
+- **Sistemi SCADA**: Supervisory Control and Data Acquisition (SCADA): Sistemi industriali per monitorare e controllare processi su larga scala.  
+  - **Elementi principali**:  
+    - **RTU (Remote Terminal Units)**: Rilevano e digitalizzano i dati dai sensori.  
+    - **PLC (Programmable Logic Controller)**: Supervisionano la raccolta dati e controllano i dispositivi.  
+    - **MTU (Master Terminal Unit)**: Server di controllo che elabora e archivia i dati.  
+    - **HMI (Human-Machine Interface)**: Interfaccia per operatori umani.  
+    - **Historian**: Software per l'archiviazione e analisi di dati temporali.  
+
+- **PLC e Standard IEC 61131-3**: Programmazione dei PLC tramite linguaggi standard come:  
+  - **Diagrammi Ladder** (visuale).  
+  - **Blocchi funzionali** (visuale).  
+  - **Testo strutturato** (testuale).  
+  - **Grafici sequenziali** (per programmi complessi). 
+
+### Standard OPC: Open Platform Communication
+- L'OPC è uno **strato software** che facilita l'interazione tra le sorgenti di dati industriali e i sistemi esterni.  
+- Funzioni principali:  
+  - Traduce i protocolli specifici di **PLC** (Programmable Logic Controller) o **DCS** (Distributed Control Systems), come Modbus e Profibus, in un'interfaccia standard.  
+  - Agisce come mediatore per sistemi SCADA e simili, convertendo richieste OPC generiche in richieste specifiche per i dispositivi, e viceversa.  
+  - Espone **tag**, serie temporali, eventi e sequenze di eventi (SOE) ai sistemi che implementano l'interfaccia OPC.  
+
+### Specifiche OPC 
+1. **OPC Classic**:  
+   - Introdotto nel 1995.  
+   - Basato su Windows, utilizza tecnologie come OLE e DCOM.  
+2. **OPC-UA (Unified Architecture)**:  
+   - Definito nel 2005 secondo lo standard **IEC 62451**.  
+   - Architettura orientata ai servizi (Service-Oriented Architecture, SOA).  
+   - Compatibile con dispositivi piccoli e non solo su Windows.  
+
+### Il Dispositivo Edge 
+- Situato fisicamente in fabbrica, il dispositivo edge collega:  
+  - **Dati industriali** tramite server OPC.  
+  - **Cloud** tramite gateway IoT. Il Cloud Computing è un modello di erogazione di servizi IT che consente l'accesso on-demand a un pool condiviso di risorse computazionali configurabili (ad esempio, reti, server, storage, applicazioni e servizi) che possono essere rapidamente fornite e rilasciate con uno sforzo minimo di gestione o interazione con il fornitore di servizi. Questo modello offre diversi vantaggi, tra cui scalabilità, flessibilità, efficienza dei costi e accessibilità globale.
+- I dispositivi edge sono fondamentali per l’implementazione dell'IIoT e si adattano a diversi approcci industriali.  
+
+### IoT e Cloud
+- **Caratteristiche Principali del Cloud nell'IoT**  
+  - **Capacità di invio dati** direttamente o indirettamente su Internet.  
+  - **Gestione di Big Data e Big Streams**:  
+    - Necessaria per i sensori che generano grandi volumi di dati non archiviabili localmente.  
+  - **Servizi offerti dal cloud**:  
+    - Gestione dispositivi.  
+    - Archiviazione e analisi dati offline.  
+    - Sistemi aperti per lo scambio dati tra applicazioni, incluse le mobile app.  
+
+### Modelli di Cloud Computing  
+  1. **IaaS** (Infrastructure as a Service):  
+    - Risorse virtualizzate come server, rete e storage.  
+  2. **PaaS** (Platform as a Service):  
+    - Runtime di esecuzione, database, server web, IDE.  
+  3. **SaaS** (Software as a Service):  
+    - Applicazioni come CRM, suite per ufficio, email.
+
+![](img\IOT\livelli_cloud.PNG)  
+
+### Domini Applicativi e Sfide dell'IoT
+- **Applicazioni e Smart City**  
+  - **Domini applicativi**: Logistica, smart home, eHealth, smart city.  
+  - **Smart City**:  
+    - Utilizzo di infrastrutture IoT e servizi cloud per ottimizzare i servizi urbani (Urban OS).  
+- **Sfide Critiche**  
+  1. **Sicurezza**: Protezione dei dispositivi e delle comunicazioni.  
+  2. **Privacy**: Garanzia della protezione dei dati personali.  
+  3. **Interoperabilità**: Standard e architetture di riferimento per l’integrazione a livello applicativo.  
+
+
+### Web of Things (WoT)
+- **Definizione e Obiettivi**  
+  - Il **Web of Things (WoT)** integra i dispositivi IoT nel Web, fornendo API RESTful.  
+    - Abilita l'interoperabilità a livello applicativo.  
+    - Supporta protocolli sottostanti come Zigbee, Bluetooth, 6LoWPAN.  
+
+- **Topologie di Rete nel WoT**  
+  1. **Star Topology**:  
+    - Nodo centrale che connette tutti gli altri dispositivi.  
+  2. **Mesh Topology**:  
+    - Nessun nodo centrale; i dispositivi inoltrano i messaggi creando una rete estesa e resiliente.  
+
+- **Vantaggi del WoT**  
+  - Maggiore semplicità di programmazione.  
+  - Integrazione rapida di dati e servizi.  
+  - Soluzioni ottimizzate per dispositivi embedded con basso consumo energetico.  
+
+### Mobile e Wearable Computing nell'IoT  
+
+- **Mobile Computing**  
+  - **Dispositivi mobili**: Smartphone e tablet.  
+    - Interfacce per interagire con dispositivi IoT.  
+    - Raccolta e analisi di dati tramite sensori.  
+
+- **Wearable Computing**  
+  - **Dispositivi indossabili**: Smartwatch, smartglasses.  
+    - Tipicamente connessi a dispositivi mobili tramite Bluetooth.  
+    - Estensione dell’interazione con ambienti fisici tramite realtà aumentata (AR) o mista (XR).  
