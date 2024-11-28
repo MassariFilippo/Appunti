@@ -1244,3 +1244,41 @@ La scelta dell’algoritmo di controllo e accesso è determinata da un compromes
 
 - **LAN ideale**:
   - In un sistema senza collisioni e con coordinamento perfetto, tutte le richieste ($ A_0 $) vengono soddisfatte ($ A_s = A_0 $) fino alla saturazione del canale.
+
+Propagazione reale (topologia bus)
+ • La trama impiega un tempo non 
+nullo per attraversare la LAN - t : A inizia la trasmissione- t + L/C : A termina la trasmissione- t + d/v : B riceve il primo bit- t + L/C + d/v : B riceve l’ultimo bit
+ A
+ L/C
+ T0
+ d/v
+ B
+ A B
+ A B
+ A
+ B
+ 49
+Efficienza con MAC ideale
+ • Una trama tiene impegnata la LAN per T0
+ • Il canale di trasmissione non può più essere usato al 100%
+ • Al massimo viene utilizzato per T secondi ogni T0
+ • Efficienza del MAC
+ 𝜼 = T/T0 = (L/C)/(L/C + d/v) = 1/(1+a)
+ • L’efficienza pone un limite superiore al massimo traffico 
+smaltito AS
+ A B
+ a = Cd/vL
+ è interpretabile come la 
+lunghezza della LAN 
+misurata in PDU
+ Cd/v bit
+ L bit
+ a = Cd/vL trame
+ 50
+Traffico smaltito dalla LAN
+ • A0 < 1/(1+a)- Tutte le trame in arrivo 
+vengono trasmesse- S = G = A0 
+• A0 ≥ 1/(1+a)- Il MAC non permette la 
+trasmissione di tutte le 
+trame- Parte delle trame viene 
+accodata- As = h = 1/(1+a
