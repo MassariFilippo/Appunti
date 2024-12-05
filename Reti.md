@@ -1009,7 +1009,7 @@ La **Legge di Edholm** prevede che la larghezza di banda delle reti di telecomun
 ### Attenuazione
 L'attenuazione è la riduzione della potenza del segnale man mano che si propaga attraverso un mezzo trasmissivo. L'attenuazione è misurata in decibel per kilometro (dB/km). L'attenuazione è un parametro critico nella progettazione delle reti di telecomunicazione, poiché influisce sulla qualità e sulla distanza massima di trasmissione del segnale. 
 - L'**attenuazione sul rame** crese esponenzialmente con la lunghezza del collegamento e con la radice della frequeza del seganle, avrà dunque un fattore di dispersione olto altro che si quantifica con la formula:
-  \[ A = 10 \log_{10} \left(\frac{P_t}{P_r}\right) = a \sqrt{f} L \]
+  $$ A = 10 \log_{10} \left(\frac{P_t}{P_r}\right) = a \sqrt{f} L $$
   Per limitare l'attenuazione di usa la tecnica del **twined pair** che considte del arrotolare a spirale le coppie per contenere la dimendione del campo generatoe dunque la sua dispersione, ne esistono di 2 tipi: **STP** schemati da un conduttore e **UTP** non schermati.
   I **Coassiali** permettono di raggiungere distaze maggiori, si copriranno distanze connesse da ripetitori (nodi semplificati) che collegano più tratte.
 - L'**attenuazione delle Radio comunicazioni** è la diminuzione della potenza del segnale radio mentre si propaga attraverso l'aria o altri mezzi. Questo fenomeno è influenzato da vari fattori, tra cui la distanza tra il trasmettitore e il ricevitore, la frequenza del segnale, le condizioni atmosferiche e la presenza di ostacoli fisici come edifici o montagne. Ad esempio, l'attenuazione cresce in maniera polinomiale con il quadrato della frequenza, e le antenne diventano più efficaci quando la frequenza aumenta.
@@ -1245,40 +1245,132 @@ La scelta dell’algoritmo di controllo e accesso è determinata da un compromes
 - **LAN ideale**:
   - In un sistema senza collisioni e con coordinamento perfetto, tutte le richieste ($ A_0 $) vengono soddisfatte ($ A_s = A_0 $) fino alla saturazione del canale.
 
-Propagazione reale (topologia bus)
- • La trama impiega un tempo non 
-nullo per attraversare la LAN - t : A inizia la trasmissione- t + L/C : A termina la trasmissione- t + d/v : B riceve il primo bit- t + L/C + d/v : B riceve l’ultimo bit
- A
- L/C
- T0
- d/v
- B
- A B
- A B
- A
- B
- 49
-Efficienza con MAC ideale
- • Una trama tiene impegnata la LAN per T0
- • Il canale di trasmissione non può più essere usato al 100%
- • Al massimo viene utilizzato per T secondi ogni T0
- • Efficienza del MAC
- 𝜼 = T/T0 = (L/C)/(L/C + d/v) = 1/(1+a)
- • L’efficienza pone un limite superiore al massimo traffico 
-smaltito AS
- A B
- a = Cd/vL
- è interpretabile come la 
-lunghezza della LAN 
-misurata in PDU
- Cd/v bit
- L bit
- a = Cd/vL trame
- 50
-Traffico smaltito dalla LAN
- • A0 < 1/(1+a)- Tutte le trame in arrivo 
-vengono trasmesse- S = G = A0 
-• A0 ≥ 1/(1+a)- Il MAC non permette la 
-trasmissione di tutte le 
-trame- Parte delle trame viene 
-accodata- As = h = 1/(1+a
+### Propagazione reale nella topologia bus
+- Nella **topologia bus**, il tempo di attraversamento di una trama sulla LAN non è istantaneo.  
+  - **Tempi di trasmissione**:  
+    1. $ t $: il nodo **A** inizia la trasmissione.  
+    2. $ t + L/C $: il nodo **A** completa la trasmissione.  
+    3. $ t + d/v $: il nodo **B** riceve il primo bit.  
+    4. $ t + L/C + d/v $: il nodo **B** riceve l’ultimo bit.  
+
+### Efficienza del MAC ideale
+- Una trama impegna la **LAN** per un tempo $ T_0 $, limitando l’uso totale del canale.  
+- Il canale può essere utilizzato al massimo per $ T $ secondi ogni $ T_0 $.  
+- **Formula dell’efficienza del MAC**:  
+  $$
+  \eta = \frac{T}{T_0} = \frac{L/C}{L/C + d/v} = \frac{1}{1 + a}
+  $$
+  - Dove $ a = C \cdot d / v \cdot L $.  
+    - $ a $ rappresenta la **lunghezza della LAN** in termini di PDU.  
+- **Limite superiore**:  
+  L’efficienza pone un limite massimo al traffico che la LAN può smaltire ($ A_s $).  
+
+### Traffico smaltito dalla LAN
+- La quantità di traffico smaltito dipende dal rapporto $ A_0 $ (traffico offerto) e $ 1 / (1 + a) $:  
+  1. **Se $ A_0 < 1/(1+a) $**:  
+     - Tutte le trame in arrivo vengono trasmesse.  
+     - $ S = G = A_0 $.  
+  2. **Se $ A_0 \geq 1/(1+a) $**:  
+     - Il MAC non è in grado di trasmettere tutte le trame.  
+     - Una parte delle trame viene accodata.  
+     - $ A_s = h = 1/(1+a) $.  
+
+Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **canale di trasmissione**.
+
+### Efficienza delle LAN
+- **Determinanti delle prestazioni**:
+  - Il parametro **a** influenza direttamente le prestazioni della LAN.
+  - **Lunghezza del canale**: maggiore è la lunghezza in termini di trame, minore è il traffico massimo smaltibile (massimo throughput).
+  - I protocolli ad **accesso multiplo** sono efficienti se le distanze e le velocità di trasmissione sono limitate.
+
+## Protocollo a contesa: ALOHA
+- **Origine**:  
+  - Sviluppato nel 1970 per connettere università delle Hawaii utilizzando stazioni terrestri e un satellite geostazionario.
+- **Modalità di funzionamento**:
+  - **CAP** (Channel Access Procedure):
+    - Le stazioni trasmettono senza verificare la disponibilità del canale.
+    - Il satellite ritrasmette i dati verso tutte le stazioni.
+    - La stazione trasmittente riceve la propria trama come conferma di trasmissione riuscita.
+  - **CRA** (Collision Resolution Algorithm):
+    - Collisioni avvengono quando più stazioni trasmettono contemporaneamente.
+    - Il satellite scarta le trame danneggiate.
+    - Le stazioni che rilevano una collisione avviano un **algoritmo di back-off**, ritrasmettendo in un momento scelto casualmente in un intervallo $ T_b $.
+
+### Prestazioni di ALOHA
+- **Traffico generato**:
+  - Gli arrivi di trame alle stazioni seguono un **processo di Poisson** con frequenza media $ \lambda $.
+  - Tenendo conto delle ritrasmissioni, il traffico effettivo verso il satellite è $ \lambda_r > \lambda $.
+- **Intervallo di vulnerabilità**:
+  - Definito come $ T_v = 2T $, rappresenta il periodo durante il quale una trasmissione può subire collisioni.
+
+### Throughput di ALOHA
+- **Calcolo**:
+  - Probabilità di trasmissione senza collisioni:  
+    $$
+    P_0 = e^{-2G}
+    $$
+  - Traffico smaltito ($ A_s $):  
+    $$
+    A_s = G \cdot e^{-2G}
+    $$
+- **Massimo throughput**:
+  - Valore massimo:  
+    $$
+    A_{Smax} = \frac{1}{2e} \approx 0.18 \quad \text{per } G = 0.5
+    $$
+
+### Slotted ALOHA
+- **Miglioramento**:
+  - Il tempo è diviso in **slot** di lunghezza $ T $.
+  - Le trame sono trasmesse in istanti predefiniti, riducendo l’intervallo di vulnerabilità a $ T $.
+- **Calcolo**:
+  - Probabilità di trasmissione senza collisioni:  
+    $$
+    P_0 = e^{-G}
+    $$
+  - Traffico smaltito ($ A_s $):  
+    $$
+    A_s = G \cdot e^{-G}
+    $$
+- **Massimo throughput**:
+  - Valore massimo:  
+    $$
+    A_{Smax} = \frac{1}{e} \approx 0.36 \quad \text{per } G = 1
+    $$
+
+### Algoritmi di back-off
+- **Aloha classico**:
+  - Ritrasmissione casuale nell’intervallo $ [0, T_b] $, con $ T_b \gg T $ per minimizzare collisioni.
+- **Aloha slotted**:
+  - Due approcci:
+    - Ritrasmissione in uno slot scelto casualmente.
+    - Ritrasmissione nel primo slot disponibile con probabilità $ p_b $.
+
+### Stabilità del sistema
+- **Equilibrio**:
+  - In condizioni stabili: $ A_0 = A_s $.
+  - Se $ A_0 > A_{Smax} $, il sistema accumula traffico non smaltito, portando a instabilità.
+- **Numero finito di stazioni**:
+  - Il traffico offerto $ A_0 $ dipende dal numero di stazioni attive ($ k $) e dalle condizioni del sistema.
+
+### Controlled Aloha
+- **Back-off esponenziale**:
+  - Aumenta progressivamente $ T_b $ in caso di collisioni, raddoppiando l’intervallo dopo ogni tentativo fallito.
+  - Garantisce stabilità ma può introdurre problemi di equità.
+
+### Derivati del protocollo ALOHA
+- **Applicazioni**:
+  - Utilizzabile su qualsiasi mezzo trasmissivo e topologia.
+  - Adatto per reti con alti ritardi di propagazione (es. satelliti).
+- **Evoluzione**:
+  - **CSMA** (Carrier Sensing Multiple Access):
+    - Sfrutta la rilevazione di segnale sul canale prima della trasmissione.
+    - Prevede algoritmi di back-off in caso di collisione.
+
+### CSMA e varianti
+- **Intervallo di vulnerabilità**:
+  - Per CSMA: $ T_v = 2\tau $, con $ \tau $ tempo di propagazione.
+- **Miglioramenti**:
+  - **CSMA/CD** (Collision Detection):
+    - Rileva collisioni durante la trasmissione e interrompe immediatamente il flusso dati.
+    - Adottato in Ethernet con codifica **Manchester**, che facilita il sincronismo e il rilevamento delle collisioni.

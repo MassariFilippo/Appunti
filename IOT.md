@@ -480,3 +480,205 @@ L'approccio task-based semplifica la gestione di sistemi embedded complessi graz
   - **Dispositivi indossabili**: Smartwatch, smartglasses.  
     - Tipicamente connessi a dispositivi mobili tramite Bluetooth.  
     - Estensione dell’interazione con ambienti fisici tramite realtà aumentata (AR) o mista (XR).  
+
+## Comunicazione nei Sistemi M2M e IoT
+
+- **Ruolo della comunicazione**:
+  - Fondamentale per consentire lo scambio di dati tra dispositivi e sottosistemi.
+- **Tipologie di connessione**:
+  - **Cablate**: utilizzano moduli come shield/board con porte Ethernet e supporto per protocollo 802.11.
+  - **Wireless**: impiegano moduli trasmettitori/ricevitori integrati o USB dongle.
+- **Interfaccia microcontrollore-modulo**:
+  - Avviene tramite **porta seriale**.
+
+### Connessione Internet nei Dispositivi Embedded
+- **Modalità principali**:
+  1. **Connessione indiretta**:
+     - Comunicazione tramite un nodo intermediario che funge da gateway.
+     - Tecnologie: ZigBee, Bluetooth.
+  2. **Connessione diretta**:
+     - Modulo ricevitore/trasmettitore montato direttamente sul dispositivo.
+     - Tecnologie: 3G/4G/5G, Wi-Fi.
+- **Protocolli di riferimento**:
+  - **IP**, **TCP/IP**, **UDP/IP**.
+
+### Architettura ISO-OSI e Internet Stack
+- Struttura a strati per standardizzare la comunicazione.
+- Nello stack Internet, IP funge da "collo di bottiglia" permettendo l'interoperabilità tra protocolli superiori e inferiori.
+
+### Comunicazioni Wireless
+- **Principi di base**:
+  - Utilizzano segnali elettromagnetici in frequenza radio (RF).
+  - Classificazione:
+    - **Terrestre**: basata su infrastrutture a terra.
+    - **Satellitare**: basata su infrastrutture in orbita terrestre.
+- **Categorie principali**:
+  - **Short Range**: decine di metri (Bluetooth, Visible Light Communication).
+  - **Medium Range**: centinaia di metri (Wi-Fi, WPAN).
+  - **Long Range**: distanze superiori a 1 miglio (reti cellulari, LPWA).
+
+### Topologie di Rete Wireless
+- **Tipologie utilizzate**:
+  - **Punto a Punto (P2P)**.
+  - **Stella**.
+  - **Albero (Tree)**.
+  - **Mesh**: comunicazione ridondante e resiliente.
+
+### Tecnologie Wireless
+#### Wi-Fi
+- Standard: **IEEE 802.11x**.
+- Caratteristiche principali:
+  - Velocità: fino a 54 Mbps.
+  - Distanza: ~150 metri.
+  - Frequenza: 5 GHz.
+- Limiti:
+  - Elevato consumo energetico, non ideale per sistemi embedded.
+
+#### Reti Cellulari (pre-5G)
+- Tecnologie: GPRS, 3G, WiMax, LTE (4G).
+- Caratteristiche:
+  - Velocità: da 80 Kbps (GPRS) a vari Mbps (3G/4G).
+  - Portata: chilometri.
+  - Frequenze: 800-1900 MHz.
+- Consumo elevato e latenza incompatibile alle necessità, poco adatte per IoT.
+
+#### 5G
+- Progettato per IoT:
+  - Velocità: fino a 10 Gbps.
+  - Bassa latenza: 1-10 ms.
+  - Affidabilità e flessibilità elevate.
+  - Ideale per sensori, wearable e applicazioni IoT.
+
+#### Bluetooth (BT)
+Bluetooth è uno standard largamente adottato per la trasmissione di dati in reti personali wireless (WPAN). La sua flessibilità e basso consumo energetico lo rendono ideale per applicazioni su dispositivi di consumo e IoT.  
+
+- **Caratteristiche Generali**
+  - **Standard**: **IEEE 802.15.1**, inizialmente sviluppato da Ericsson nel 1994 e formalizzato dal Bluetooth Special Interest Group (SIG), che include Sony Ericsson, IBM, Intel, Toshiba e Nokia.
+  - **Ambito di applicazione**: 
+    - Ampiamente utilizzato in dispositivi come smartphone, tablet, laptop, stampanti, fotocamere digitali.
+    - Ideale per la comunicazione a breve distanza (fino a decine di metri).  
+  - **Obiettivi principali**:  
+    - Ridotto consumo energetico.  
+    - Comunicazione a basso costo.  
+    - Facilità di connessione dinamica.  
+
+- **Tecnologia e Prestazioni**
+  - **Frequenza operativa**: 2,45 GHz (banda libera).  
+  - **Tecnica di trasmissione**: **Frequency hopping** (cambi di frequenza 1.600 volte al secondo per ridurre le interferenze).  
+  - **Velocità**:
+    - Versioni 1.1 e 1.2: fino a 723,1 kbit/s.
+    - Versione 2.0: modalità ad alta velocità fino a 3 Mbit/s (ma con maggiore consumo energetico).  
+    - Versioni successive ottimizzano il consumo energetico con segnali più corti rispetto al Bluetooth 1.2.  
+
+- **Classi di Dispositivi**
+  - **Classi BT**:
+    - I dispositivi Bluetooth si dividono in quattro classi, basate su consumo energetico e portata:
+      - **Classe 1**: Alta potenza, portata fino a 100 metri.  
+      - **Classe 2**: Potenza intermedia, portata di circa 10 metri (la più comune).  
+      - **Classe 3**: Bassa potenza, portata ridotta a pochi metri.  
+
+- **Topologie di Rete**
+  - **Piconet**:
+    - Architettura **master-slave**.
+    - Un master può gestire fino a 7 dispositivi slave.  
+    - La comunicazione è sincronizzata con il clock del master.
+  - **Scatternet**:
+    - Interconnessione tra più piconet.  
+    - Un dispositivo slave può partecipare a più piconet contemporaneamente.  
+    - Un master di una piconet può essere slave in un'altra.  
+    - Possibilità di formare reti più grandi e flessibili.  
+
+- **Tipi di Connessione**
+  - **Connessione orientata**: Richiede l'instaurazione di una connessione prima di inviare dati.  
+  - **Connessione senza stato**: Non richiede connessione; i pacchetti vengono inviati direttamente conoscendo l'indirizzo del ricevitore.  
+  - **Tipologie specifiche**:
+    - **ACL** (Asynchronous ConnectionLess): Trasmissione dati best-effort.  
+    - **SCO** (Synchronous Connection Oriented): Trasmissione in tempo reale, adatta a dati multimediali.
+
+- **Stack del Protocollo**
+  - Organizzato in strati, simile all'architettura ISO/OSI.  
+  - Include livelli fisici e data-link come minimo.  
+  - **RFCOMM**:
+    - Protocollo utilizzato per emulare porte seriali RS-232, consentendo una connessione senza soluzione di continuità con dispositivi compatibili.
+
+- **Profili Bluetooth**
+  Per facilitare l'adozione e l'uso, sono stati definiti profili applicativi come:
+    - **GAP** (Generic Access Profile).  
+    - **SDAP** (Service Discovery Application Profile).  
+    - **SPP** (Serial Port Profile).  
+    - **HSP** (Headset Profile).  
+    - **FTP** (File Transfer Profile).  
+    - Altri, per applicazioni specifiche come intercomunicazione, trasferimento file, sincronizzazione, etc.
+
+- **Sicurezza**
+  - Algoritmo **SAFER+** per l'autenticazione dei dispositivi e la generazione di chiavi per la crittografia dei dati.
+
+- **Evoluzione di Bluetooth**
+  - **Versione 4.0 (Bluetooth Smart)**:
+    - Include:
+      - **Classic Bluetooth**: Versioni precedenti.  
+      - **Bluetooth High Speed**: Basato su Wi-Fi.  
+      - **Bluetooth Low Energy (BLE)**: Specificamente progettato per IoT.  
+    - Caratteristiche BLE:
+      - Consumo energetico ridotto.  
+      - Comunicazione più reattiva.  
+      - Implementazioni: 
+        - **Single-mode** (solo stack BLE).  
+        - **Dual-mode** (integrazione con funzioni Classic).
+  - **Bluetooth 5**:
+    - Disponibile dal 2016, ottimizzato per IoT.
+    - Portata quadruplicata a pari consumo.
+    - Velocità raddoppiata fino a 2 Mbps in modalità low-power.
+
+- Bluetooth Low Energy (BLE)
+  - Evoluzione di BT, introdotta con **Bluetooth 4.0**.
+  - Caratteristiche:
+    - Minore consumo energetico.
+    - Comunicazione ottimizzata per IoT.
+    - Presenta la capacità di aggiornare i collegamenti in maniera dinamenica
+  - Versione **Bluetooth 5**:
+    - Area di trasmissione quadruplicata con lo stesso consumo.
+    - Velocità raddoppiata fino a 2 Mbps.
+
+![](img\IOT\bt.PNG)
+
+### Standard IEEE 802.15.4
+- Standard per WPAN a basso costo e bassa velocità.
+- Caratteristiche:
+  - Frequenza: 2.4 GHz, 900 MHz, 868 MHz.
+  - Velocità: fino a 250 kbps.
+  - Portata: 100 m - 1 Km.
+- Applicazioni:
+  - Automazione domestica e industriale.
+  - Reti di sensori wireless.
+- Implementazioni:
+  - **ZigBee**: basso consumo, ideale per IoT.
+  - **6LoWPAN**: ottimizzazione IPv6 per reti a bassa potenza.
+
+### ZigBee
+- Basato su IEEE 802.15.4.
+- Dispositivi:
+  - **Coordinator**: unico per rete, gestisce sicurezza e configurazione.
+  - **Router**: instrada dati tra dispositivi.
+  - **End Device**: limitate capacità di comunicazione.
+- Topologie:
+  - **Stella**, **Albero**, **Mesh**.
+
+### Thread Protocol
+- Protocollo IPv6 per WPAN in **mesh network**.
+- Progettato per:
+  - Automazione domestica e connettività cloud.
+  - Sicurezza, affidabilità e basso consumo.
+
+### Matter
+- Standard aperto per la connettività smart home e IoT (dal 2022).
+- Supporto da giganti come Amazon, Apple e Google.
+- Obiettivo: interoperabilità tra dispositivi smart, sostituendo protocolli proprietari.
+
+### Protocolli di Livello Applicativo
+- **Tipologie**:
+  - **Generici**: SCADA, UDP/TCP.
+  - **Specifici per IoT**:
+    - **MQTT**: leggero, basato su pubblicazione/sottoscrizione.
+    - **CoAP**: ottimizzato per reti a bassa potenza e perdita.
+
