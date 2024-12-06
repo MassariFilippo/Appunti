@@ -3,6 +3,7 @@
 </script>
 
 # APPUNTI RETI DI TELECOMUNICAZIONE
+
 ## Protocolli di Internet e IP
 
 ### Architettura di Internet
@@ -38,7 +39,7 @@ Il pacchetto IP è composto da:
 - **Prima riga (identificazione)**
   - **Version (4 bit)**: versione del protocollo IP (attualmente 4)
   - **IHL (Internet Header Length) (4 bit)**: lunghezza dell'intestazione in parole da 32 bit
-  - **Type of Service (8 bit)**: indica il tipo di servizio richiesto (continua ad essere un problema non risolto)
+  - **Type of Service (8 bit)**: indica il tipo di servizio richiesto (continua ad essere un problema non risolto infatti molti router ignoravano questo campo o lo trattavano in modi diversi, portando a un'applicazione inconsistente)
   - **Total Length (16 bit)**: lunghezza totale del datagramma in byte (fino a 65,535 byte)
 
 - **Seconda riga (controllo di dimensione e segmentazione del pacchetto)**
