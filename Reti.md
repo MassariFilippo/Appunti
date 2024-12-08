@@ -1790,7 +1790,7 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
 - **DIFS (DCF InterFrame Spacing):** Usato per l'accesso al canale da parte delle stazioni.
 - **EIFS (Extended InterFrame Spacing):** Usato quando una stazione riceve un frame inatteso, segnalando l'errore.
 
-## Struttura della Trama **
+### Struttura della Trama
 - **Tipo (Type):** Indica il tipo di trama (data, control, management).
 - **Sottotipo (Subtype):** Indica sottocategorie come RTS, CTS, ACK, etc.
 - **Durata (Duration):** Indica la durata del frame e dell'eventuale ACK.
