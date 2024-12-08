@@ -3,6 +3,7 @@
 </script>
 
 # APPUNTI RETI DI TELECOMUNICAZIONE
+
 ## Protocolli di Internet e IP
 
 ### Architettura di Internet
@@ -38,7 +39,7 @@ Il pacchetto IP è composto da:
 - **Prima riga (identificazione)**
   - **Version (4 bit)**: versione del protocollo IP (attualmente 4)
   - **IHL (Internet Header Length) (4 bit)**: lunghezza dell'intestazione in parole da 32 bit
-  - **Type of Service (8 bit)**: indica il tipo di servizio richiesto (continua ad essere un problema non risolto)
+  - **Type of Service (8 bit)**: indica il tipo di servizio richiesto (continua ad essere un problema non risolto infatti molti router ignoravano questo campo o lo trattavano in modi diversi, portando a un'applicazione inconsistente)
   - **Total Length (16 bit)**: lunghezza totale del datagramma in byte (fino a 65,535 byte)
 
 - **Seconda riga (controllo di dimensione e segmentazione del pacchetto)**
@@ -130,8 +131,6 @@ Il pacchetto IP è composto da:
   - **Interface**: L'interfaccia di rete attraverso cui inviare il pacchetto.(Mi dice da dove fare la richiesta Arp qualora fosse necessarai)
   - **Metric**: Rappresenta il costo del percorso, utilizzato per determinare il percorso migliore quando sono disponibili più opzioni.
 Questa struttura permette ai nodi di instradare i pacchetti in modo efficiente, scegliendo il percorso ottimale basato sulle informazioni disponibili nella tabella di instradamento.
-
-!CHIEDERE SPEIEGAZIONE DI COME FARE LA ARP UNA VOLTA CHE SI ARRIVA AL GATWAY DELLA NETWORK IP GIUSTA!
 
 - **Utilizzo della Tabella di Instradamento da parte dei Gateway**: I gateway utilizzano la tabella di instradamento per determinare il percorso ottimale per ogni pacchetto. La tabella contiene informazioni su destinazioni, netmask, gateway e interfacce. Quando un pacchetto arriva al gateway, questo esamina l'indirizzo IP di destinazione e lo confronta con le voci nella tabella di instradamento. Il gateway seleziona la voce con la netmask più lunga che corrisponde all'indirizzo di destinazione (Longest Prefix Match) e inoltra il pacchetto attraverso l'interfaccia appropriata. Questo processo evita il sovraccarico della rete con broadcast inutili, poiché il gateway invia il pacchetto solo all'interfaccia specifica che conduce verso la destinazione finale. In questo modo, i pacchetti vengono instradati in modo efficiente e preciso, riducendo il traffico di rete e migliorando le prestazioni complessive. Se non trova una corrispondenza, scarta il pacchetto e comunica un errore. Per trovare la corrispondenza migliore, avendo l'IP di destinazione, il gateway procede con il processo di table lookup durante il quale, partendo dalla netmask con valore più grande e andando a decrescere, prende la netmask e fa l'AND bit a bit con l'IP di destinazione del datagramma e lo confronta con l'IP di destinazione della singola riga. Qualora il risultato fosse uguale, la corrispondenza è trovata (abbiamo trovato il ricevente); altrimenti, continua con le altre righe e tiene il risultato più simile che quindi avvicina di più all'host finale.
 
