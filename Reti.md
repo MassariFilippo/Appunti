@@ -587,33 +587,21 @@ Contestualmente, la produzione della FIB genera anche dati di output per i proto
   - **Border Gateway Protocol (BGP)**: Successore di EGP.
 
 ### Sistemi Autonomi (AS)
-- Definizione: Un AS è un insieme di router gestiti da un’unica amministrazione e usa un unico protocollo di routing. Con CIDR, un AS è identificato da un insieme di prefissi IP gestiti in modo unitario. In sintesi estrema potremmo dire che è l'insieme di un prefisso di network.
-- Esempi di AS: GARR (rete italiana degli enti di ricerca), infatti l'Unibo da sola non è un AS ma passa attraverso il GARR come tante altre università finendo per risultare un unico AS.
+- **Definizione**: Un AS è un insieme di router gestiti da un’unica amministrazione e usa un unico protocollo di routing. Con CIDR, un AS è identificato da un insieme di prefissi IP gestiti in modo unitario. In sintesi estrema potremmo dire che è l'insieme di un prefisso di network.
+- **Esempi di AS**: GARR (rete italiana degli enti di ricerca), infatti l'Unibo da sola non è un AS ma passa attraverso il GARR come tante altre università finendo per risultare un unico AS.
 - Un AS svolge compiti di import e di export rispettivamente:
   - **Import**: L'AS riceve e accetta le rotte pubblicizzate da altri AS ritenuti affidabili, aggiornando le proprie tabelle di routing per includere queste nuove rotte.
   - **Export**: L'AS pubblicizza le proprie rotte e le rotte apprese da altri AS verso i suoi vicini che, qualora lo ritenessero affidabile, permetterebbero loro di aggiornare le proprie tabelle di routing con queste informazioni. (RADb sito per sperimentare questo genere di cose)
 
 ### Internet Service Provider (ISP)
 Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente si registra come AS.
-   - **Classificazione**:
-     - **Tier 1**: ISP con copertura globale, non necessariamente tutto il mondo, ma grandi coperture su intere 
-     **internet region**, ovvero porzioni di aree geografiche coperte da una connessione internet, 
-     senza necessità di acquistare connettività.
-     - **Tier 2**: Acquista connettività da Tier 1.
-     - **Tier 3**: ISP locali che acquistano connettività da Tier 2 o altri ISP locali.
-  - **Peering e interconnessione**: Il peering tra ISP non implica pagamenti diretti; è una relazione neutrale. 
-  Gli IXP facilitano l’interconnessione tra ISP. Gli ISP nelle loro zone di pertinenza hanno dei POP (Points of Presence) 
-  che sono punti di raccolta collegati tra loro da maglie. Tali POP si trovano in punti strategici come città e snodi 
-  commerciali. Se ci sono più ISP in una stessa internet region, i POP saranno in posizioni limitrofe per entrambi gli ISP. 
-  Tuttavia, non è quasi mai possibile farli comunicare direttamente, poiché gli ISP si propongono come AS (Autonomous Systems) 
-  e quindi sarà necessario far avvenire la comunicazione in un punto di "contatto" che talvolta potrebbe essere molto distante 
-  dal POP geograficamente più vicino. Tale collegamento unico deve essere molto robusto data la sua unicità. Esso è fornito da 
-  compagnie dette **Internet Exchange** che forniscono tale infrastruttura detta **Internet Exchange Point** (IXP).
-
-   (MANCA REGISTRAZIONE DELLA LEZIONE DEL 28 OTTOBRE)
+- **Classificazione**:
+  - **Tier 1**: ISP con copertura globale, non necessariamente tutto il mondo, ma grandi coperture su intere **internet region**, ovvero porzioni di aree geografiche coperte da una connessione internet, senza necessità di acquistare connettività.
+  - **Tier 2**: Acquista connettività da Tier 1.
+  - **Tier 3**: ISP locali che acquistano connettività da Tier 2 o altri ISP locali.
+- **Peering e interconnessione**: Il peering tra ISP non implica pagamenti diretti; è una relazione neutrale. Gli ISP nelle loro zone di pertinenza hanno dei POP (Points of Presence) che sono punti di raccolta collegati tra loro da maglie. Tali POP si trovano in punti strategici come città e snodi commerciali. Se ci sono più ISP in una stessa internet region, i POP saranno in posizioni limitrofe per entrambi gli ISP. Tuttavia, non è quasi mai possibile farli comunicare direttamente, poiché gli ISP si propongono come AS e quindi sarà necessario far avvenire la comunicazione in un punto di "contatto" che talvolta potrebbe essere molto distante dal POP geograficamente più vicino. Tale collegamento unico deve essere molto robusto data la sua unicità. Esso è fornito da compagnie dette **Internet Exchange** che forniscono tale infrastruttura detta **Internet Exchange Point** (IXP).
 
 ### Protocollo RIP (Routing Information Protocol)
-
 - **Caratteristiche**:  
   RIP è un protocollo di routing di tipo **distance vector**, il che significa che le sue decisioni di routing si basano sulla 
   distanza in termini di hop count. Utilizza messaggi di tipo **Request** per richiedere informazioni di routing e **Response** 
@@ -671,69 +659,66 @@ Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente
     disservizi e problemi di sicurezza.
 
 ### RIP versione 2
-RIP versione 2 introduce miglioramenti significativi rispetto alla versione 1, affrontando alcune delle sue 
-limitazioni principali. Le modifiche includono:
+RIP versione 2 introduce miglioramenti significativi rispetto alla versione 1, affrontando alcune delle sue limitazioni principali. Le modifiche includono:
   - **Supporto per Subnetting e CIDR**: RIP v2 supporta il subnetting e il Classless Inter-Domain Routing (CIDR), permettendo una gestione più efficiente degli indirizzi IP.
   - **Autenticazione**: RIP v2 include meccanismi di autenticazione per migliorare la sicurezza delle informazioni di routing. Questo aiuta a prevenire l'inserimento di informazioni di routing non autorizzate.
   - **Trasporto di Maschere di Sottorete**: RIP v2 trasporta le maschere di sottorete insieme agli indirizzi IP, consentendo una maggiore flessibilità nella configurazione delle reti.
   
-  - **Struttura dei Pacchetti RIP v2**:
-  I pacchetti RIP v2 mantengono una struttura simile a quella della versione 1, ma con alcune aggiunte:
-    - **Command**: Indica se il pacchetto è una richiesta (Request) o una risposta (Response).
-    - **Version**: Specifica la versione del protocollo RIP utilizzata (2 per RIP v2).
-    - **Zero**: Campo riservato, impostato a zero.
-    - **Address Family Identifier (AFI)**: Indica il tipo di indirizzo contenuto nel campo di indirizzo IP.
-    - **Route Tag**: Campo aggiuntivo per identificare le rotte esterne.
-    - **IP Address**: L'indirizzo IP della rete di destinazione.
-    - **Subnet Mask**: La maschera di sottorete associata all'indirizzo IP.
-    - **Next Hop**: L'indirizzo IP del prossimo hop verso la destinazione.
-    - **Metric**: Il numero di hop necessari per raggiungere la rete di destinazione.
+- **Struttura dei Pacchetti RIP v2**:
+I pacchetti RIP v2 mantengono una struttura simile a quella della versione 1, ma con alcune aggiunte:
+  - **Command**: Indica se il pacchetto è una richiesta (Request) o una risposta (Response).
+  - **Version**: Specifica la versione del protocollo RIP utilizzata (2 per RIP v2).
+  - **Zero**: Campo riservato, impostato a zero.
+  - **Address Family Identifier (AFI)**: Indica il tipo di indirizzo contenuto nel campo di indirizzo IP.
+  - **Route Tag**: Campo aggiuntivo per identificare le rotte esterne.
+  - **IP Address**: L'indirizzo IP della rete di destinazione.
+  - **Subnet Mask**: La maschera di sottorete associata all'indirizzo IP.
+  - **Next Hop**: L'indirizzo IP del prossimo hop verso la destinazione.
+  - **Metric**: Il numero di hop necessari per raggiungere la rete di destinazione.
 
-Questi miglioramenti rendono RIP v2 più adatto per l'uso in reti moderne, 
-offrendo maggiore flessibilità e sicurezza rispetto alla versione precedente.
+
+### Link-State Routing Protocol
+Un protocollo di routing di tipo link-state funziona in modo diverso rispetto ai protocolli di routing a Distance Vector infatti :
+
+- **Conoscenza della Topologia Completa**:Ogni router mantiene una mappa completa della topologia della rete, conosciuta come la Link-State Database (LSDB). Questa mappa include informazioni su tutti i router e i collegamenti nella rete.
+- **Annunci di Stato del Collegamento (LSA)**:I router inviano periodicamente annunci di stato del collegamento (Link-State Advertisements, LSA) ai loro vicini.Gli LSA contengono informazioni sui collegamenti diretti del router, come lo stato del collegamento e il costo associato.
+- **Dijkstra**: Ogni router utilizza l'algoritmo di Dijkstra per calcolare il percorso più breve verso ogni destinazione nella rete. L'algoritmo di Dijkstra utilizza le informazioni contenute nella LSDB per costruire un albero dei percorsi più brevi, noto come Shortest Path Tree (SPT).
+- **Convergenza Rapida**: I protocolli di tipo link-state tendono a convergere più rapidamente rispetto ai protocolli a vettore di distanza, poiché ogni router ha una visione completa della rete e può calcolare i percorsi in modo indipendente.
 
 ### Open Shortest Path First (OSPF)
-**Open Shortest Path First (OSPF)** è un **protocollo di routing** largamente adottato, standardizzato nella versione 2 (RFC 2328), e tra i più diffusi nell’ambito delle **reti interne (IGP)**. È di tipo **link-state** e usa pacchetti **Link State Advertisement (LSA)** per condividere informazioni di rete con altri router. OSPF è incapsulato direttamente nel **protocollo IP**, con un protocol number di valore 89 per distinguere i pacchetti OSPF dagli altri.
-
-### Struttura Gerarchica e Aree di OSPF
-OSPF semplifica il **routing** in reti complesse suddividendole in **aree**, interconnesse tramite un’**area backbone** (Area 0). Questa suddivisione crea una struttura **gerarchica** che riduce il carico sui router e consente la **comunicazione tra aree** tramite router specifici. I principali tipi di router in OSPF includono:
+Protocollo di routing largamente adottato, standardizzato nella versione 2 (RFC 2328), e tra i più diffusi nell’ambito delle **reti interne (IGP)**. È di tipo **link-state** e usa pacchetti **Link State Advertisement (LSA)** per condividere informazioni di rete con altri router. OSPF è incapsulato direttamente nel **protocollo IP**, con un protocol number di valore 89 per distinguere i pacchetti OSPF dagli altri. OSPF semplifica il **routing** in reti complesse suddividendole in **aree**, interconnesse tramite un’**area backbone** (Area 0). Questa suddivisione crea una struttura **gerarchica** che riduce il carico sui router e consente la **comunicazione tra aree** tramite router specifici. I principali tipi di router in OSPF includono:
 - **Internal Router**, interni a un’area specifica
 - **Area Border Router (ABR)**, che collegano più aree
 - **Backbone Router**, che gestiscono le connessioni con l’area centrale
 - **AS Boundary Router (ASBR)**, responsabili della comunicazione con **Autonomous Systems (AS)** esterni utilizzando protocolli **EGP**
 
-### Tipi di Route
-OSPF gestisce vari tipi di **route**:
-- **Route intra-area**: informazioni di routing interne all’area
-- **Route inter-area**: aggiornamenti tra aree diverse
-- **Route esterne**: route da altri protocolli o AS, inoltrate tramite l’**ASBR**
+- OSPF gestisce vari tipi di **route**:
+  - **Route intra-area**: informazioni di routing interne all’area
+  - **Route inter-area**: aggiornamenti tra aree diverse
+  - **Route esterne**: route da altri protocolli o AS, inoltrate tramite l’**ASBR**
 
-### Tipologie di Aree
-Le aree di OSPF possono assumere configurazioni diverse per ottimizzare il routing:
-- **Area normale**: accetta tutte le route
-- **Stub area**: utilizza un **default route** per destinazioni esterne, con minori requisiti di memoria
-- **Totally stub area**: consente solo route interne e il default route
-- **Not So Stubby Area (NSSA)**: permette di importare alcune route esterne, mantenendo limitata la propagazione
+- Le aree di OSPF possono assumere configurazioni diverse per ottimizzare il routing:
+  - **Area normale**: accetta tutte le route
+  - **Stub area**: utilizza un **default route** per destinazioni esterne, con minori requisiti di memoria
+  - **Totally stub area**: consente solo route interne e il default route
+  - **Not So Stubby Area (NSSA)**: permette di importare alcune route esterne, mantenendo limitata la propagazione
 
-### Funzionalità Avanzate di OSPF
-OSPF offre funzionalità aggiuntive per migliorare l’efficienza della rete:
-- **Bilanciamento del carico**: ripartisce il traffico su percorsi multipli di uguale costo
-- **Autenticazione**: protegge lo scambio di informazioni con **password** o **crittografia**
-- **Quality of Service (QoS)**: seleziona percorsi in base al **Type of Service**, consentendo livelli di servizio differenziati
+- OSPF offre funzionalità aggiuntive per migliorare l’efficienza della rete:
+  - **Bilanciamento del carico**: ripartisce il traffico su percorsi multipli di uguale costo
+  - **Autenticazione**: protegge lo scambio di informazioni con **password** o **crittografia**
+  - **Quality of Service (QoS)**: seleziona percorsi in base al **Type of Service**, consentendo livelli di servizio differenziati
 
-### Tipologie di Reti Supportate
+### Tipologie di Reti Supportate da OSPF
 OSPF supporta **reti punto-punto** e **reti multi-accesso**, tra cui **Broadcast Multi-Access (LAN 802)** e **Non-Broadcast Multi-Access** (ad esempio, X.25, ATM). In queste reti, utilizza una struttura a **stella virtuale** per ridurre le connessioni necessarie. In reti multi-accesso, si usano due ruoli chiave:
 - **Designated Router (DR)**, per ottimizzare la comunicazione. Qui i nodi si accorderanno su che debba essere considerato 
 il disegnato in modo tale da usarlo come centro ed evitare di sovraccaricare gli altri con un flusso inutilmente elevato di pacchetti.
 - **Backup Designated Router (BDR)**, per garantire **affidabilità** dato che di fatto il diseganto non ha alcuna peculiarità rispetto agli altri.
 
 ### Identificatori e Priorità dei Router
-Ogni router OSPF ha un **Router ID** univoco e può avere una **priorità** (da 0 a 255) per determinare l’elezione del DR, tolti coloro che hanno priorità scelto si va a sciegliere chi ha la priorità più alta e lo si elegge. Nelle reti multi-accesso, il **DR** coordina le comunicazioni e ottimizza lo scambio di informazioni tra router **adiacenti** ovvero tutti quei router connessi in maniaera diretta e che utilizzano effettivamente tale connessione per comunicsre, se non lo facessere nonostante siano collegati direttamente sarebbero detti **vicini**.
+Ogni router OSPF ha un **Router ID** univoco e può avere una **priorità** (da 0 a 255) per determinare il **Designated Router (DR)**, si anrà infatti a sciegliere chi ha la priorità più alta come ruoter disignato. Nelle reti multi-accesso, il DR coordina le comunicazioni e ottimizza lo scambio di informazioni tra **router adiacenti** ovvero tutti quei router connessi in maniaera diretta e che utilizzano effettivamente tale connessione per comunicare, se non lo facessere nonostante siano collegati direttamente sarebbero detti **router vicini**.
 
 ### Struttura del Pacchetto OSPF
-
 Il pacchetto OSPF è composto da diverse sezioni chiave, ciascuna con un ruolo specifico nel protocollo:
-
 1. **Header OSPF**:
   - **Version**: La versione del protocollo OSPF.
   - **Type**: Il tipo di pacchetto OSPF (Hello, Database Description, Link State Request, Link State Update, Link State Acknowledge).
@@ -750,8 +735,6 @@ Il pacchetto OSPF è composto da diverse sezioni chiave, ciascuna con un ruolo s
   - **Link State Request Packet**: Richiede informazioni specifiche sullo stato dei collegamenti.
   - **Link State Update Packet**: Trasporta aggiornamenti sullo stato dei collegamenti.
   - **Link State Acknowledge Packet**: Conferma la ricezione degli aggiornamenti sullo stato dei collegamenti.
-
-Questa struttura modulare consente a OSPF di gestire efficacemente la comunicazione e la sincronizzazione delle informazioni di routing tra i router.
 
 ### Protocolli di Comunicazione in OSPF
 OSPF utilizza tre **sottoprotocolli** principali:
@@ -778,18 +761,10 @@ Le **stub area** sono progettate per ottimizzare le risorse di rete in configura
    instradare i pacchetti solo ai nodi interessati, contribuendo così a una gestione più efficiente della larghezza di banda.
 
 ### Internet Group Management Protocol (IGMP)
-   - L'**Internet Group Management Protocol (IGMP)** è un protocollo fondamentale per la gestione dei gruppi multicast. 
-   Consente agli host di comunicare con i router multicast, dichiarando la loro appartenenza a specifici gruppi. 
-   Attraverso IGMP, gli host possono anche abbandonare i gruppi a cui non desiderano più partecipare. Questo processo è 
-   cruciale per mantenere l'efficienza della rete, poiché garantisce che solo gli host interessati ricevano i dati multicast.  
-   - IGMP opera in diverse versioni, ciascuna con miglioramenti rispetto alla precedente, per gestire meglio la congestione e 
-   ottimizzare l'uso delle risorse di rete. Inoltre, il protocollo facilita la comunicazione tra i router e gli host, 
-   consentendo un aggiornamento dinamico delle informazioni sui gruppi multicast attivi nella rete.
+L'IGMP è un protocollo fondamentale per la gestione dei gruppi multicast. Consente agli host di comunicare con i router multicast, dichiarando la loro appartenenza a specifici gruppi. Attraverso IGMP, gli host possono anche abbandonare i gruppi a cui non desiderano più partecipare. Questo processo è cruciale per mantenere l'efficienza della rete, poiché garantisce che solo gli host interessati ricevano i dati multicast.  
 
 ## Exterior Gateway Protocols (EGP)
-
 ### Protocolli EGP
-
 I protocolli di tipo EGP si distinguono dai protocolli di tipo IGP per le loro finalità e logiche operative:
 - All’interno di un Autonomous System (AS), si mira principalmente all’ottimizzazione dei percorsi.
 - Nel routing tra AS, si devono considerare soprattutto le politiche di instradamento:
