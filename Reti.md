@@ -278,24 +278,25 @@ uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
     - **Redirect (Type 5)**: un router segnala all'host sorgente una via più ottimale.
   - ICMP non corregge gli errori, ma fornisce informazioni per diagnosticare problemi di rete.
 
-### Comandi utili: PING e TRACEROUTE
-- **PING**:
-  - Verifica se un host è raggiungibile inviando pacchetti ICMP di tipo "echo" e ricevendo "echo reply".
-  - Opzioni: definire il numero di pacchetti, timeout, dimensione pacchetti, ecc.
-- **TRACEROUTE**:
-  - Mostra il percorso dei pacchetti verso una destinazione, utilizzando pacchetti ICMP con TTL crescente. 
-  Mostra il nome DNS e l'indirizzo IP dei nodi intermedi.
+## Comandi di Rete
 
-### **Gestione della numerazione IP: DHCP**
-- **DHCP (Dynamic Host Configuration Protocol)** consente la configurazione dinamica e automatica di un indirizzo IP per un host, assegnando:
-  - Indirizzo IP, netmask, gateway predefinito, server DNS, ecc.
-- **Processo DHCP**:
+### PING
+- Verifica se un host è raggiungibile inviando pacchetti ICMP di tipo "echo" e ricevendo "echo reply".
+- Opzioni: definire il numero di pacchetti, timeout, dimensione pacchetti, ecc.
+- Parametri principali: `-n` (numero di pacchetti), `-t` (ping continuo), `-a` (risoluzione DNS), `-l` (dimensione del pacchetto).
+### TRACEROUTE
+- Mostra il percorso dei pacchetti verso una destinazione, utilizzando pacchetti ICMP con TTL crescente. Mostra il nome DNS e l'indirizzo IP dei nodi intermedi.
+- Traceroute invia pacchetti con un valore TTL (Time To Live) inizialmente impostato a 1. Ogni router lungo il percorso decrementa il TTL di 1. Quando il TTL raggiunge 0, il router scarta il pacchetto e invia un messaggio **ICMP "Time Exceeded"** al mittente. Traceroute incrementa quindi il TTL e invia un nuovo pacchetto, ripetendo il processo fino a raggiungere la destinazione finale. Questo permette di identificare ogni hop (router) lungo il percorso.
+- Parametri principali: `-m` (TTL massimo), `-q` (numero di query per hop), `-w` (timeout per risposta).
+
+## Gestione della numerazione e Pianificazione di numerazione IP
+### DHCP
+- **DHCP (Dynamic Host Configuration Protocol)**: Automatizza l'assegnazione dinamica di IP, netmask, gateway e DNS. Processo chiave:
+  - **Processo DHCP**:
   - **DHCPDISCOVER**: l'host cerca un server DHCP inviando un messaggio di richiesta in broadcast.
   - **DHCPOFFER**: i server DHCP rispondono proponendo un indirizzo IP.
   - **DHCPREQUEST**: l'host accetta una delle offerte e richiede l'indirizzo IP.
   - **DHCPACK**: il server DHCP conferma la configurazione con un messaggio di risposta.
-
-## Pianificazione di numerazione IP
 
 ### Progettazione di Reti Aziendali
 
@@ -348,31 +349,6 @@ fisicamente sarebbero state più comode 3 reti.
   - **Echo/Echo Reply (Type 8/0)**: Utilizzati per determinare lo stato di raggiungibilità di un host.
   - **Timestamp Request/Reply (Type 13/14)**: Misura il tempo di transito nella rete.
 
-## Comandi di Rete
-
-### PING
- Verifica la raggiungibilità di un host inviando pacchetti di tipo ICMP Echo Request.
-  - Parametri principali: `-n` (numero di pacchetti), `-t` (ping continuo), `-a` (risoluzione DNS), 
-  `-l` (dimensione del pacchetto).
-### TRACEROUTE
- Identifica il percorso seguito dai pacchetti verso una destinazione tramite la gestione del TTL.
-  - **Come funziona**: Traceroute invia pacchetti con un valore TTL (Time To Live) inizialmente impostato a 1. 
-  Ogni router lungo il percorso decrementa il TTL di 1. Quando il TTL raggiunge 0, il router scarta il pacchetto 
-  e invia un messaggio ICMP "Time Exceeded" al mittente. Traceroute incrementa quindi il TTL e invia un nuovo pacchetto, 
-  ripetendo il processo fino a raggiungere la destinazione finale. Questo permette di identificare ogni hop (router) 
-  lungo il percorso.
-  - Parametri principali: `-m` (TTL massimo), `-q` (numero di query per hop), `-w` (timeout per risposta).
-
-## Gestione della numerazione
-
-### Gestione degli Indirizzi IP
-- **DHCP (Dynamic Host Configuration Protocol)**: Automatizza l'assegnazione dinamica di IP, netmask, gateway e DNS. Processo chiave:
-  - **DHCPDISCOVER** → **DHCPOFFER** → **DHCPREQUEST** → **DHCPACK**.
-  - Il processo inizia con un messaggio broadcast di livello 2 (come ARP) chiamato **DHCPDISCOVER**, 
-  inviato sulla rete per cercare un server DHCP. I server DHCP rispondono con un messaggio **DHCPOFFER**, 
-  proponendo i parametri di configurazione. L'host seleziona una delle offerte e invia un **DHCPREQUEST** 
-  al server scelto. Il server risponde con un **DHCPACK**, confermando i parametri di configurazione.
-
 ## Filtraggio dei Pacchetti
 ### Metodologie di Filtraggio dei Datagrammi
 - Le metodologie di filtraggio dei datagrammi sono tecniche utilizzate per controllare il traffico di rete 
@@ -404,66 +380,20 @@ Le tre differenti versioni vengono adottate a necessità dato che la prima è la
 livello computazionale e la più facile da implementare ma quella meno efficace, e viceversa per la terza.
 
 ### Firewall
-Il firewall o portatagliafuoco ci difende combinando le tecnologie precedentemente descritte:
-- **Packet Filter**: Filtra i pacchetti seguendo le politiche stabilite.
-  - Filtri: Generalmente configurati staticamente.
-  - La maggioranza delle configurazioni non permettono pacchetti per porte "non-standard" 
-  (Internet Assigned Numbers Authority – IANA).
-- **Stateful Packet Inspection**:
-  - Mantiene il contesto dei pacchetti sia nel trasporto che nello strato applicativo.
-  - Adatta dinamicamente le specifiche dei filtri.
-- **Application Layer Gateway (trasparente o proxy esplicito)**:
-  - Monitora le connessioni: Analizza il contenuto dei protocolli applicativi.
-  - A scapito della sicurezza di comunicazione end-to-end.
-  - Adatta dinamicamente le specifiche dei filtri.
-- **Per ogni strato (layer) dello stack possono essere applicate politiche (policies) differenti**.
-- Protezione Host: funge da filto software/hardware per accessi indesiderati dall'esterno della rete. 
-(sevono architetture di difesa più complesse). Dunque si potrebbero usare configurazioni di packet filter 
-e proxy per migliorare la sicurezza della rete. Un'architettura di difesa multilivello può includere:
-
-1. **Packet Filter**: Filtra i pacchetti in base a regole predefinite sugli indirizzi IP, protocolli e porte. 
-È il primo livello di difesa e agisce a livello di rete.
-2. **Stateful Packet Inspection (SPI)**: Monitora lo stato delle connessioni e adatta dinamicamente le regole 
-di filtraggio. Fornisce un controllo più approfondito rispetto ai semplici packet filter.
-3. **Application Layer Gateway (Proxy)**: Monitora e controlla le connessioni a livello applicativo, 
-garantendo un controllo dettagliato sui protocolli specifici come HTTP, FTP, e SIP. Questo livello può 
-bloccare attacchi che sfruttano vulnerabilità a livello applicativo.
-
-Combinando queste tecnologie, si ottiene una protezione più robusta contro una vasta gamma di minacce, 
-migliorando la sicurezza complessiva della rete.
-
-### Considerazioni sui Firewall
-- **Protezione degli host**: Il firewall può essere software (per accessi domestici) o hardware (per reti aziendali).
+- Il firewall o portatagliafuoco ci difende combinando le tecnologie precedentemente descritte
+- Il firewall può essere software (per accessi domestici) o hardware (per reti aziendali).
 - **Politiche di sicurezza**:
   - **Default deny**: Blocca tutto eccetto ciò che è esplicitamente permesso.
   - **Default permit**: Permette tutto eccetto ciò che è esplicitamente bloccato.
 
 ## Network Address Translation (NAT)
-
-### NAT
-E' un gateway con funzione di paket filter che si interpone tra 2 networ e può cambiare il contenuto dei pacchetti 
-in partivolare gli indirizzi sia ip che di porta.
+E' un gateway con funzione di paket filter che si interpone tra 2 network e può cambiare il contenuto dei pacchetti in partivolare gli indirizzi sia ip che di porta.
 Viene definito a livello concettuale ma non a livelli fisico/implementativo dato che ci sono molteplici modi di farlo.
-- **Funzioni**: Maschera gli indirizzi IP interni, permettendo a reti private di accedere a reti pubbliche. 
+- Maschera gli indirizzi IP interni, permettendo a reti private di accedere a reti pubbliche. 
 - I tipi di NAT principali:
-  - **Basic NAT - Conversione di indirizzo**: Converte solo gli indirizzi IP. Si trova tra 2 network e funge da gateway e modifica gli 
-  indirizzi sorgente modificando IP e porta per poi reindirizzare al destinatario per poi fare il 
-  contrario al ritorno grazie a una tabella delle conversioni. Questo permette di rendere il flusso monodirezionale, 
-  ovvero chi è dietro al basic NAT comunica con l'esterno solo se ha richiesto qualcosa da fuori, 
-  dunque costruito in questa maniera permette di essere uno strumento di protezione anche se è stato 
+  - **Basic NAT - Conversione di indirizzo**: Converte solo gli indirizzi IP. Si trova tra 2 network e funge da gateway e modifica gli indirizzi sorgente modificando IP e porta per poi reindirizzare al destinatario per poi fare il contrario al ritorno grazie a una tabella delle conversioni. Questo permette di rendere il flusso monodirezionale, ovvero chi è dietro al basic NAT comunica con l'esterno solo se ha richiesto qualcosa da fuori, dunque costruito in questa maniera permette di essere uno strumento di protezione anche se è stato 
   concepito per risparmiare numeri.
-  - **Port Address Translation (PAT) (VERIFICARE CHE SIA QUESTO IL NOME)**: Tecnica utilizzata nei router per mappare più indirizzi IP privati su un singolo 
-  indirizzo IP pubblico, utilizzando numeri di porta univoci per distinguere le connessioni. Questo processo consente a 
-  più dispositivi all'interno di una rete locale (LAN) di condividere un singolo indirizzo IP pubblico per accedere a Internet.
-  Quando un dispositivo all'interno della rete locale invia un pacchetto verso Internet, il router sostituisce l'indirizzo 
-  IP privato del dispositivo con l'indirizzo IP pubblico del router e assegna un numero di porta univoco. 
-  Quando il pacchetto di risposta ritorna, il router utilizza il numero di porta per determinare a quale dispositivo 
-  interno inoltrare il pacchetto. PAT è una forma di Network Address Translation (NAT) ed è particolarmente 
-  utile per conservare gli indirizzi IP pubblici, che sono una risorsa limitata. Inoltre, offre un livello aggiuntivo 
-  di sicurezza, poiché gli indirizzi IP privati non sono visibili dall'esterno della rete locale. Qui effettivamente 
-  vado a risparmiare indirizzi IP poiché possiamo internamente vedere più indirizzi come fossero lo stesso, 
-  così facendo però riduco i possibili flussi distinguibili a 2^16 dato che vengono distinti dalle porte. 
-  (VERIFICARE SE SEMANTICAMENTE CORRETTO)
+  - **Port Address Translation (PAT)**: Tecnica utilizzata nei router per mappare più indirizzi IP privati su un singolo indirizzo IP pubblico, utilizzando numeri di porta univoci per distinguere le connessioni. Questo processo consente a più dispositivi all'interno di una rete locale (LAN) di condividere un singolo indirizzo IP pubblico per accedere a Internet. Quando un dispositivo all'interno della rete locale invia un pacchetto verso Internet, il router sostituisce l'indirizzo IP privato del dispositivo con l'indirizzo IP pubblico del router e assegna un numero di porta univoco. Quando il pacchetto di risposta ritorna, il router utilizza il numero di porta per determinare a quale dispositivo interno inoltrare il pacchetto. PAT è una forma di Network Address Translation (NAT) ed è particolarmente utile per conservare gli indirizzi IP pubblici, che sono una risorsa limitata. Inoltre, offre un livello aggiuntivo di sicurezza, poiché gli indirizzi IP privati non sono visibili dall'esterno della rete locale. Qui effettivamente vado a risparmiare indirizzi IP poiché possiamo internamente vedere più indirizzi come fossero lo stesso, così facendo però riduco i possibili flussi distinguibili a 2^16 dato che vengono distinti dalle porte.
   - **Full Cone NAT, Restricted Cone NAT, Symmetric NAT**: Definiscono il tipo di traffico permesso.
 
 ## IPV6
@@ -500,28 +430,27 @@ Viene definito a livello concettuale ma non a livelli fisico/implementativo dato
 
 ## Routing
 
+### Teoria dei grafi e rappresentazione della rete
+- Le reti possono essere rappresentate come grafi orientati o non orientati.
+- Il peso degli archi rappresenta il costo del collegamento.
+
 ### Funzioni di IP
 - **Indirizzamento**: L'IP fornisce un sistema di indirizzamento univoco per identificare dispositivi sulla rete.
 - **Frammentazione**: L'IP può dividere i pacchetti di dati in frammenti più piccoli per adattarsi alla dimensione 
 massima del pacchetto supportata dai vari segmenti della rete.
 - **Instradamento**:
   - Decidere che percorso un datagramma deve seguire per raggiungere la destinazione.
-  - Utilizza le PCI dei datagrammi, in particolare l'indirizzo di destinazione.
+  - Utilizza le **PCI** dei datagrammi,ovvero le informazioni di controllo aggiunte ai dati per gestire la trasmissione e il corretto instradamento del datagramma attraverso la rete. Queste informazioni sono incluse nell'intestazione del datagramma.
   - Determina il comportamento della funzione di commutazione nei nodi.
   - Il problema dell'instradamento è più generale rispetto al protocollo di livello 3.
-
-### Algoritmi e protocolli di instradamento
-- **Instradamento**: scelta del percorso.
-  - Spesso significa scegliere il prossimo router (next hop).
-- **Algoritmo di instradamento**:
-  - Obiettivi: semplicità, robustezza, stabilità, efficienza.
+- Gli **Algoritmi di instradamento** hanno come biettivi: semplicità, robustezza, stabilità, efficienza.
 
 ### Tabella di instradamento
 - I nodi di commutazione utilizzano tabelle predisposte localmente.
 - **Algoritmi senza tabella e con tabella**:
   - **Senza tabella**: Flooding, Random, Deflection routing, Source routing.
   - **Con tabella**:
-    - **Instradamento fisso e centralizzato**: Utilizzato per sistemi estremamente statici, dove i dati rimangono invariati per un tempo molto più lungo della singola comunicazione. Questo metodo risulta sempre uguale dal punto di vista dell'utente.
+    - **Instradamento fisso e centralizzato** detto anceh **Statico**: Utilizzato per sistemi estremamente statici, dove i dati rimangono invariati per un tempo molto più lungo della singola comunicazione. Questo metodo risulta sempre uguale dal punto di vista dell'utente. 
     - **Instradamento dinamico a distanza minima**: I percorsi vengono aggiornati periodicamente per adattarsi ai cambiamenti della rete dunque risulta più dinaico del precedente.
 
 ### Flooding
@@ -533,7 +462,7 @@ massima del pacchetto supportata dai vari segmenti della rete.
 - Contro:
   - **Proliferazione dei pacchetti**: La rete può essere sovraccaricata da un numero eccessivo di pacchetti duplicati, causando congestione.
   - **Inefficienza**: L'invio di pacchetti su tutte le porte può risultare inefficiente in termini di utilizzo della larghezza di banda.
-- UTilizzato:
+- Utilizzato:
   - **Broadcasting**: Flooding è utile per inviare messaggi di broadcast, dove l'obiettivo è raggiungere tutti i nodi della rete.
   - **Scenari di emergenza**: In situazioni in cui è cruciale che il messaggio raggiunga la destinazione, indipendentemente dall'efficienza.
 
@@ -542,10 +471,6 @@ massima del pacchetto supportata dai vari segmenti della rete.
 - Identificazione dei pacchetti (indirizzo sorgente + numero di sequenza).
 - Uso di un TTL per evitare pacchetti infiniti.
 È importante ricordare che all'aumentare di queste soluzioni il protocollo si complica, andando via via a perdere di utilità a causa del suo complicarsi.
-
-### Instradamento dinamico e statico
-- **Statico**: percorsi predefiniti all'inizializzazione.
-- **Dinamico**: percorsi aggiornati periodicamente per adattarsi ai cambiamenti.
 
 ### Random e Deflection Routing
 - **Random Routing**: Il prossimo hop è scelto casualmente. Questo metodo è molto inefficiente e raramente utilizzato.
@@ -560,56 +485,25 @@ Tutto questo avviene in una coda che gestisce l'elaborazione.
 
 ### Shortest Path Routing
 L'instradamento a percorso più breve implica l'associazione di una lunghezza a ciascun 
-collegamento e la ricerca dei percorsi a costo minimo utilizzando algoritmi come Bellman-Ford e 
-Dijkstra. Questo può essere implementato in modo centralizzato o distribuito, sia in maniera sincrona che asincrona. 
-Quando i nodi di rete vengono accesi, conoscono solo la configurazione delle loro interfacce, che può essere statica 
-o dinamica tramite DHCP. Con queste informazioni, popolano la tabella di instradamento iniziale. Per implementare il 
-routing a percorso più breve (shortest path) verso qualsiasi destinazione, devono utilizzare uno o più protocolli di 
-routing per scambiarsi informazioni e apprendere la topologia della rete, e uno o più algoritmi per il calcolo dei 
-percorsi più brevi basati sulle informazioni ottenute.
+collegamento e la ricerca dei percorsi a costo minimo utilizzando algoritmi come Bellman-Ford e Dijkstra. Questo può essere implementato in modo **centralizzato** o **distribuito**, sia in maniera **sincrona** che **asincrona**. Quando i nodi di rete vengono accesi, conoscono solo la configurazione delle loro interfacce, che può essere statica o dinamica tramite DHCP. Con queste informazioni, popolano la tabella di instradamento iniziale. Per implementare il  routing a percorso più breve (shortest path) verso qualsiasi destinazione, devono utilizzare uno o più protocolli di routing per scambiarsi informazioni e apprendere la topologia della rete, e uno o più algoritmi per il calcolo dei percorsi più brevi basati sulle informazioni ottenute.
 
-### Teoria dei grafi e rappresentazione della rete
-- Le reti possono essere rappresentate come grafi orientati o non orientati.
-- Il peso degli archi rappresenta il costo del collegamento.
-
-### Routing Distance Vector
-Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. 
-Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, 
-rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, 
-e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. 
-In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta 
-solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono 
-direttamente collegati i propri dati detti **Distance vector**, aggiornando così le tabelle dei vicini. Questo processo continua finché non 
-si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema.
+### Routing Information Protocol (RIP) o Routing Distance Vector
+Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono direttamente collegati i propri dati detti **Distance vector**, aggiornando così le tabelle dei vicini. Questo processo continua finché non si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema.
 - **Problemi**:
-  - **Cold start e convergenza lenta**: La convergenza si raggiunge dopo un numero di iterazioni pari al numero di nodi. 
-  Questo comporta una lenta convergenza su reti grandi, poiché gli aggiornamenti tra nodi non possono essere inviati 
-  continuamente, ma devono lasciare che anche i messaggi circolino, ritardando così la convergenza.
-  - **Conteggio all'infinito**: In alcuni casi, si potrebbe tentare di convergere all'infinito. 
-  Ad esempio, se ci sono tre router in fila e si rompe il collegamento tra due di essi, gli altri due potrebbero 
-  scambiarsi aggiornamenti di distanza dal terzo all'infinito. Questo li porta a convincersi reciprocamente che 
-  per raggiungere il terzo router debbano usare l'altro a cui sono collegati, finendo per passarsi all'infinito 
-  pacchetti e aggiornamenti di distanza, andando a bruciare capacità computazionale. Per ovviare, si sceglie una 
-  distanza tra nodi superata la quale si considera la distanza come infinita ed implementare un Triggered Update,
-  ovvero un aggiornamento istantaneo del distance vector qualora ci fosse una variazione di distanza.
-  - **Bouncing effect**: Situazione in cui un router si "convince" che sia opportuno mandare i propri pacchetti 
-  a un altro router che poi glieli rimanderà. Questo è solitamente dovuto a una rottura e, fino a quando non viene 
-  inviato un aggiornamento, i router si rimpallano i pacchetti.
-- **Soluzioni**
-  - **Split Horizon**: evitare di informare un nodo su una destinazione raggiungibile solo tramite esso, 
-  inviando distance vector differrnziati in cui ometto tutte le distanze da nodi che vedono il ricevente come gateway.
-  - **Triggered Update**: inviare aggiornamenti immediatamente in caso di modifica.
-Queste solozioni non sono definitive in quanto avendo una rete con dei cicli vanno 
-a perdere di efficacia, dunque si è reso indispensabile trovare un' alternativa alla soluzione del routing distance vector.
+  - **Cold start e convergenza lenta**: La convergenza si raggiunge dopo un numero di iterazioni pari al numero di nodi. Questo comporta una lenta convergenza su reti grandi, poiché gli aggiornamenti tra nodi non possono essere inviati continuamente, ma devono lasciare che anche i messaggi circolino, ritardando così la convergenza.
+  - **Conteggio all'infinito**: In alcuni casi, si potrebbe tentare di convergere all'infinito. Ad esempio, se ci sono tre router in fila e si rompe il collegamento tra due di essi, gli altri due potrebbero scambiarsi aggiornamenti di distanza dal terzo all'infinito. Questo li porta a convincersi reciprocamente che per raggiungere il terzo router debbano usare l'altro a cui sono collegati, finendo per passarsi all'infinito pacchetti e aggiornamenti di distanza, andando a bruciare capacità computazionale. Per ovviare, si sceglie una distanza tra nodi superata la quale si considera la distanza come infinita ed implementare un Triggered Update,ovvero un aggiornamento istantaneo del distance vector qualora ci fosse una variazione di distanza.
+  - **Soluzioni**
+    - **Split Horizon**: Questa tecnica evita di informare un nodo su una destinazione raggiungibile solo tramite esso. In pratica, un router non pubblicizza una rotta a un nodo se quella rotta è stata appresa proprio da quel nodo. Questo riduce la possibilità di creare loop di routing. Si inviano distance vector differenziati in cui si omettono tutte le distanze da nodi che vedono il ricevente come gateway.
+    - **Triggered Update**: Invece di aspettare il prossimo aggiornamento periodico, un router invia immediatamente un aggiornamento quando rileva un cambiamento nella topologia della rete. Questo accelera la convergenza della rete, riducendo il tempo in cui le informazioni di routing sono incoerenti.
+
+Queste tecniche combinate migliorano la stabilità e l'affidabilità del protocollo RIP, riducendo la probabilità di loop di routing e accelerando la convergenza della rete. La presenza di clicli potrbbe comprometterne l'efficacia, dunque si è reso indispensabile trovare un' alternativa alla soluzione del routing distance vector.
 
 ## Routing Link State
 In questa nuova soluzione, si separano nettamente il protocollo e l'algoritmo. 
 Abbiamo una logica in cui, tramite uno specifico protocollo, i nodi scoprono altri nodi, 
 estrapolano informazioni da questi ultimi e condividono tali informazioni con altri nodi. 
 Questo processo permette a tutti i nodi di avere una visione completa della rete.
-Solo a questo punto si utilizzano algoritmi di routing come Dijkstra per scoprire i percorsi più rapidi. 
-Questo approccio comporta un maggiore utilizzo di memoria e una maggiore complessità computazionale. 
-Tuttavia, se ogni nodo conosce tutta la rete, sarà in grado di reagire opportunamente in caso di guasto.
+Solo a questo punto si utilizzano algoritmi di routing come Dijkstra per scoprire i percorsi più rapidi. Questo approccio comporta un maggiore utilizzo di memoria e una maggiore complessità computazionale. Tuttavia, se ogni nodo conosce tutta la rete, sarà in grado di reagire opportunamente in caso di guasto.
 
 ### Vantaggi del Routing Link State
 - **Convergenza rapida**: Poiché ogni nodo ha una visione completa della rete, le modifiche nella topologia 
@@ -626,15 +520,9 @@ richiedono più risorse computazionali.
 un significativo overhead di comunicazione.
 
 ### Processo di Routing Link State
-1. **Scoperta dei vicini**: Ogni nodo scopre i nodi vicini tramite messaggi di "Hello Packet".
-2. **Misurazione della distanza dai vicini**: Calcolo della distanza dai vicini tramite un messaggio "Echo Packet".
-3. **Scambio di informazioni**: I nodi scambiano informazioni di stato tramite pacchetti di Link State Advertisement (LSA) 
-contenenti:
-  - La lista dei propri vicini
-  - Il peso del loro collegamento
-I pacchetti LSA sono trasmessi con il flooding (simile al broadcast con alcune attenzioni in più), 
-facendo attenzione a non rimandarli da dove sono già provenuti, a scartare pacchetti già visti o 
-temporalmente più vecchi di altri già ricevuti.
+1. **Scoperta dei vicini**: Ogni nodo scopre i nodi vicini tramite messaggi di **Hello Packet**.
+2. **Misurazione della distanza dai vicini**: Calcolo della distanza dai vicini tramite un messaggio **Echo Packet**.
+3. **Scambio di informazioni**: I nodi scambiano informazioni di stato tramite pacchetti di **Link State Advertisement (LSA)** contenenti: la lista dei propri vicini ed il peso del loro collegamento. I pacchetti LSA sono trasmessi con il flooding (simile al broadcast con alcune attenzioni in più), facendo attenzione a non rimandarli da dove sono già provenuti, a scartare pacchetti già visti o temporalmente più vecchi di altri già ricevuti.
 4. **Dijkstra** : A questo pinto abbiamo il nostro grafo su cui applicare Dijkstra:
     1. **Inizializzazione**:
       - Assegna una distanza iniziale di 0 al nodo sorgente e di infinito a tutti gli altri nodi.
@@ -656,10 +544,8 @@ temporalmente più vecchi di altri già ricevuti.
 - **OSPF (Open Shortest Path First)**: Un protocollo di routing link state ampiamente utilizzato nelle reti IP.
 - **IS-IS (Intermediate System to Intermediate System)**: Un altro protocollo di routing link state utilizzato principalmente nelle reti di grandi dimensioni.
 
-In sintesi, il routing link state offre una soluzione robusta e efficiente per il calcolo dei percorsi in reti complesse, a scapito di un maggiore utilizzo di risorse di memoria e computazionali.
-
 ## Router IP
-- **Funzioni dei router**:
+### Funzioni dei router
   - **Routing**: Determina il percorso ottimale per i pacchetti di dati attraverso la rete utilizzando algoritmi e 
   tabelle di instradamento volto allo scambio di informazioni in maniera ottimale.
   - **Forwarding**: Inoltra i pacchetti di dati ricevuti verso la loro destinazione finale basandosi sulle 
@@ -670,66 +556,42 @@ In sintesi, il routing link state offre una soluzione robusta e efficiente per i
   come Ethernet o Wi-Fi.
 
 ### Classificazione dei Router
- - **SOHO (Small Office/Home Office)**:
-    - **Descrizione**: Router progettati per piccoli uffici o ambienti domestici.
+ - **SOHO (Small Office/Home Office)**:Router progettati per piccoli uffici o ambienti domestici.
     - **Caratteristiche**: Solitamente offrono funzionalità di base come NAT, firewall, e supporto per connessioni Wi-Fi.
     - **Prestazioni**: Capacità di gestire un numero limitato di dispositivi e traffico moderato. Velocità di throughput tipicamente tra 100 Mbps e 1 Gbps.
 
-  - **Access Router**:
-    - **Descrizione**: Router utilizzati per connettere dispositivi finali a una rete più ampia.
+  - **Access Router**: Router utilizzati per connettere dispositivi finali a una rete più ampia.
     - **Caratteristiche**: Supportano funzionalità avanzate come QoS (Quality of Service), VPN (Virtual Private Network), e gestione delle VLAN (Virtual Local Area Network).
     - **Prestazioni**: Progettati per gestire un numero maggiore di dispositivi rispetto ai router SOHO, con throughput che può variare da 1 Gbps a 10 Gbps.
 
-  - **Enterprise Router**:
-    - **Descrizione**: Router destinati a grandi aziende e organizzazioni.
+  - **Enterprise Router**: Router destinati a grandi aziende e organizzazioni.
     - **Caratteristiche**: Offrono funzionalità avanzate di sicurezza, gestione del traffico, 
     e supporto per protocolli di routing complessi come OSPF e BGP.
     - **Prestazioni**: Capacità di gestire un elevato volume di traffico e numerosi dispositivi. 
     Velocità di throughput tipicamente superiori a 10 Gbps, con supporto per connessioni multiple ad alta velocità.
 
-  - **Backbone Router**:
-    - **Descrizione**: Router utilizzati nelle dorsali di rete per instradare il traffico tra diverse reti.
+  - **Backbone Router**: Router utilizzati nelle dorsali di rete per instradare il traffico tra diverse reti.
     - **Caratteristiche**: Progettati per alta affidabilità e prestazioni, con supporto per protocolli di routing avanzati e capacità di gestire grandi volumi di traffico.
     - **Prestazioni**: Velocità di throughput estremamente elevate, spesso superiori a 100 Gbps. Capacità di gestire migliaia di connessioni simultanee e instradare traffico su lunghe distanze.
 
 ### Tabelle di Routing e Forwarding
-- **Routing table**: Conosciuta anche come RIB (Routing Information Base), contiene i prefissi di routing, 
-i next hop, e le metriche. È quindi un insieme di dati grezzi su cui si basano i calcoli di instradamento. 
-Queste informazioni derivano da una serie di protocolli o canali considerati affidabili, sia in termini assoluti 
-che relativi rispetto ad altri.
-- **Forwarding table**: Nota anche come FIB (Forwarding Information Base), è ottimizzata per l'inoltro rapido 
-dei datagrammi. Su di essa si basa lo scambio di pacchetti, ed è generata a partire dalla RIB. Da quest'ultima 
-si estraggono, tra tutte le informazioni considerate affidabili, quelle più utili all'inoltro dei pacchetti. 
-Questo processo avviene grazie alla funzione chiamata **Route Selection Process**, che seleziona le rotte migliori per la FIB. 
-Contestualmente, la produzione della FIB genera anche dati di output per i protocolli, consentendo di decidere 
-quali informazioni comunicare agli altri nodi. Questo meccanismo offre una notevole flessibilità nel recepire, 
-filtrare e inviare informazioni in base alle esigenze specifiche di ogni singolo router. 
+- **Routing table**: Conosciuta anche come **RIB** (Routing Information Base), contiene i prefissi di routing, i next hop, e le metriche. È quindi un insieme di dati grezzi su cui si basano i calcoli di instradamento. Queste informazioni derivano da una serie di protocolli o canali considerati affidabili, sia in termini assoluti che relativi rispetto ad altri.
+- **Forwarding table**: Nota anche come **FIB** (Forwarding Information Base), è ottimizzata per l'inoltro rapido dei datagrammi. Su di essa si basa lo scambio di pacchetti, ed è generata a partire dalla RIB. Da quest'ultima si estraggono, tra tutte le informazioni considerate affidabili, quelle più utili all'inoltro dei pacchetti. Questo processo avviene grazie alla funzione chiamata **Route Selection Process**, che seleziona le rotte migliori per la FIB. 
+Contestualmente, la produzione della FIB genera anche dati di output per i protocolli consentendo di decidere quali informazioni comunicare agli altri nodi. Questo meccanismo offre una notevole flessibilità nel recepire, filtrare e inviare informazioni in base alle esigenze specifiche di ogni singolo router. 
 
 ## Instradamento nell’Internet globale
-
-### Instradamento (Routing) nell’Internet globale
-  - **Routing gerarchico**: In Internet, il routing è organizzato gerarchicamente in **sistemi autonomi (AS)**, 
-  ciascuno identificato da un numero progressivo. Ogni AS gestisce autonomamente le proprie politiche di routing, 
-  risolvendo internamente i problemi e importando solo le soluzioni identificate all'esterno. Questo approccio è 
-  necessario per gestire la rete in modo efficiente, data la diversità degli oggetti operanti in rete.
-  - **Protocolli di routing**:
-    - **Interior Gateway Protocol (IGP)**: Gestisce il routing all’interno di un AS.
-    - **Exterior Gateway Protocol (EGP)**: Gestisce il routing tra AS diversi, ad esempio tramite i protocolli EGP e BGP.
+- **Routing gerarchico**: In Internet, il routing è organizzato gerarchicamente in **sistemi autonomi (AS)**, ciascuno identificato da un numero progressivo. Ogni AS gestisce autonomamente le proprie politiche di routing, risolvendo internamente i problemi e importando solo le soluzioni identificate all'esterno. Questo approccio è necessario per gestire la rete in modo efficiente, data la diversità degli oggetti operanti in rete.
+- **Protocolli di routing**:
+  - **Interior Gateway Protocol (IGP)**: Gestisce il routing all’interno di un AS.
+  - **Exterior Gateway Protocol (EGP)**: Gestisce il routing tra AS diversi, presenta diverse limitazioni, tra cui la mancanza di supporto per il routing dinamico e la scalabilità limitata.
+  - **Border Gateway Protocol (BGP)**: Successore di EGP.
 
 ### Sistemi Autonomi (AS)
-   - Definizione: Un AS è un insieme di router gestiti da un’unica amministrazione 
-   e usa un unico protocollo di routing. Con CIDR, un AS è 
-   identificato da un insieme di prefissi IP gestiti in modo unitario. 
-   In sintesi estrema potremmo dire che è l'insieme di un prefisso di network.
-   - **Esempi di AS**: GARR (rete italiana degli enti di ricerca), infatti l'Unibo da sola non 
-   è un AS ma passa attraverso il GARR come tante altre università finendo per risultare un unico AS.
-  - Un AS svolge compiti di import e di export rispettivamente:
-    - **Import**: L'AS riceve e accetta le rotte pubblicizzate da altri AS ritenuti affidabili, 
-    aggiornando le proprie tabelle di routing per includere queste nuove rotte.
-    - **Export**: L'AS pubblicizza le proprie rotte e le rotte apprese da altri AS verso i 
-    suoi vicini che, qualora lo ritenessero affidabile, permetterebbero loro di aggiornare le proprie 
-    tabelle di routing con queste informazioni. 
-  (RADb sito per sperimentare questo genere di cose)
+- Definizione: Un AS è un insieme di router gestiti da un’unica amministrazione e usa un unico protocollo di routing. Con CIDR, un AS è identificato da un insieme di prefissi IP gestiti in modo unitario. In sintesi estrema potremmo dire che è l'insieme di un prefisso di network.
+- Esempi di AS: GARR (rete italiana degli enti di ricerca), infatti l'Unibo da sola non è un AS ma passa attraverso il GARR come tante altre università finendo per risultare un unico AS.
+- Un AS svolge compiti di import e di export rispettivamente:
+  - **Import**: L'AS riceve e accetta le rotte pubblicizzate da altri AS ritenuti affidabili, aggiornando le proprie tabelle di routing per includere queste nuove rotte.
+  - **Export**: L'AS pubblicizza le proprie rotte e le rotte apprese da altri AS verso i suoi vicini che, qualora lo ritenessero affidabile, permetterebbero loro di aggiornare le proprie tabelle di routing con queste informazioni. (RADb sito per sperimentare questo genere di cose)
 
 ### Internet Service Provider (ISP)
 Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente si registra come AS.
