@@ -18,22 +18,22 @@ Questa struttura corrisponde al modello OSI semplificato, con IP che opera al li
 
 ### Internet Protocol (IP) - RFC 791
 Caratteristiche principali:
-- Funziona a commutazione di pacchetto in modalità connectionless
+- Funziona a commutazione di pacchetto in modalità **connectionless**
 - Gestisce la trasmissione di datagrammi da sorgente a destinazione attraverso reti eterogenee
-- Identifica host e router tramite indirizzi IP di 32 bit
+- Identifica host e router tramite **indirizzi IP di 32 bit**
 - Frammenta e riassembla i datagrammi quando necessario
-- Offre un servizio "best effort" senza garanzie di affidabilità o controllo di flusso
+- Offre un servizio **best effort** senza garanzie di affidabilità o controllo di flusso
 
 ### Struttura degli indirizzi IP
 - Lunghezza fissa di 32 bit
-- Rappresentazione in formato dotted decimal (es. 137.204.212.1)
-- Numero massimo teorico di indirizzi: 2^32 = 4.294.967.296
-- Assegnati dalla IANA (Internet Assigned Numbers Authority)
+- Rappresentazione in formato **dotted decimal** (es. 137.204.212.1)
+- Numero massimo teorico di indirizzi: **2^32** = 4.294.967.296
+- Assegnati dalla **IANA** (Internet Assigned Numbers Authority)
 
 ### Formato del pacchetto IP
 Il pacchetto IP è composto da:
-1. Header (intestazione)
-2. Payload (dati utente)
+1. **Header** (intestazione)
+2. **Payload** (dati utente)
 
 ### Campi principali dell'header IP
 - **Prima riga (identificazione)**
@@ -63,7 +63,7 @@ Il pacchetto IP è composto da:
   - **Padding**: bit di riempimento per allineare l'intestazione a 32 bit
 
 ### Frammentazione dei datagrammi
-- Necessaria quando il datagramma è troppo grande per essere trasmesso su una rete
+- Necessaria quando il datagramma è troppo grande per essere trasmesso su una rete, ciò può accadere perchè si lavora su reti eterogenee con infrastruttura fisica differente.
 - Può essere effettuata da qualsiasi apparato di rete con protocollo IP
 - I frammenti vengono riassemblati solo dal terminale ricevente
 - Il campo "Fragment Offset" indica la posizione del frammento nel datagramma originale
@@ -91,17 +91,17 @@ Il pacchetto IP è composto da:
 ### Riassemblaggio dei datagrammi
 - I frammenti possono arrivare fuori sequenza o con tempi diversi
 - Il riassemblaggio avviene solo al terminale di destinazione
-- Utilizza i campi Identification, Flags e Fragment Offset per ricostruire correttamente il datagramma originale
+- Utilizza i campi **Identification**, **Flags** e **Fragment** Offset per ricostruire correttamente il datagramma originale
 
 ## Istradamento IP
 
 ### Internet e il Modello di Instradamento IP
 - **Instradamento a pacchetto**: Internet utilizza la commutazione a pacchetto per trasmettere dati.
-- Esistono più percorsi per raggiungere una destinazione. Il routing (instradamento) avviene pacchetto per pacchetto, e i router decidono quale percorso seguire.
+- Esistono più percorsi per raggiungere una destinazione. Il **routing** (instradamento) avviene pacchetto per pacchetto, e i router decidono quale percorso seguire.
 
 ### Componenti della Rete
 - **Network IP**: Internet è costituita da tante reti isolate (Network IP). Ogni network IP è un'isola che contiene host (calcolatori terminali). Questi host devono essere necessariamente in grado di comunicare tra di loro; il caso più estremo è un solo host (calcolatore) che parla con se stesso.
-- **Router**: Detti anche Gateway, collegano le isole e permettono la comunicazione tra reti diverse. Funzionano fino al livello 3 del modello OSI. In molti casi, il trasferimento di dati compie un percorso che passa per più gateway e probabilmente anche per più network. Due router connessi che a loro volta connettono altrettante network IP possono essere visti,
+- **Router**: Detti anche Gateway, collegano le isole e permettono la comunicazione tra reti diverse. Funzionano fino al livello 3 del modello OSI. In molti casi, il trasferimento di dati compie un percorso che passa per più gateway e probabilmente anche per più network. Due router connessi che a loro volta connettono altrettante Network IP possono essere visti come una Network IP di soli due calcolatori, questa visione semplifica molto il lavoro di astrazione poicè ci permette di vedere solo Network IP connesse tutte per gatway condivisi nei punti di "contatto". 
 
 ### Tecnologie di Implementazione
    - **Wi-Fi**: Wireless a breve distanza. (dal punto di vista dell'ip è un tipo di comunicazione 1a1 che passa per il centro stella e viene poi smistata )
@@ -109,11 +109,36 @@ Il pacchetto IP è composto da:
    - **Ethernet**: Connessioni cablate locali.
    - **GPRS/EDGE/LTE**: Connessioni radio fornite da operatori pubblici.
 
-### Indirizzo IP
-   - L'indirizzo IP, usato per raggiungere una specifica network al dilà dell'plementazione su cui lavora, è composto da due parti:
-     - **Net ID**: Identifica la rete (network ip), parte di sinistra dell'indirizzo
-     - **Host ID**: Identifica l'host all'interno della rete (singolo calcolatore), parte destra dell'indirizzo.
-   - La distinzione tra Net ID e Host ID è determinata dalla **Netmask**.
+### Indirizzo IP  
+- L'indirizzo IP, usato per raggiungere una specifica network al di là dell'implementazione su cui lavora, è composto da due parti:  
+  - **Net ID**: Identifica la rete (network IP), parte di sinistra dell'indirizzo.  
+  - **Host ID**: Identifica l'host all'interno della rete (singolo calcolatore), parte destra dell'indirizzo.  
+- La distinzione tra Net ID e Host ID è determinata dalla **Netmask**.  
+
+---
+
+### **Netmask: Funzionamento e Rappresentazione**  
+La **Netmask** è un valore numerico che serve a separare la parte di **Net ID** dalla parte di **Host ID** in un indirizzo IP. Questa separazione permette di identificare la rete di appartenenza e gli host al suo interno.  
+
+#### **Come funziona la Netmask**  
+- La Netmask è un indirizzo IP a 32 bit.  
+- Ogni bit della Netmask può essere:  
+  - **1**: Indica che il bit corrispondente dell'indirizzo IP appartiene al **Net ID**.  
+  - **0**: Indica che il bit corrispondente appartiene all'**Host ID**.  
+- Insieme all'indirizzo IP, la Netmask determina:  
+  - Quanti indirizzi sono disponibili in una rete.  
+  - Quale intervallo di indirizzi appartiene a una specifica rete.  
+- **Rappresentazione della Netmask**
+  1. **Formato decimale puntato**:  
+    - I 32 bit della Netmask sono divisi in 4 gruppi da 8 bit (ottetti) separati da punti, convertiti in notazione decimale.  
+    - Esempio: **255.255.255.0** (24 bit a 1 e 8 bit a 0).  
+  2. **Notazione CIDR (Classless Inter-Domain Routing)**:  
+    - La Netmask è indicata con uno slash seguito dal numero di bit impostati a **1**.  
+    - Esempio: **/24** corrisponde a una Netmask di **255.255.255.0**.    
+- **Utilizzo pratico della Netmask**  
+  - Identificare le sottoreti in un'organizzazione più ampia.  
+  - Limitare gli indirizzi assegnabili all'interno di una rete per motivi di sicurezza o di ottimizzazione delle risorse.  
+  - Supportare il routing attraverso reti diverse, consentendo ai router di riconoscere la rete di appartenenza di un pacchetto.  
 
 ### Routing e Instradamento
 - **Direct Delivery**: Quando l'IP sorgente e destinatario sono sulla stessa rete. Supponendo di essere in collegamento Ethernet in un network IP, inseriremo l'IP in un indirizzo di livello 2 contenente il MAC del calcolatore da raggiungere. Il MAC è fondamentale perché evita che tutti i calcolatori debbano ricevere tutti i pacchetti e verificare se l'IP è il loro, cosa che renderebbe gli host incapaci di fare qualsiasi altra cosa data la mole di lavoro. Questo MAC viene reperito grazie a una tabella contenuta nel calcolatore che mette in relazione IP con MAC. Se non è presente, lo richiede partendo dall'IP che vuole raggiungere grazie al protocollo ARP, che fa una richiesta broadcast. Questo scambio è una consegna diretta.
@@ -132,7 +157,7 @@ Il pacchetto IP è composto da:
   - **Metric**: Rappresenta il costo del percorso, utilizzato per determinare il percorso migliore quando sono disponibili più opzioni.
 Questa struttura permette ai nodi di instradare i pacchetti in modo efficiente, scegliendo il percorso ottimale basato sulle informazioni disponibili nella tabella di instradamento.
 
-- **Utilizzo della Tabella di Instradamento da parte dei Gateway**: I gateway utilizzano la tabella di instradamento per determinare il percorso ottimale per ogni pacchetto. La tabella contiene informazioni su destinazioni, netmask, gateway e interfacce. Quando un pacchetto arriva al gateway, questo esamina l'indirizzo IP di destinazione e lo confronta con le voci nella tabella di instradamento. Il gateway seleziona la voce con la netmask più lunga che corrisponde all'indirizzo di destinazione (Longest Prefix Match) e inoltra il pacchetto attraverso l'interfaccia appropriata. Questo processo evita il sovraccarico della rete con broadcast inutili, poiché il gateway invia il pacchetto solo all'interfaccia specifica che conduce verso la destinazione finale. In questo modo, i pacchetti vengono instradati in modo efficiente e preciso, riducendo il traffico di rete e migliorando le prestazioni complessive. Se non trova una corrispondenza, scarta il pacchetto e comunica un errore. Per trovare la corrispondenza migliore, avendo l'IP di destinazione, il gateway procede con il processo di table lookup durante il quale, partendo dalla netmask con valore più grande e andando a decrescere, prende la netmask e fa l'AND bit a bit con l'IP di destinazione del datagramma e lo confronta con l'IP di destinazione della singola riga. Qualora il risultato fosse uguale, la corrispondenza è trovata (abbiamo trovato il ricevente); altrimenti, continua con le altre righe e tiene il risultato più simile che quindi avvicina di più all'host finale.
+- **Utilizzo della Tabella di Instradamento da parte dei Gateway**: I gateway utilizzano la tabella di instradamento per determinare il percorso ottimale per ogni pacchetto. La tabella contiene informazioni su destinazioni, netmask, gateway e interfacce. Quando un pacchetto arriva al gateway, questo esamina l'indirizzo IP di destinazione e lo confronta con le voci nella tabella di instradamento. Il gateway seleziona la voce con la netmask più lunga che corrisponde all'indirizzo di destinazione (**Longest Prefix Match**) e inoltra il pacchetto attraverso l'interfaccia appropriata. Questo processo evita il sovraccarico della rete con broadcast inutili, poiché il gateway invia il pacchetto solo all'interfaccia specifica che conduce verso la destinazione finale. In questo modo, i pacchetti vengono instradati in modo efficiente e preciso, riducendo il traffico di rete e migliorando le prestazioni complessive. Se non trova una corrispondenza, scarta il pacchetto e comunica un errore. Per trovare la corrispondenza migliore, avendo l'IP di destinazione, il gateway procede con il processo di **table lookup durante** il quale, partendo dalla netmask con valore più grande e andando a decrescere, prende la netmask e fa l'AND bit a bit con l'IP di destinazione del datagramma e lo confronta con l'IP di destinazione della singola riga. Qualora il risultato fosse uguale, la corrispondenza è trovata (abbiamo trovato il ricevente); altrimenti, continua con le altre righe e tiene il risultato più simile che quindi avvicina di più all'host finale.
 
 - **Longest Prefix Match**: Per selezionare il percorso corretto, il nodo confronta l'indirizzo di destinazione con la netmask più lunga disponibile nella tabella.
 
@@ -154,7 +179,16 @@ La **semplificazione delle tabelle di routing** avviene aggregando più network 
 
 ### Come si aggregano le reti
 1. **Identificazione delle reti contigue**: Per aggregare le reti, è necessario che queste siano contigue, ovvero che gli indirizzi IP siano consecutivi.
-2. **Calcolo della supernet**: Si determina una nuova netmask che copra tutte le reti contigue. Ad esempio, se si hanno le reti 192.168.1.0/24 e 192.168.2.0/24, si può aggregarle in una singola rete 192.168.0.0/22.
+2. **Calcolo della supernet**: Si determina una nuova netmask che copra tutte le reti contigue. Ad esempio, se si hanno le reti 192.168.1.0/24 e 192.168.2.0/24, si può aggregarle in una singola rete 192.168.0.0/22, ifatti:
+    - **192.168.1.0/24**:  
+      - Netmask: `255.255.255.0` (24 bit).  
+      - Copre gli indirizzi da `192.168.1.0` a `192.168.1.255`.  
+    - **192.168.2.0/24**:  
+      - Netmask: `255.255.255.0` (24 bit).  
+      - Copre gli indirizzi da `192.168.2.0` a `192.168.2.255`. 
+    - `192.168.1.0` → `11000000.10101000.00000001.00000000`  
+    - `192.168.2.0` → `11000000.10101000.00000010.00000000`
+    - I primi **22 bit** sono identici:  `11000000.10101000.000000` (corrisponde a `192.168.0.0`).  
 3. **Aggiornamento delle tabelle di routing**: Le voci delle singole reti vengono sostituite da una voce unica che rappresenta la supernet.
 
 ### Vantaggi del Routing Aggregato
