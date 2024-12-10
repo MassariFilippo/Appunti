@@ -1649,24 +1649,24 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
 - **Carrier Sensing Virtuale (NAV):** Le stazioni che non vedono direttamente il canale, ma lo percepiscono attraverso il NAV, evitano di trasmettere durante il periodo di occupazione del canale.
 - **Backoff Esponenziale Binario:** In caso di collisione tra RTS, viene applicato un backoff esponenziale, in cui il tempo di attesa aumenta esponenzialmente con ogni tentativo di trasmissione fallito (2^n).
 
+![](img\Reti\mac.PNG)
+
 ### Protocollo MAC 802.11 – PCF (Point Coordination Function)  
 - **Gestione del Canale da parte dell'Access Point (AP):** In modalità infrastrutturata, l'AP gestisce il canale a polling, assegnandolo a turno alle stazioni che devono trasmettere.
 - **Beaconing:** L'AP invia periodicamente segnali di beacon che consentono la sincronizzazione delle stazioni, la rilevazione della presenza dell'AP e la possibilità di entrare nel processo di polling.
 - **Scansione Canali:** Quando una stazione si attiva, scandisce i canali disponibili per cercare i beacon di un AP con cui associarsi. Il beacon mostra anche l'SSID (se impostato), che identifica l'AP.
 
-### Tempi di Spaziatura tra i Frame 
-- **SIFS (Short InterFrame Spacing):** Utilizzato per i frame di risposta rapida come ACK, CTS o frammenti di trama successivi.
-- **PIFS (PCF InterFrame Spacing):** Usato per i frame gestiti dall'AP durante il polling.
-- **DIFS (DCF InterFrame Spacing):** Usato per l'accesso al canale da parte delle stazioni.
-- **EIFS (Extended InterFrame Spacing):** Usato quando una stazione riceve un frame inatteso, segnalando l'errore.
+- **Tempi di Spaziatura tra i Frame**:
+  - **SIFS (Short InterFrame Spacing):** Utilizzato per i frame di risposta rapida come ACK, CTS o frammenti di trama successivi.
+  - **PIFS (PCF InterFrame Spacing):** Usato per i frame gestiti dall'AP durante il polling.
+  - **DIFS (DCF InterFrame Spacing):** Usato per l'accesso al canale da parte delle stazioni.
+  - **EIFS (Extended InterFrame Spacing):** Usato quando una stazione riceve un frame inatteso, segnalando l'errore.
 
-### Struttura della Trama
-- **Tipo (Type):** Indica il tipo di trama (data, control, management).
-- **Sottotipo (Subtype):** Indica sottocategorie come RTS, CTS, ACK, etc.
-- **Durata (Duration):** Indica la durata del frame e dell'eventuale ACK.
-- **Indirizzi MAC (Address 1–4):** Contengono gli indirizzi del mittente, destinatario, e trasmettitori/ricevitori radio.
-- **Sequence Number:** Numerazione sequenziale dei frame per mantenere l'ordine.
-- **Checksum:** Codice di controllo degli errori.
+![](img\Reti\mac2.PNG)
+
+- Dato che la possibilità di collisione si limita ai pacchetti di richiesta e non ai dati veri e propri, il problema si riduce notevolmente poiché i pacchetti sono decisamente più piccoli e dunque temporalmente meno lunghi da trasmettere.
+
+- **Struttura della Trama**: La struttura della trama presenta quattro campi per gli indirizzi. Questo è dovuto al fatto che la consegna avviene in maniera indiretta tra mittente e ricevente. A differenza del modello IP, dove utilizziamo il data link, qui dobbiamo salvare gli indirizzi dell'intermediario, ovvero l'**access point** (indirizzo 3). Inoltre, qualora fossimo in un **Wireless Distribution System**, ci servirà anche un secondo access point (indirizzo 4).
 
 ### Indirizzamento
 - **IBSS (Ad-Hoc):**  
@@ -1719,3 +1719,62 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
 - **Differenze Hub vs Switch:**
   - **Hub:** bus condiviso, trasmissione broadcast.
   - **Switch:** selettività nella ritrasmissione, maggiore capacità aggregata.
+
+  Ecco degli appunti organizzati e sintetizzati sul tema delle VLAN:
+
+## Virtual LAN (VLAN)
+- **Definizione**: Una VLAN permette di creare più LAN separate su un unico switch.
+- **Caratteristiche**:
+  - Ogni VLAN è un dominio di broadcast separato.
+  - Se una VLAN corrisponde a una rete IP, i broadcast di una rete non raggiungono gli host di un’altra.
+  - Senza VLAN, i broadcast inviati da un host possono raggiungere tutti gli altri host sulla stessa rete fisica, causando congestione e riducendo le prestazioni. Con le VLAN, i broadcast sono limitati al **broadcast domain** (dominio broadcast) della VLAN specifica, migliorando l'efficienza della rete e riducendo il traffico non necessario. Questo impatta anche sulla sicurezza, dato che un soggetto di un dominio broadcast non potrà conoscere attraverso un broadcast soggetti esterni al suo dominio.
+
+### Classificazione delle VLAN
+1. **VLAN statiche (Port-Based)**:
+   - Ogni porta dello switch è associata a una VLAN specifica.
+   - Gli host appartengono alla VLAN corrispondente alla porta a cui sono connessi.
+   - Cambiare VLAN di un host richiede la riconfigurazione dello switch.
+   - Lo switch determina la VLAN di un host in base alla configurazione della porta di connessione.
+   - Configurazione tipica per semplificare la gestione in ambienti con strutture di rete fisse.
+
+2. **VLAN dinamiche**:
+   - Prateicamente non più utilizzata.
+   - L’appartenenza alla VLAN dipende dall’indirizzo dell’host (MAC o IP).
+   - Gli host rimangono nella VLAN assegnata indipendentemente dalla porta di connessione.
+   - Cambiare VLAN richiede la modifica della configurazione associata all’indirizzo dell’host.
+
+### LAN Estesa e Gestione delle VLAN tra Switch
+- **Definizione**: Una LAN estesa utilizza più switch per gestire una rete più ampia, mantenendo separazione tra VLAN.
+- **Problema**: Come assicurare che le VLAN rimangano distinte e funzionino correttamente su switch multipli.
+
+1. **Configurazione delle Porte in Modalità Trunk**:
+   - Le porte di collegamento tra switch devono essere configurate in **modalità trunk**.
+   - In modalità trunk:
+     - Possono transitare frame di più VLAN.
+     - Ogni frame è taggato con l’identificativo VLAN (VID) a cui appartiene.
+     - Una VLAN “untagged” può essere configurata per il traffico non taggato (solitamente una VLAN predefinita o di management).
+
+2. **Protocollo IEEE 802.1Q**
+  - **Funzione**: Consente l'uso delle stesse VLAN su più switch interconnessi.
+  - **Tagging VLAN**:
+    - Aggiunta di un’etichetta (tag) nell’intestazione Ethernet per identificare la VLAN di appartenenza.
+    - **Header IEEE 802.1Q**:
+      - **4 byte** aggiunti al frame Ethernet:
+        - **Tag Protocol Identifier (TPID)**: 16 bit, solitamente 0x8100.
+        - **Priority**: 3 bit per la priorità del traffico.
+        - **CFI**: 1 bit, formato del MAC address.
+        - **VID**: 12 bit, identifica la VLAN (da 0 a 4095).
+
+### Modalità delle porte di uno switch
+1. **Access Mode**:
+   - Porta associata a una sola VLAN.
+   - Nessun tagging 802.1Q richiesto.
+   - Ideale per porte collegate agli host.
+
+2. **Trunk Mode**:
+   - Porta associata a VLAN multiple.
+   - Richiede il tagging 802.1Q per identificare la VLAN dei frame Ethernet.
+   - Configurazioni:
+     - Una VLAN “untagged” per il traffico non taggato.
+     - Più VLAN “tagged”.
+   - Tipica per connessioni tra switch o router.
