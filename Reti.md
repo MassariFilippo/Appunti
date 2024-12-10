@@ -777,118 +777,174 @@ Due protocolli principali di tipo EGP utilizzati in Internet sono:
 - **Border Gateway Protocol (BGP)**
 
 ## Border Gateway Protocol (BGP)
-
-### BGP
-sviluppato per sostituire EGP e attualmente è disponibile nella versione 4 (RFC 1771). I router BGP utilizzano connessioni TCP (porta 179), chiamate sessioni BGP, per uno scambio affidabile delle informazioni di routing:
+Sviluppato per sostituire EGP e attualmente è disponibile nella versione 4 (RFC 1771). I router BGP utilizzano connessioni TCP (porta 179), chiamate sessioni BGP, per uno scambio affidabile delle informazioni di routing:
 - **Sessioni BGP esterne (eBGP)** tra router in AS diversi.
 - **Sessioni BGP interne (iBGP)** tra router nello stesso AS.
-  
-BGP scambia informazioni di raggiungibilità per reti IP secondo lo schema *classless* (CIDR), permettendo un instradamento flessibile e dettagliato.
+
+BGP scambia informazioni di raggiungibilità per reti IP secondo lo schema **classless** (CIDR), permettendo un instradamento flessibile e dettagliato.
 
 ### BGP e Path Vector
-BGP utilizza un protocollo di tipo *Path Vector*, un’evoluzione del distance vector, che offre:
-- **Elenco degli AS nel percorso**: Contiene l'elenco esaustivo degli AS da attraversare per raggiungere uno specifico AS, risolvendo i cicli e permettendo politiche di routing più efficaci. 
-La necessità di conoscere nel dettaglio tutte le path ha portato a un problema di grandezza delle tabelle. La frammentazione degli indirizzi ha reso necessario conservare in memoria "fette" di indirizzi sempre più frammentate, portando a tabelle con righe nell'ordine di quasi 10^6. Questo comporta una lettura di tali tabelle per l'instradamento di ogni singolo pacchetto. Inoltre, il fenomeno della crescita esponenziale della banda dei collegamenti aggrava la situazione. La combinazione di aumento esponenziale della grandezza delle tabelle e del numero di pacchetti trasportati per secondo rischia di mettere in crisi l'infrastruttura di collegamento.
+BGP utilizza un protocollo di tipo **Path Vector**, un’evoluzione del distance vector, che offre l'**elenco degli AS nel percorso** contenente l'elenco esaustivo degli AS da attraversare per raggiungere uno specifico AS, risolvendo i cicli e permettendo politiche di routing più efficaci. La necessità di conoscere nel dettaglio tutte le path ha portato a un problema di grandezza delle tabelle. La frammentazione degli indirizzi ha reso necessario conservare in memoria "fette" di indirizzi sempre più frammentate, portando a tabelle con righe nell'ordine di quasi 10^6. Questo comporta una lettura di tali tabelle per l'instradamento di ogni singolo pacchetto. Inoltre, il fenomeno della crescita esponenziale della banda dei collegamenti aggrava la situazione. La combinazione di aumento esponenziale della grandezza delle tabelle e del numero di pacchetti trasportati per secondo rischia di mettere in crisi l'infrastruttura di collegamento.
   
 - **Politiche di routing**:
   - **Export policies**: permette il transito solo verso destinazioni consentite.
   - **Import policies**: esclude percorsi che coinvolgono AS non conformi alle politiche di routing o non considera le informazioni da esso ricevute.
 
-Questo approccio richiede maggiore larghezza di banda per il routing e memoria nei router per memorizzare i path vector.
+- **Struttura dei Path Vector**:
+  - **Origin**: indica l’origine del percorso (IGP, EGP o incomplete).
+  - **AS path**: elenca gli AS da attraversare per raggiungere una destinazione.
+  - **Next hop**: specifica l’indirizzo del router di bordo dell’AS che deve essere utilizzato come prossimo passo verso la destinazione.
 
-### Scambio di Path Vector
-Ogni path vector scambiato con i vicini include i seguenti attributi:
-- **Origin**: indica l’origine del percorso (IGP, EGP o incomplete).
-- **AS path**: elenca gli AS da attraversare per raggiungere una destinazione.
-- **Next hop**: specifica l’indirizzo del router di bordo dell’AS che deve essere utilizzato come prossimo passo verso la destinazione.
-Questi attributi possono avere diverse caratteristiche:
-- **Well-known**: attributi che devono essere riconosciuti da tutti i router BGP.
-  - **Mandatory**: attributi well-known che devono essere presenti in ogni aggiornamento BGP.
-  - **Discretionary**: attributi well-known che possono essere presenti o meno in un aggiornamento BGP.
-- **Optional**: attributi che non devono essere necessariamente riconosciuti da tutti i router BGP.
-  - **Transitive**: attributi optional che devono essere trasmessi anche se non riconosciuti.
-  - **Non-transitive**: attributi optional che non devono essere trasmessi se non riconosciuti.
+- **Caratteristiche degli attributi dei Path Vector**:
+  - **Well-known**: attributi che devono essere riconosciuti da tutti i router BGP.
+    - **Mandatory**: attributi well-known che devono essere presenti in ogni aggiornamento BGP.
+    - **Discretionary**: attributi well-known che possono essere presenti o meno in un aggiornamento BGP.
+  - **Optional**: attributi che non devono essere necessariamente riconosciuti da tutti i router BGP.
+    - **Transitive**: attributi optional che devono essere trasmessi anche se non riconosciuti.
+    - **Non-transitive**: attributi optional che non devono essere trasmessi se non riconosciuti.
 
 ### Formato dei Messaggi BGP
 I messaggi BGP sono strutturati in un formato specifico per garantire la corretta comunicazione tra i router. Ogni messaggio BGP inizia con un header comune, seguito da campi specifici a seconda del tipo di messaggio. L'header comune include:
 - **Marker (16 byte)**: Campo utilizzato per la sincronizzazione e la sicurezza.
 - **Length (2 byte)**: Lunghezza totale del messaggio BGP, compreso l'header.
 - **Type (1 byte)**: Tipo di messaggio BGP (Open, Update, Notification, Keepalive).
+
 A seconda del tipo di messaggio, l'header è seguito da campi specifici:
 - **Open**: Include l'ID dell'AS, il numero di versione BGP, il tempo di hold, l'ID del router e i parametri opzionali.
 - **Update**: Contiene informazioni sulle rotte da aggiungere o rimuovere, inclusi i prefissi IP e gli attributi del percorso.
 - **Notification**: Fornisce dettagli sugli errori riscontrati e chiude la connessione.
 - **Keepalive**: Messaggio semplice utilizzato per mantenere attiva la connessione senza trasmettere nuove informazioni di routing.
-Questa struttura modulare consente a BGP di gestire in modo efficiente e sicuro la comunicazione tra router in diverse reti autonome.
 
 ### BGP: Tipi di Messaggi
-I messaggi di BGP includono un header comune (marker, length, type) e possono assumere i seguenti tipi:
+I messaggi di BGP posso essere di tipo:
 - **Open**: inizia una connessione BGP e include identificazione dell’AS, timeout e autenticazione.
 - **Update**: trasmette il path vector e relativi attributi.
 - **Notification**: notifica errori e chiusura della connessione.
 - **Keepalive**: conferma la connessione attiva senza nuove informazioni di routing.
 
 ## Ifrastruttura regionale italiana
-In Italia, l'infrastruttura degli Autonomous Systems (AS) è distribuita tra reti private, reti pubbliche e diversi punti di interscambio fondamentali per il traffico Internet nazionale e internazionale. Gli AS italiani sono numerosi e variano per dimensione e scopo: dai provider di servizi Internet (ISP) alle reti aziendali, fino alle reti gestite dalle pubbliche amministrazioni. Due strutture cardine che facilitano l'interconnessione e migliorano l'efficienza del traffico Internet in Italia sono il **Milan Internet Exchange (MIX)** e la rete **LEPIDA**.
+In Italia, l'infrastruttura degli AS è distribuita tra reti private, reti pubbliche e diversi punti di interscambio fondamentali per il traffico Internet nazionale e internazionale. Gli AS italiani sono numerosi e variano per dimensione e scopo: dai provider di servizi Internet (ISP) alle reti aziendali, fino alle reti gestite dalle pubbliche amministrazioni. Due strutture cardine che facilitano l'interconnessione e migliorano l'efficienza del traffico Internet in Italia sono il **Milan Internet Exchange (MIX)** e la rete **LEPIDA**.
 
 ### Il Ruolo del MIX
-Il Milan Internet Exchange (MIX) è uno dei più importanti punti di interscambio di traffico Internet in Italia e uno dei maggiori a livello europeo. Situato a Milano, MIX permette l’interconnessione diretta tra AS di vari operatori, riducendo la latenza e ottimizzando il routing del traffico Internet a livello nazionale e internazionale. MIX è una struttura neutrale e indipendente che offre servizi di peering pubblico e privato, consentendo ai provider di scambiarsi traffico direttamente. Ciò riduce la necessità di instradare il traffico verso AS esteri, favorendo una maggiore autonomia della rete italiana e migliorando l’efficienza di trasmissione tra reti locali. Questo snodo è particolarmente importante per garantire la connettività tra le grandi reti italiane e l’infrastruttura globale di Internet.
+Il MIX è uno dei più importanti punti di interscambio di traffico Internet in Italia e uno dei maggiori a livello europeo. Situato a Milano, permette l’interconnessione diretta tra AS di vari operatori, riducendo la latenza e ottimizzando il routing del traffico Internet a livello nazionale e internazionale. Il MIX è una struttura neutrale e indipendente che offre **servizi di peering pubblico e privato**, consentendo ai provider di scambiarsi traffico direttamente. Ciò riduce la necessità di instradare il traffico verso AS esteri, favorendo una maggiore autonomia della rete italiana e migliorando l’efficienza di trasmissione tra reti locali. Questo snodo è particolarmente importante per garantire la connettività tra le grandi reti italiane e l’infrastruttura globale di Internet.
 
 ### La Rete LEPIDA
 LEPIDA è una rete regionale di proprietà pubblica, gestita dalla società Lepida S.p.A., che supporta il sistema di interconnessione digitale per le pubbliche amministrazioni dell’Emilia-Romagna. Nasce con l’obiettivo di interconnettere le amministrazioni pubbliche regionali, migliorando la qualità dei servizi digitali rivolti ai cittadini e garantendo la sicurezza e la gestione diretta delle reti di pubblica utilità. LEPIDA opera anche come AS e stabilisce connessioni con altri AS nazionali e internazionali, facilitando l'accesso a risorse e servizi pubblici in tutta Italia. Grazie a LEPIDA, la Regione Emilia-Romagna gode di un’infrastruttura autonoma e indipendente, riducendo la dipendenza da operatori privati e aumentando la resilienza della rete regionale.
 
-In questo scenario, MIX e LEPIDA contribuiscono a una maggiore autonomia e resilienza della rete italiana. Il MIX facilita l'interconnessione tra grandi reti commerciali e nazionali, mentre LEPIDA supporta un’infrastruttura dedicata alla pubblica amministrazione, assicurando una comunicazione efficiente e sicura per il settore pubblico e migliorando il servizio per i cittadini e le imprese a livello regionale.
+In questo scenario, MIX e LEPIDA contribuiscono a una maggiore autonomia della rete italiana. Il MIX facilita l'interconnessione tra grandi reti commerciali e nazionali, mentre LEPIDA supporta un’infrastruttura dedicata alla pubblica amministrazione, assicurando una comunicazione efficiente e sicura per il settore pubblico e migliorando il servizio per i cittadini e le imprese a livello regionale.
 
 ## Virtualizzazione di Rete
-
-### Virtualizzazione di Rete
-La virtualizzazione di rete permette la creazione di versioni virtuali di infrastrutture di computazione, memorizzazione e reti, realizzando componenti che si comportano come sistemi software indipendenti dall'hardware fisico. Questo approccio garantisce vantaggi significativi come la condivisione delle risorse fisiche e il disaccoppiamento tra progetto software e hardware, migliorando flessibilità, mobilità e scalabilità. Tuttavia, la virtualizzazione comporta criticità legate alla sicurezza e all'isolamento dei sistemi che condividono lo stesso hardware fisico.
+La virtualizzazione di rete permette la creazione di **versioni virtuali di infrastrutture di computazione, memorizzazione e reti**, realizzando componenti che si comportano come sistemi software indipendenti dall'hardware fisico. Questo approccio garantisce vantaggi significativi come la condivisione delle risorse fisiche e il disaccoppiamento tra progetto software e hardware, migliorando flessibilità, mobilità e scalabilità. Tuttavia, la virtualizzazione comporta criticità legate alla sicurezza e all'isolamento dei sistemi che condividono lo stesso hardware fisico.
 
 ### Obiettivo e Tecniche della Virtualizzazione di Rete
-La virtualizzazione di rete risponde alla crescente complessità dei requisiti di servizio dell’utenza, consentendo di realizzare topologie o funzionalità su infrastrutture esistenti, altrimenti difficili da modificare. Questo approccio spesso si basa su "reti overlay", ovvero reti logiche sovrapposte all'infrastruttura fisica per creare funzionalità aggiuntive, le network IP nel loro piccolo ne sono un esempio. Tra le tecnologie che consentono questo tipo di virtualizzazione troviamo VLAN (IEEE 802.1Q), GRE (RFC 1701), VXLAN (RFC 7348) e VPN, che rappresentano alcune delle soluzioni per segmentare, incapsulare e isolare il traffico di rete virtuale.
+La virtualizzazione di rete risponde alla crescente complessità dei requisiti di servizio dell’utenza, consentendo di realizzare topologie o funzionalità su infrastrutture esistenti, altrimenti difficili da modificare. Questo approccio spesso si basa su **reti overlay**, ovvero reti logiche sovrapposte all'infrastruttura fisica per creare funzionalità aggiuntive, le network IP nel loro piccolo ne sono un esempio. Tra le tecnologie che consentono questo tipo di virtualizzazione troviamo **VLAN (IEEE 802.1Q)**, **GRE (RFC 1701)**, **VXLAN (RFC 7348)** e **VPN**, che rappresentano alcune delle soluzioni per segmentare, incapsulare e isolare il traffico di rete virtuale.
 
 ### Reti Overlay: VLAN, GRE e VXLAN
-- **VLAN**: Le Virtual Local Area Network (VLAN) creano domini di broadcast separati all'interno della stessa rete fisica, migliorando sicurezza e prestazioni. VLAN statiche e dinamiche permettono una gestione ottimizzata delle risorse, mentre l'uso del protocollo IEEE 802.1Q facilita l'instradamento su più switch.
-- **GRE (Generic Routing Encapsulation)**: GRE permette l'incapsulamento di pacchetti su protocollo IP, creando un overlay di routing che separa logica e rete fisica, se analizzassimo dunque il pacchetto non vedremmo l'originale indirizzo IP ma quello che gli abbiamo attribito. Il GRE ho un header specifico che gli permette di specificare il protocollo contenuto ed altri parametri opzionali. Grazie al GRE potrò creare dei tunnel fittizi che vanno a modellare la topologia della rete, così facendo posso astrarre una rete fittizia che non varia al variare, dovuto per esempio ad una rottura, della rete fisica.
-- **VXLAN (Virtual eXtensible LAN)**: VXLAN, ampiamente usato nel cloud computing, consente l'incapsulamento di traffico Layer 2 in pacchetti UDP, garantendo un isolamento scalabile con identificatori unici per ciascun segmento. Creado un tunnel VXLAN ottengo la fusione di 2 LAN distinte dato che grazie al tunnel esse risponderanno alla stessa ARP request. 
-Il tunnel VXLAN funziona incapsulando i frame Ethernet in pacchetti UDP, che vengono poi trasmessi attraverso una rete IP. Ogni segmento VXLAN è identificato da un VXLAN Network Identifier (VNI), che consente di isolare il traffico tra diversi segmenti. I dispositivi che terminano i tunnel VXLAN, noti come VXLAN Tunnel Endpoints (VTEP), aggiungono e rimuovono l'incapsulamento VXLAN. Quando un frame Ethernet entra in un VTEP, viene incapsulato in un pacchetto UDP con un header VXLAN e inviato attraverso la rete IP. Il VTEP di destinazione rimuove l'incapsulamento e inoltra il frame Ethernet alla rete locale.
+- **VLAN (Virtual Local Area Network)**: Le VLAN creano domini di broadcast separati all'interno della stessa rete fisica, migliorando sicurezza e prestazioni. VLAN statiche e dinamiche permettono una gestione ottimizzata delle risorse, mentre l'uso del protocollo IEEE 802.1Q facilita l'instradamento su più switch.
+
+![](img\Reti\vlan.PNG)
+
+- **GRE (Generic Routing Encapsulation)**: GRE permette l'incapsulamento di pacchetti su protocollo IP, creando un overlay di routing che separa logica e rete fisica, se analizzassimo dunque il pacchetto non vedremmo l'originale indirizzo IP ma quello che gli abbiamo attribito. Il GRE ha un header specifico che gli permette di specificare il protocollo contenuto ed altri parametri opzionali. Grazie al GRE potrò creare dei tunnel fittizi che vanno a modellare la topologia della rete, così facendo posso astrarre una rete fittizia che non varia al variare, dovuto per esempio ad una rottura, della rete fisica.
+
+![](img\Reti\gre.PNG)
+
+- **VXLAN (Virtual eXtensible LAN)**: VXLAN, ampiamente usato nel cloud computing, consente l'incapsulamento di traffico Layer 2 in pacchetti UDP, garantendo un isolamento scalabile con identificatori unici per ciascun segmento. Creado un tunnel VXLAN ottengo la fusione di 2 LAN distinte dato che grazie al tunnel esse **risponderanno alla stessa ARP request**. Il tunnel VXLAN funziona incapsulando i frame Ethernet in pacchetti UDP, che vengono poi trasmessi attraverso una rete IP. Ogni segmento VXLAN è identificato da un **VXLAN Network Identifier (VNI)**, che consente di isolare il traffico tra diversi segmenti. I dispositivi che terminano i tunnel VXLAN, noti come **VXLAN Tunnel Endpoints (VTEP)**, aggiungono e rimuovono l'incapsulamento VXLAN. Quando un frame Ethernet entra in un VTEP, viene incapsulato in un pacchetto UDP con un header VXLAN e inviato attraverso la rete IP. Il VTEP di destinazione rimuove l'incapsulamento e inoltra il frame Ethernet alla rete locale.
+
 Nonostante i vantaggi, l'uso di VXLAN può introdurre alcuni problemi di prestazione:
-- **Overhead di Incapsulamento**: L'aggiunta di header VXLAN e UDP aumenta la dimensione dei pacchetti, riducendo l'efficienza della trasmissione e aumentando il carico sulla rete.
-- **Latenza**: L'incapsulamento e il decapsulamento dei pacchetti richiedono tempo di elaborazione aggiuntivo, che può aumentare la latenza end-to-end.
-- **Fragmentazione dei Pacchetti**: L'aumento della dimensione dei pacchetti può causare la frammentazione, che a sua volta può ridurre le prestazioni e aumentare il rischio di perdita di pacchetti.
+  - **Overhead di Incapsulamento**: L'aggiunta di header VXLAN e UDP aumenta la dimensione dei pacchetti, riducendo l'efficienza della trasmissione e aumentando il carico sulla rete.
+  - **Latenza**: L'incapsulamento e il decapsulamento dei pacchetti richiedono tempo di elaborazione aggiuntivo, che può aumentare la latenza end-to-end.
+  - **Fragmentazione dei Pacchetti**: L'aumento della dimensione dei pacchetti può causare la frammentazione, che a sua volta può ridurre le prestazioni e aumentare il rischio di perdita di pacchetti.
+
+![](img\Reti\xvlan.PNG)
+
+## Virtual LAN
+- **Definizione**: Una VLAN permette di creare più LAN separate su un unico switch.
+- **Caratteristiche**:
+  - Ogni VLAN è un dominio di broadcast separato.
+  - Se una VLAN corrisponde a una rete IP, i broadcast di una rete non raggiungono gli host di un’altra.
+  - Senza VLAN, i broadcast inviati da un host possono raggiungere tutti gli altri host sulla stessa rete fisica, causando congestione e riducendo le prestazioni. Con le VLAN, i broadcast sono limitati al **broadcast domain** (dominio broadcast) della VLAN specifica, migliorando l'efficienza della rete e riducendo il traffico non necessario. Questo impatta anche sulla sicurezza, dato che un soggetto di un dominio broadcast non potrà conoscere attraverso un broadcast soggetti esterni al suo dominio.
+
+### Classificazione delle VLAN
+1. **VLAN statiche (Port-Based)**:
+   - Ogni porta dello switch è associata a una VLAN specifica.
+   - Gli host appartengono alla VLAN corrispondente alla porta a cui sono connessi.
+   - Cambiare VLAN di un host richiede la riconfigurazione dello switch.
+   - Lo switch determina la VLAN di un host in base alla configurazione della porta di connessione.
+   - Configurazione tipica per semplificare la gestione in ambienti con strutture di rete fisse.
+
+2. **VLAN dinamiche**:
+   - Prateicamente non più utilizzata.
+   - L’appartenenza alla VLAN dipende dall’indirizzo dell’host (MAC o IP).
+   - Gli host rimangono nella VLAN assegnata indipendentemente dalla porta di connessione.
+   - Cambiare VLAN richiede la modifica della configurazione associata all’indirizzo dell’host.
+
+### LAN Estesa e Gestione delle VLAN tra Switch
+- **Definizione**: Una LAN estesa utilizza più switch per gestire una rete più ampia, mantenendo separazione tra VLAN.
+- **Problema**: Come assicurare che le VLAN rimangano distinte e funzionino correttamente su switch multipli.
+
+1. **Configurazione delle Porte in Modalità Trunk**:
+   - Le porte di collegamento tra switch devono essere configurate in **modalità trunk**.
+   - In modalità trunk:
+     - Possono transitare frame di più VLAN.
+     - Ogni frame è taggato con l’identificativo VLAN (VID) a cui appartiene.
+     - Una VLAN “untagged” può essere configurata per il traffico non taggato (solitamente una VLAN predefinita o di management).
+
+2. **Protocollo IEEE 802.1Q**
+  - **Funzione**: Consente l'uso delle stesse VLAN su più switch interconnessi.
+  - **Tagging VLAN**:
+    - Aggiunta di un’etichetta (tag) nell’intestazione Ethernet per identificare la VLAN di appartenenza.
+    - **Header IEEE 802.1Q**:
+      - **4 byte** aggiunti al frame Ethernet:
+        - **Tag Protocol Identifier (TPID)**: 16 bit, solitamente 0x8100.
+        - **Priority**: 3 bit per la priorità del traffico.
+        - **CFI**: 1 bit, formato del MAC address.
+        - **VID**: 12 bit, identifica la VLAN (da 0 a 4095).
+
+- **Modalità delle porte di uno switch**
+  1. **Access Mode**:
+    - Porta associata a una sola VLAN.
+    - Nessun tagging 802.1Q richiesto.
+    - Ideale per porte collegate agli host.
+
+  2. **Trunk Mode**:
+    - Porta associata a VLAN multiple.
+    - Richiede il tagging 802.1Q per identificare la VLAN dei frame Ethernet.
+    - Configurazioni:
+      - Una VLAN “untagged” per il traffico non taggato.
+      - Più VLAN “tagged”.
+    - Tipica per connessioni tra switch o router.
 
 ### Reti Private Virtuali (VPN) e la Sicurezza del Tunneling
+Le **VPN** sono reti sovrapposte su reti pubbliche che garantiscono connessioni sicure attraverso il **tunneling cifrato** e l'**autenticazione**. Esistono principalmente due tipologie di VPN: 
 
-Le **VPN** sono reti sovrapposte su reti pubbliche che garantiscono connessioni sicure attraverso il **tunneling cifrato** e l'**autenticazione**. Esistono principalmente due tipologie di VPN: le **Roadwarrior VPN** e le **VPN Net-to-Net**:
-- **Roadwarrior VPN**: Questo tipo di VPN è configurato per offrire accesso sicuro a utenti singoli che si collegano da punti remoti, creando connessioni sicure punto-punto verso un server VPN dedicato capace di gestire una rete a stella tra client molteplici. Tuttavia, questa configurazione, se utilizzata da un elevato numero di dispositivi, può comportare un overhead significativo poiché richiede un tunnel per ogni dispositivo. Lo si può utilizzare per emulare un'altra posizione geografica grazie al fatto che, se il server si trova in un'internet region diversa dalla propria, il ricevente è convinto che i propri messaggi arrivino da quell'internet region. Questa metodologia è funzionale solo se gli host si trovano de-localizzati sulla rete; se invece sono co-localizzati ci sarà un grande spreco di computazione.
+- **Roadwarrior VPN**: Questo tipo di VPN è configurato per offrire accesso sicuro a utenti singoli che si collegano da punti remoti, creando connessioni sicure punto-punto verso un server VPN dedicato capace di gestire una rete a stella tra client molteplici. Tuttavia, questa configurazione, se utilizzata da un elevato numero di dispositivi, può comportare un **overhead significativo** poiché richiede un tunnel per ogni dispositivo. Lo si può utilizzare per emulare un'altra posizione geografica grazie al fatto che, se il server si trova in un'internet region diversa dalla propria, il ricevente è convinto che i propri messaggi arrivino da quell'internet region. Questa metodologia è funzionale solo se gli host si trovano de-localizzati sulla rete; se invece sono co-localizzati ci sarà un grande spreco di computazione.
 - **Net-to-Net VPN**: Le Net-to-Net VPN collegano intere LAN o reti IP tramite un unico tunnel cifrato, sfruttando un canale sicuro su rete pubblica, agendo sui gateway di uscita dalla nostra network IP e quelli di ingresso dell'host ricevente. I pacchetti vengono criptati nel tunnel, mentre l’indirizzamento IP reale può essere mascherato, garantendo così privacy e sicurezza nelle connessioni tra sedi aziendali distribuite. Questo tipo di VPN è particolarmente adatto per reti aziendali, poiché consente di ridurre il numero di connessioni dirette necessarie.
 
-### Il Ruolo di IPsec per la Sicurezza delle VPN
-Lo standard IPsec (Internet Protocol Security) è il principale protocollo per la cifratura e autenticazione dei dati trasmessi su reti pubbliche tramite VPN. Offre due modalità principali: **Transport Mode** (che protegge solo i dati dell'utente) e **Tunnel Mode** (che protegge l'intero pacchetto IP). Gli elementi principali di IPsec sono:
+### IPsec per la Sicurezza delle VPN
+Lo standard **IPsec (Internet Protocol Security)** è il principale protocollo per la cifratura e autenticazione dei dati trasmessi su reti pubbliche tramite VPN. Offre due modalità principali: **Transport Mode** (che protegge solo i dati dell'utente) e **Tunnel Mode** (che protegge l'intero pacchetto IP). Gli elementi principali di IPsec sono:
 - **IKE (Internet Key Exchange)**: È il protocollo di negoziazione che autentica i partecipanti alla VPN, negoziando algoritmi crittografici e chiavi, utilizzando UDP che supporta porta sorgente e destinazione 500, ciò comporta che se sulla path troviamo una NAT si potrebbe incappare in una problematica data dal cambio di porta.
-- **AH (Authentication Header)** e **ESP (Encapsulating Security Payload)**: AH assicura autenticità, integrità dei pacchetti e identità del mittente, mentre ESP include anche la riservatezza attraverso la cifratura icapsulando il pacchetto e dunque esponedolo a frammentazione durante il trasporto dato che ne aumenta le dimensioni. Con ESP Transoprt cifro solo il contenuto mentre con ESP Tunnel cifro l'intero pacchetto comprensivo di IP.
-Grazie a queste caratteristiche, le VPN realizzate con IPsec garantiscono alti livelli di sicurezza e sono la soluzione preferita per interconnettere reti aziendali che devono trasmettere dati sensibili su Internet, offrendo riservatezza, autenticazione e una protezione costante dei dati attraverso reti pubbliche.
+- **AH (Authentication Header)** e **ESP (Encapsulating Security Payload)**: AH assicura autenticità, integrità dei pacchetti e identità del mittente, mentre ESP include anche la riservatezza attraverso la cifratura icapsulando il pacchetto e dunque esponedolo a frammentazione durante il trasporto dato che ne aumenta le dimensioni. Con **ESP Transoprt** cifro solo il contenuto mentre con **ESP Tunnel** cifro l'intero pacchetto comprensivo di IP.
 
 ## Mezzi Trasmissivi
 
-### Legge di Edholm
 La **Legge di Edholm** prevede che la larghezza di banda delle reti di telecomunicazione raddoppi ogni 18 mesi.
 
 ### Attenuazione
 L'attenuazione è la riduzione della potenza del segnale man mano che si propaga attraverso un mezzo trasmissivo. L'attenuazione è misurata in decibel per kilometro (dB/km). L'attenuazione è un parametro critico nella progettazione delle reti di telecomunicazione, poiché influisce sulla qualità e sulla distanza massima di trasmissione del segnale. 
 - L'**attenuazione sul rame** crese esponenzialmente con la lunghezza del collegamento e con la radice della frequeza del seganle, avrà dunque un fattore di dispersione olto altro che si quantifica con la formula:
+
   $$ A = 10 \log_{10} \left(\frac{P_t}{P_r}\right) = a \sqrt{f} L $$
-  Per limitare l'attenuazione di usa la tecnica del **twined pair** che considte del arrotolare a spirale le coppie per contenere la dimendione del campo generatoe dunque la sua dispersione, ne esistono di 2 tipi: **STP** schemati da un conduttore e **UTP** non schermati.
-  I **Coassiali** permettono di raggiungere distaze maggiori, si copriranno distanze connesse da ripetitori (nodi semplificati) che collegano più tratte.
-- L'**attenuazione delle Radio comunicazioni** è la diminuzione della potenza del segnale radio mentre si propaga attraverso l'aria o altri mezzi. Questo fenomeno è influenzato da vari fattori, tra cui la distanza tra il trasmettitore e il ricevitore, la frequenza del segnale, le condizioni atmosferiche e la presenza di ostacoli fisici come edifici o montagne. Ad esempio, l'attenuazione cresce in maniera polinomiale con il quadrato della frequenza, e le antenne diventano più efficaci quando la frequenza aumenta.
 
-  La propagazione ionosferica è un fenomeno in cui le onde radio vengono riflesse o rifratte dalla ionosfera, uno strato dell'atmosfera terrestre carico di particelle ionizzate. Questo tipo di propagazione permette alle onde radio di coprire distanze molto maggiori rispetto alla propagazione diretta, rendendola utile per le comunicazioni a lunga distanza, come quelle utilizzate nelle trasmissioni radio a onde corte.
+  Per limitare l'attenuazione di usa la tecnica del **twined pair** che consiste nel arrotolare a spirale le coppie per contenere la dimendione del campo generato e dunque la sua dispersione, ne esistono di 2 tipi: **STP** schemati da un conduttore e **UTP** non schermati. I **Coassiali** permettono di raggiungere distaze maggiori.
 
-  Attualmente, l'utilizzo della ionosfera è stato superato grazie ai satelliti in orbita geostazionaria, che svolgono lo stesso lavoro ad un'altezza maggiore e con una portata più ampia. Tuttavia, poiché le orbite geostazionarie sono limitate, si possono utilizzare satelliti non stazionari che orbitano più vicino alla Terra. Questi satelliti sono più facili da installare ma non rimangono fissi, quindi è necessario averne un numero maggiore per garantire una copertura continua.
+- L'**attenuazione delle Radio Comunicazioni** è la diminuzione della potenza del segnale radio mentre si propaga attraverso l'aria o altri mezzi. Questo fenomeno è influenzato da vari fattori, tra cui la distanza tra il trasmettitore e il ricevitore, la frequenza del segnale, le condizioni atmosferiche e la presenza di ostacoli fisici come edifici o montagne. Ad esempio, l'attenuazione cresce in maniera polinomiale con il quadrato della frequenza, e le antenne diventano più efficaci quando la frequenza aumenta.
+
+### Comunicazione Satellitare
+
+- La **propagazione ionosferica** è un fenomeno in cui le onde radio vengono riflesse o rifratte dalla ionosfera, uno strato dell'atmosfera terrestre carico di particelle ionizzate. Questo tipo di propagazione permette alle onde radio di coprire distanze molto maggiori rispetto alla propagazione diretta, rendendola utile per le comunicazioni a lunga distanza, come quelle utilizzate nelle trasmissioni radio a onde corte. Attualmente, l'utilizzo della ionosfera è stato superato grazie ai **satelliti in orbita geostazionaria**, che svolgono lo stesso lavoro ad un'altezza maggiore e con una portata più ampia. Tuttavia, poiché le orbite geostazionarie sono limitate, si possono utilizzare **satelliti non stazionari** che orbitano più vicino alla Terra. Questi satelliti sono più facili da installare ma non rimangono fissi, quindi è necessario averne un numero maggiore per garantire una copertura continua.
 
 ### Telefonia Cellulare
-
-- L'obiettivo iniziale della telefonia cellulare era incrementare il numero di terminali per ridurre i costi elevati della tecnologia e delle infrastrutture, rendendo il servizio più accessibile a un numero crescente di utenti.
+L'obiettivo iniziale della telefonia cellulare era incrementare il numero di terminali per ridurre i costi elevati della tecnologia e delle infrastrutture, rendendo il servizio più accessibile a un numero crescente di utenti.
 - **Sviluppo delle Celle**: per aumentare l’efficienza e ridurre i costi, le reti cellulari sono state organizzate in celle, piccole aree coperte ciascuna da un’antenna. Questa struttura permette di servire molti utenti all'interno di un'area circoscritta, migliorando la capacità complessiva della rete e permettendo un uso efficiente delle frequenze disponibili.
 - **Gestione della Copertura**: ogni cella è progettata per supportare un certo numero di chiamate simultanee, e le celle sono posizionate in modo da garantire che, anche se un utente si sposta da una cella all’altra, il servizio rimanga continuo. Le celle si sovrapporrano dunque in alcuni punti, questo va però ad evitare che si formino degli spazi non coperti.
 
@@ -898,40 +954,33 @@ L'attenuazione è la riduzione della potenza del segnale man mano che si propaga
 
 - La fibra ottica ha rivoluzionato le reti di telecomunicazione, sostituendo progressivamente il rame nella rete di trasporto a partire dagli anni 2000. Con una larghezza di banda significativamente superiore, la fibra ottica supporta la trasmissione di grandi quantità di dati su lunghe distanze con una minima perdita di segnale, migliorando drasticamente la qualità e l'affidabilità delle comunicazioni.
 - **Caratteristiche**: le fibre ottiche sono sottili filamenti di vetro o plastica che trasportano dati sotto forma di impulsi luminosi. La fibra offre un'elevata capacità di trasporto dati e una bassa attenuazione, rendendola ideale per le tratte di lunga distanza. Negli anni, la tecnologia della fibra ha permesso di superare i limiti fisici delle trasmissioni terrestri e transoceaniche, anche in condizioni complesse come il fondo marino.
-- **Innovazioni**: grazie alla tecnica del **multiplexing a lunghezza d'onda** (WDM), è possibile trasmettere simultaneamente più flussi di dati su diverse frequenze di luce all'interno dello stesso cavo in fibra ottica. Questo approccio sfrutta la scarsa selettività della fibra rispetto al colore della luce, permettendo a una singola fibra di trasportare diversi flussi di dati ad alta velocità, aumentando così la capacità totale di trasmissione senza necessità di nuovi cavi.
+- **Innovazioni**: grazie alla tecnica del **multiplexing a lunghezza d'onda (WDM)**, è possibile trasmettere simultaneamente più flussi di dati su diverse frequenze di luce all'interno dello stesso cavo in fibra ottica. Questo approccio sfrutta la scarsa selettività della fibra rispetto al colore della luce, permettendo a una singola fibra di trasportare diversi flussi di dati ad alta velocità, aumentando così la capacità totale di trasmissione senza necessità di nuovi cavi.
 
 - **Manutenzione e Sicurezza della Fibra Ottica**
   - **Giunzione e Allineamento**: le fibre ottiche devono essere giuntate con estrema precisione per evitare perdite di segnale e dispersione della luce, che potrebbero compromettere la qualità della trasmissione. Le giunzioni possono essere permanenti o temporanee, ma in entrambi i casi è fondamentale un allineamento perfetto tra i segmenti di fibra per garantire un'efficienza ottimale.
   - **Problemi di Sicurezza nelle Lunghe Tratte**: nelle tratte di lunga distanza, specialmente nelle trasmissioni transoceaniche, emergono problemi di sicurezza e manutenzione. Le lunghe distanze e la difficoltà di accesso rendono complicato il monitoraggio e la protezione delle fibre da potenziali danni o manomissioni. Per garantire sicurezza e affidabilità, sono necessari sistemi di sorveglianza avanzati e misure di protezione che preservino l'integrità del segnale su queste distanze estese.
 
-### MEM (Micro-Electro-Mechanical Systems)
-I MEM (Micro-Electro-Mechanical Systems) sono dispositivi miniaturizzati che combinano componenti meccanici ed elettrici su un singolo chip di silicio. Funzionano attraverso l'integrazione di sensori, attuatori e circuiti elettronici, permettendo la rilevazione e la manipolazione di segnali fisici. Nei sistemi di telecomunicazione, i MEM vengono applicati in matrici per creare switch ottici, utilizzati per instradare segnali luminosi nelle reti in fibra ottica. Questi switch sfruttano micro-specchi mobili per deviare i fasci di luce, consentendo una commutazione rapida e precisa dei segnali ottici senza conversione elettrica, migliorando l'efficienza e la velocità delle reti di comunicazione.
+### Micro-Electro-Mechanical Systems
+I MEM (Micro-Electro-Mechanical Systems) sono dispositivi miniaturizzati che combinano componenti meccanici ed elettrici su un singolo chip di silicio. Funzionano attraverso l'integrazione di sensori, attuatori e circuiti elettronici, permettendo la rilevazione e la manipolazione di segnali fisici. Nei sistemi di telecomunicazione, i MEM vengono applicati in matrici per creare **switch ottici**, utilizzati per instradare segnali luminosi nelle reti in fibra ottica. Questi switch sfruttano micro-specchi mobili per deviare i fasci di luce, consentendo una commutazione rapida e precisa dei segnali ottici senza conversione elettrica, migliorando l'efficienza e la velocità delle reti di comunicazione.
 
-### Arrayed Waveguide Grating (AWG)
-L'Arrayed Waveguide Grating (AWG) è un dispositivo ottico utilizzato nelle reti di telecomunicazione per la multiplazione e demultiplazione di segnali ottici. Funziona sfruttando la differenza di percorso ottico tra una serie di guide d'onda disposte in modo da creare interferenze costruttive e distruttive. Questo permette di separare o combinare diverse lunghezze d'onda della luce, rendendo l'AWG fondamentale per il Wavelength Division Multiplexing (WDM). Grazie alla sua capacità di gestire molteplici canali ottici simultaneamente, l'AWG è essenziale per aumentare la capacità di trasmissione delle reti in fibra ottica, migliorando l'efficienza e la scalabilità delle comunicazioni ottiche.
+### Arrayed Waveguide Grating
+L'Arrayed Waveguide Grating (AWG) è un dispositivo ottico utilizzato nelle reti di telecomunicazione per la multiplazione e demultiplazione di segnali ottici. Funziona sfruttando la differenza di percorso ottico tra una serie di guide d'onda disposte in modo da creare interferenze costruttive e distruttive. Questo permette di separare o combinare diverse lunghezze d'onda della luce, rendendo l'AWG fondamentale per il **Wavelength Division Multiplexing (WDM)**. Grazie alla sua capacità di gestire molteplici canali ottici simultaneamente, l'AWG è essenziale per aumentare la capacità di trasmissione delle reti in fibra ottica, migliorando l'efficienza e la scalabilità delle comunicazioni ottiche.
 
 ### Divisione Geografica in Zone Bianche, Grigie e Nere
 La divisione geografica in zone bianche, grigie e nere è una classificazione utilizzata per identificare le aree in base alla disponibilità e alla qualità delle infrastrutture di rete a banda larga. Le **zone bianche** sono aree in cui non esiste alcuna infrastruttura di rete a banda larga e non sono previsti investimenti privati nei prossimi tre anni qui sarà necessario un interveto publico per costruire un infrastruttura che ad un ente privato potrebbe risultare non conveniente. Le **zone grigie** sono aree in cui è presente un solo operatore di rete a banda larga, con una copertura limitata e una qualità del servizio che potrebbe non essere sufficiente per soddisfare le esigenze future. Le **zone nere** sono aree in cui sono presenti almeno due operatori di rete a banda larga che offrono servizi competitivi e di alta qualità. Questa classificazione è utilizzata per indirizzare gli investimenti pubblici e privati, promuovendo lo sviluppo delle infrastrutture di rete nelle zone meno servite e garantendo un accesso equo e diffuso alla banda larga su tutto il territorio.
 
-## MPLS (Multiprotocol Label Switching)
+## Multiprotocol Label Switching
 
-MPLS mira a combinare la velocità dello switching con la flessibilità dell'instradamento IP, migliorando il costo/prestazioni nella rete.
-
-### Router e Switch
-- **Router**: instrada datagrammi IP usando la tecnica del **longest prefix match** e supporta funzionalità come il filtering dei pacchetti e la qualità del servizio (QoS).
-- **Switch**: instradamento semplice in base ad indirizzi statici, con un rapporto costo/prestazioni più vantaggioso rispetto ai router.
-
-### Label Switching
-- **Componenti**: All'inizio degli anni 2000 si tenta di scomporre la funzione di instradamento in 2 componenti:
-  - **Controllo**: basato sui protocolli di rete convenzionali e associazione delle etichette (label).
-  - **Trasferimento**: utilizza hardware veloce per l’identificazione basata su etichette.
+I **Router** instradano datagrammi IP usando la tecnica del **longest prefix match** e supportano funzionalità come il **filtering dei pacchetti** e la **qualità del servizio (QoS)**, gli **Switch** invece si occupano di instradamento semplice in base ad indirizzi statici, con un rapporto costo/prestazioni più vantaggioso rispetto ai router. Il Multiprotocol Label Switching (MPLS) mira a combinare la velocità dello switching con la flessibilità dell'instradamento IP, migliorando il costo/prestazioni nella rete, ciò è basato sui protocolli di rete convenzionali e associazione delle etichette (label) sulla base delle quali si utilizza hardware veloce per l’identificazione ed istradamento.
 - **Vantaggi di MPLS**:
   - Supporta protocolli standard di routing (OSPF, BGP) mantenendo scalabilità e flessibilità.
-  - Trasferimento veloce dei pacchetti tramite l’utilizzo di tecniche di switching veloce.
-- **Realizzazione**:
-  - MPLS utilizza la commutazione orientata alla connessione.
-  - La **label** è una breve entità che identifica i flussi di dati e non codifica gli indirizzi IP, essa viene aggiunta al pacchetto, attraverso un header aggiuntivo con dimensione 32 bit, e la usiamo per instradare sostituendola all'indirizzo IP.
-Questa struttura ci permetterà di utilizzare quei router che per via del routing rimanevano a disposizione per mera ridondanza.
+  - Trasferimento veloce dei pacchetti tramite l’utilizzo di tecniche di switching veloce, permettendoci di utilizzare quei router che per via del routing rimanevano a disposizione per mera ridondanza.
+- **Realizzazione**: MPLS utilizza la commutazione orientata alla connessione, la **label** è una breve entità che identifica i flussi di dati e non codifica gli indirizzi IP, essa viene aggiunta al pacchetto, attraverso un header aggiuntivo con dimensione 32 bit, e la usiamo per instradare sostituendola all'indirizzo IP. 
+
+- **Label-Switching Router (LSR)**: router che supporta MPLS.
+- **Label Edge Router (LER)**: router che collega la rete MPLS con reti esterne, attribuendo o rimuovendo le etichette.
+- **Label-Switched Path (LSP)**: percorso seguito dai pacchetti appartenenti a una FEC, stabilito tramite etichette.
+
 ![](img\Reti\routing_classico.PNG)
 ![](img\Reti\routing_mpls.PNG)
 
@@ -941,49 +990,40 @@ Un **flusso (flow)** è una sequenza di datagrammi inviati da una particolare so
 - Uniformi richieste di qualità di servizio
 - Insieme delle politiche di gestione richieste nei router (priorità, ecc.)
 
-Appare evidente come il livello di astrazione sia variabile e dunque maggiprmente adattabile alle situszioni specifiche
-
 ### Forwarding Equivalence Classes (FEC)
-- **FEC**: raggruppamento di flussi con destinazione e requisiti di qualità di servizio simili.
-- Ogni pacchetto o flusso associato a una FEC viene instradato nella stessa direzione attraverso i router. Questo permette ai router di ragionare per "percorsi" e non più per destinazioni, riducendo le tabelle di instradamento da milioni di voci a decine di voci. Inoltre, nel mondo IP, la dinamicità deve essere calcolata di volta in volta, mentre con le FEC possiamo scegliere in base alle necessità.
-
-### Nomenclatura in MPLS
-- **Label-Switching Router (LSR)**: router che supporta MPLS.
-- **Label Edge Router (LER)**: router che collega la rete MPLS con reti esterne, attribuendo o rimuovendo le etichette.
-- **Label-Switched Path (LSP)**: percorso seguito dai pacchetti appartenenti a una FEC, stabilito tramite etichette.
+Raggruppamento di flussi con destinazione e requisiti di qualità di servizio simili. Ogni pacchetto o flusso associato a una FEC viene instradato nella stessa direzione attraverso i router. Questo permette ai router di ragionare per "percorsi" e non più per destinazioni, riducendo le tabelle di instradamento da milioni di voci a decine di voci. Inoltre, nel mondo IP, la dinamicità deve essere calcolata di volta in volta, mentre con le FEC possiamo scegliere in base alle necessità.
 
 ### LSR e LER Funzioni
-- **LSR**: utilizza una tabella di instradamento (LFIB) per associare label in ingresso e in uscita ai pacchetti.
+- **LSR**: utilizza una **tabella di instradamento (LFIB)** per associare label in ingresso e in uscita ai pacchetti.
 - **LER**: all’ingresso assegna una label al pacchetto e alla sua uscita rimuove la label.
 
-### Instradamento e Label Swapping
-- MPLS evita di valutare la FEC ad ogni hop grazie all'assegnazione delle label.
-- L'instradamento dei pacchetti si basa su label swapping, che associa una label di uscita al pacchetto per il prossimo hop.
+Ecco una versione riorganizzata e resa più leggibile del paragrafo:
 
-### Label Stacking
-- MPLS supporta l’**innestamento di domini** (label stacking), che permette di sovrapporre livelli di instradamento, simile al routing gerarchico.
-- Le label possono essere aggiunte (push) o rimosse (pop) in base all’ingresso o uscita dal dominio.
+---
+
+### **Gestione delle Label in MPLS**
+
+MPLS (Multiprotocol Label Switching) semplifica l'instradamento dei pacchetti evitando di valutare la FEC (Forwarding Equivalence Class) a ogni hop. Questo è reso possibile grazie al meccanismo di **label swapping**, che associa a ogni pacchetto una label di uscita per il prossimo hop.
+
+- **Principi di funzionamento**:
+  - **Assegnazione delle label**: Le label vengono allocate e gestite dal router a valle. Durante una fase iniziale di **handshake**, i router MPLS decidono quale etichetta assegnare ai flussi di ingresso su ciascuna interfaccia e quale utilizzare per l'uscita.
+  - **Instradamento basato su label**: Una volta che i dati iniziano a circolare, i router operano esclusivamente sulle etichette, senza analizzare gli indirizzi IP.
+
+- **Funzionalità avanzate**:
+  - **Innestamento di domini (label stacking)**: MPLS supporta la sovrapposizione di più livelli di instradamento, simile al routing gerarchico. Le label possono essere aggiunte (**push**) o rimosse (**pop**) quando i pacchetti entrano o escono da un dominio MPLS.
+  - **Aggregazione (label merging)**: Consente di unire flussi di traffico in un unico flusso, ottimizzando l'uso delle risorse.
+  - Il **TTL** (Time-to-Live) viene monitorato e decrementato a ogni hop attraversato da un LSR (Label Switch Router). Alla fine del percorso MPLS, il TTL viene ripristinato per garantire un controllo efficace sul numero di hop complessivi.
+
 ![](img\Reti\label_stacking.PNG)
 ![](img\Reti\label_stacking1.PNG)
 ![](img\Reti\label_stacking2.PNG)
 
-### Label Allocation
-Le label vengono sempre gestite dal router a valle. I router MPLS avranno una fase di "handshake" in cui decideranno su quale interfaccia accogliere un flusso e quale etichetta attribuire al flusso in ingresso su quell'interfaccia e viceversa sull'uscita. In questo modo, dal momento in cui i dati inizieranno a circolare, si lavorerà solo sulle etichette e non più sugli indirizzi IP.
-
-### Aggregazione e Gestione delle Label
-- La **aggregazione** (label merging) consente di unire flussi di traffico in un unico flusso, ottimizzando l'uso delle risorse.
-- Il **TTL** (Time to Live) viene gestito all’interno di MPLS per mantenere il controllo sul numero di hop attraversati, decrementando il valore a ogni passaggio attraverso un LSR e ripristinandolo alla fine del percorso MPLS.
-
-## Prestazioni
+## Prestazioni dei Protocolli di Telecomunicazione
 
 ### Affidabilità nei protocolli
 I **protocolli** di comunicazione sono progettati per garantire la **trasmissione affidabile** dei dati. Questo risultato si ottiene attraverso:  
-- **Controllo degli errori**, che comprende:  
-  - **CRC (Cyclic Redundancy Check)**, una tecnica per verificare la correttezza dei dati trasmessi.  
-  - **Internet checksum**, utilizzato per rilevare errori nei pacchetti.  
-- **Recupero degli errori**, realizzato mediante:  
-  - **ARQ (Automatic Repeat reQuest)**, una tecnica che richiede la ritrasmissione dei dati non ricevuti correttamente.  
-  - **Ritrasmissione**, per garantire che i dati siano ricevuti senza errori.  
+- **Controllo degli errori**, che comprende: **CRC (Cyclic Redundancy Check)**, una tecnica per verificare la correttezza dei dati trasmessi ed **Internet checksum**, utilizzato per rilevare errori nei pacchetti.  
+- **Recupero degli errori**, realizzato mediante: **ARQ (Automatic Repeat reQuest)**, tecnica che richiede la ritrasmissione dei dati non ricevuti correttamente e consguente **ritrasmissione**.  
 - **Controllo di flusso e sequenza**, che assicura l'ordine corretto dei dati inviati e ricevuti:  
   - **Acknowledgment (ACK)**, una conferma di ricezione per ogni pacchetto.  
   - **ARQ**, che gestisce ritardi e ripetizioni.  
@@ -997,9 +1037,10 @@ I protocolli devono soddisfare due esigenze fondamentali:
 Un sistema di comunicazione deve gestire diverse tipologie di **richieste**:  
 - **Richieste offerte** ($ a(t) $): rappresentano il flusso di dati inviati al sistema.  
 - **Richieste accettate** ($ s(t) $): sono quelle che il sistema può effettivamente processare.  
-- **Richieste perdute** ($ r(t) $): sono richieste rifiutate o non accettate, calcolate come $ r(t) = a(t) - s(t) $.  
+- **Richieste perdute** ($ r(t) $): sono richieste rifiutate o non accettate, calcolate come $ r(t) = a(t) - s(t) $. 
 
-Il **tempo di servizio** ($\Theta$) è un parametro cruciale che rappresenta il tempo necessario a completare una PDU (Protocol Data Unit), esso potrà essere deterministico (dimensione dei pacchetti fissa) o aleatorio (dimesione dei pacchetti variabile). 
+Il **tempo di servizio** ($\Theta$) è un parametro cruciale che rappresenta il tempo necessario a completare una **PDU (Protocol Data Unit)**, esso potrà essere deterministico (dimensione dei pacchetti fissa) o aleatorio (dimesione dei pacchetti variabile). 
+
 La **frequenza media di servizio** ($ \mu = \frac{1}{\Theta}  $) indica quanto velocemente il sistema smaltisce le richieste in condizioni operative, dunque potrà essere considerato come la capacità massima di servizio offribile.
 
 ### Sistema a coda
@@ -1037,23 +1078,10 @@ L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rappor
 Le **LAN** (Local Area Network) rappresentano un'infrastruttura di telecomunicazioni progettata per consentire la comunicazione tra dispositivi indipendenti in un’area geografica limitata. Queste reti sfruttano un canale condiviso ad alta velocità, garantendo tassi di errore contenuti. 
 
 ### Caratteristiche principali delle LAN
-1. **Area limitata**:  
-   - Le LAN operano in un contesto geografico circoscritto, spesso privato, come uffici, abitazioni o campus.  
-   - Questo consente prestazioni elevate grazie alla vicinanza fisica tra i dispositivi.  
-
-2. **Canale fisico condiviso**:  
-   - Un unico canale è utilizzato da tutti i dispositivi connessi.  
-   - Questa condivisione consente trasmissioni simultanee, ma richiede meccanismi per evitare collisioni.  
-
-3. **Trasmissioni broadcast**:  
-   - La rete supporta comunicazioni "da uno a tutti".  
-   - Ogni dispositivo può trasmettere dati che tutti gli altri possono potenzialmente ricevere, a meno che non siano filtrati.  
-
-4. **Elevata bit rate e bassi tassi di errore**:  
-   - Le LAN offrono velocità di trasmissione elevate con tassi di errore contenuti, grazie alle brevi distanze fisiche e alla qualità del canale.
-
-5. **Indipendenza**:  
-   - I dispositivi nelle LAN non seguono un'architettura master-slave, operando invece come entità autonome.  
+1. **Area limitata**: Le LAN operano in un contesto geografico circoscritto, spesso privato, come uffici, abitazioni o campus,questo consente prestazioni elevate grazie alla vicinanza fisica tra i dispositivi. Le LAN offrono velocità di trasmissione elevate con tassi di errore contenuti, grazie alle brevi distanze fisiche e alla qualità del canale. 
+2. **Canale fisico condiviso**: Un unico canale è utilizzato da tutti i dispositivi connessi, questa condivisione consente trasmissioni simultanee, ma richiede meccanismi per evitare collisioni.  
+3. **Trasmissioni broadcast**: La rete supporta comunicazioni "da uno a tutti".    
+4. **Indipendenza**: I dispositivi nelle LAN non seguono un'architettura master-slave, operando invece come entità autonome.  
 
 ### Traffico offerto e capacità del sistema
 - Quando il numero di utenti che utilizzano il servizio supera la capacità massima del servitore, il sistema accumula lavoro in coda.  
@@ -1108,10 +1136,9 @@ La scelta dell’algoritmo di controllo e accesso è determinata da un compromes
   1. $ L $: lunghezza del pacchetto.  
   2. $ C $: velocità di trasmissione del canale.  
   3. $ D $: distanza massima tra due nodi della rete.  
-  4. $ v $: velocità di propagazione del segnale (tipicamente vicino alla velocità della luce nell’aria).  
+  4. $ v $: velocità di propagazione del segnale (tipicamente vicino alla velocità della luce nell’aria). 
 
-- **LAN ideale**:
-  - In un sistema senza collisioni e con coordinamento perfetto, tutte le richieste ($ A_0 $) vengono soddisfatte ($ A_s = A_0 $) fino alla saturazione del canale.
+In un sistema senza collisioni e con coordinamento perfetto, tutte le richieste vengono soddisfatte fino alla saturazione del canale.
 
 ### Propagazione reale nella topologia bus
 - Nella **topologia bus**, il tempo di attraversamento di una trama sulla LAN non è istantaneo.  
@@ -1122,16 +1149,16 @@ La scelta dell’algoritmo di controllo e accesso è determinata da un compromes
     4. $ t + L/C + d/v $: il nodo **B** riceve l’ultimo bit.  
 
 ### Efficienza del MAC ideale
-- Una trama impegna la **LAN** per un tempo $ T_0 $, limitando l’uso totale del canale.  
-- Il canale può essere utilizzato al massimo per $ T $ secondi ogni $ T_0 $.  
-- **Formula dell’efficienza del MAC**:  
+Una trama impegna la **LAN** per un tempo $ T_0 $, limitando l’uso totale del canale. Il canale può essere utilizzato al massimo per $ T $ secondi ogni $ T_0 $.  
+
+**Formula dell’efficienza del MAC**:  
   $$
   \eta = \frac{T}{T_0} = \frac{L/C}{L/C + d/v} = \frac{1}{1 + a}
   $$
-  - Dove $ a = C \cdot d / v \cdot L $.  
-    - $ a $ rappresenta la **lunghezza della LAN** in termini di PDU.  
-- **Limite superiore**:  
-  L’efficienza pone un limite massimo al traffico che la LAN può smaltire ($ A_s $).  
+  - Dove $ a = C \cdot d / v \cdot L $ 
+  - $ a $ rappresenta la **lunghezza della LAN** in termini di PDU. 
+   
+L’efficienza pone un limite massimo al traffico che la LAN può smaltire ($ A_s $).  
 
 ### Traffico smaltito dalla LAN
 - La quantità di traffico smaltito dipende dal rapporto $ A_0 $ (traffico offerto) e $ 1 / (1 + a) $:  
@@ -1719,62 +1746,3 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
 - **Differenze Hub vs Switch:**
   - **Hub:** bus condiviso, trasmissione broadcast.
   - **Switch:** selettività nella ritrasmissione, maggiore capacità aggregata.
-
-  Ecco degli appunti organizzati e sintetizzati sul tema delle VLAN:
-
-## Virtual LAN (VLAN)
-- **Definizione**: Una VLAN permette di creare più LAN separate su un unico switch.
-- **Caratteristiche**:
-  - Ogni VLAN è un dominio di broadcast separato.
-  - Se una VLAN corrisponde a una rete IP, i broadcast di una rete non raggiungono gli host di un’altra.
-  - Senza VLAN, i broadcast inviati da un host possono raggiungere tutti gli altri host sulla stessa rete fisica, causando congestione e riducendo le prestazioni. Con le VLAN, i broadcast sono limitati al **broadcast domain** (dominio broadcast) della VLAN specifica, migliorando l'efficienza della rete e riducendo il traffico non necessario. Questo impatta anche sulla sicurezza, dato che un soggetto di un dominio broadcast non potrà conoscere attraverso un broadcast soggetti esterni al suo dominio.
-
-### Classificazione delle VLAN
-1. **VLAN statiche (Port-Based)**:
-   - Ogni porta dello switch è associata a una VLAN specifica.
-   - Gli host appartengono alla VLAN corrispondente alla porta a cui sono connessi.
-   - Cambiare VLAN di un host richiede la riconfigurazione dello switch.
-   - Lo switch determina la VLAN di un host in base alla configurazione della porta di connessione.
-   - Configurazione tipica per semplificare la gestione in ambienti con strutture di rete fisse.
-
-2. **VLAN dinamiche**:
-   - Prateicamente non più utilizzata.
-   - L’appartenenza alla VLAN dipende dall’indirizzo dell’host (MAC o IP).
-   - Gli host rimangono nella VLAN assegnata indipendentemente dalla porta di connessione.
-   - Cambiare VLAN richiede la modifica della configurazione associata all’indirizzo dell’host.
-
-### LAN Estesa e Gestione delle VLAN tra Switch
-- **Definizione**: Una LAN estesa utilizza più switch per gestire una rete più ampia, mantenendo separazione tra VLAN.
-- **Problema**: Come assicurare che le VLAN rimangano distinte e funzionino correttamente su switch multipli.
-
-1. **Configurazione delle Porte in Modalità Trunk**:
-   - Le porte di collegamento tra switch devono essere configurate in **modalità trunk**.
-   - In modalità trunk:
-     - Possono transitare frame di più VLAN.
-     - Ogni frame è taggato con l’identificativo VLAN (VID) a cui appartiene.
-     - Una VLAN “untagged” può essere configurata per il traffico non taggato (solitamente una VLAN predefinita o di management).
-
-2. **Protocollo IEEE 802.1Q**
-  - **Funzione**: Consente l'uso delle stesse VLAN su più switch interconnessi.
-  - **Tagging VLAN**:
-    - Aggiunta di un’etichetta (tag) nell’intestazione Ethernet per identificare la VLAN di appartenenza.
-    - **Header IEEE 802.1Q**:
-      - **4 byte** aggiunti al frame Ethernet:
-        - **Tag Protocol Identifier (TPID)**: 16 bit, solitamente 0x8100.
-        - **Priority**: 3 bit per la priorità del traffico.
-        - **CFI**: 1 bit, formato del MAC address.
-        - **VID**: 12 bit, identifica la VLAN (da 0 a 4095).
-
-### Modalità delle porte di uno switch
-1. **Access Mode**:
-   - Porta associata a una sola VLAN.
-   - Nessun tagging 802.1Q richiesto.
-   - Ideale per porte collegate agli host.
-
-2. **Trunk Mode**:
-   - Porta associata a VLAN multiple.
-   - Richiede il tagging 802.1Q per identificare la VLAN dei frame Ethernet.
-   - Configurazioni:
-     - Una VLAN “untagged” per il traffico non taggato.
-     - Più VLAN “tagged”.
-   - Tipica per connessioni tra switch o router.
