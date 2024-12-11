@@ -487,8 +487,8 @@ Tutto questo avviene in una coda che gestisce l'elaborazione.
 L'instradamento a percorso più breve implica l'associazione di una lunghezza a ciascun 
 collegamento e la ricerca dei percorsi a costo minimo utilizzando algoritmi come Bellman-Ford e Dijkstra. Questo può essere implementato in modo **centralizzato** o **distribuito**, sia in maniera **sincrona** che **asincrona**. Quando i nodi di rete vengono accesi, conoscono solo la configurazione delle loro interfacce, che può essere statica o dinamica tramite DHCP. Con queste informazioni, popolano la tabella di instradamento iniziale. Per implementare il  routing a percorso più breve (shortest path) verso qualsiasi destinazione, devono utilizzare uno o più protocolli di routing per scambiarsi informazioni e apprendere la topologia della rete, e uno o più algoritmi per il calcolo dei percorsi più brevi basati sulle informazioni ottenute.
 
-### Routing Information Protocol (RIP) o Routing Distance Vector
-Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono direttamente collegati i propri dati detti **Distance vector**, aggiornando così le tabelle dei vicini. Questo processo continua finché non si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema.
+### Routing Distance Vector
+Il Routing Distance Vector è una definizione teorica di algoritmi ri souting che si basano sullo scambio di **Distance Vector**. Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono direttamente collegati i propri dati detti **Distance vector**, aggiornando così le tabelle dei vicini. Questo processo continua finché non si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema.
 - **Problemi**:
   - **Cold start e convergenza lenta**: La convergenza si raggiunge dopo un numero di iterazioni pari al numero di nodi. Questo comporta una lenta convergenza su reti grandi, poiché gli aggiornamenti tra nodi non possono essere inviati continuamente, ma devono lasciare che anche i messaggi circolino, ritardando così la convergenza.
   - **Conteggio all'infinito**: In alcuni casi, si potrebbe tentare di convergere all'infinito. Ad esempio, se ci sono tre router in fila e si rompe il collegamento tra due di essi, gli altri due potrebbero scambiarsi aggiornamenti di distanza dal terzo all'infinito. Questo li porta a convincersi reciprocamente che per raggiungere il terzo router debbano usare l'altro a cui sono collegati, finendo per passarsi all'infinito pacchetti e aggiornamenti di distanza, andando a bruciare capacità computazionale. Per ovviare, si sceglie una distanza tra nodi superata la quale si considera la distanza come infinita ed implementare un Triggered Update,ovvero un aggiornamento istantaneo del distance vector qualora ci fosse una variazione di distanza.
@@ -677,8 +677,8 @@ I pacchetti RIP v2 mantengono una struttura simile a quella della versione 1, ma
   - **Metric**: Il numero di hop necessari per raggiungere la rete di destinazione.
 
 
-### Link-State Routing Protocol
-Un protocollo di routing di tipo link-state funziona in modo diverso rispetto ai protocolli di routing a Distance Vector infatti :
+### Link-State Routing Protocol 
+Un protocollo di routing di tipo link-state, nonostante entrambe siano definizioni ideali dei prtocolli e non implementative, funziona in modo diverso rispetto ai protocolli di routing a Distance Vector infatti :
 
 - **Conoscenza della Topologia Completa**:Ogni router mantiene una mappa completa della topologia della rete, conosciuta come la Link-State Database (LSDB). Questa mappa include informazioni su tutti i router e i collegamenti nella rete.
 - **Annunci di Stato del Collegamento (LSA)**:I router inviano periodicamente annunci di stato del collegamento (Link-State Advertisements, LSA) ai loro vicini.Gli LSA contengono informazioni sui collegamenti diretti del router, come lo stato del collegamento e il costo associato.
@@ -1229,11 +1229,8 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
     - Ritrasmissione nel primo slot disponibile con probabilità $ p_b $.
 
 ### Stabilità del sistema
-- **Equilibrio**:
-  - In condizioni stabili: $ A_0 = A_s $.
-  - Se $ A_0 > A_{Smax} $, il sistema accumula traffico non smaltito, portando a instabilità.
-- **Numero finito di stazioni**:
-  - Il traffico offerto $ A_0 $ dipende dal numero di stazioni attive ($ k $) e dalle condizioni del sistema.
+- **Equilibrio**: In condizioni stabili sarà $ A_0 = A_s $, se $ A_0 > A_{Smax} $, il sistema accumula traffico non smaltito, portando a instabilità.
+- **Numero finito di stazioni**: Il traffico offerto $ A_0 $ dipende dal numero di stazioni attive ($ k $) e dalle condizioni del sistema.
 
 ### Controlled Aloha
 - **Back-off esponenziale**:
@@ -1241,13 +1238,10 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
   - Garantisce stabilità ma può introdurre problemi di equità.
 
 ### Derivati del protocollo ALOHA
-- **Applicazioni**:
-  - Utilizzabile su qualsiasi mezzo trasmissivo e topologia.
-  - Adatto per reti con alti ritardi di propagazione (es. satelliti).
-- **Evoluzione**:
-  - **CSMA** (Carrier Sensing Multiple Access):
-    - Sfrutta la rilevazione di segnale sul canale prima della trasmissione.
-    - Prevede algoritmi di back-off in caso di collisione.
+- **Applicazioni**: Utilizzabile su qualsiasi mezzo trasmissivo e topologia ed è adatto per reti con alti ritardi di propagazione (es. satelliti).
+- **CSMA** (Carrier Sensing Multiple Access):
+  - Sfrutta la rilevazione di segnale sul canale prima della trasmissione.
+  - Prevede algoritmi di back-off in caso di collisione.
 
 ## CSMA (Carrier Sensing Multiple Access)
 ### Principi di funzionamento: 
@@ -1260,25 +1254,16 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
     - **Caso p-persistent**: la stazione trasmette con una probabilità $p$ e, in caso contrario, attiva l'algoritmo di back-off.  
 
 ### Gestione delle collisioni:
-- Durante la trasmissione, i dati inviati possono collidere con quelli di un’altra stazione.  
-- **Causa delle collisioni:**  
-  - Il ritardo di propagazione non nullo tra le stazioni.  
-- Sul bus manca un meccanismo immediato per rilevare le collisioni.  
-  - È necessario affidarsi a sistemi come gli **Acknowledgements (ACK)** per rilevare e gestire errori di trasmissione.  
+- Durante la trasmissione, i dati inviati possono collidere con quelli di un’altra stazione per via del ritardo di propagazione non nullo tra le stazioni.  
+- Sul bus manca un meccanismo immediato per rilevare le collisioni è dunque necessario affidarsi a sistemi come gli **Acknowledgements (ACK)** per rilevare e gestire errori di trasmissione.  
 
 ### Algoritmo di back-off: 
-- Simile a quello utilizzato nel protocollo Aloha.  
-- Richiede che il tempo di back-off ($T_b$) sia maggiore di due volte il tempo di propagazione ($2\tau$).  
+- Simile a quello utilizzato nel protocollo Aloha e richiede che il tempo di back-off ($T_b$) sia maggiore di due volte il tempo di propagazione ($2\tau$).  
 
 ### Intervallo di vulnerabilità nel CSMA:
-- Consideriamo due stazioni, **A** e **Z**, le più distanti sul bus.  
-  - **$\tau$** rappresenta il tempo di propagazione tra A e Z, sommato al tempo necessario per rilevare il segnale.  
-- Situazioni di vulnerabilità:  
-  - Se **A** inizia a trasmettere al tempo $t_A$, ma **Z** rileva il canale libero e trasmette tra $t_A$ e $t_A + \tau$, si verifica una collisione.  
-  - Analogamente, se **Z** trasmette tra $t_A - \tau$ e $t_A$, **A** non rileverà il segnale e inizierà a trasmettere, causando collisioni.  
-- **Intervallo di vulnerabilità**:  
-  - È pari a $2\tau$.  
-  - Le prestazioni migliorano rispetto all’Aloha tanto più è valida la relazione $\tau/T < 1$, dove $T$ è il tempo di trasmissione della trama.  
+- Consideriamo due stazioni, **A** e **Z**, le più distanti sul bus, **$\tau$** rappresenta il tempo di propagazione tra A e Z, sommato al tempo necessario per rilevare il segnale.  
+- **Situazione di vulnerabilità**: Se **A** inizia a trasmettere al tempo $t_A$, ma **Z** rileva il canale libero e trasmette tra $t_A$ e $t_A + \tau$, si verifica una collisione, analogamente, se **Z** trasmette tra $t_A - \tau$ e $t_A$, **A** non rileverà il segnale e inizierà a trasmettere, causando collisioni.  
+- **Intervallo di vulnerabilità**: è pari a $2\tau$, le prestazioni miglioreranno rispetto all’Aloha tanto più è valida la relazione $\tau/T < 1$, dove $T$ è il tempo di trasmissione della trama.  
 
 ### Versione slotted del CSMA:
 - Utilizza uno slot temporale pari a $\tau$.  
@@ -1289,23 +1274,12 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
 ![](img\Reti\cmsa.PNG)
 ![](img\Reti\csma-cd.PNG)
 
-### CSMA/CD (Carrier Sensing Multiple Access with Collision Detection)
-- **Introduzione e miglioramenti:**  
-  - Proposto da **Metcalfe** nel 1976 come evoluzione del CSMA.  
-  - Migliora il protocollo permettendo il rilevamento immediato delle collisioni.  
-    - **Collision Detection (CD):**  
-      - Una stazione monitora il canale durante la trasmissione per rilevare variazioni di potenza (indicative di collisioni).  
-      - È facilitato dall’uso della **codifica di Manchester**, che garantisce transizioni regolari del segnale.  
+### CSMA/CD (Carrier Sensing Multiple Access with Collision Detection)  
 
-- **In caso di collisione:**  
-  - La stazione interrompe subito la trasmissione per evitare sprechi di banda.  
-  - Invia una sequenza di bits chiamata **jamming signal** per avvisare le altre stazioni della collisione.  
-
-- **Vantaggi rispetto al CSMA:**  
-  - In caso di collisione, il canale è inutilizzato solo per:  
-    - L’intervallo di vulnerabilità ($\tau$).  
-    - Il tempo di rilevamento della collisione e della sequenza di jamming ($T_{CD}$).  
-  - Nel CSMA puro, invece, il canale resta inutilizzato per un tempo pari all’intera durata della trama ($T$).  
+Migliora il protocollo permettendo il rilevamento immediato delle collisioni e rappresenta lo standard de facto per le reti LAN grazie alla semplicità e robustezza del protocollo. 
+- **Collision Detection (CD):** Una stazione monitora il canale durante la trasmissione per rilevare variazioni di potenza (indicative di collisioni), il tutto è facilitato dall’uso della **codifica di Manchester**, che garantisce transizioni regolari del segnale.  
+- **In caso di collisione:** La stazione interrompe subito la trasmissione per evitare sprechi di banda ed invia una sequenza di bits chiamata **jamming signal** per avvisare le altre stazioni della collisione.  
+- **Vantaggi rispetto al CSMA:** In caso di collisione, il canale è inutilizzato solo per l’intervallo di vulnerabilità ($\tau$) e per il tempo di rilevamento della collisione e della sequenza di jamming ($T_{CD}$) mentre nel CSMA puro il canale restava inutilizzato per un tempo pari all’intera durata della trama ($T$). 
 
 ### Codifica di Manchester:
 - **Caratteristiche del segnale:**  
@@ -1316,155 +1290,73 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
     - **Sincronizzazione**: semplifica l’acquisizione del clock.  
     - **Carrier sensing** e **collision detection**.  
   - Simboli aggiuntivi (alto-alto e basso-basso) rappresentano segnali di non-dati.  
-- **Svantaggi:**  
-  - La necessità di un clock al doppio della velocità di trasmissione: per 10 Mbit/s serve un clock a 20 MHz.  
-- **Applicazioni:**  
-  - Adottata nel protocollo CSMA/CD delle reti **Ethernet**, che rappresenta lo standard di mercato per le LAN.  
+- **Svantaggi:** La necessità di un clock al doppio della velocità di trasmissione: per 10 Mbit/s serve un clock a 20 MHz.   
 
 ## Token Ring e IEEE 802.5 
 ### Token Ring:
-  - Sviluppato da IBM nel 1976, standardizzato nel 1982 da IEEE 802.5.  
-  - Topologia fisica a **stella**, ma logica ad **anello**.  
-  - Basato sul concetto di **token**, ovvero un diritto di trasmissione che circola lungo l’anello.  
-
-### Accesso al mezzo:  
-- Ogni stazione attende il passaggio di un token libero.  
-- Una volta ricevuto, la stazione:  
-  - Lo occupa e aggiunge i dati da trasmettere.  
-  - Rilascia il token una volta completata la trasmissione.  
+HA topologia fisica a **stella**, ma logica ad **anello** ed è basato sul concetto di **token**, ovvero un diritto di trasmissione che circola lungo l’anello. Ogni stazione attende il passaggio di un token libero che una volta ricevuto permetterà alla stazione di aggiunge i dati da trasmettere per poi rilasciare il token una volta completata la trasmissione.  
 
 ### Definizioni dei tempi principali nel Token Ring
-1. **Tempo di trasmissione ($T$)**:  
-   - È il tempo necessario per trasmettere una trama di lunghezza massima.  
-   - Dipende dalla velocità di trasmissione della rete e dalla dimensione massima della trama consentita.  
-
-2. **Tempo di accesso ($T_{acc}$)**:  
-   - È il tempo che una stazione deve attendere per vedere il token libero e quindi poter trasmettere.  
-   - In presenza di $n$ stazioni:  
-     - Al meglio: la stazione attende solo il rilascio del token dalla stazione precedente.  
-     - Al peggio: deve aspettare che tutte le $n-1$ stazioni utilizzino il token.  
-   - Formula:  
-     $$
-     T_{acc} = T_1 + T_2 \leq n \cdot T_{HT} + T_{lat}
-     $$
-     Dove:  
-     - $T_1$: tempo per il rilascio del token dalla stazione corrente.  
-     - $T_2$: tempo per il ritorno del token.  
-
-3. **Tempo di latenza ($T_{lat}$)**:  
-   - È il tempo impiegato da un bit per completare un giro completo dell'anello.  
-   - Dipende dalla lunghezza fisica dell'anello e dal ritardo introdotto dalle stazioni.
-
-4. **Tempo di detenzione del token ($T_{HT}$)**:  
-   - È il tempo massimo durante il quale una stazione può trattenere il token per trasmettere dati.  
-   - Determinato dalla dimensione massima delle trame e dalle strategie di rigenerazione del token.  
-
-5. **Tempo di rotazione del token ($T_{RT}$)**:  
-   - È il tempo impiegato dal token per compiere un giro completo dell’anello.  
-   - Include il tempo di detenzione ($T_{HT}$) delle $n$ stazioni e il tempo di latenza ($T_{lat}$):  
-     $$
-     T_{RT} = n \cdot T_{HT} + T_{lat}
-     $$  
+1. **Tempo di trasmissione ($T$)**: È il tempo necessario per trasmettere una trama di lunghezza massima e dipende dalla velocità di trasmissione della rete e dalla dimensione massima della trama consentita.  
+2. **Tempo di accesso ($T_{acc}$)**: È il tempo che una stazione deve attendere per vedere il token libero e quindi poter trasmettere. In presenza di $n$ stazioni al meglio la stazione attende solo il rilascio del token dalla stazione precedente al peggio: deve aspettare che tutte le $n-1$ stazioni utilizzino il token.  
+- Formula:  
+$$
+T_{acc} = T_1 + T_2 \leq n \cdot T_{HT} + T_{lat}
+$$
+Dove:  
+- $T_1$: tempo per il rilascio del token dalla stazione corrente.  
+- $T_2$: tempo per il ritorno del token.  
+3. **Tempo di latenza ($T_{lat}$)**: È il tempo impiegato da un bit per completare un giro completo dell'anello e dipende dalla lunghezza fisica dell'anello e dal ritardo introdotto dalle stazioni.
+4. **Tempo di detenzione del token ($T_{HT}$)**: È il tempo massimo durante il quale una stazione può trattenere il token per trasmettere dati ed è determinato dalla dimensione massima delle trame e dalle strategie di rigenerazione del token.  
+5. **Tempo di rotazione del token ($T_{RT}$)**: È il tempo impiegato dal token per compiere un giro completo dell’anello, include il tempo di detenzione ($T_{HT}$) delle $n$ stazioni e il tempo di latenza ($T_{lat}$):  
+$$
+T_{RT} = n \cdot T_{HT} + T_{lat}
+$$  
 
 ### Rimozione delle trame nell’anello  
-
-1. **Necessità di rimozione**:  
-   - Ogni trama deve essere rimossa dall’anello una volta che è stata ricevuta per evitare congestione.  
-
+1. **Necessità di rimozione**: Ogni trama deve essere rimossa dall’anello una volta che è stata ricevuta per evitare congestione.  
 2. **Modalità di rimozione**:  
-   - **Diffusiva**:  
-     - La trama viene rimossa dalla stazione trasmittente che libera anche il token.  
-     - Possibilità di aggiungere un **ACK** alla trama da parte della stazione ricevente.  
-   - **Parzialmente diffusiva**:  
-     - La trama viene rimossa dalla stazione ricevente che libera anche il token.  
+   - **Diffusiva**: La trama viene rimossa dalla stazione trasmittente che libera anche il token, c'è la possibilità di aggiungere un **ACK** alla trama da parte della stazione ricevente.  
+   - **Parzialmente diffusiva**: La trama viene rimossa dalla stazione ricevente che libera anche il token.  
      - Vantaggi: il token si libera più velocemente.  
      - Svantaggi:  
        - Cambiamento dell'ordine di trasmissione.  
        - Aumento del tempo di latenza.  
-       - Maggiore aleatorietà nel tempo di accesso.  
-
-3. **Svantaggi della modalità parzialmente diffusiva**:  
-   - Mancanza di verifica della corretta trasmissione.  
-   - Aumento del tempo di latenza a causa della necessità di leggere l'indirizzo del destinatario.  
+       - Maggiore aleatorietà nel tempo di accesso.   
+       - Mancanza di verifica della corretta trasmissione.  
+       - Aumento del tempo di latenza a causa della necessità di leggere l'indirizzo del destinatario.  
 
 ### Strategie di rigenerazione del token 
-
-1. **Single Frame**:  
-   - Il token viene rigenerato quando la stazione trasmittente ha ricevuto l’intera trama trasmessa.  
-
-2. **Single Token**:  
-   - Il token viene rigenerato quando la stazione trasmittente ha ricevuto il token associato alla trama.  
-
-3. **Multiple Token**:  
-   - Il token viene rigenerato subito dopo la trasmissione della trama.  
-   - Efficiente solo quando $T_{lat}$ è maggiore del tempo di trasmissione ($T$).  
+1. **Single Frame**: Il token viene rigenerato quando la stazione trasmittente ha ricevuto l’intera trama trasmessa.  
+2. **Single Token**: Il token viene rigenerato quando la stazione trasmittente ha ricevuto il token associato alla trama.  
+3. **Multiple Token**: Il token viene rigenerato subito dopo la trasmissione della trama, risulta efficiente solo quando $T_{lat}$ è maggiore del tempo di trasmissione ($T$).  
 
 ![](img\Reti\rigenerazione_token.PNG)
 
 ### Monitor nel Token Ring
-1. **Ruolo del monitor**:  
-   - È responsabile della gestione delle emergenze causate da malfunzionamenti delle stazioni.  
-   - Rimuove trame errate o duplicate dall’anello.  
-
+1. **Ruolo del monitor**: È responsabile della gestione delle emergenze causate da malfunzionamenti delle stazioni rimuovendo le trame errate o duplicate dall’anello.  
 2. **Problematiche gestite**:  
-   - **Trama non rimossa**:  
-     - Una stazione non rimuove una trama, che continua a circolare.  
-     - Il monitor identifica la trama tramite un bit $M$ e la rimuove se necessario.  
-   - **Token perduto o duplicato**:  
-     - In assenza di un token valido, il monitor genera un nuovo token.  
-     - In caso di token duplicato, il monitor elimina quello superfluo.  
-
-3. **Implementazione del bit $M$**:  
-   - Ogni token generato ha $M=0$.  
-   - Il monitor imposta $M=1$ quando rileva problemi.  
+   - **Trama non rimossa**: Se una stazione non rimuove una trama, che continua a circolare il monitor identifica la trama tramite un bit $M$ e la rimuove se necessario.  
+   - **Token perduto o duplicato**: In assenza di un token valido, il monitor genera un nuovo token in caso di token duplicato, il monitor elimina quello superfluo.  
+3. **Implementazione del bit $M$**: Ogni token generato ha $M=0$ il monitor imposta $M=1$ quando rileva problemi.  
 
 ### Sincronizzazione nel Token Ring
-
-1. **Sincronizzazione asservita**:  
-   - Ogni stazione si sincronizza con il segnale ricevuto e lo utilizza per ritrasmettere i dati.  
-
-2. **Buffer elastico**:  
-   - Una stazione (spesso il monitor) gestisce un buffer elastico per mantenere il sincronismo.  
-
-3. **Problemi di latenza**:  
-   - La ritrasmissione immediata di ogni bit aiuta a minimizzare il tempo di latenza ma potrebbe ritrasmettere errori.  
+1. **Sincronizzazione asservita**: Ogni stazione si sincronizza con il segnale ricevuto e lo utilizza per ritrasmettere i dati.  
+2. **Buffer elastico**: Una stazione (spesso il monitor) gestisce un buffer elastico per mantenere il sincronismo.  
+3. **Problemi di latenza**: La ritrasmissione immediata di ogni bit aiuta a minimizzare il tempo di latenza ma potrebbe ritrasmettere errori.  
 
 ### Token Bus  
-
-1. **Principio di funzionamento**:  
-   - Simula un anello logico su una topologia fisica a bus.  
-   - Ogni stazione ha un predecessore e un successore logici.  
-
-2. **Gestione dinamica**:  
-   - Stazioni che vogliono entrare nell'anello:  
-     - La stazione corrente effettua un **polling** per invitarle.  
-   - Stazioni che vogliono uscire:  
-     - Comunicano la loro intenzione al predecessore e al successore.  
-
-3. **Vantaggi rispetto al Token Ring**:  
-   - Maggiore flessibilità nella gestione delle stazioni.  
-   - Adatto per applicazioni real-time grazie all’assenza di collisioni.  
+1. **Principio di funzionamento**: Simula un anello logico su una topologia fisica a bus in questa topologia logica ogni stazione ha un predecessore e un successore logici.  
+2. **Gestione dinamica**: La stazione corrente effettua un **polling** per invitare le stazioni che vogliono entrare nella rete mentre coloro che vogliono uscire comunicano la loro intenzione al predecessore e al successore.  
+3. **Vantaggi rispetto al Token Ring**: Ciò migliora la flessibilità nella gestione delle stazioni ed è decisamente più adatto per applicazioni real-time grazie all’assenza di collisioni.  
 
 ### Confronto tra protocolli a contesa e collision-free 
-
-1. **Protocolli a contesa (es. CSMA)**:  
-   - **Vantaggi**:  
-     - Semplicità di implementazione.  
-     - Maggiore efficienza a basso traffico.  
-   - **Svantaggi**:  
-     - Collisioni e aleatorietà nei tempi di trasmissione.  
-
-2. **Protocolli collision-free (es. Token Ring, Token Bus)**:  
-   - **Vantaggi**:  
-     - Determinismo nei tempi di consegna delle trame.  
-     - Nessun problema di stabilità.  
-     - Migliore utilizzo del canale ad alto traffico.  
-   - **Svantaggi**:  
-     - Maggiore complessità.  
-     - Maggiore vulnerabilità ai guasti del monitor.  
-
-3. **Applicazioni**:  
-   - Il Token Bus è preferito per applicazioni real-time, ma Ethernet è diventato lo standard dominante per la sua semplicità e robustezza.  
+1. **Protocolli a contesa** (es. CSMA):  
+   - **Vantaggi**: Semplicità di implementazione e maggiore efficienza a basso traffico.  
+   - **Svantaggi**: Collisioni e aleatorietà nei tempi di trasmissione.  
+2. **Protocolli collision-free** (es. Token Ring, Token Bus):  
+   - **Vantaggi**: Determinismo nei tempi di consegna delle trame, non presentano problemi di stabilità ed utilizzo ottimizzato del canale ad alto traffico.  
+   - **Svantaggi**: Maggiore complessità ed esposizione ai guasti del monitor.    
 
 ## Progetto IEEE 802 
 - **Obiettivi:**  
@@ -1485,42 +1377,23 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
   - Sviluppata nel 1976 dalla **Xerox** e successivamente adottata da DEC, Intel e Xerox.  
   - Standardizzata nel 1983 come **IEEE 802.3**.  
 
-- **Caratteristiche del protocollo CSMA/CD:**  
-  - Efficienza nella gestione della banda trasmissiva.  
-  - Limita le collisioni ma non le elimina completamente.  
-  - Rappresenta lo standard de facto per le reti LAN grazie alla semplicità e robustezza del protocollo.  
-  - **Slot Time:**
-    - Definizione: tempo necessario per trasmettere **512 bit** (10/100 Mbps) o **4096 bit** (1 Gbps).
-    - Deve superare il tempo di andata/ritorno del segnale + rilevazione collisione + sequenza di **jamming** (33 bit).
-    - Impatti: 
-      - Dimensione minima della trama ≥ slot time.
-      - Limita la dimensione massima della rete.
-
 ### Formato del Frame Ethernet (IEEE 802.3)
 1. **Campi del Frame:**
    - **Preamble (7 byte):** sincronizza clock trasmettitore/ricevitore.
    - **Start Frame Delimiter (1 byte):** indica l’inizio del frame.
    - **Destination Address (6 byte):** indirizzo destinazione (unicast, multicast o broadcast).
    - **Source Address (6 byte):** indirizzo sorgente.
-   - **Length/Type (2 byte):** 
-     - Indica la lunghezza del campo dati (IEEE 802.3) o il tipo di payload (Ethernet).
+   - **Length/Type (2 byte):** indica la lunghezza del campo dati (IEEE 802.3) o il tipo di payload (Ethernet).
    - **Pad:** riempie frame <64 byte fino a questa dimensione.
    - **Frame Check Sequence (4 byte):** verifica errori tramite un codice polinomiale.
 2. **Ordine di Trasmissione:**
    Preamble → Destination Address → Source Address → Type → Data → Frame Check Sequence.
 
 ### Collision Domain e Broadcast Domain
-1. **Collision Domain:**
-   - Area in cui le stazioni possono collidere durante la trasmissione.
-   - Dimensioni dipendono da:
-     - Velocità di trasmissione.
-     - Dimensione delle trame.
-2. **Broadcast Domain:**
-   - Insieme di stazioni che ricevono una trama con **Destination Address: ff-ff-ff-ff-ff-ff**.
-   - Normalmente coincidente con una singola LAN.
+1. **Collision Domain:** Area in cui le stazioni possono collidere durante la trasmissione, leimensioni dipendono dalla velocità di trasmissione e dalla dimensione delle trame.
+2. **Broadcast Domain:** Insieme di stazioni che ricevono una trama con **Destination Address: ff-ff-ff-ff-ff-ff**, normalmente coincidente con una singola LAN.
 
-### Evoluzione dell'Ethernet (Aggiornato)
-
+### Evoluzione dell'Ethernet
 1. **Ethernet Classica a 10 Mbps**
   - **10base5 (Thick Wire):**
     - Utilizza cavi coassiali spessi con segmenti lunghi fino a 500 metri, supportando un massimo di 100 stazioni.
@@ -1542,7 +1415,7 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
     - È spesso utilizzata per cablaggi verticali, specialmente in edifici, ma il costo dei connettori e degli adattatori la rende una soluzione meno comune per gli utenti finali.
 
 2. **Fast Ethernet (IEEE 802.3u - 100 Mbps)**
-  - Introduce una maggiore velocità mantenendo la compatibilità con le reti Ethernet classiche. Offre diverse varianti:
+Introduce una maggiore velocità mantenendo la compatibilità con le reti Ethernet classiche. Offre diverse varianti:
     - **100baseT4:** 
       - Utilizza 4 coppie di cavi UTP di categoria 3, con una lunghezza massima di 100 metri.
       - La trasmissione sfrutta una codifica **8B/6T**, che converte 8 bit in 6 simboli ternari.
@@ -1556,42 +1429,26 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
       - È ideale per connessioni tra edifici o cablaggi backbone.
 
 3. **Gigabit Ethernet (IEEE 802.3z - 1 Gbps)**
-  - Progettata per incrementare la velocità a 1 Gbps mantenendo la semplicità di Ethernet.
-    - **1000baseSX:** 
-      - Utilizza fibra ottica multimodo per distanze fino a 550 metri.
-    - **1000baseLX:**
-      - Compatibile sia con fibra multimodo che monomodo, estende le connessioni fino a 5000 metri con quest'ultima.
-    - **1000baseCX:**
-      - Sfrutta 2 coppie di cavi intrecciati schermati (STP) ma è più costosa e meno performante rispetto alla fibra ottica.
-    - **1000baseT:**
-      - Impiega 4 coppie di cavi UTP di categoria 5, con una lunghezza massima di 100 metri.
-      - Utilizza una codifica innovativa che associa 2 bit a un simbolo con 5 livelli, garantendo una velocità netta di 1 Gbps.
+Progettata per incrementare la velocità a 1 Gbps mantenendo la semplicità di Ethernet.
+    - **1000baseSX:** Utilizza fibra ottica multimodo per distanze fino a 550 metri.
+    - **1000baseLX:** Compatibile sia con fibra multimodo che monomodo, estende le connessioni fino a 5000 metri con quest'ultima.
+    - **1000baseCX:** Sfrutta 2 coppie di cavi intrecciati schermati (STP) ma è più costosa e meno performante rispetto alla fibra ottica.
+    - **1000baseT:** Impiega 4 coppie di cavi UTP di categoria 5, con una lunghezza massima di 100 metri ed utilizza una codifica innovativa che associa 2 bit a un simbolo con 5 livelli, garantendo una velocità netta di 1 Gbps.
 
 4. **10 Gigabit Ethernet (IEEE 802.3ae)**
-  - È progettata esclusivamente per la fibra ottica, con velocità dieci volte superiori rispetto al Gigabit Ethernet.
-    - **Caratteristiche principali:**
-      - Supporta connessioni su fibra ottica con distanze che variano da pochi chilometri fino a diverse decine di chilometri, a seconda del tipo di fibra e della modalità di trasmissione.
-      - È prevalentemente utilizzata per backbone in reti aziendali o per Metropolitan Area Networks (MAN).
-    - **Limitazioni:**
-      - L'elevato costo e l'hardware specifico rendono difficile l'adozione su larga scala per dispositivi comuni, riservandola principalmente a infrastrutture critiche.
+È progettata esclusivamente per la fibra ottica, con velocità dieci volte superiori rispetto al Gigabit Ethernet.
+    - **Caratteristiche principali:** Supporta connessioni su fibra ottica con distanze che variano da pochi chilometri fino a diverse decine di chilometri, a seconda del tipo di fibra e della modalità di trasmissione. È prevalentemente utilizzata per backbone in reti aziendali o per Metropolitan Area Networks (MAN). L'elevato costo e l'hardware specifico rendono difficile l'adozione su larga scala per dispositivi comuni, riservandola principalmente a infrastrutture critiche.
 
 5. **Carrier Ethernet**
-  - Estende Ethernet oltre il contesto delle LAN per essere utilizzata come tecnologia di trasporto nei provider di rete.
-    - **Nuove Funzionalità:**
-      - Indirizzamento multilivello gerarchico per migliorare la scalabilità.
-      - Meccanismi di segnalazione, gestione e recupero dei guasti.
-    - **Applicazioni:**
-      - È ideale per reti backbone, trasporto su lunghe distanze e reti aziendali distribuite.
-    - **Alternative:**
-      - Lo standard IEEE 802.17 (RPR, Resilient Packet Ring) è stato proposto come opzione alternativa per backbone MAN.
+Estende Ethernet oltre il contesto delle LAN per essere utilizzata come tecnologia di trasporto nei provider di rete.
+    - **Nuove Funzionalità:** Indirizzamento multilivello gerarchico per migliorare la scalabilità ed introduzione di meccanismi di segnalazione, gestione e recupero dei guasti.
+    - **Applicazioni:** È ideale per reti backbone, trasporto su lunghe distanze e reti aziendali distribuite.
+    - **Alternative:** Lo standard IEEE 802.17 (RPR, Resilient Packet Ring) è stato proposto come opzione alternativa per backbone MAN.
 
 6. **Multigigabit Ethernet**
-  - Ethernet continua a evolversi con velocità superiori a 10 Gbps, supportando infrastrutture avanzate:
-    - **Stato attuale:**
-      - Studi e implementazioni su velocità fino a 400 Gbps.
-      - Ampiamente utilizzata in data center e reti backbone.
-    - **Tendenze future:**
-      - Introduzione di soluzioni a basso costo e maggiore efficienza energetica per adottare Ethernet a velocità estreme anche nelle reti aziendali di medie dimensioni.
+Ethernet continua a evolversi con velocità superiori a 10 Gbps, supportando infrastrutture avanzate:
+    - **Stato attuale:** Studi e implementazioni su velocità fino a 400 Gbps ed è già ampiamente utilizzata in data center e reti backbone.
+
 
 ### Cablaggio delle LAN Moderne
 - **Caratteristiche Generali:**
@@ -1610,7 +1467,6 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
    - Switch con porte Ethernet UTP (es. 100 Mbps, 1 Gbps) o fibra ottica per il backbone.
 
 ## Wirless LAN (Wi-Fi)
-
 ### Standard IEEE 802.11
 - Introdotto nel 1997 per accesso radio alle reti locali.
 - **Strato fisico 802.11:**
