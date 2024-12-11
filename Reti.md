@@ -1075,7 +1075,7 @@ L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rappor
 
 ## Reti Local Area Network (LAN)
 
-Le **LAN** (Local Area Network) rappresentano un'infrastruttura di telecomunicazioni progettata per consentire la comunicazione tra dispositivi indipendenti in un’area geografica limitata. Queste reti sfruttano un canale condiviso ad alta velocità, garantendo tassi di errore contenuti. 
+Le **LAN (Local Area Network)** rappresentano un'infrastruttura di telecomunicazioni progettata per consentire la comunicazione tra dispositivi indipendenti in un’area geografica limitata. Queste reti sfruttano un canale condiviso ad alta velocità, garantendo tassi di errore contenuti. 
 
 ### Caratteristiche principali delle LAN
 1. **Area limitata**: Le LAN operano in un contesto geografico circoscritto, spesso privato, come uffici, abitazioni o campus,questo consente prestazioni elevate grazie alla vicinanza fisica tra i dispositivi. Le LAN offrono velocità di trasmissione elevate con tassi di errore contenuti, grazie alle brevi distanze fisiche e alla qualità del canale. 
@@ -1084,50 +1084,37 @@ Le **LAN** (Local Area Network) rappresentano un'infrastruttura di telecomunicaz
 4. **Indipendenza**: I dispositivi nelle LAN non seguono un'architettura master-slave, operando invece come entità autonome.  
 
 ### Traffico offerto e capacità del sistema
-- Quando il numero di utenti che utilizzano il servizio supera la capacità massima del servitore, il sistema accumula lavoro in coda.  
-  - Anche quando gli utenti diventano zero, il servitore continua a lavorare per smaltire le richieste accumulate.  
-  - **Media del traffico**:  
-    - Le curve temporali di utenti attivi e lavoro del servitore differiscono, ma la loro media coincide.  
-    - Questa media è chiamata **traffico offerto** ($ A_0 $) e rappresenta un valore centrale per il dimensionamento delle reti.  
-
-- **Scenario pratico**:  
-  - La curva degli utenti può eccedere temporaneamente la capacità massima del servitore (espressa dalla linea rossa).  
-  - Il servitore compensa il sovraccarico continuando a elaborare i dati accumulati fino al completo smaltimento.  
+ Quando il numero di utenti che utilizzano il servizio supera la capacità massima del servitore, il sistema accumula lavoro in coda.     Le curve temporali di utenti attivi e lavoro del servitore differiscono, ma la loro **media** coincide. Questa media è chiamata **traffico offerto** ($ A_0 $) e rappresenta un valore centrale per il dimensionamento delle reti. Anche quando gli utenti diventano zero, il servitore continua a lavorare per smaltire le richieste accumulate, compensa il sovraccarico continuando a elaborare i dati accumulati fino al completo smaltimento.  
 
 ### Scelte progettuali delle LAN
 
 - **Mezzo trasmissivo**
-1. **Fibre ottiche**:  
-   - Offrono maggiore banda, minore interferenza e una maggiore affidabilità rispetto al rame.  
-   - Tuttavia, il costo di interconnessione e installazione può risultare più elevato, rallentandone l’adozione per le LAN.
+  - **Fibre ottiche**: Offrono maggiore banda, minore interferenza e una maggiore affidabilità rispetto al rame. Tuttavia, il costo di interconnessione e installazione può risultare più elevato, rallentandone l’adozione per le LAN.
 
-2. **Coppie intrecciate (twisted pairs)**:  
-   - Continuano a essere utilizzate per gli "ultimi metri" di connessione grazie al costo contenuto e alla semplicità di utilizzo.  
+  - **Coppie intrecciate (twisted pairs)**: Continuano a essere utilizzate per gli "ultimi metri" di connessione grazie al costo contenuto e alla semplicità di utilizzo.  
 
-3. **Mezzo radio**:  
-   - Negli anni recenti, le tecnologie wireless stanno guadagnando importanza per la flessibilità e i costi ridotti.  
+  - **Mezzo radio**: Negli anni recenti, le tecnologie wireless stanno guadagnando importanza per la flessibilità e i costi ridotti.  
 
-- **Topologie**  
-1. **Configurazioni comuni**:  
-   - **Stella**: un nodo centrale collega tutti i dispositivi.  
-   - **Maglia**: garantisce alta ridondanza, con ogni nodo collegato a più nodi vicini.  
-   - **Gerarchica**: struttura a livelli, utile per ambienti complessi.  
+- **Topologie**    
+  - **Stella**: un nodo centrale collega tutti i dispositivi.  
+  - **Maglia**: garantisce alta ridondanza, con ogni nodo collegato a più nodi vicini.  
+  - **Gerarchica**: struttura a livelli, utile per ambienti complessi.  
+  - **Punto-multipunto**: utilizzato nelle prime LAN con mezzi condivisi, come bus bidirezionali o anelli, oggi reoutato non adatto. 
 
-2. **Punto-multipunto**:  
-   - Utilizzato nelle prime LAN con mezzi condivisi, come bus bidirezionali o anelli.  
-   - Non adatto alle WAN per i limiti di distanza e interferenze.  
+### Accesso Multiplo nelle LAN
 
-### Accesso multiplo
-Le LAN utilizzano tecniche specifiche per gestire l’accesso al canale condiviso:
+Le reti locali (LAN) utilizzano tecniche di accesso multiplo per gestire l'utilizzo di un canale condiviso tra più dispositivi. Queste tecniche garantiscono l'efficienza della comunicazione e riducono il rischio di collisioni.
 
-1. **Canalizzazione**:  
-   - **FDMA** (Frequency Division Multiple Access): divisione delle risorse per frequenze.  
-   - **TDMA** (Time Division Multiple Access): divisione temporale del canale.  
-   - **CDMA** (Code Division Multiple Access): utilizzo di codici univoci per separare le comunicazioni.  
+1. **Canalizzazione**
+La canalizzazione divide le risorse del canale in modo predeterminato, evitando interferenze tra le trasmissioni. Le principali tecniche sono:
+    - **FDMA (Frequency Division Multiple Access)**: Ogni trasmissione utilizza una porzione distinta della banda di frequenze disponibile. È adatto a scenari con trasmissioni continue e prevedibili.
+    - **TDMA (Time Division Multiple Access)**: Il canale è suddiviso in slot temporali assegnati ai dispositivi in modo ciclico. Questo approccio è utile quando le trasmissioni sono intermittenti.
+    - **CDMA (Code Division Multiple Access)**: I dati vengono separati utilizzando codici univoci. Permette trasmissioni simultanee sullo stesso canale, riducendo le interferenze grazie alla codifica.
 
-2. **Accesso dinamico**: Basato sull'allocazione delle risorse in tempo reale.  
-  - **Accesso ordinato**: Include meccanismi come il trasferimento di permessi o la prenotazione per evitare collisioni. 
-  - **Accesso a contesa** 
+2. **Accesso Dinamico**
+L'accesso dinamico alloca le risorse in tempo reale, adattandosi alle esigenze della rete. Si divide in:
+    - **Accesso ordinato**: Basato su meccanismi che regolano l'accesso al canale per evitare collisioni.
+    - **Accesso a contesa**: I dispositivi competono liberamente per l'accesso al canale, rischiando collisioni. Tecniche come **CSMA/CD (Carrier Sense Multiple Access with Collision Detection)** vengono utilizzate per rilevare e gestire le collisioni.
 
 ### Prestazioni e parametri chiave delle LAN
 La scelta dell’algoritmo di controllo e accesso è determinata da un compromesso tra **complessità** e **prestazioni**.  
@@ -1142,7 +1129,7 @@ In un sistema senza collisioni e con coordinamento perfetto, tutte le richieste 
 
 ### Propagazione reale nella topologia bus
 - Nella **topologia bus**, il tempo di attraversamento di una trama sulla LAN non è istantaneo.  
-  - **Tempi di trasmissione**:  
+- **Tempi di trasmissione**:  
     1. $ t $: il nodo **A** inizia la trasmissione.  
     2. $ t + L/C $: il nodo **A** completa la trasmissione.  
     3. $ t + d/v $: il nodo **B** riceve il primo bit.  
