@@ -161,11 +161,25 @@ Questa struttura permette ai nodi di instradare i pacchetti in modo efficiente, 
 
 - **Longest Prefix Match**: Per selezionare il percorso corretto, il nodo confronta l'indirizzo di destinazione con la netmask più lunga disponibile nella tabella.
 
-### Protocolli ARP e Risoluzione degli Indirizzi
-   - **ARP (Address Resolution Protocol)**: Utilizzato per trovare l'indirizzo fisico (MAC) di un host a partire dall'indirizzo IP. Il processo coinvolge:
-     1. Un messaggio broadcast ARP request.
-     2. La risposta dell'host con il proprio indirizzo MAC.
-   - **Cache ARP**: Ogni host mantiene una tabella di cache con le corrispondenze IP-MAC.
+### **ARP (Address Resolution Protocol)**
+
+Protocollo di rete utilizzato per mappare un indirizzo IP a un indirizzo MAC corrispondente all'interno di una rete locale (LAN). Funziona a livello **2 (Data Link)** e si interfaccia con il livello **3 (Rete)** del modello OSI, consentendo la comunicazione tra dispositivi in una rete Ethernet o simile.
+
+Quando un dispositivo vuole comunicare con un altro sulla stessa rete:
+1. Conosce l'indirizzo IP del destinatario (ad esempio 192.168.1.2).
+2. Non conosce il corrispondente indirizzo MAC, necessario per inviare i pacchetti a livello di collegamento.
+3. Usa il protocollo ARP per scoprire l'indirizzo MAC associato all'IP.
+
+Quando un host deve inviare un pacchetto:
+1. **Controllo della cache ARP**:  
+   - L'host verifica se l'indirizzo IP è già mappato a un indirizzo MAC nella propria cache ARP (una tabella locale).  
+   - Se trova un'associazione valida, utilizza l'indirizzo MAC e invia direttamente il pacchetto.
+2. **Richiesta ARP (ARP Request)**:  
+   - Se l'indirizzo non è presente nella cache, l'host genera una richiesta ARP:
+     - La richiesta è un messaggio broadcast inviato a **tutti i dispositivi** della LAN (MAC di destinazione = `FF:FF:FF:FF:FF:FF`).
+     - Contiene l'indirizzo IP di cui si vuole conoscere il MAC. 
+3. **Risposta ARP (ARP Reply)**: Il dispositivo con l'indirizzo IP richiesto risponde con un messaggio unicast, fornendo il proprio indirizzo MAC.  
+4. **Aggiornamento della cache ARP**: L'host salva nella cache l'associazione IP-MAC per usi futuri.
 
 ## Classless VS Classfull
 
