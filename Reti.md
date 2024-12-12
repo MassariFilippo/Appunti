@@ -184,7 +184,6 @@ Quando un host deve inviare un pacchetto:
 4. **Aggiornamento della cache ARP**: L'host salva nella cache l'associazione IP-MAC per usi futuri.
 
 ## Classless VS Classfull
-
 ### Classi di indirizzi IP (Classfull)
 - Durante le fasi iniziali di Internet, gli indirizzi IP erano suddivisi in **classi**:
   - **Classe A**: grandi reti (da 0.0.0.0 a 127.255.255.255) ed andavano letti come se avessero un netmask /8.
@@ -199,8 +198,8 @@ Quando un host deve inviare un pacchetto:
  è stato introdotto il **Classless Inter-Domain Routing (CIDR)**, che permette una gestione più efficiente 
  e flessibile degli indirizzi IP, eliminando la rigida suddivisione in classi e utilizzando netmask variabili.
 - Con CIDR, la netmask è specificata esplicitamente utilizzando la notazione **slash** (ad esempio, /24), 
-permettendo una suddivisione più granulare e ottimizzata degli indirizzi IP.
-- Inoltre, CIDR facilita l'aggregazione delle rotte (supernetting), riducendo la complessità delle tabelle di 
+permettendo una suddivisione (**subnetting**) più granulare e ottimizzata degli indirizzi IP.
+- Inoltre, CIDR facilita l'aggregazione delle rotte (**supernetting**), riducendo la complessità delle tabelle di 
 routing e migliorando l'efficienza della rete.
 - Per esempio, un indirizzo IP come 192.168.1.0/24 indica che i primi 24 bit dell'indirizzo sono utilizzati per 
 identificare la rete, mentre i restanti 8 bit sono utilizzati per identificare gli host all'interno di quella rete.
@@ -210,24 +209,9 @@ sprechi di indirizzi IP e migliorando la scalabilità della rete.
 ### CIDR (Classless Inter-Domain Routing)
 - Con la diffusione di Internet, la suddivisione rigida in classi si è dimostrata inefficiente, 
 portando alla creazione di CIDR (**RFC 1519**).
-  - CIDR elimina la logica delle classi nei router e consente la 
-  **definizione variabile della dimensione del Net-ID**.
-  - Le tabelle di routing includono le netmask per una gestione più flessibile delle reti.
-  - **Obiettivi**:
-    - Ottimizzazione dello spazio di indirizzi IP.
-    - Aggregazione delle informazioni di routing (supernetting).
-    - Gestione di reti di classe A e B limitate e della crescita delle tabelle di routing.
-- Oggi, la distinzione tra host e net è locale a tal punto che dipende dal punto in cui si guarda, 
-punto nel quale è contenuta la netmask di riferimento per quella specifica istanza. Dunque, 
-uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
-  - **Esempio**: Un indirizzo IP come 192.168.1.0/24 può essere visto come una singola rete in un contesto, mentre in un altro contesto, con una netmask diversa può rappresentare una parte di una rete più grande o essere suddiviso in sottoreti più piccole.
-  - Questo approccio flessibile permette una gestione più efficiente e scalabile degli indirizzi IP, 
-  adattandosi meglio alle esigenze specifiche delle diverse reti.
-
-### Subnetting
-- Esempio di **Netmask**: Una netmask è composta da 32 bit che sono in locale e rimangono affibiati al singolo calcolatore, tutti i calcolatori della stessa network avranno la stessa netmask, con tutti 1 a sinistra e tutti 0 a destra. Il punto in cui avviene il cambio rappresenta la separazione tra Net-ID e Host-ID nell'indirizzo IP. Per la parte di host, indipendentemente dalla dimensione, gli indirizzi con tutti 0 e tutti 1 non vengono assegnati e sono riservati a compiti specifici. Quindi, si perdono 2 indirizzi: quello con tutti 0 identifica la network ID senza la parte di host, mentre con tutti gli 1 è riservato al gateway predefinito.
-  - **Net-ID**: 192.168.1.0/24 indica una rete con Net-ID di 24 bit.
-  - Può essere suddivisa in sottoreti usando la netmask per identificare la parte Net e Host dell'indirizzo.
+- CIDR elimina la logica delle classi nei router e consente la **definizione variabile della dimensione del Net-ID**.
+- Le tabelle di routing includono le netmask per una gestione più flessibile delle reti.
+- Oggi, la distinzione tra host e net è locale a tal punto che dipende dal punto in cui si guarda, punto nel quale è contenuta la netmask di riferimento per quella specifica istanza. Dunque, uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
 
 ### Routing Aggregato
 La **semplificazione delle tabelle di routing** avviene aggregando più network in un’unica voce, riducendo la complessità per i router. Questo processo è noto come **supernetting** o **route aggregation**.
@@ -255,10 +239,8 @@ La **semplificazione delle tabelle di routing** avviene aggregando più network 
 ### Subnetting
 - La **subdivisione in sottoreti (subnetting)** consente di frammentare una rete principale in reti più piccole 
 (subnet) per assegnarle a diverse sotto-amministrazioni all'interno di un'organizzazione.
-  - La **subnet mask** permette di personalizzare l'assegnazione dell'indirizzo IP, suddividendo 
-  l'Host-ID in due parti: una parte per la subnet e l'altra per l'host.
-  - **Esempio**: L'Università di Bologna utilizza una rete di classe B (137.204.0.0) e divide 
-  l'Host-ID per creare 254 sottoreti di classe C, utilizzando la netmask 255.255.255.0.
+- La **subnet mask** permette di personalizzare l'assegnazione dell'indirizzo IP, suddividendo l'Host-ID in due parti: una parte per la subnet e l'altra per l'host.
+- **Esempio**: L'Università di Bologna utilizza una rete di classe B (137.204.0.0) e divide l'Host-ID per creare 254 sottoreti di classe C, utilizzando la netmask 255.255.255.0.
 
 ### Supernetting
 - Il **supernetting** consente di unire più reti contigue per ridurre le voci nelle tabelle di routing. Ad esempio:
@@ -268,35 +250,7 @@ La **semplificazione delle tabelle di routing** avviene aggregando più network 
   - Subnetting riduce la parte Host-ID per estendere il Net-ID.
   - Supernetting estende l'Host-ID per aggregare reti con Net-ID simili.
 
-### ICMP (Internet Control Message Protocol)**
-ICMP è un protocollo incaricato non di corregge gli errori, ma fornire informazioni per diagnosticare problemi di rete.
-- ICMP segnala errori come:
-  - **Destination Unreachable (Type 3)**: quando un gateway non può raggiungere la rete o l'host.
-  - **Time Exceeded (Type 11)**: quando il Time-to-Live (TTL) di un datagramma si azzera.
-  - **Redirect (Type 5)**: un router segnala all'host sorgente una via più ottimale.
-
-## Comandi di Rete
-
-### PING
-- Verifica se un host è raggiungibile inviando pacchetti ICMP di tipo "echo" e ricevendo "echo reply".
-- Opzioni: definire il numero di pacchetti, timeout, dimensione pacchetti, ecc.
-- Parametri principali: `-n` (numero di pacchetti), `-t` (ping continuo), `-a` (risoluzione DNS), `-l` (dimensione del pacchetto).
-### TRACEROUTE
-- Mostra il percorso dei pacchetti verso una destinazione, utilizzando pacchetti ICMP con TTL crescente. Mostra il nome DNS e l'indirizzo IP dei nodi intermedi.
-- Traceroute invia pacchetti con un valore TTL (Time To Live) inizialmente impostato a 1. Ogni router lungo il percorso decrementa il TTL di 1. Quando il TTL raggiunge 0, il router scarta il pacchetto e invia un messaggio **ICMP "Time Exceeded"** al mittente. Traceroute incrementa quindi il TTL e invia un nuovo pacchetto, ripetendo il processo fino a raggiungere la destinazione finale. Questo permette di identificare ogni hop (router) lungo il percorso.
-- Parametri principali: `-m` (TTL massimo), `-q` (numero di query per hop), `-w` (timeout per risposta).
-
-## Gestione della numerazione e Pianificazione di numerazione IP
-### DHCP
-- **DHCP (Dynamic Host Configuration Protocol)**: Automatizza l'assegnazione dinamica di IP, netmask, gateway e DNS. Processo chiave:
-  - **Processo DHCP**:
-  - **DHCPDISCOVER**: l'host cerca un server DHCP inviando un messaggio di richiesta in broadcast.
-  - **DHCPOFFER**: i server DHCP rispondono proponendo un indirizzo IP.
-  - **DHCPREQUEST**: l'host accetta una delle offerte e richiede l'indirizzo IP.
-  - **DHCPACK**: il server DHCP conferma la configurazione con un messaggio di risposta.
-
 ### Progettazione di Reti Aziendali
-
 - **Esempio di rete aziendale**: Tre siti aziendali (S1, S2, S3) devono essere interconnessi con una rete a maglia completa. 
 Gli indirizzi di classe C assegnati sono basati su 196.200.96.0/24. Con questa rete ho più IP del necessario, 
 dato che ho 256 IP, ma con una /25 ne avrei avuti 128 e sarei stato troppo di misura.
@@ -322,9 +276,14 @@ fisicamente sarebbero state più comode 3 reti.
 
 ![](img\Reti\rete_azz_sol_2.PNG)
 
-## Protocollo ICMP (Internet Control Message Protocol)
+## ICMP e Comandi di Rete
 
-### ICMP
+### Protocollo ICMP (Internet Control Message Protocol)
+ICMP è un protocollo incaricato non di corregge gli errori, ma fornire informazioni per diagnosticare problemi di rete.
+- ICMP segnala errori come:
+  - **Destination Unreachable (Type 3)**: quando un gateway non può raggiungere la rete o l'host.
+  - **Time Exceeded (Type 11)**: quando il Time-to-Live (TTL) di un datagramma si azzera.
+  - **Redirect (Type 5)**: un router segnala all'host sorgente una via più ottimale.
   - **Struttura pacchetto ICMP**:
     1. **IP Header**: Intestazione del protocollo IP.
     2. **Message Type**: Tipo di messaggio ICMP (8 bit).
@@ -346,30 +305,36 @@ fisicamente sarebbero state più comode 3 reti.
   - **Echo/Echo Reply (Type 8/0)**: Utilizzati per determinare lo stato di raggiungibilità di un host.
   - **Timestamp Request/Reply (Type 13/14)**: Misura il tempo di transito nella rete.
 
+### PING
+- Verifica se un host è raggiungibile inviando pacchetti ICMP di tipo "echo" e ricevendo "echo reply".
+- Opzioni: definire il numero di pacchetti, timeout, dimensione pacchetti, ecc.
+- Parametri principali: `-n` (numero di pacchetti), `-t` (ping continuo), `-a` (risoluzione DNS), `-l` (dimensione del pacchetto).
+### TRACEROUTE
+- Mostra il percorso dei pacchetti verso una destinazione, utilizzando pacchetti ICMP con TTL crescente. Mostra il nome DNS e l'indirizzo IP dei nodi intermedi.
+- Traceroute invia pacchetti con un valore TTL (Time To Live) inizialmente impostato a 1. Ogni router lungo il percorso decrementa il TTL di 1. Quando il TTL raggiunge 0, il router scarta il pacchetto e invia un messaggio **ICMP "Time Exceeded"** al mittente. Traceroute incrementa quindi il TTL e invia un nuovo pacchetto, ripetendo il processo fino a raggiungere la destinazione finale. Questo permette di identificare ogni hop (router) lungo il percorso.
+- Parametri principali: `-m` (TTL massimo), `-q` (numero di query per hop), `-w` (timeout per risposta).
+
+### DHCP (Dynamic Host Configuration Protocol)
+**DHCP**: Automatizza l'assegnazione dinamica di IP, netmask, gateway e DNS. Processo chiave:
+  - **Processo DHCP**:
+  - **DHCPDISCOVER**: l'host cerca un server DHCP inviando un messaggio di richiesta in broadcast.
+  - **DHCPOFFER**: i server DHCP rispondono proponendo un indirizzo IP.
+  - **DHCPREQUEST**: l'host accetta una delle offerte e richiede l'indirizzo IP.
+  - **DHCPACK**: il server DHCP conferma la configurazione con un messaggio di risposta.
+
 ## Filtraggio dei Pacchetti
-### Metodologie di Filtraggio dei Datagrammi
-- Le metodologie di filtraggio dei datagrammi sono tecniche utilizzate per controllare il traffico di rete 
-in base a criteri predefiniti. Questi criteri possono includere indirizzi IP, numeri di porta, protocolli e 
-altre informazioni contenute nei pacchetti. In questo contesto, i gateway fungono da punti di controllo per 
-il traffico di rete, applicando le regole di filtraggio per garantire che solo il traffico autorizzato possa 
-attraversare la rete. Queste metodologie sono fondamentali per implementare firewall e altre soluzioni di sicurezza 
-di rete, garantendo che solo il traffico autorizzato possa attraversare i confini della rete.
-  - **Packet Filter**: Controlla l'accesso a determinati servizi o indirizzi in base alle regole 
-  impostate sugli IP, protocolli o porte. È detto instradamento selettivo e opera a livello IP basando 
-  le sue decisioni sulla natura dell'IP stesso come il TTL, i tipi di indirizzi ecc. Il vantaggio è che 
-  a livello di gateway basta implementare il filtro a livello software, ma esistono situazioni in cui i 
-  filtri a livello IP non sono sufficienti.
-  ![](img\Reti\packet_filter.PNG)
-  - **Stateful Packet Inspection (SPI)**: Monitora lo stato delle connessioni e adatta dinamicamente le regole 
-  di filtraggio. Adattando opportunamente il software, si può andare più a fondo nel pacchetto guardando, per 
-  esempio, il tipo di protocollo, attuando così filtri semanticamente più efficaci. Ciò viola il protocollo OSI 
-  dato che vado a leggere dati più profondi del livello IP.
+Le metodologie di filtraggio dei datagrammi sono tecniche utilizzate per controllare il traffico di rete in base a criteri predefiniti. Questi criteri possono includere indirizzi IP, numeri di porta, protocolli e altre informazioni contenute nei pacchetti. In questo contesto, i gateway fungono da punti di controllo per il traffico di rete, applicando le regole di filtraggio per garantire che solo il traffico autorizzato possa attraversare la rete. Queste metodologie sono fondamentali per implementare firewall e altre soluzioni di sicurezza di rete, garantendo che solo il traffico autorizzato possa attraversare i confini della rete.
+
+**Packet Filter**: Controlla l'accesso a determinati servizi o indirizzi in base alle regole impostate sugli IP, protocolli o porte. È detto instradamento selettivo e opera a livello IP basando le sue decisioni sulla natura dell'IP stesso come il TTL, i tipi di indirizzi ecc. Il vantaggio è che a livello di gateway basta implementare il filtro a livello software, ma esistono situazioni in cui i filtri a livello IP non sono sufficienti.
+
+![](img\Reti\packet_filter.PNG)
+
+**Stateful Packet Inspection (SPI)**: Monitora lo stato delle connessioni e adatta dinamicamente le regole di filtraggio. Adattando opportunamente il software, si può andare più a fondo nel pacchetto guardando, per esempio, il tipo di protocollo, attuando così filtri semanticamente più efficaci. Ciò viola il protocollo OSI dato che vado a leggere dati più profondi del livello IP.
+
   ![](img\Reti\packet_inspection.PNG)
-  - **Application Layer Gateway (Proxy)**: Monitora le connessioni applicative (ad esempio, FTP, HTTP, SIP), 
-  garantendo controllo e sicurezza a livello applicativo. In questo caso, il gateway agisce come un host che 
-  scompone il pacchetto fino al livello applicativo e poi lo reinstrada se non è destinato a lui. A differenza 
-  dei normali gateway con implementazioni specifiche, un proxy a livello applicativo è più complesso sia a livello 
-  hardware che software.
+
+**Application Layer Gateway (Proxy)**: Monitora le connessioni applicative (ad esempio, FTP, HTTP, SIP), garantendo controllo e sicurezza a livello applicativo. In questo caso, il gateway agisce come un host che scompone il pacchetto fino al livello applicativo e poi lo reinstrada se non è destinato a lui. A differenza dei normali gateway con implementazioni specifiche, un proxy a livello applicativo è più complesso sia a livello hardware che software.
+
   ![](img\Reti\proxy.PNG)
   ![](img\Reti\proxy_2.PNG)
 
@@ -377,8 +342,7 @@ Le tre differenti versioni vengono adottate a necessità dato che la prima è la
 livello computazionale e la più facile da implementare ma quella meno efficace, e viceversa per la terza.
 
 ### Firewall
-- Il firewall o portatagliafuoco ci difende combinando le tecnologie precedentemente descritte
-- Il firewall può essere software (per accessi domestici) o hardware (per reti aziendali).
+Il firewall o portatagliafuoco ci difende combinando le tecnologie precedentemente descritte, può essere software (per accessi domestici) o hardware (per reti aziendali).
 - **Politiche di sicurezza**:
   - **Default deny**: Blocca tutto eccetto ciò che è esplicitamente permesso.
   - **Default permit**: Permette tutto eccetto ciò che è esplicitamente bloccato.
@@ -1227,7 +1191,7 @@ Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **
 
 ### Stabilità del sistema
 - **Equilibrio**: In condizioni stabili sarà $ A_0 = A_s $, se $ A_0 > A_{Smax} $, il sistema accumula traffico non smaltito, portando a instabilità.
-- **Numero finito di stazioni**: Il traffico offerto $ A_0 $ dipende dal numero di stazioni attive ($ k $) e dalle condizioni del sistema.
+- **Numero finito di stazioni**: Il traffico offerto $A_0$ dipende dal numero di stazioni attive ($ k $) e dalle condizioni del sistema.
 
 ### Controlled Aloha
 - **Back-off esponenziale**:
