@@ -267,7 +267,7 @@ blocco che non ho modo di creare. Se aumento i terminali nelle sedi già esisten
 - **Soluzione 2**: Potrei valutare netmask a grandezza differenziata. Ricordiamoci che più divido, 
 più mi mangio numeri, dato che per ogni divisione il primo e l'ultimo numero sono non utilizzabili. 
 Creerò dunque 2 reti /26 (metà degli indirizzi), 3 reti /27 (3/4 dei restanti indirizzi), 
-1 rete /28 (1/2 dei restanti indirizzi) e /30 con le quali completerò gli indirizzi. Così facendo, 
+1 rete /28 (1/2 dei restanti indirizzi) e 3 reti /30 con le quali completerò gli indirizzi. Così facendo, 
 le 2 reti /26 saranno usate per 2 sedi, 1 rete /27 per la terza sede e 3 reti /30 per i 3 gateway, 
 mantenendo disponibili tutti gli altri indirizzi per il futuro.
 Se possibile, un'unica rete per tutti i gateway è preferibile a questa seconda soluzione, perché se 
@@ -293,17 +293,14 @@ ICMP è un protocollo incaricato non di corregge gli errori, ma fornire informaz
     6. **Data**: Dati del messaggio ICMP.
 
 - **Tipi di messaggi ICMP**:
-  - **Destination Unreachable (Type 3)**: Notifica l'inaccessibilità di host o sottorete.
-    - **Code 0**: Network Unreachable
-    - **Code 1**: Host Unreachable
-    - **Code 2**: Protocol Unreachable
-    - **Code 3**: Port Unreachable
-    - **Code 4**: Fragmentation Needed and Don't Fragment was Set
-    - **Code 5**: Source Route Failed
-    - **Code 11**: Destination Network Unreachable for Type of Service
-  - **Time Exceeded (Type 11)**: Notifica il superamento del TTL o il timeout per il riassemblaggio dei frammenti.
-  - **Echo/Echo Reply (Type 8/0)**: Utilizzati per determinare lo stato di raggiungibilità di un host.
-  - **Timestamp Request/Reply (Type 13/14)**: Misura il tempo di transito nella rete.
+    - **Host Unreachable (Code 1)**: Indica che l'host di destinazione non è raggiungibile.  
+    - **Protocol Unreachable (Code 2)**: Segnala che il protocollo specificato non è supportato dal dispositivo di destinazione.
+    - **Destination Unreachable (Type 3)**: Notifica l'inaccessibilità di host o sottorete.  
+    - **Fragmentation Needed and Don't Fragment was Set (Code 4)**: Notifica che la frammentazione è necessaria ma il flag "Don't Fragment" è impostato, impedendo l'invio del pacchetto.  
+    - **Source Route Failed (Code 5)**: Indica che il routing basato su un percorso sorgente specificato non è riuscito.
+    - **Echo/Echo Reply (Type 8/0)**: Utilizzati per determinare lo stato di raggiungibilità di un host.
+    - **Time Exceeded (Type 11)**: Notifica il superamento del TTL o il timeout per il riassemblaggio dei frammenti.
+    - **Timestamp Request/Reply (Type 13/14)**: Misura il tempo di transito nella rete. 
 
 ### PING
 - Verifica se un host è raggiungibile inviando pacchetti ICMP di tipo "echo" e ricevendo "echo reply".
@@ -314,16 +311,26 @@ ICMP è un protocollo incaricato non di corregge gli errori, ma fornire informaz
 - Traceroute invia pacchetti con un valore TTL (Time To Live) inizialmente impostato a 1. Ogni router lungo il percorso decrementa il TTL di 1. Quando il TTL raggiunge 0, il router scarta il pacchetto e invia un messaggio **ICMP "Time Exceeded"** al mittente. Traceroute incrementa quindi il TTL e invia un nuovo pacchetto, ripetendo il processo fino a raggiungere la destinazione finale. Questo permette di identificare ogni hop (router) lungo il percorso.
 - Parametri principali: `-m` (TTL massimo), `-q` (numero di query per hop), `-w` (timeout per risposta).
 
-### DHCP (Dynamic Host Configuration Protocol)
+### Protocollo DHCP (Dynamic Host Configuration Protocol)
 **DHCP**: Automatizza l'assegnazione dinamica di IP, netmask, gateway e DNS. Processo chiave:
-  - **Processo DHCP**:
-  - **DHCPDISCOVER**: l'host cerca un server DHCP inviando un messaggio di richiesta in broadcast.
-  - **DHCPOFFER**: i server DHCP rispondono proponendo un indirizzo IP.
-  - **DHCPREQUEST**: l'host accetta una delle offerte e richiede l'indirizzo IP.
-  - **DHCPACK**: il server DHCP conferma la configurazione con un messaggio di risposta.
+- **DHCPDISCOVER**: l'host cerca un server DHCP inviando un messaggio di richiesta in broadcast.
+- **DHCPOFFER**: i server DHCP rispondono proponendo un indirizzo IP.
+- **DHCPREQUEST**: l'host accetta una delle offerte e richiede l'indirizzo IP.
+- **DHCPACK**: il server DHCP conferma la configurazione con un messaggio di risposta.
+
+### DHCP (Dynamic Host Configuration Protocol)  
+
+**DHCP**: Automatizza l'assegnazione dinamica di IP, netmask, gateway e DNS. Processo chiave:  
+- **DHCPDISCOVER**: L'host cerca un server DHCP inviando un messaggio di richiesta in broadcast.  
+- **DHCPOFFER**: I server DHCP rispondono proponendo un indirizzo IP.  
+- **DHCPREQUEST**: L'host accetta una delle offerte e richiede l'indirizzo IP.  
+- **DHCPACK**: Il server DHCP conferma la configurazione con un messaggio di risposta.  
+
+### Protocollo APIPA (Automatic Private IP Addressing)  
+**APIPA**: Una funzione di fallback che consente a un host di assegnarsi automaticamente un indirizzo IP nella rete privata **169.254.0.0/16** quando un server DHCP non è disponibile. Questo permette agli host di comunicare tra loro all'interno della stessa rete locale, ma senza accesso esterno (es. Internet).
 
 ## Filtraggio dei Pacchetti
-Le metodologie di filtraggio dei datagrammi sono tecniche utilizzate per controllare il traffico di rete in base a criteri predefiniti. Questi criteri possono includere indirizzi IP, numeri di porta, protocolli e altre informazioni contenute nei pacchetti. In questo contesto, i gateway fungono da punti di controllo per il traffico di rete, applicando le regole di filtraggio per garantire che solo il traffico autorizzato possa attraversare la rete. Queste metodologie sono fondamentali per implementare firewall e altre soluzioni di sicurezza di rete, garantendo che solo il traffico autorizzato possa attraversare i confini della rete.
+Le **metodologie di filtraggio dei datagrammi** sono tecniche utilizzate per controllare il traffico di rete in base a criteri predefiniti. Questi criteri possono includere indirizzi IP, numeri di porta, protocolli e altre informazioni contenute nei pacchetti. In questo contesto, i gateway fungono da punti di controllo per il traffico di rete, applicando le regole di filtraggio per garantire che solo il traffico autorizzato possa attraversare la rete. Queste metodologie sono fondamentali per implementare firewall e altre soluzioni di sicurezza di rete, garantendo che solo il traffico autorizzato possa attraversare i confini della rete.
 
 **Packet Filter**: Controlla l'accesso a determinati servizi o indirizzi in base alle regole impostate sugli IP, protocolli o porte. È detto instradamento selettivo e opera a livello IP basando le sue decisioni sulla natura dell'IP stesso come il TTL, i tipi di indirizzi ecc. Il vantaggio è che a livello di gateway basta implementare il filtro a livello software, ma esistono situazioni in cui i filtri a livello IP non sono sufficienti.
 
@@ -358,9 +365,7 @@ Viene definito a livello concettuale ma non a livelli fisico/implementativo dato
   - **Full Cone NAT, Restricted Cone NAT, Symmetric NAT**: Definiscono il tipo di traffico permesso.
 
 ## IPV6
-
 ### Problematiche dell’indirizzamento IP
-
 - **Mobilità**
   - **Indirizzi riferiti alla rete di appartenenza**: Gli indirizzi IP sono legati alla rete a cui appartengono. Se un host viene spostato in un’altra rete, il suo indirizzo IP deve cambiare.
   - **Configurazione automatica con DHCP**: Il Dynamic Host Configuration Protocol (DHCP) permette la configurazione automatica degli indirizzi IP, facilitando la gestione degli indirizzi in reti dinamiche.
@@ -377,7 +382,6 @@ Viene definito a livello concettuale ma non a livelli fisico/implementativo dato
   - **Reti IP private e NAT**: A causa dell'enorme diffusione di Internet, il numero di indirizzi IPv4 disponibili è insufficiente. Le reti IP private e il Network Address Translation (NAT) sono soluzioni temporanee per mitigare questo problema.
 
 ### IPv6
-
 - **Supportare molti miliardi di host**: IPv6 è stato progettato per supportare un numero molto maggiore di indirizzi rispetto a IPv4.
 - **Semplificare il routing**: IPv6 mira a rendere il routing più efficiente e scalabile.
 - **Offrire meccanismi di sicurezza**: IPv6 include nativamente il supporto per IPSec, migliorando la sicurezza delle comunicazioni.
@@ -460,11 +464,13 @@ Il Routing Distance Vector è una definizione teorica di algoritmi ri souting ch
 Queste tecniche combinate migliorano la stabilità e l'affidabilità del protocollo RIP, riducendo la probabilità di loop di routing e accelerando la convergenza della rete. La presenza di clicli potrbbe comprometterne l'efficacia, dunque si è reso indispensabile trovare un' alternativa alla soluzione del routing distance vector.
 
 ## Routing Link State
-In questa nuova soluzione, si separano nettamente il protocollo e l'algoritmo. 
-Abbiamo una logica in cui, tramite uno specifico protocollo, i nodi scoprono altri nodi, 
-estrapolano informazioni da questi ultimi e condividono tali informazioni con altri nodi. 
-Questo processo permette a tutti i nodi di avere una visione completa della rete.
-Solo a questo punto si utilizzano algoritmi di routing come Dijkstra per scoprire i percorsi più rapidi. Questo approccio comporta un maggiore utilizzo di memoria e una maggiore complessità computazionale. Tuttavia, se ogni nodo conosce tutta la rete, sarà in grado di reagire opportunamente in caso di guasto.
+
+### Link-State Routing Protocol 
+Un protocollo di routing di tipo link-state, nonostante entrambe siano definizioni ideali dei prtocolli e non implementative, funziona in modo diverso rispetto ai protocolli di routing a Distance Vector infatti in questa nuova soluzione, si separano nettamente il protocollo e l'algoritmo. Abbiamo una logica in cui, tramite uno specifico protocollo, i nodi scoprono altri nodi, 
+estrapolano informazioni da questi ultimi e condividono tali informazioni con altri nodi. Questo processo permette a tutti i nodi di avere una visione completa della rete.Solo a questo punto si utilizzano algoritmi di routing come Dijkstra per scoprire i percorsi più rapidi. Questo approccio comporta un maggiore utilizzo di memoria e una maggiore complessità computazionale. Tuttavia, se ogni nodo conosce tutta la rete, sarà in grado di reagire opportunamente in caso di guasto.
+- **Conoscenza della Topologia Completa**:Ogni router mantiene una mappa completa della topologia della rete, conosciuta come la Link-State Database (LSDB). Questa mappa include informazioni su tutti i router e i collegamenti nella rete.
+- **Annunci di Stato del Collegamento (LSA)**:I router inviano periodicamente annunci di stato del collegamento (Link-State Advertisements, LSA) ai loro vicini.Gli LSA contengono informazioni sui collegamenti diretti del router, come lo stato del collegamento e il costo associato.
+- **Dijkstra**: Ogni router utilizza l'algoritmo di Dijkstra per calcolare il percorso più breve verso ogni destinazione nella rete. L'algoritmo di Dijkstra utilizza le informazioni contenute nella LSDB per costruire un albero dei percorsi più brevi, noto come Shortest Path Tree (SPT).
 
 ### Vantaggi del Routing Link State
 - **Convergenza rapida**: Poiché ogni nodo ha una visione completa della rete, le modifiche nella topologia 
@@ -562,16 +568,23 @@ Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente
   - **Tier 3**: ISP locali che acquistano connettività da Tier 2 o altri ISP locali.
 - **Peering e interconnessione**: Il peering tra ISP non implica pagamenti diretti; è una relazione neutrale. Gli ISP nelle loro zone di pertinenza hanno dei POP (Points of Presence) che sono punti di raccolta collegati tra loro da maglie. Tali POP si trovano in punti strategici come città e snodi commerciali. Se ci sono più ISP in una stessa internet region, i POP saranno in posizioni limitrofe per entrambi gli ISP. Tuttavia, non è quasi mai possibile farli comunicare direttamente, poiché gli ISP si propongono come AS e quindi sarà necessario far avvenire la comunicazione in un punto di "contatto" che talvolta potrebbe essere molto distante dal POP geograficamente più vicino. Tale collegamento unico deve essere molto robusto data la sua unicità. Esso è fornito da compagnie dette **Internet Exchange** che forniscono tale infrastruttura detta **Internet Exchange Point** (IXP).
 
-### Protocollo RIP (Routing Information Protocol)
-- **Caratteristiche**:  
-  RIP è un protocollo di routing di tipo **distance vector**, il che significa che le sue decisioni di routing si basano sulla 
-  distanza in termini di hop count. Utilizza messaggi di tipo **Request** per richiedere informazioni di routing e **Response** 
-  per inviare aggiornamenti agli altri router della rete. Questi aggiornamenti vengono inviati periodicamente, come risposta a 
-  una richiesta esplicita e quando un'informazione di routing cambia (triggered update). RIP è semplice da configurare e gestire, 
-  ma presenta limiti significativi. Non supporta il **Classless Inter-Domain Routing (CIDR)**, che consente un uso più 
-  efficiente degli indirizzi IP, e ha problemi di sicurezza poiché le informazioni di routing vengono trasmesse in chiaro. 
-  Inoltre, in reti di grandi dimensioni, il tempo necessario per convergere può diventare critico, portando a potenziali 
-  loop di routing e inefficienze.
+### Stub Area e Routing verso l’Esterno
+Le **stub area** sono progettate per ottimizzare le risorse di rete in configurazioni con un solo punto di uscita. Il routing verso l’esterno si basa su un **default route**, riducendo la dimensione delle **tabelle di routing** e il carico sui router di bordo, ideali per le aree con basse risorse di memoria.
+
+### Multicast e IP Multicast
+   - **Multicast** rappresenta una soluzione efficace per la trasmissione di dati a più destinatari simultaneamente, 
+   riducendo il carico di traffico di routing. A differenza del broadcast, che invia informazioni a tutti i nodi della rete, 
+   il multicast consente di inviare pacchetti solo ai gruppi specifici di destinatari che si sono registrati per riceverli. 
+   Questo approccio è particolarmente utile in applicazioni come lo streaming video e le videoconferenze.  
+   - **Indirizzi multicast**: Gli indirizzi IP multicast sono assegnati a un intervallo specifico, compreso tra 224.0.0.0 e 
+   239.255.255.255. Questi indirizzi permettono l'identificazione di gruppi multicast e sono utilizzati dai router per 
+   instradare i pacchetti solo ai nodi interessati, contribuendo così a una gestione più efficiente della larghezza di banda.
+
+### Internet Group Management Protocol (IGMP)
+L'IGMP è un protocollo fondamentale per la gestione dei gruppi multicast. Consente agli host di comunicare con i router multicast, dichiarando la loro appartenenza a specifici gruppi. Attraverso IGMP, gli host possono anche abbandonare i gruppi a cui non desiderano più partecipare. Questo processo è cruciale per mantenere l'efficienza della rete, poiché garantisce che solo gli host interessati ricevano i dati multicast. 
+
+## Protocollo RIP (Routing Information Protocol)
+- **Caratteristiche**: RIP è un protocollo di routing di tipo **distance vector**, il che significa che le sue decisioni di routing si basano sulla distanza in termini di hop count. Utilizza messaggi di tipo **Request** per richiedere informazioni di routing e **Response** per inviare aggiornamenti agli altri router della rete. Questi aggiornamenti vengono inviati periodicamente, come risposta a una richiesta esplicita e quando un'informazione di routing cambia (triggered update). RIP è semplice da configurare e gestire, ma presenta limiti significativi. Non supporta il **Classless Inter-Domain Routing (CIDR)**, che consente un uso più efficiente degli indirizzi IP, e ha problemi di sicurezza poiché le informazioni di routing vengono trasmesse in chiaro. Inoltre, in reti di grandi dimensioni, il tempo necessario per convergere può diventare critico, portando a potenziali loop di routing e inefficienze.
 
 - **Struttura del pacchetto**:
   I pacchetti RIP hanno una lunghezza variabile fino a 512 byte e sono strutturati su parole da 32 bit:
@@ -619,7 +632,7 @@ Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente
     - Dopo un certo periodo, tutti i percorsi ottimali convergono su questo router non autorizzato, causando potenziali 
     disservizi e problemi di sicurezza.
 
-### RIP versione 2
+## Protocollo RIP versione 2
 RIP versione 2 introduce miglioramenti significativi rispetto alla versione 1, affrontando alcune delle sue limitazioni principali. Le modifiche includono:
   - **Supporto per Subnetting e CIDR**: RIP v2 supporta il subnetting e il Classless Inter-Domain Routing (CIDR), permettendo una gestione più efficiente degli indirizzi IP.
   - **Autenticazione**: RIP v2 include meccanismi di autenticazione per migliorare la sicurezza delle informazioni di routing. Questo aiuta a prevenire l'inserimento di informazioni di routing non autorizzate.
@@ -637,16 +650,7 @@ I pacchetti RIP v2 mantengono una struttura simile a quella della versione 1, ma
   - **Next Hop**: L'indirizzo IP del prossimo hop verso la destinazione.
   - **Metric**: Il numero di hop necessari per raggiungere la rete di destinazione.
 
-
-### Link-State Routing Protocol 
-Un protocollo di routing di tipo link-state, nonostante entrambe siano definizioni ideali dei prtocolli e non implementative, funziona in modo diverso rispetto ai protocolli di routing a Distance Vector infatti :
-
-- **Conoscenza della Topologia Completa**:Ogni router mantiene una mappa completa della topologia della rete, conosciuta come la Link-State Database (LSDB). Questa mappa include informazioni su tutti i router e i collegamenti nella rete.
-- **Annunci di Stato del Collegamento (LSA)**:I router inviano periodicamente annunci di stato del collegamento (Link-State Advertisements, LSA) ai loro vicini.Gli LSA contengono informazioni sui collegamenti diretti del router, come lo stato del collegamento e il costo associato.
-- **Dijkstra**: Ogni router utilizza l'algoritmo di Dijkstra per calcolare il percorso più breve verso ogni destinazione nella rete. L'algoritmo di Dijkstra utilizza le informazioni contenute nella LSDB per costruire un albero dei percorsi più brevi, noto come Shortest Path Tree (SPT).
-- **Convergenza Rapida**: I protocolli di tipo link-state tendono a convergere più rapidamente rispetto ai protocolli a vettore di distanza, poiché ogni router ha una visione completa della rete e può calcolare i percorsi in modo indipendente.
-
-### Open Shortest Path First (OSPF)
+## Protocollo Open Shortest Path First (OSPF)
 Protocollo di routing largamente adottato, standardizzato nella versione 2 (RFC 2328), e tra i più diffusi nell’ambito delle **reti interne (IGP)**. È di tipo **link-state** e usa pacchetti **Link State Advertisement (LSA)** per condividere informazioni di rete con altri router. OSPF è incapsulato direttamente nel **protocollo IP**, con un protocol number di valore 89 per distinguere i pacchetti OSPF dagli altri. OSPF semplifica il **routing** in reti complesse suddividendole in **aree**, interconnesse tramite un’**area backbone** (Area 0). Questa suddivisione crea una struttura **gerarchica** che riduce il carico sui router e consente la **comunicazione tra aree** tramite router specifici. I principali tipi di router in OSPF includono:
 - **Internal Router**, interni a un’area specifica
 - **Area Border Router (ABR)**, che collegano più aree
@@ -707,25 +711,9 @@ I **pacchetti principali** di OSPF includono:
 - **Hello** (Tipo 1), per rilevare i vicini
 - **Database Description** (Tipo 2), per descrivere il database
 - **Link State Request** (Tipo 3) e **Link State Update** (Tipo 4) per l’aggiornamento delle informazioni di routing
-- **Link State Acknowledge** (Tipo 5), per confermare la ricezione
+- **Link State Acknowledge** (Tipo 5), per confermare la ricezione 
 
-### Stub Area e Routing verso l’Esterno
-Le **stub area** sono progettate per ottimizzare le risorse di rete in configurazioni con un solo punto di uscita. Il routing verso l’esterno si basa su un **default route**, riducendo la dimensione delle **tabelle di routing** e il carico sui router di bordo, ideali per le aree con basse risorse di memoria.
-
-### Multicast e IP Multicast
-   - **Multicast** rappresenta una soluzione efficace per la trasmissione di dati a più destinatari simultaneamente, 
-   riducendo il carico di traffico di routing. A differenza del broadcast, che invia informazioni a tutti i nodi della rete, 
-   il multicast consente di inviare pacchetti solo ai gruppi specifici di destinatari che si sono registrati per riceverli. 
-   Questo approccio è particolarmente utile in applicazioni come lo streaming video e le videoconferenze.  
-   - **Indirizzi multicast**: Gli indirizzi IP multicast sono assegnati a un intervallo specifico, compreso tra 224.0.0.0 e 
-   239.255.255.255. Questi indirizzi permettono l'identificazione di gruppi multicast e sono utilizzati dai router per 
-   instradare i pacchetti solo ai nodi interessati, contribuendo così a una gestione più efficiente della larghezza di banda.
-
-### Internet Group Management Protocol (IGMP)
-L'IGMP è un protocollo fondamentale per la gestione dei gruppi multicast. Consente agli host di comunicare con i router multicast, dichiarando la loro appartenenza a specifici gruppi. Attraverso IGMP, gli host possono anche abbandonare i gruppi a cui non desiderano più partecipare. Questo processo è cruciale per mantenere l'efficienza della rete, poiché garantisce che solo gli host interessati ricevano i dati multicast.  
-
-## Exterior Gateway Protocols (EGP)
-### Protocolli EGP
+## Protocolli EGP (Exterior Gateway Protocols)
 I protocolli di tipo EGP si distinguono dai protocolli di tipo IGP per le loro finalità e logiche operative:
 - All’interno di un Autonomous System (AS), si mira principalmente all’ottimizzazione dei percorsi.
 - Nel routing tra AS, si devono considerare soprattutto le politiche di instradamento:
