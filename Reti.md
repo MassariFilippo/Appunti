@@ -121,7 +121,9 @@ Il pacchetto IP è composto da:
 La **Netmask** è un valore numerico che serve a separare la parte di **Net ID** dalla parte di **Host ID** in un indirizzo IP. Questa separazione permette di identificare la rete di appartenenza e gli host al suo interno.  
 
 #### **Come funziona la Netmask**  
-- La Netmask è un indirizzo IP a 32 bit.  
+- La Netmask è un indirizzo IP a 32 bit. 
+- Non viene trasportata nel datagramma, ma è parte della tabella di routing del nodo.
+- Inizialmente, la divisione tra Net-ID e Host-ID era assoluta (Classfull), mentre successivamente si è passati a un approccio più flessibile (Classless). 
 - Ogni bit della Netmask può essere:  
   - **1**: Indica che il bit corrispondente dell'indirizzo IP appartiene al **Net ID**.  
   - **0**: Indica che il bit corrispondente appartiene all'**Host ID**.  
@@ -183,51 +185,6 @@ Quando un host deve inviare un pacchetto:
 
 ## Classless VS Classfull
 
-### Subnetting
-- Esempio di **Netmask**: Una netmask è composta da 32 bit che sono in locale e rimangono affibiati al singolo calcolatore, tutti i calcolatori della stessa network avranno la stessa netmask, con tutti 1 a sinistra e tutti 0 a destra. Il punto in cui avviene il cambio rappresenta la separazione tra Net-ID e Host-ID nell'indirizzo IP. Per la parte di host, indipendentemente dalla dimensione, gli indirizzi con tutti 0 e tutti 1 non vengono assegnati e sono riservati a compiti specifici. Quindi, si perdono 2 indirizzi: quello con tutti 0 identifica la network ID senza la parte di host, mentre con tutti gli 1 è riservato al gateway predefinito.
-  - **Net-ID**: 192.168.1.0/24 indica una rete con Net-ID di 24 bit.
-  - Può essere suddivisa in sottoreti usando la netmask per identificare la parte Net e Host dell'indirizzo.
-
-### Routing Aggregato
-La **semplificazione delle tabelle di routing** avviene aggregando più network in un’unica voce, riducendo la complessità per i router. Questo processo è noto come **supernetting** o **route aggregation**.
-
-### Come si aggregano le reti
-1. **Identificazione delle reti contigue**: Per aggregare le reti, è necessario che queste siano contigue, ovvero che gli indirizzi IP siano consecutivi.
-2. **Calcolo della supernet**: Si determina una nuova netmask che copra tutte le reti contigue. Ad esempio, se si hanno le reti 192.168.1.0/24 e 192.168.2.0/24, si può aggregarle in una singola rete 192.168.0.0/22, ifatti:
-    - **192.168.1.0/24**:  
-      - Netmask: `255.255.255.0` (24 bit).  
-      - Copre gli indirizzi da `192.168.1.0` a `192.168.1.255`.  
-    - **192.168.2.0/24**:  
-      - Netmask: `255.255.255.0` (24 bit).  
-      - Copre gli indirizzi da `192.168.2.0` a `192.168.2.255`. 
-    - `192.168.1.0` → `11000000.10101000.00000001.00000000`  
-    - `192.168.2.0` → `11000000.10101000.00000010.00000000`
-    - I primi **22 bit** sono identici:  `11000000.10101000.000000` (corrisponde a `192.168.0.0`).  
-3. **Aggiornamento delle tabelle di routing**: Le voci delle singole reti vengono sostituite da una voce unica che rappresenta la supernet.
-
-### Vantaggi del Routing Aggregato
-- **Riduzione delle voci nelle tabelle di routing**: Aggregando le reti, si diminuisce il numero di voci che i router devono gestire, semplificando il processo di instradamento.
-- **Miglioramento delle prestazioni**: Con meno voci da esaminare, i router possono prendere decisioni di instradamento più rapidamente, migliorando le prestazioni complessive della rete.
-- **Minore utilizzo di memoria**: Le tabelle di routing più piccole richiedono meno memoria, liberando risorse per altre operazioni.
-- **Scalabilità**: La rete diventa più scalabile, poiché l'aggiunta di nuove reti contigue può essere gestita facilmente attraverso l'aggiornamento della supernet esistente.
-- **Riduzione del traffico di aggiornamento**: Con meno voci da aggiornare, si riduce il traffico di aggiornamento delle tabelle di routing tra i router, migliorando l'efficienza della rete.
-
-### Uso del Gateway
-   - **Gateway**: Il nodo che connette due network IP. È responsabile dell'instradamento dei pacchetti verso la destinazione finale.
-
-### Esempi di Tabelle di Routing
-   - La tabella di routing contiene campi come:
-     - **Destination**: L'indirizzo IP o la rete da raggiungere.
-     - **Netmask**: La maschera di rete che separa Net ID da Host ID.
-     - **Gateway**: L'indirizzo IP del router da usare.
-     - **Interface**: L'interfaccia di rete attraverso cui inviare il pacchetto.
-
-### Classless vs Classfull IP
-- **Indirizzi IP e Netmask**:
-  - Gli indirizzi IP pubblici devono essere unici su Internet e identificano sorgente e destinazione nel datagramma IP.
-  - La **netmask** è locale a ciascun nodo, utilizzata per determinare la porzione di indirizzo che rappresenta la rete e l'host. Non viene trasportata nel datagramma, ma è parte della tabella di routing del nodo.
-  - Inizialmente, la divisione tra Net-ID e Host-ID era assoluta, mentre successivamente si è passati a un approccio più flessibile (Classless).
-
 ### Classi di indirizzi IP (Classfull)
 - Durante le fasi iniziali di Internet, gli indirizzi IP erano suddivisi in **classi**:
   - **Classe A**: grandi reti (da 0.0.0.0 a 127.255.255.255) ed andavano letti come se avessero un netmask /8.
@@ -250,14 +207,6 @@ identificare la rete, mentre i restanti 8 bit sono utilizzati per identificare g
 - Questa flessibilità consente di adattare meglio la dimensione delle reti alle esigenze specifiche, evitando 
 sprechi di indirizzi IP e migliorando la scalabilità della rete.
 
-### Subnetting
-- La **subdivisione in sottoreti (subnetting)** consente di frammentare una rete principale in reti più piccole 
-(subnet) per assegnarle a diverse sotto-amministrazioni all'interno di un'organizzazione.
-  - La **subnet mask** permette di personalizzare l'assegnazione dell'indirizzo IP, suddividendo 
-  l'Host-ID in due parti: una parte per la subnet e l'altra per l'host.
-  - **Esempio**: L'Università di Bologna utilizza una rete di classe B (137.204.0.0) e divide 
-  l'Host-ID per creare 254 sottoreti di classe C, utilizzando la netmask 255.255.255.0.
-
 ### CIDR (Classless Inter-Domain Routing)
 - Con la diffusione di Internet, la suddivisione rigida in classi si è dimostrata inefficiente, 
 portando alla creazione di CIDR (**RFC 1519**).
@@ -275,6 +224,42 @@ uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
   - Questo approccio flessibile permette una gestione più efficiente e scalabile degli indirizzi IP, 
   adattandosi meglio alle esigenze specifiche delle diverse reti.
 
+### Subnetting
+- Esempio di **Netmask**: Una netmask è composta da 32 bit che sono in locale e rimangono affibiati al singolo calcolatore, tutti i calcolatori della stessa network avranno la stessa netmask, con tutti 1 a sinistra e tutti 0 a destra. Il punto in cui avviene il cambio rappresenta la separazione tra Net-ID e Host-ID nell'indirizzo IP. Per la parte di host, indipendentemente dalla dimensione, gli indirizzi con tutti 0 e tutti 1 non vengono assegnati e sono riservati a compiti specifici. Quindi, si perdono 2 indirizzi: quello con tutti 0 identifica la network ID senza la parte di host, mentre con tutti gli 1 è riservato al gateway predefinito.
+  - **Net-ID**: 192.168.1.0/24 indica una rete con Net-ID di 24 bit.
+  - Può essere suddivisa in sottoreti usando la netmask per identificare la parte Net e Host dell'indirizzo.
+
+### Routing Aggregato
+La **semplificazione delle tabelle di routing** avviene aggregando più network in un’unica voce, riducendo la complessità per i router. Questo processo è noto come **supernetting** o **route aggregation**.
+- **Vantaggi del Routing Aggregato:**
+  - **Riduzione delle voci nelle tabelle di routing**: Aggregando le reti, si diminuisce il numero di voci che i router devono gestire, semplificando il processo di instradamento.
+  - **Miglioramento delle prestazioni**: Con meno voci da esaminare, i router possono prendere decisioni di instradamento più rapidamente, migliorando le prestazioni complessive della rete.
+  - **Minore utilizzo di memoria**: Le tabelle di routing più piccole richiedono meno memoria, liberando risorse per altre operazioni.
+  - **Scalabilità**: La rete diventa più scalabile, poiché l'aggiunta di nuove reti contigue può essere gestita facilmente attraverso l'aggiornamento della supernet esistente.
+  - **Riduzione del traffico di aggiornamento**: Con meno voci da aggiornare, si riduce il traffico di aggiornamento delle tabelle di routing tra i router, migliorando l'efficienza della rete.
+
+### Come si aggregano le reti
+1. **Identificazione delle reti contigue**: Per aggregare le reti, è necessario che queste siano contigue, ovvero che gli indirizzi IP siano consecutivi.
+2. **Calcolo della supernet**: Si determina una nuova netmask che copra tutte le reti contigue. Ad esempio, se si hanno le reti 192.168.1.0/24 e 192.168.2.0/24, si può aggregarle in una singola rete 192.168.0.0/22, ifatti:
+    - **192.168.1.0/24**:  
+      - Netmask: `255.255.255.0` (24 bit).  
+      - Copre gli indirizzi da `192.168.1.0` a `192.168.1.255`.  
+    - **192.168.2.0/24**:  
+      - Netmask: `255.255.255.0` (24 bit).  
+      - Copre gli indirizzi da `192.168.2.0` a `192.168.2.255`. 
+    - `192.168.1.0` → `11000000.10101000.00000001.00000000`  
+    - `192.168.2.0` → `11000000.10101000.00000010.00000000`
+    - I primi **22 bit** sono identici:  `11000000.10101000.000000` (corrisponde a `192.168.0.0`).  
+3. **Aggiornamento delle tabelle di routing**: Le voci delle singole reti vengono sostituite da una voce unica che rappresenta la supernet.
+
+### Subnetting
+- La **subdivisione in sottoreti (subnetting)** consente di frammentare una rete principale in reti più piccole 
+(subnet) per assegnarle a diverse sotto-amministrazioni all'interno di un'organizzazione.
+  - La **subnet mask** permette di personalizzare l'assegnazione dell'indirizzo IP, suddividendo 
+  l'Host-ID in due parti: una parte per la subnet e l'altra per l'host.
+  - **Esempio**: L'Università di Bologna utilizza una rete di classe B (137.204.0.0) e divide 
+  l'Host-ID per creare 254 sottoreti di classe C, utilizzando la netmask 255.255.255.0.
+
 ### Supernetting
 - Il **supernetting** consente di unire più reti contigue per ridurre le voci nelle tabelle di routing. Ad esempio:
   - Un'organizzazione ha bisogno di circa 2000 indirizzi IP: invece di una rete di classe B (64k indirizzi), è preferibile combinare 8 reti di classe C (2048 indirizzi).
@@ -283,14 +268,12 @@ uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
   - Subnetting riduce la parte Host-ID per estendere il Net-ID.
   - Supernetting estende l'Host-ID per aggregare reti con Net-ID simili.
 
-### Protocolli di Controllo e ICMP
-- **IP** è un protocollo **best effort**, non garantisce la consegna corretta dei datagrammi e si appoggia a protocolli affidabili di livello superiore come **TCP**.
-  - Tuttavia, è necessario un protocollo per gestire situazioni anomale e segnalare errori: **ICMP (Internet Control Message Protocol)**.
-  - ICMP segnala errori come:
-    - **Destination Unreachable (Type 3)**: quando un gateway non può raggiungere la rete o l'host.
-    - **Time Exceeded (Type 11)**: quando il Time-to-Live (TTL) di un datagramma si azzera.
-    - **Redirect (Type 5)**: un router segnala all'host sorgente una via più ottimale.
-  - ICMP non corregge gli errori, ma fornisce informazioni per diagnosticare problemi di rete.
+### ICMP (Internet Control Message Protocol)**
+ICMP è un protocollo incaricato non di corregge gli errori, ma fornire informazioni per diagnosticare problemi di rete.
+- ICMP segnala errori come:
+  - **Destination Unreachable (Type 3)**: quando un gateway non può raggiungere la rete o l'host.
+  - **Time Exceeded (Type 11)**: quando il Time-to-Live (TTL) di un datagramma si azzera.
+  - **Redirect (Type 5)**: un router segnala all'host sorgente una via più ottimale.
 
 ## Comandi di Rete
 
