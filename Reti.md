@@ -1,6 +1,8 @@
 <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });</script>
 
 # APPUNTI RETI DI TELECOMUNICAZIONE
 
@@ -1024,7 +1026,7 @@ La **frequenza media di servizio** ($ \mu = \frac{1}{\Theta}  $) indica quanto v
 ### Sistema a coda
 Nelle **reti a pacchetto**, un modello frequente è quello di un sistema a **coda** con un singolo servitore. In questo contesto:  
 - L’utente trascorre un **tempo totale nel sistema**, che comprende:  
-  - **Attesa in coda** ($ T_A $): il tempo prima di essere servito.  
+  - **Attesa in coda** ($T_A$): il tempo prima di essere servito.  
   - **Tempo di servizio** ($ \bar{\Theta} $): il tempo effettivo per completare l’operazione.  
   - Relazione complessiva: $ \bar{\Theta}_{totale} = \bar{\Theta} + T_A $.  
 - Le prestazioni del sistema dipendono da:  
