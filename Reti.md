@@ -350,36 +350,48 @@ livello computazionale e la più facile da implementare ma quella meno efficace,
 
 ### Firewall
 Il firewall o portatagliafuoco ci difende combinando le tecnologie precedentemente descritte, può essere software (per accessi domestici) o hardware (per reti aziendali).
-- **Politiche di sicurezza**:
-  - **Default deny**: Blocca tutto eccetto ciò che è esplicitamente permesso.
-  - **Default permit**: Permette tutto eccetto ciò che è esplicitamente bloccato.
+
+**Politiche di sicurezza**:
+- **Default deny**: Blocca tutto eccetto ciò che è esplicitamente permesso.
+- **Default permit**: Permette tutto eccetto ciò che è esplicitamente bloccato.
 
 ## Network Address Translation (NAT)
-E' un gateway con funzione di paket filter che si interpone tra 2 network e può cambiare il contenuto dei pacchetti in partivolare gli indirizzi sia ip che di porta.
-Viene definito a livello concettuale ma non a livelli fisico/implementativo dato che ci sono molteplici modi di farlo.
-- Maschera gli indirizzi IP interni, permettendo a reti private di accedere a reti pubbliche. 
-- I tipi di NAT principali:
-  - **Basic NAT - Conversione di indirizzo**: Converte solo gli indirizzi IP. Si trova tra 2 network e funge da gateway e modifica gli indirizzi sorgente modificando IP e porta per poi reindirizzare al destinatario per poi fare il contrario al ritorno grazie a una tabella delle conversioni. Questo permette di rendere il flusso monodirezionale, ovvero chi è dietro al basic NAT comunica con l'esterno solo se ha richiesto qualcosa da fuori, dunque costruito in questa maniera permette di essere uno strumento di protezione anche se è stato 
+E' un gateway con funzione di paket filter che si interpone tra 2 network e può cambiare il contenuto dei pacchetti in particolare gli indirizzi sia ip che di porta, in base alla specifica implementazione. Viene definito a livello concettuale ma non a livelli fisico/implementativo dato che ci sono molteplici modi di farlo. Maschera gli indirizzi IP interni, permettendo a reti private di accedere a reti pubbliche.
+
+I tipi di NAT principali:
+- **Basic NAT - Conversione di indirizzo**: Si trova tra 2 network e funge da gateway (anche se a livello operativo può essere considerato un host dato che mosifiva il pacchetto) e modifica gli indirizzi sorgente modificando IP sorgente al destinatario per poi fare il contrario al ritorno grazie a una tabella delle conversioni. Questo permette di rendere il flusso monodirezionale, ovvero chi è dietro al basic NAT comunica con l'esterno solo se ha richiesto qualcosa da fuori, dunque costruito in questa maniera permette di essere uno strumento di protezione anche se è stato 
   concepito per risparmiare numeri.
-  - **Port Address Translation (PAT)**: Tecnica utilizzata nei router per mappare più indirizzi IP privati su un singolo indirizzo IP pubblico, utilizzando numeri di porta univoci per distinguere le connessioni. Questo processo consente a più dispositivi all'interno di una rete locale (LAN) di condividere un singolo indirizzo IP pubblico per accedere a Internet. Quando un dispositivo all'interno della rete locale invia un pacchetto verso Internet, il router sostituisce l'indirizzo IP privato del dispositivo con l'indirizzo IP pubblico del router e assegna un numero di porta univoco. Quando il pacchetto di risposta ritorna, il router utilizza il numero di porta per determinare a quale dispositivo interno inoltrare il pacchetto. PAT è una forma di Network Address Translation (NAT) ed è particolarmente utile per conservare gli indirizzi IP pubblici, che sono una risorsa limitata. Inoltre, offre un livello aggiuntivo di sicurezza, poiché gli indirizzi IP privati non sono visibili dall'esterno della rete locale. Qui effettivamente vado a risparmiare indirizzi IP poiché possiamo internamente vedere più indirizzi come fossero lo stesso, così facendo però riduco i possibili flussi distinguibili a 2^16 dato che vengono distinti dalle porte.
-  - **Full Cone NAT, Restricted Cone NAT, Symmetric NAT**: Definiscono il tipo di traffico permesso.
+- **Port Address Translation (PAT)**: Tecnica utilizzata nei router per mappare più indirizzi IP privati su un singolo indirizzo IP pubblico, utilizzando numeri di porta univoci per distinguere le connessioni. Questo processo consente a più dispositivi all'interno di una rete locale (LAN) di condividere un singolo indirizzo IP pubblico per accedere a Internet. Quando un dispositivo all'interno della rete locale invia un pacchetto verso Internet, il router sostituisce l'indirizzo IP privato del dispositivo con l'indirizzo IP pubblico del router e assegna un numero di porta univoco. Quando il pacchetto di risposta ritorna, il router utilizza il numero di porta per determinare a quale dispositivo interno inoltrare il pacchetto. PAT è una forma di Network Address Translation (NAT) ed è particolarmente utile per conservare gli indirizzi IP pubblici, che sono una risorsa limitata. Inoltre, offre un livello aggiuntivo di sicurezza, poiché gli indirizzi IP privati non sono visibili dall'esterno della rete locale. Qui effettivamente vado a risparmiare indirizzi IP poiché possiamo internamente vedere più indirizzi come fossero lo stesso, così facendo però riduco i possibili flussi distinguibili a 2^16 dato che vengono distinti dalle porte.
+- **Full Cone NAT, Restricted Cone NAT, Symmetric NAT**: Definiscono il tipo di traffico permesso.
+
+## Network Address Translation (NAT)
+
+Il **Network Address Translation (NAT)** è un gateway con funzioni di **packet filtering** che si interpone tra due network, modificando il contenuto dei pacchetti, in particolare gli indirizzi IP e i numeri di porta, in base alla specifica implementazione. NAT è definito a livello concettuale, ma non fisico o implementativo, poiché può essere realizzato in modi diversi. La sua funzione principale è mascherare gli indirizzi IP interni, consentendo a reti private di accedere a reti pubbliche senza esporre direttamente i dispositivi interni.
+
+- **Basic NAT - Conversione di indirizzo**: Il Basic NAT si trova tra due network e agisce come gateway. Modifica l'indirizzo sorgente nei pacchetti in uscita, sostituendo l'indirizzo IP privato con uno pubblico configurato. Quando il pacchetto di risposta torna, il NAT riconverte l'indirizzo pubblico nell'originale indirizzo privato utilizzando una tabella di conversione. Questo approccio consente comunicazioni unidirezionali: i dispositivi interni possono avviare comunicazioni verso l'esterno, ma non viceversa, a meno che non siano configurate regole specifiche. Originariamente ideato per risparmiare indirizzi IP pubblici, offre anche un livello base di protezione nascondendo i dispositivi interni.
+
+![](img\Reti\basic_nat2.PNG)
+
+- **Network Address and Port Translation (NAPT)**: Conosciuto anche come **Port Address Translation (PAT)**, il NAPT estende il Basic NAT aggiungendo la traduzione dei numeri di porta. Questa tecnica permette a più dispositivi all'interno di una rete privata di condividere un unico indirizzo IP pubblico. Il router associa ogni combinazione di indirizzo IP privato e numero di porta interna a una combinazione univoca di indirizzo IP pubblico e numero di porta esterna. Quando un pacchetto ritorna, il router utilizza il numero di porta esterna per identificare il dispositivo interno corretto. Questo approccio consente a decine di migliaia di dispositivi di accedere simultaneamente a Internet, limitando però il numero di flussi distinguibili a 65.536, pari al massimo delle porte disponibili. NAPT è particolarmente utile per conservare indirizzi IP pubblici e fornisce un ulteriore livello di sicurezza nascondendo gli indirizzi IP privati dall'esterno.
+
+![](img\Reti\nat3.PNG)
 
 ## IPV6
 ### Problematiche dell’indirizzamento IP
-- **Mobilità**
-  - **Indirizzi riferiti alla rete di appartenenza**: Gli indirizzi IP sono legati alla rete a cui appartengono. Se un host viene spostato in un’altra rete, il suo indirizzo IP deve cambiare.
-  - **Configurazione automatica con DHCP**: Il Dynamic Host Configuration Protocol (DHCP) permette la configurazione automatica degli indirizzi IP, facilitando la gestione degli indirizzi in reti dinamiche.
-  - **Mobile IP**: Mobile IP è una tecnologia che permette agli utenti di spostarsi tra diverse reti mantenendo lo stesso indirizzo IP, garantendo la continuità delle sessioni di rete.
+**Mobilità**
+- **Indirizzi riferiti alla rete di appartenenza**: Gli indirizzi IP sono legati alla rete a cui appartengono. Se un host viene spostato in un’altra rete, il suo indirizzo IP deve cambiare.
+- **Configurazione automatica con DHCP**: Il Dynamic Host Configuration Protocol (DHCP) permette la configurazione automatica degli indirizzi IP, facilitando la gestione degli indirizzi in reti dinamiche.
+- **Mobile IP**: Mobile IP è una tecnologia che permette agli utenti di spostarsi tra diverse reti mantenendo lo stesso indirizzo IP, garantendo la continuità delle sessioni di rete.
 
-- **Sicurezza**
-  - **Scarsa protezione del datagramma IP**: L'intestazione dei datagrammi IP è in chiaro, rendendo vulnerabili i dati in transito.
-  - **IPSec**: Il protocollo IPSec può essere applicato anche a IPv4 per migliorare la sicurezza delle comunicazioni, fornendo autenticazione e cifratura dei dati.
+**Sicurezza**
+- **Scarsa protezione del datagramma IP**: L'intestazione dei datagrammi IP è in chiaro, rendendo vulnerabili i dati in transito.
+- **IPSec**: Il protocollo IPSec può essere applicato anche a IPv4 per migliorare la sicurezza delle comunicazioni, fornendo autenticazione e cifratura dei dati.
 
-- **Dimensioni delle reti prefissate**
-  - **Subnetting e CIDR**: Il subnetting e il Classless Inter-Domain Routing (CIDR) sono tecniche utilizzate per suddividere le reti in sottoreti più piccole e per ottimizzare l'uso degli indirizzi IP.
+**Dimensioni delle reti prefissate**
+- **Subnetting e CIDR**: Il subnetting e il Classless Inter-Domain Routing (CIDR) sono tecniche utilizzate per suddividere le reti in sottoreti più piccole e per ottimizzare l'uso degli indirizzi IP.
 
-- **Esaurimento degli indirizzi IPv4**
-  - **Reti IP private e NAT**: A causa dell'enorme diffusione di Internet, il numero di indirizzi IPv4 disponibili è insufficiente. Le reti IP private e il Network Address Translation (NAT) sono soluzioni temporanee per mitigare questo problema.
+**Esaurimento degli indirizzi IPv4**
+- **Reti IP private e NAT**: A causa dell'enorme diffusione di Internet, il numero di indirizzi IPv4 disponibili è insufficiente. Le reti IP private e il Network Address Translation (NAT) sono soluzioni temporanee per mitigare questo problema.
 
 ### IPv6
 - **Supportare molti miliardi di host**: IPv6 è stato progettato per supportare un numero molto maggiore di indirizzi rispetto a IPv4.
