@@ -6,7 +6,156 @@
 
 # APPUNTI RETI DI TELECOMUNICAZIONE
 
-## Protocolli di Internet e IP
+<div style="page-break-after: always;"></div>
+
+- [APPUNTI RETI DI TELECOMUNICAZIONE](#appunti-reti-di-telecomunicazione)
+  - [Internet e IP](#internet-e-ip)
+    - [Architettura di Internet](#architettura-di-internet)
+    - [Internet Protocol (IP) - RFC 791](#internet-protocol-ip---rfc-791)
+    - [Struttura degli indirizzi IP](#struttura-degli-indirizzi-ip)
+    - [Formato del pacchetto IP](#formato-del-pacchetto-ip)
+    - [Frammentazione dei datagrammi](#frammentazione-dei-datagrammi)
+    - [Problematiche dell’IP](#problematiche-dellip)
+    - [IPv6](#ipv6)
+  - [Istradamento IP](#istradamento-ip)
+    - [Componenti della Rete](#componenti-della-rete)
+    - [Tecnologie di Implementazione](#tecnologie-di-implementazione)
+    - [Netmask: Funzionamento e Rappresentazione](#netmask-funzionamento-e-rappresentazione)
+    - [Routing e Instradamento](#routing-e-instradamento)
+    - [ARP (Address Resolution Protocol)](#arp-address-resolution-protocol)
+  - [Classless VS Classfull](#classless-vs-classfull)
+    - [Classi di indirizzi IP (Classfull)](#classi-di-indirizzi-ip-classfull)
+    - [CIDR (Classless Inter-Domain Routing) (Classless)](#cidr-classless-inter-domain-routing-classless)
+    - [Routing Aggregato](#routing-aggregato)
+    - [Subnetting](#subnetting)
+    - [Supernetting](#supernetting)
+    - [Progettazione di Reti Aziendali](#progettazione-di-reti-aziendali)
+  - [ICMP e Comandi di Rete](#icmp-e-comandi-di-rete)
+    - [Protocollo ICMP (Internet Control Message Protocol)](#protocollo-icmp-internet-control-message-protocol)
+    - [PING](#ping)
+    - [TRACEROUTE](#traceroute)
+    - [Protocollo DHCP (Dynamic Host Configuration Protocol)](#protocollo-dhcp-dynamic-host-configuration-protocol)
+    - [Protocollo APIPA (Automatic Private IP Addressing)](#protocollo-apipa-automatic-private-ip-addressing)
+  - [Filtraggio dei Pacchetti](#filtraggio-dei-pacchetti)
+    - [Firewall](#firewall)
+  - [Network Address Translation (NAT)](#network-address-translation-nat)
+  - [Routing](#routing)
+    - [Funzioni di IP](#funzioni-di-ip)
+    - [Flooding](#flooding)
+    - [Soluzioni per il Flooding](#soluzioni-per-il-flooding)
+    - [Random e Deflection Routing](#random-e-deflection-routing)
+    - [Store-and-Forward](#store-and-forward)
+    - [Shortest Path Routing](#shortest-path-routing)
+  - [Routing Distance Vector](#routing-distance-vector)
+  - [Routing Link State](#routing-link-state)
+    - [Vantaggi del Routing Link State](#vantaggi-del-routing-link-state)
+    - [Svantaggi del Routing Link State](#svantaggi-del-routing-link-state)
+    - [Processo di Routing Link State](#processo-di-routing-link-state)
+  - [Router IP](#router-ip)
+    - [Funzioni dei router](#funzioni-dei-router)
+    - [Classificazione dei Router](#classificazione-dei-router)
+    - [Tabelle di Routing e Forwarding](#tabelle-di-routing-e-forwarding)
+  - [Instradamento nell’Internet globale](#instradamento-nellinternet-globale)
+    - [Sistemi Autonomi (AS)](#sistemi-autonomi-as)
+    - [Internet Service Provider (ISP)](#internet-service-provider-isp)
+    - [Stub Area e Routing verso l’Esterno](#stub-area-e-routing-verso-lesterno)
+    - [Multicast e IP Multicast](#multicast-e-ip-multicast)
+    - [Internet Group Management Protocol (IGMP)](#internet-group-management-protocol-igmp)
+  - [Protocollo RIP (Routing Information Protocol)](#protocollo-rip-routing-information-protocol)
+  - [Protocollo RIP versione 2](#protocollo-rip-versione-2)
+  - [Protocollo Open Shortest Path First (OSPF)](#protocollo-open-shortest-path-first-ospf)
+    - [Tipologie di Reti Supportate da OSPF](#tipologie-di-reti-supportate-da-ospf)
+    - [Identificatori e Priorità dei Router](#identificatori-e-priorità-dei-router)
+    - [Struttura del Pacchetto OSPF](#struttura-del-pacchetto-ospf)
+    - [Protocolli di Comunicazione in OSPF](#protocolli-di-comunicazione-in-ospf)
+  - [Protocolli EGP (Exterior Gateway Protocols)](#protocolli-egp-exterior-gateway-protocols)
+  - [Border Gateway Protocol (BGP)](#border-gateway-protocol-bgp)
+    - [BGP e Path Vector](#bgp-e-path-vector)
+    - [Formato dei Messaggi BGP](#formato-dei-messaggi-bgp)
+    - [BGP: Tipi di Messaggi](#bgp-tipi-di-messaggi)
+  - [Ifrastruttura regionale italiana](#ifrastruttura-regionale-italiana)
+    - [Il Ruolo del MIX](#il-ruolo-del-mix)
+    - [La Rete LEPIDA](#la-rete-lepida)
+  - [Virtualizzazione di Rete](#virtualizzazione-di-rete)
+    - [Reti Overlay: VLAN, GRE e VXLAN](#reti-overlay-vlan-gre-e-vxlan)
+  - [Virtual LAN](#virtual-lan)
+    - [Classificazione delle VLAN](#classificazione-delle-vlan)
+    - [LAN Estesa e Gestione delle VLAN tra Switch](#lan-estesa-e-gestione-delle-vlan-tra-switch)
+    - [Reti Private Virtuali (VPN) e la Sicurezza del Tunneling](#reti-private-virtuali-vpn-e-la-sicurezza-del-tunneling)
+    - [IPsec per la Sicurezza delle VPN](#ipsec-per-la-sicurezza-delle-vpn)
+  - [Mezzi Trasmissivi](#mezzi-trasmissivi)
+    - [Attenuazione](#attenuazione)
+    - [Comunicazione Satellitare](#comunicazione-satellitare)
+    - [Telefonia Cellulare](#telefonia-cellulare)
+    - [Fibra Ottica](#fibra-ottica)
+    - [Micro-Electro-Mechanical Systems](#micro-electro-mechanical-systems)
+    - [Arrayed Waveguide Grating](#arrayed-waveguide-grating)
+    - [Divisione Geografica in Zone Bianche, Grigie e Nere](#divisione-geografica-in-zone-bianche-grigie-e-nere)
+  - [Multiprotocol Label Switching](#multiprotocol-label-switching)
+    - [Flusso di pacchetti](#flusso-di-pacchetti)
+    - [Forwarding Equivalence Classes (FEC)](#forwarding-equivalence-classes-fec)
+    - [Gestione delle Label in MPLS](#gestione-delle-label-in-mpls)
+  - [Prestazioni dei Protocolli di Telecomunicazione](#prestazioni-dei-protocolli-di-telecomunicazione)
+    - [Affidabilità nei protocolli](#affidabilità-nei-protocolli)
+    - [Funzionalità e Prestazioni](#funzionalità-e-prestazioni)
+    - [Gestione delle richieste in un sistema](#gestione-delle-richieste-in-un-sistema)
+    - [Sistema a coda](#sistema-a-coda)
+    - [Efficienza del protocollo](#efficienza-del-protocollo)
+    - [Utilizzazione](#utilizzazione)
+  - [Reti Local Area Network (LAN)](#reti-local-area-network-lan)
+    - [Caratteristiche principali delle LAN](#caratteristiche-principali-delle-lan)
+    - [Traffico offerto e capacità del sistema](#traffico-offerto-e-capacità-del-sistema)
+    - [Scelte progettuali delle LAN](#scelte-progettuali-delle-lan)
+    - [Accesso Multiplo nelle LAN](#accesso-multiplo-nelle-lan)
+    - [Prestazioni e parametri chiave delle LAN](#prestazioni-e-parametri-chiave-delle-lan)
+    - [Propagazione reale nella topologia bus](#propagazione-reale-nella-topologia-bus)
+    - [Efficienza del MAC ideale](#efficienza-del-mac-ideale)
+    - [Traffico smaltito dalla LAN](#traffico-smaltito-dalla-lan)
+    - [Efficienza delle LAN](#efficienza-delle-lan)
+  - [Protocollo a contesa: ALOHA](#protocollo-a-contesa-aloha)
+    - [Prestazioni di ALOHA](#prestazioni-di-aloha)
+    - [Throughput di ALOHA](#throughput-di-aloha)
+    - [Slotted ALOHA](#slotted-aloha)
+    - [Algoritmi di back-off](#algoritmi-di-back-off)
+    - [Stabilità del sistema](#stabilità-del-sistema)
+    - [Controlled Aloha](#controlled-aloha)
+    - [Derivati del protocollo ALOHA](#derivati-del-protocollo-aloha)
+  - [CSMA (Carrier Sensing Multiple Access)](#csma-carrier-sensing-multiple-access)
+    - [Principi di funzionamento:](#principi-di-funzionamento)
+    - [Gestione delle collisioni:](#gestione-delle-collisioni)
+    - [Algoritmo di back-off:](#algoritmo-di-back-off)
+    - [Intervallo di vulnerabilità nel CSMA:](#intervallo-di-vulnerabilità-nel-csma)
+    - [Versione slotted del CSMA:](#versione-slotted-del-csma)
+    - [CSMA/CD (Carrier Sensing Multiple Access with Collision Detection)](#csmacd-carrier-sensing-multiple-access-with-collision-detection)
+    - [Codifica di Manchester:](#codifica-di-manchester)
+  - [Token Ring e IEEE 802.5](#token-ring-e-ieee-8025)
+    - [Token Ring:](#token-ring)
+    - [Definizioni dei tempi principali nel Token Ring](#definizioni-dei-tempi-principali-nel-token-ring)
+    - [Rimozione delle trame nell’anello](#rimozione-delle-trame-nellanello)
+    - [Strategie di rigenerazione del token](#strategie-di-rigenerazione-del-token)
+    - [Monitor nel Token Ring](#monitor-nel-token-ring)
+    - [Sincronizzazione nel Token Ring](#sincronizzazione-nel-token-ring)
+    - [Token Bus](#token-bus)
+    - [Confronto tra protocolli a contesa e collision-free](#confronto-tra-protocolli-a-contesa-e-collision-free)
+  - [Progetto IEEE 802](#progetto-ieee-802)
+  - [Rete Ethernet:](#rete-ethernet)
+    - [Formato del Frame Ethernet (IEEE 802.3)](#formato-del-frame-ethernet-ieee-8023)
+    - [Collision Domain e Broadcast Domain](#collision-domain-e-broadcast-domain)
+    - [Evoluzione dell'Ethernet](#evoluzione-dellethernet)
+    - [Cablaggio delle LAN Moderne](#cablaggio-delle-lan-moderne)
+  - [Wirless LAN (Wi-Fi)](#wirless-lan-wi-fi)
+    - [Standard IEEE 802.11](#standard-ieee-80211)
+    - [Architettura di rete 802.11](#architettura-di-rete-80211)
+    - [Problemi di accesso multiplo nelle WLAN](#problemi-di-accesso-multiplo-nelle-wlan)
+  - [Protocollo MAC 802.11](#protocollo-mac-80211)
+    - [Protocollo MAC 802.11 – DCF (Distributed Coordination Function)](#protocollo-mac-80211--dcf-distributed-coordination-function)
+    - [Protocollo MAC 802.11 – PCF (Point Coordination Function)](#protocollo-mac-80211--pcf-point-coordination-function)
+    - [Indirizzamento](#indirizzamento)
+  - [Interconnessione di LAN](#interconnessione-di-lan)
+
+<div style="page-break-after: always;"></div>
+
+## Internet e IP
 
 ### Architettura di Internet
 L'architettura di Internet è organizzata in strati:
@@ -37,7 +186,8 @@ Il pacchetto IP è composto da:
 1. **Header** (intestazione)
 2. **Payload** (dati utente)
 
-### Campi principali dell'header IP
+**Campi principali dell'header IP**:
+
 - **Prima riga (identificazione)**
   - **Version (4 bit)**: versione del protocollo IP (attualmente 4)
   - **IHL (Internet Header Length) (4 bit)**: lunghezza dell'intestazione in parole da 32 bit
@@ -67,7 +217,7 @@ Il pacchetto IP è composto da:
 ### Frammentazione dei datagrammi
 Necessaria quando il datagramma è troppo grande per essere trasmesso su una rete, ciò può accadere perchè si lavora su reti eterogenee con infrastruttura fisica differente. Può essere effettuata da qualsiasi apparato di rete con protocollo IP, i frammenti vengono riassemblati solo dal terminale ricevente. Il campo "Fragment Offset" indica la posizione del frammento nel datagramma originale ed i campi "Identification"e "Flags" sono usati per gestire la frammentazione
 
-### Flags per la frammentazione:
+**Flags per la frammentazione**:
 - Bit 0: sempre 0
 - Bit 1 (DF - Don't Fragment): 
   - 0 = si può frammentare
@@ -76,18 +226,45 @@ Necessaria quando il datagramma è troppo grande per essere trasmesso su una ret
   - 0 = ultimo frammento (aiuta a riordimare i paccheti in arrivo, è tecnicamente superfluo ma ci risparmia il calcolo di vedere quanto era lungo)
   - 1 = frammento intermedio
 
-### Calcolo del Fragment Offset:
+**Calcolo del Fragment Offset**:
 Il datagramma è diviso in blocchi di 8 byte (64 bit) l'offset è calcolato in unità di 8 byte dall'inizio del datagramma originale (non ho bisogno di mappare tutti i bit ma posso mapparli a blocchi di 8 byte per ridurre a 13 il numero di bit necessari a tenerne traccia, ciò implica che la frammentazione non potrà mai scendere sotto i 64 bit perché non sarei più in grado di ricomporre il pacchetto)
 
-### Time to Live (TTL)
+**Time to Live (TTL)**:
 Imposta un limite al numero di hop che un pacchetto può attraversare,il valore iniziale tipicamente è 64 (massimo 255) decrementato di 1 ad ogni hop quando raggiunge 0, il pacchetto viene scartato
 
-### Riassemblaggio dei datagrammi
+**Riassemblaggio dei datagrammi**:
 I frammenti possono arrivare fuori sequenza o con tempi diversi. Il riassemblaggio avviene solo al terminale di destinazione. Utilizza i campi **Identification**, **Flags** e **Fragment** Offset per ricostruire correttamente il datagramma originale
 
-## Istradamento IP
+### Problematiche dell’IP
+**Mobilità**
+- **Indirizzi riferiti alla rete di appartenenza**: Gli indirizzi IP sono legati alla rete a cui appartengono. Se un host viene spostato in un’altra rete, il suo indirizzo IP deve cambiare.
+- **Configurazione automatica con DHCP**: Il Dynamic Host Configuration Protocol (DHCP) permette la configurazione automatica degli indirizzi IP, facilitando la gestione degli indirizzi in reti dinamiche.
+- **Mobile IP**: Mobile IP è una tecnologia che permette agli utenti di spostarsi tra diverse reti mantenendo lo stesso indirizzo IP, garantendo la continuità delle sessioni di rete.
 
-### Internet e il Modello di Instradamento IP
+**Sicurezza**
+- **Scarsa protezione del datagramma IP**: L'intestazione dei datagrammi IP è in chiaro, rendendo vulnerabili i dati in transito.
+- **IPSec**: Il protocollo IPSec può essere applicato anche a IPv4 per migliorare la sicurezza delle comunicazioni, fornendo autenticazione e cifratura dei dati.
+
+**Dimensioni delle reti prefissate**: Il subnetting e il Classless Inter-Domain Routing (CIDR) sono tecniche utilizzate per suddividere le reti in sottoreti più piccole e per ottimizzare l'uso degli indirizzi IP.
+
+**Esaurimento degli indirizzi IPv4**: A causa dell'enorme diffusione di Internet, il numero di indirizzi IPv4 disponibili è insufficiente. Le reti IP private e il Network Address Translation (NAT) sono soluzioni temporanee per mitigare questo problema.
+
+### IPv6
+**Supportare molti miliardi di host**: IPv6 è stato progettato per supportare un numero molto maggiore di indirizzi rispetto a IPv4.
+
+**Semplificare il routing**: IPv6 mira a rendere il routing più efficiente e scalabile.
+
+**Offrire meccanismi di sicurezza**: IPv6 include nativamente il supporto per IPSec, migliorando la sicurezza delle comunicazioni.
+
+**Offrire qualità di servizio (QoS)**: IPv6 fornisce meccanismi per garantire la qualità del servizio, essenziale per applicazioni multimediali.
+
+**Gestire multicast e broadcast**: IPv6 migliora la gestione del multicast e del broadcast rispetto a IPv4.
+
+**Consentire la mobilità**: IPv6 supporta la mobilità degli host, permettendo agli utenti di spostarsi tra diverse reti senza cambiare indirizzo IP.
+
+**Evoluzione futura e compatibilità**: IPv6 è progettato per consentire future evoluzioni e garantire la compatibilità con le versioni precedenti.
+
+## Istradamento IP
 **Instradamento a pacchetto**: Internet utilizza la commutazione a pacchetto per trasmettere dati. Esistono più percorsi per raggiungere una destinazione. Il **routing** (instradamento) avviene pacchetto per pacchetto, e i router decidono quale percorso seguire.
 
 ### Componenti della Rete
@@ -104,14 +281,11 @@ I frammenti possono arrivare fuori sequenza o con tempi diversi. Il riassemblagg
 
 **GPRS/EDGE/LTE**: Connessioni radio fornite da operatori pubblici.
 
-### Indirizzo IP  
+### Netmask: Funzionamento e Rappresentazione
 L'indirizzo IP, usato per raggiungere una specifica network al di là dell'implementazione su cui lavora, è composto da due parti:  
   - **Net ID**: Identifica la rete (network IP), parte di sinistra dell'indirizzo.  
-  - **Host ID**: Identifica l'host all'interno della rete (singolo calcolatore), parte destra dell'indirizzo.  
+  - **Host ID**: Identifica l'host all'interno della rete (singolo calcolatore), parte destra dell'indirizzo. 
 
-La distinzione tra Net ID e Host ID è determinata dalla **Netmask**.
-
-### **Netmask: Funzionamento e Rappresentazione**  
 La **Netmask** è un valore numerico che serve a separare la parte di **Net ID** dalla parte di **Host ID** in un indirizzo IP. Questa separazione permette di identificare la rete di appartenenza e gli host al suo interno.  
 
 **Come funziona la Netmask**: La Netmask è un indirizzo IP a 32 bit. Non viene trasportata nel datagramma, ma è parte della tabella di routing del nodo. Inizialmente, la divisione tra Net-ID e Host-ID era assoluta (Classfull), mentre successivamente si è passati a un approccio più flessibile (Classless). 
@@ -157,7 +331,7 @@ Questa struttura permette ai nodi di instradare i pacchetti in modo efficiente, 
 
 **Longest Prefix Match**: Per selezionare il percorso corretto, il nodo confronta l'indirizzo di destinazione con la netmask più lunga disponibile nella tabella.
 
-### **ARP (Address Resolution Protocol)**
+### ARP (Address Resolution Protocol)
 
 Protocollo di rete utilizzato per mappare un indirizzo IP a un indirizzo MAC corrispondente all'interno di una rete locale (LAN). Funziona a livello **2 (Data Link)** e si interfaccia con il livello **3 (Rete)** del modello OSI, consentendo la comunicazione tra dispositivi in una rete Ethernet o simile.
 
@@ -200,7 +374,7 @@ identificare la rete, mentre i restanti 8 bit sono utilizzati per identificare g
 - Questa flessibilità consente di adattare meglio la dimensione delle reti alle esigenze specifiche, evitando 
 sprechi di indirizzi IP e migliorando la scalabilità della rete.
 
-### CIDR (Classless Inter-Domain Routing)
+### CIDR (Classless Inter-Domain Routing) (Classless)
 Con la diffusione di Internet, la suddivisione rigida in classi si è dimostrata inefficiente, portando alla creazione di CIDR (**RFC 1519**). CIDR elimina la logica delle classi nei router e consente la **definizione variabile della dimensione del Net-ID**. Le tabelle di routing includono le netmask per una gestione più flessibile delle reti. Oggi, la distinzione tra host e net è locale a tal punto che dipende dal punto in cui si guarda, punto nel quale è contenuta la netmask di riferimento per quella specifica istanza. Dunque, uno stesso indirizzo ha rilevanza diversa in punti diversi della rete.
 
 ### Routing Aggregato
@@ -213,7 +387,8 @@ La **semplificazione delle tabelle di routing** avviene aggregando più network 
   - **Scalabilità**: La rete diventa più scalabile, poiché l'aggiunta di nuove reti contigue può essere gestita facilmente attraverso l'aggiornamento della supernet esistente.
   - **Riduzione del traffico di aggiornamento**: Con meno voci da aggiornare, si riduce il traffico di aggiornamento delle tabelle di routing tra i router, migliorando l'efficienza della rete.
 
-### Come si aggregano le reti
+**Come si aggregano le reti**:
+
 1. **Identificazione delle reti contigue**: Per aggregare le reti, è necessario che queste siano contigue, ovvero che gli indirizzi IP siano consecutivi.
 2. **Calcolo della supernet**: Si determina una nuova netmask che copra tutte le reti contigue. Ad esempio, se si hanno le reti 192.168.1.0/24 e 192.168.2.0/24, si può aggregarle in una singola rete 192.168.0.0/22, ifatti:
     - **192.168.1.0/24**:  
@@ -310,13 +485,6 @@ Parametri principali: `-m` (TTL massimo), `-q` (numero di query per hop), `-w` (
 - **DHCPREQUEST**: l'host accetta una delle offerte e richiede l'indirizzo IP.
 - **DHCPACK**: il server DHCP conferma la configurazione con un messaggio di risposta.
 
-### DHCP (Dynamic Host Configuration Protocol)  
-**DHCP**: Automatizza l'assegnazione dinamica di IP, netmask, gateway e DNS. Processo chiave:  
-- **DHCPDISCOVER**: L'host cerca un server DHCP inviando un messaggio di richiesta in broadcast.  
-- **DHCPOFFER**: I server DHCP rispondono proponendo un indirizzo IP.  
-- **DHCPREQUEST**: L'host accetta una delle offerte e richiede l'indirizzo IP.  
-- **DHCPACK**: Il server DHCP conferma la configurazione con un messaggio di risposta.  
-
 ### Protocollo APIPA (Automatic Private IP Addressing)  
 **APIPA**: Una funzione di fallback che consente a un host di assegnarsi automaticamente un indirizzo IP nella rete privata **169.254.0.0/16** quando un server DHCP non è disponibile. Questo permette agli host di comunicare tra loro all'interno della stessa rete locale, ma senza accesso esterno (es. Internet).
 
@@ -357,45 +525,11 @@ Il **Network Address Translation (NAT)** è un gateway con funzioni di **packet 
 
 ![](img\Reti\nat3.PNG)
 
-## IPV6
-### Problematiche dell’indirizzamento IP
-**Mobilità**
-- **Indirizzi riferiti alla rete di appartenenza**: Gli indirizzi IP sono legati alla rete a cui appartengono. Se un host viene spostato in un’altra rete, il suo indirizzo IP deve cambiare.
-- **Configurazione automatica con DHCP**: Il Dynamic Host Configuration Protocol (DHCP) permette la configurazione automatica degli indirizzi IP, facilitando la gestione degli indirizzi in reti dinamiche.
-- **Mobile IP**: Mobile IP è una tecnologia che permette agli utenti di spostarsi tra diverse reti mantenendo lo stesso indirizzo IP, garantendo la continuità delle sessioni di rete.
-
-**Sicurezza**
-- **Scarsa protezione del datagramma IP**: L'intestazione dei datagrammi IP è in chiaro, rendendo vulnerabili i dati in transito.
-- **IPSec**: Il protocollo IPSec può essere applicato anche a IPv4 per migliorare la sicurezza delle comunicazioni, fornendo autenticazione e cifratura dei dati.
-
-**Dimensioni delle reti prefissate**
-- **Subnetting e CIDR**: Il subnetting e il Classless Inter-Domain Routing (CIDR) sono tecniche utilizzate per suddividere le reti in sottoreti più piccole e per ottimizzare l'uso degli indirizzi IP.
-
-**Esaurimento degli indirizzi IPv4**
-- **Reti IP private e NAT**: A causa dell'enorme diffusione di Internet, il numero di indirizzi IPv4 disponibili è insufficiente. Le reti IP private e il Network Address Translation (NAT) sono soluzioni temporanee per mitigare questo problema.
-
-### IPv6
-**Supportare molti miliardi di host**: IPv6 è stato progettato per supportare un numero molto maggiore di indirizzi rispetto a IPv4.
-
-**Semplificare il routing**: IPv6 mira a rendere il routing più efficiente e scalabile.
-
-**Offrire meccanismi di sicurezza**: IPv6 include nativamente il supporto per IPSec, migliorando la sicurezza delle comunicazioni.
-
-**Offrire qualità di servizio (QoS)**: IPv6 fornisce meccanismi per garantire la qualità del servizio, essenziale per applicazioni multimediali.
-
-**Gestire bene multicast e broadcast**: IPv6 migliora la gestione del multicast e del broadcast rispetto a IPv4.
-
-**Consentire la mobilità**: IPv6 supporta la mobilità degli host, permettendo agli utenti di spostarsi tra diverse reti senza cambiare indirizzo IP.
-
-**Evoluzione futura e compatibilità**: IPv6 è progettato per consentire future evoluzioni e garantire la compatibilità con le versioni precedenti.
-
-
 (MANCANO 24 MIN DELLA LEZIONE DEL 16 OTTOBRE POICHè NON HO TROVATO LE SLIDE)
 
 ## Routing
 
-### Teoria dei grafi e rappresentazione della rete
-Le reti possono essere rappresentate come grafi orientati o non orientati.Il peso degli archi rappresenta il costo de l collegamento.
+**Teoria dei grafi e rappresentazione della rete**:Le reti possono essere rappresentate come grafi orientati o non orientati.Il peso degli archi rappresenta il costo de l collegamento.
 
 ### Funzioni di IP
 **Indirizzamento**: L'IP fornisce un sistema di indirizzamento univoco per identificare dispositivi sulla rete.
@@ -405,13 +539,10 @@ massima del pacchetto supportata dai vari segmenti della rete.
 
 **Instradamento**:
   - Decidere che percorso un datagramma deve seguire per raggiungere la destinazione.
-  - Utilizza le **PCI** dei datagrammi,ovvero le informazioni di controllo aggiunte ai dati per gestire la trasmissione e il corretto instradamento del datagramma attraverso la rete. Queste informazioni sono incluse nell'intestazione del datagramma.
+  - Utilizza le **PCI  (Protocol Control Information)** dei datagrammi,ovvero le informazioni di controllo aggiunte ai dati per gestire la trasmissione e il corretto instradamento del datagramma attraverso la rete. Queste informazioni sono incluse nell'intestazione del datagramma.
   - Determina il comportamento della funzione di commutazione nei nodi.
   - Il problema dell'instradamento è più generale rispetto al protocollo di livello 3.
 - Gli **Algoritmi di instradamento** hanno come biettivi: semplicità, robustezza, stabilità, efficienza.
-
-### Tabella di instradamento
-I nodi di commutazione utilizzano tabelle predisposte localmente.
 
 **Algoritmi**:
   - **Senza tabella**: Flooding, Random, Deflection routing, Source routing.
@@ -455,7 +586,7 @@ Tutto questo avviene in una coda che gestisce l'elaborazione.
 L'instradamento a percorso più breve implica l'associazione di una lunghezza a ciascun 
 collegamento e la ricerca dei percorsi a costo minimo utilizzando algoritmi come Bellman-Ford e Dijkstra. Questo può essere implementato in modo **centralizzato** o **distribuito**, sia in maniera **sincrona** che **asincrona**. Quando i nodi di rete vengono accesi, conoscono solo la configurazione delle loro interfacce, che può essere statica o dinamica tramite DHCP. Con queste informazioni, popolano la tabella di instradamento iniziale. Per implementare il  routing a percorso più breve (shortest path) verso qualsiasi destinazione, devono utilizzare uno o più protocolli di routing per scambiarsi informazioni e apprendere la topologia della rete, e uno o più algoritmi per il calcolo dei percorsi più brevi basati sulle informazioni ottenute.
 
-### Routing Distance Vector
+## Routing Distance Vector
 Il Routing Distance Vector è una definizione teorica di algoritmi ri souting che si basano sullo scambio di **Distance Vector**. Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono direttamente collegati i propri dati detti **Distance vector**, aggiornando così le tabelle dei vicini. Questo processo continua finché non si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema.
 
 **Problemi**:
@@ -469,7 +600,6 @@ Il Routing Distance Vector è una definizione teorica di algoritmi ri souting ch
 Queste tecniche combinate migliorano la stabilità e l'affidabilità del protocollo RIP, riducendo la probabilità di loop di routing e accelerando la convergenza della rete. La presenza di clicli potrbbe comprometterne l'efficacia, dunque si è reso indispensabile trovare un' alternativa alla soluzione del routing distance vector.
 
 ## Routing Link State
-### Link-State Routing Protocol 
 Un protocollo di routing di tipo link-state, nonostante entrambe siano definizioni ideali dei prtocolli e non implementative, funziona in modo diverso rispetto ai protocolli di routing a Distance Vector infatti in questa nuova soluzione, si separano nettamente il protocollo e l'algoritmo. Abbiamo una logica in cui, tramite uno specifico protocollo, i nodi scoprono altri nodi, 
 estrapolano informazioni da questi ultimi e condividono tali informazioni con altri nodi. Questo processo permette a tutti i nodi di avere una visione completa della rete.Solo a questo punto si utilizzano algoritmi di routing come Dijkstra per scoprire i percorsi più rapidi. Questo approccio comporta un maggiore utilizzo di memoria e una maggiore complessità computazionale. Tuttavia, se ogni nodo conosce tutta la rete, sarà in grado di reagire opportunamente in caso di guasto.
 
@@ -849,14 +979,7 @@ Una VLAN permette di creare più LAN separate su un unico switch. Ogni VLAN è u
 - **Definizione**: Una LAN estesa utilizza più switch per gestire una rete più ampia, mantenendo separazione tra VLAN.
 - **Problema**: Come assicurare che le VLAN rimangano distinte e funzionino correttamente su switch multipli.
 
-1. **Configurazione delle Porte in Modalità Trunk**:
-   - Le porte di collegamento tra switch devono essere configurate in **modalità trunk**.
-   - In modalità trunk:
-     - Possono transitare frame di più VLAN.
-     - Ogni frame è taggato con l’identificativo VLAN (VID) a cui appartiene.
-     - Una VLAN “untagged” può essere configurata per il traffico non taggato (solitamente una VLAN predefinita o di management).
-
-2. **Protocollo IEEE 802.1Q**
+**Protocollo IEEE 802.1Q**
   - **Funzione**: Consente l'uso delle stesse VLAN su più switch interconnessi.
   - **Tagging VLAN**:
     - Aggiunta di un’etichetta (tag) nell’intestazione Ethernet per identificare la VLAN di appartenenza.
@@ -973,7 +1096,7 @@ Un **flusso (flow)** è una sequenza di datagrammi inviati da una particolare so
 ### Forwarding Equivalence Classes (FEC)
 Raggruppamento di flussi con destinazione e requisiti di qualità di servizio simili. Ogni pacchetto o flusso associato a una FEC viene instradato nella stessa direzione attraverso i router. Questo permette ai router di ragionare per "percorsi" e non più per destinazioni, riducendo le tabelle di instradamento da milioni di voci a decine di voci. Inoltre, nel mondo IP, la dinamicità deve essere calcolata di volta in volta, mentre con le FEC possiamo scegliere in base alle necessità.
 
-### **Gestione delle Label in MPLS**
+### Gestione delle Label in MPLS
 
 MPLS (Multiprotocol Label Switching) semplifica l'instradamento dei pacchetti evitando di valutare la FEC (Forwarding Equivalence Class) a ogni hop. Questo è reso possibile grazie al meccanismo di **label swapping**, che associa a ogni pacchetto una label di uscita per il prossimo hop.
 
@@ -1040,7 +1163,7 @@ L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rappor
 **Capacità teorica**: è determinata dalla velocità del **canale** ($ C $) e dalla lunghezza del **pacchetto** ($ L $), calcolata come $ \bar{\Theta}_{min} = \frac{L}{C} $.  
 
 **Riduzione di efficienza**: si verifica in presenza di fattori come:  
-  - Segnalazioni aggiuntive (PCI).  
+  - **PCI**  (Protocol Control Information).  
   - **Errori di trasmissione** che richiedono ritrasmissioni.  
   - **Tempi morti** dovuti a dinamiche del protocollo o attese per l’accesso al canale. 
 
@@ -1378,7 +1501,7 @@ $$
 **Standard principali:**  
   - **IEEE 802.3**: Basato su CSMA/CD, ispirato a Ethernet.  
   - **IEEE 802.5**: Basato su Token Ring.  
-  - **IEEE 802.11**: Wireless LAN (WLAN).  
+  - **IEEE 802.11**: Wireless LAN (Wi-Fi).  
   - **IEEE 802.15**: Personal Area Networks (Bluetooth).  
 
 ## Rete Ethernet: 
