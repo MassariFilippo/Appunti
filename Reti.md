@@ -8,151 +8,6 @@
 
 <div style="page-break-after: always;"></div>
 
-- [APPUNTI RETI DI TELECOMUNICAZIONE](#appunti-reti-di-telecomunicazione)
-  - [Internet e IP](#internet-e-ip)
-    - [Architettura di Internet](#architettura-di-internet)
-    - [Internet Protocol (IP) - RFC 791](#internet-protocol-ip---rfc-791)
-    - [Struttura degli indirizzi IP](#struttura-degli-indirizzi-ip)
-    - [Formato del pacchetto IP](#formato-del-pacchetto-ip)
-    - [Frammentazione dei datagrammi](#frammentazione-dei-datagrammi)
-    - [Problematiche dell’IP](#problematiche-dellip)
-    - [IPv6](#ipv6)
-  - [Istradamento IP](#istradamento-ip)
-    - [Componenti della Rete](#componenti-della-rete)
-    - [Tecnologie di Implementazione](#tecnologie-di-implementazione)
-    - [Netmask: Funzionamento e Rappresentazione](#netmask-funzionamento-e-rappresentazione)
-    - [Routing e Instradamento](#routing-e-instradamento)
-    - [ARP (Address Resolution Protocol)](#arp-address-resolution-protocol)
-  - [Classless VS Classfull](#classless-vs-classfull)
-    - [Classi di indirizzi IP (Classfull)](#classi-di-indirizzi-ip-classfull)
-    - [CIDR (Classless Inter-Domain Routing) (Classless)](#cidr-classless-inter-domain-routing-classless)
-    - [Routing Aggregato](#routing-aggregato)
-    - [Subnetting](#subnetting)
-    - [Supernetting](#supernetting)
-    - [Progettazione di Reti Aziendali](#progettazione-di-reti-aziendali)
-  - [ICMP e Comandi di Rete](#icmp-e-comandi-di-rete)
-    - [Protocollo ICMP (Internet Control Message Protocol)](#protocollo-icmp-internet-control-message-protocol)
-    - [PING](#ping)
-    - [TRACEROUTE](#traceroute)
-    - [Protocollo DHCP (Dynamic Host Configuration Protocol)](#protocollo-dhcp-dynamic-host-configuration-protocol)
-    - [Protocollo APIPA (Automatic Private IP Addressing)](#protocollo-apipa-automatic-private-ip-addressing)
-  - [Filtraggio dei Pacchetti](#filtraggio-dei-pacchetti)
-    - [Firewall](#firewall)
-  - [Network Address Translation (NAT)](#network-address-translation-nat)
-  - [Routing](#routing)
-    - [Funzioni di IP](#funzioni-di-ip)
-    - [Flooding](#flooding)
-    - [Soluzioni per il Flooding](#soluzioni-per-il-flooding)
-    - [Random e Deflection Routing](#random-e-deflection-routing)
-    - [Store-and-Forward](#store-and-forward)
-    - [Shortest Path Routing](#shortest-path-routing)
-  - [Routing Distance Vector](#routing-distance-vector)
-  - [Routing Link State](#routing-link-state)
-    - [Vantaggi del Routing Link State](#vantaggi-del-routing-link-state)
-    - [Svantaggi del Routing Link State](#svantaggi-del-routing-link-state)
-    - [Processo di Routing Link State](#processo-di-routing-link-state)
-  - [Router IP](#router-ip)
-    - [Funzioni dei router](#funzioni-dei-router)
-    - [Classificazione dei Router](#classificazione-dei-router)
-    - [Tabelle di Routing e Forwarding](#tabelle-di-routing-e-forwarding)
-  - [Instradamento nell’Internet globale](#instradamento-nellinternet-globale)
-    - [Sistemi Autonomi (AS)](#sistemi-autonomi-as)
-    - [Internet Service Provider (ISP)](#internet-service-provider-isp)
-    - [Stub Area e Routing verso l’Esterno](#stub-area-e-routing-verso-lesterno)
-    - [Multicast e IP Multicast](#multicast-e-ip-multicast)
-    - [Internet Group Management Protocol (IGMP)](#internet-group-management-protocol-igmp)
-  - [Protocollo RIP (Routing Information Protocol)](#protocollo-rip-routing-information-protocol)
-  - [Protocollo RIP versione 2](#protocollo-rip-versione-2)
-  - [Protocollo Open Shortest Path First (OSPF)](#protocollo-open-shortest-path-first-ospf)
-    - [Tipologie di Reti Supportate da OSPF](#tipologie-di-reti-supportate-da-ospf)
-    - [Identificatori e Priorità dei Router](#identificatori-e-priorità-dei-router)
-    - [Struttura del Pacchetto OSPF](#struttura-del-pacchetto-ospf)
-    - [Protocolli di Comunicazione in OSPF](#protocolli-di-comunicazione-in-ospf)
-  - [Protocolli EGP (Exterior Gateway Protocols)](#protocolli-egp-exterior-gateway-protocols)
-  - [Border Gateway Protocol (BGP)](#border-gateway-protocol-bgp)
-    - [BGP e Path Vector](#bgp-e-path-vector)
-    - [Formato dei Messaggi BGP](#formato-dei-messaggi-bgp)
-    - [BGP: Tipi di Messaggi](#bgp-tipi-di-messaggi)
-  - [Ifrastruttura regionale italiana](#ifrastruttura-regionale-italiana)
-    - [Il Ruolo del MIX](#il-ruolo-del-mix)
-    - [La Rete LEPIDA](#la-rete-lepida)
-  - [Virtualizzazione di Rete](#virtualizzazione-di-rete)
-    - [Reti Overlay: VLAN, GRE e VXLAN](#reti-overlay-vlan-gre-e-vxlan)
-  - [Virtual LAN](#virtual-lan)
-    - [Classificazione delle VLAN](#classificazione-delle-vlan)
-    - [LAN Estesa e Gestione delle VLAN tra Switch](#lan-estesa-e-gestione-delle-vlan-tra-switch)
-    - [Reti Private Virtuali (VPN) e la Sicurezza del Tunneling](#reti-private-virtuali-vpn-e-la-sicurezza-del-tunneling)
-    - [IPsec per la Sicurezza delle VPN](#ipsec-per-la-sicurezza-delle-vpn)
-  - [Mezzi Trasmissivi](#mezzi-trasmissivi)
-    - [Attenuazione](#attenuazione)
-    - [Comunicazione Satellitare](#comunicazione-satellitare)
-    - [Telefonia Cellulare](#telefonia-cellulare)
-    - [Fibra Ottica](#fibra-ottica)
-    - [Micro-Electro-Mechanical Systems](#micro-electro-mechanical-systems)
-    - [Arrayed Waveguide Grating](#arrayed-waveguide-grating)
-    - [Divisione Geografica in Zone Bianche, Grigie e Nere](#divisione-geografica-in-zone-bianche-grigie-e-nere)
-  - [Multiprotocol Label Switching](#multiprotocol-label-switching)
-    - [Flusso di pacchetti](#flusso-di-pacchetti)
-    - [Forwarding Equivalence Classes (FEC)](#forwarding-equivalence-classes-fec)
-    - [Gestione delle Label in MPLS](#gestione-delle-label-in-mpls)
-  - [Prestazioni dei Protocolli di Telecomunicazione](#prestazioni-dei-protocolli-di-telecomunicazione)
-    - [Affidabilità nei protocolli](#affidabilità-nei-protocolli)
-    - [Funzionalità e Prestazioni](#funzionalità-e-prestazioni)
-    - [Gestione delle richieste in un sistema](#gestione-delle-richieste-in-un-sistema)
-    - [Sistema a coda](#sistema-a-coda)
-    - [Efficienza del protocollo](#efficienza-del-protocollo)
-    - [Utilizzazione](#utilizzazione)
-  - [Reti Local Area Network (LAN)](#reti-local-area-network-lan)
-    - [Caratteristiche principali delle LAN](#caratteristiche-principali-delle-lan)
-    - [Traffico offerto e capacità del sistema](#traffico-offerto-e-capacità-del-sistema)
-    - [Scelte progettuali delle LAN](#scelte-progettuali-delle-lan)
-    - [Accesso Multiplo nelle LAN](#accesso-multiplo-nelle-lan)
-    - [Prestazioni e parametri chiave delle LAN](#prestazioni-e-parametri-chiave-delle-lan)
-    - [Propagazione reale nella topologia bus](#propagazione-reale-nella-topologia-bus)
-    - [Efficienza del MAC ideale](#efficienza-del-mac-ideale)
-    - [Traffico smaltito dalla LAN](#traffico-smaltito-dalla-lan)
-    - [Efficienza delle LAN](#efficienza-delle-lan)
-  - [Protocollo a contesa: ALOHA](#protocollo-a-contesa-aloha)
-    - [Prestazioni di ALOHA](#prestazioni-di-aloha)
-    - [Throughput di ALOHA](#throughput-di-aloha)
-    - [Slotted ALOHA](#slotted-aloha)
-    - [Algoritmi di back-off](#algoritmi-di-back-off)
-    - [Stabilità del sistema](#stabilità-del-sistema)
-    - [Controlled Aloha](#controlled-aloha)
-    - [Derivati del protocollo ALOHA](#derivati-del-protocollo-aloha)
-  - [CSMA (Carrier Sensing Multiple Access)](#csma-carrier-sensing-multiple-access)
-    - [Principi di funzionamento:](#principi-di-funzionamento)
-    - [Gestione delle collisioni:](#gestione-delle-collisioni)
-    - [Algoritmo di back-off:](#algoritmo-di-back-off)
-    - [Intervallo di vulnerabilità nel CSMA:](#intervallo-di-vulnerabilità-nel-csma)
-    - [Versione slotted del CSMA:](#versione-slotted-del-csma)
-    - [CSMA/CD (Carrier Sensing Multiple Access with Collision Detection)](#csmacd-carrier-sensing-multiple-access-with-collision-detection)
-    - [Codifica di Manchester:](#codifica-di-manchester)
-  - [Token Ring e IEEE 802.5](#token-ring-e-ieee-8025)
-    - [Token Ring:](#token-ring)
-    - [Definizioni dei tempi principali nel Token Ring](#definizioni-dei-tempi-principali-nel-token-ring)
-    - [Rimozione delle trame nell’anello](#rimozione-delle-trame-nellanello)
-    - [Strategie di rigenerazione del token](#strategie-di-rigenerazione-del-token)
-    - [Monitor nel Token Ring](#monitor-nel-token-ring)
-    - [Sincronizzazione nel Token Ring](#sincronizzazione-nel-token-ring)
-    - [Token Bus](#token-bus)
-    - [Confronto tra protocolli a contesa e collision-free](#confronto-tra-protocolli-a-contesa-e-collision-free)
-  - [Progetto IEEE 802](#progetto-ieee-802)
-  - [Rete Ethernet:](#rete-ethernet)
-    - [Formato del Frame Ethernet (IEEE 802.3)](#formato-del-frame-ethernet-ieee-8023)
-    - [Collision Domain e Broadcast Domain](#collision-domain-e-broadcast-domain)
-    - [Evoluzione dell'Ethernet](#evoluzione-dellethernet)
-    - [Cablaggio delle LAN Moderne](#cablaggio-delle-lan-moderne)
-  - [Wirless LAN (Wi-Fi)](#wirless-lan-wi-fi)
-    - [Standard IEEE 802.11](#standard-ieee-80211)
-    - [Architettura di rete 802.11](#architettura-di-rete-80211)
-    - [Problemi di accesso multiplo nelle WLAN](#problemi-di-accesso-multiplo-nelle-wlan)
-  - [Protocollo MAC 802.11](#protocollo-mac-80211)
-    - [Protocollo MAC 802.11 – DCF (Distributed Coordination Function)](#protocollo-mac-80211--dcf-distributed-coordination-function)
-    - [Protocollo MAC 802.11 – PCF (Point Coordination Function)](#protocollo-mac-80211--pcf-point-coordination-function)
-    - [Indirizzamento](#indirizzamento)
-  - [Interconnessione di LAN](#interconnessione-di-lan)
-
 <div style="page-break-after: always;"></div>
 
 ## Internet e IP
@@ -551,7 +406,7 @@ massima del pacchetto supportata dai vari segmenti della rete.
     - **Instradamento dinamico a distanza minima**: I percorsi vengono aggiornati periodicamente per adattarsi ai cambiamenti della rete dunque risulta più dinaico del precedente.
 
 ### Flooding
-Flooding è una tecnica di instradamento in cui ogni nodo della rete ritrasmette ogni pacchetto ricevuto su tutte le sue porte, eccetto quella da cui il pacchetto è arrivato. Questo metodo garantisce che tutte le possibili strade vengano percorse, assicurando che almeno una copia del pacchetto raggiunga la destinazione.
+Flooding dall'inglese allagamento è una tecnica di instradamento in cui ogni nodo della rete ritrasmette ogni pacchetto ricevuto su tutte le sue porte, eccetto quella da cui il pacchetto è arrivato. Questo metodo garantisce che tutte le possibili strade vengano percorse, assicurando che almeno una copia del pacchetto raggiunga la destinazione.
 - Garantisce:
   - **Affidabilità**: Flooding garantisce che il pacchetto raggiunga la destinazione anche se alcuni percorsi sono interrotti.
   - **Percorso più breve**: Il primo pacchetto che raggiunge la destinazione lo fa percorrendo il percorso più breve disponibile.
@@ -563,7 +418,7 @@ Flooding è una tecnica di instradamento in cui ogni nodo della rete ritrasmette
   - **Broadcasting**: Flooding è utile per inviare messaggi di broadcast, dove l'obiettivo è raggiungere tutti i nodi della rete.
   - **Scenari di emergenza**: In situazioni in cui è cruciale che il messaggio raggiunga la destinazione, indipendentemente dall'efficienza.
 
-### Soluzioni per il Flooding
+### Soluzioni di ottimizzazione per il Flooding
 - Non ritrasmettere il pacchetto da dove è arrivato.
 - Identificazione dei pacchetti (indirizzo sorgente + numero di sequenza).
 - Uso di un TTL per evitare pacchetti infiniti.
@@ -587,25 +442,25 @@ L'instradamento a percorso più breve implica l'associazione di una lunghezza a 
 collegamento e la ricerca dei percorsi a costo minimo utilizzando algoritmi come Bellman-Ford e Dijkstra. Questo può essere implementato in modo **centralizzato** o **distribuito**, sia in maniera **sincrona** che **asincrona**. Quando i nodi di rete vengono accesi, conoscono solo la configurazione delle loro interfacce, che può essere statica o dinamica tramite DHCP. Con queste informazioni, popolano la tabella di instradamento iniziale. Per implementare il  routing a percorso più breve (shortest path) verso qualsiasi destinazione, devono utilizzare uno o più protocolli di routing per scambiarsi informazioni e apprendere la topologia della rete, e uno o più algoritmi per il calcolo dei percorsi più brevi basati sulle informazioni ottenute.
 
 ## Routing Distance Vector
-Il Routing Distance Vector è una definizione teorica di algoritmi ri souting che si basano sullo scambio di **Distance Vector**. Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono direttamente collegati i propri dati detti **Distance vector**, aggiornando così le tabelle dei vicini. Questo processo continua finché non si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema.
+Il Routing Distance Vector è una definizione teorica di algoritmi ri souting che si basano sullo scambio di **Distance Vector**. Basato sull'algoritmo Bellman-Ford, ogni nodo invia un vettore con le distanze agli altri nodi. Questo metodo è piuttosto datato e presenta diversi problemi, ma su piccoli sistemi questi non emergono, rendendolo interessante in casi specifici, ovvero con dati statici, privi di variazioni in corso d'opera, e in cui possiamo conoscere l'intera struttura, cosa oggi impossibile dato che la rete è dinamica e distribuita. In questo metodo, ogni nodo ha una lista con la distanza dagli altri nodi. Inizialmente, questa lista è composta solo dalla distanza da se stesso, ovvero 0. Successivamente, i nodi (router) condivideranno con i nodi a cui sono direttamente collegati i propri dati detti **Distance vector**, aggiornando così le tabelle dei vicini. Questo processo continua finché non si reperiscono informazioni da tutti i nodi, passando per i vicini e ottenendo i percorsi migliori nel sistema, arricando così a convergenza.
 
 **Problemi**:
   - **Cold start e convergenza lenta**: La convergenza si raggiunge dopo un numero di iterazioni pari al numero di nodi. Questo comporta una lenta convergenza su reti grandi, poiché gli aggiornamenti tra nodi non possono essere inviati continuamente, ma devono lasciare che anche i messaggi circolino, ritardando così la convergenza.
-  - **Conteggio all'infinito**: In alcuni casi, si potrebbe tentare di convergere all'infinito. Ad esempio, se ci sono tre router in fila e si rompe il collegamento tra due di essi, gli altri due potrebbero scambiarsi aggiornamenti di distanza dal terzo all'infinito. Questo li porta a convincersi reciprocamente che per raggiungere il terzo router debbano usare l'altro a cui sono collegati, finendo per passarsi all'infinito pacchetti e aggiornamenti di distanza, andando a bruciare capacità computazionale. Per ovviare, si sceglie una distanza tra nodi superata la quale si considera la distanza come infinita ed implementare un Triggered Update,ovvero un aggiornamento istantaneo del distance vector qualora ci fosse una variazione di distanza.
+  - **Conteggio all'infinito**: In alcuni casi, si potrebbe tentare di convergere all'infinito. Ad esempio, se ci sono tre router in fila e si rompe il collegamento tra due di essi, gli altri due potrebbero scambiarsi aggiornamenti di distanza dal terzo all'infinito. Questo li porta a convincersi reciprocamente che per raggiungere il terzo router debbano usare l'altro a cui sono collegati, finendo per passarsi all'infinito pacchetti e aggiornamenti di distanza, andando a bruciare capacità computazionale. Per ovviare, si sceglie una distanza tra nodi superata la quale si considera la distanza come infinita ed implementare un **Triggered Update**,ovvero un aggiornamento istantaneo del distance vector qualora ci fosse una variazione di distanza.
   
-  **Soluzioni**
-    - **Split Horizon**: Questa tecnica evita di informare un nodo su una destinazione raggiungibile solo tramite esso. In pratica, un router non pubblicizza una rotta a un nodo se quella rotta è stata appresa proprio da quel nodo. Questo riduce la possibilità di creare loop di routing. Si inviano distance vector differenziati in cui si omettono tutte le distanze da nodi che vedono il ricevente come gateway.
-    - **Triggered Update**: Invece di aspettare il prossimo aggiornamento periodico, un router invia immediatamente un aggiornamento quando rileva un cambiamento nella topologia della rete. Questo accelera la convergenza della rete, riducendo il tempo in cui le informazioni di routing sono incoerenti.
+**Soluzioni**:
+- **Split Horizon**: Questa tecnica evita di informare un nodo su una destinazione raggiungibile solo tramite esso. In pratica, un router non pubblicizza una rotta a un nodo se quella rotta è stata appresa proprio da quel nodo. Questo riduce la possibilità di creare loop di routing. Si inviano distance vector differenziati in cui si omettono tutte le distanze da nodi che vedono il ricevente come gateway.
+- **Triggered Update**: Invece di aspettare il prossimo aggiornamento periodico, un router invia immediatamente un aggiornamento quando rileva un cambiamento nella topologia della rete. Questo accelera la convergenza della rete, riducendo il tempo in cui le informazioni di routing sono incoerenti.
 
 Queste tecniche combinate migliorano la stabilità e l'affidabilità del protocollo RIP, riducendo la probabilità di loop di routing e accelerando la convergenza della rete. La presenza di clicli potrbbe comprometterne l'efficacia, dunque si è reso indispensabile trovare un' alternativa alla soluzione del routing distance vector.
 
 ## Routing Link State
-Un protocollo di routing di tipo link-state, nonostante entrambe siano definizioni ideali dei prtocolli e non implementative, funziona in modo diverso rispetto ai protocolli di routing a Distance Vector infatti in questa nuova soluzione, si separano nettamente il protocollo e l'algoritmo. Abbiamo una logica in cui, tramite uno specifico protocollo, i nodi scoprono altri nodi, 
+Il routing di tipo link-state funziona in modo diverso rispetto ai protocolli di routing a Distance Vector, nonostante entrambe siano definizioni ideali dei prtocolli e non implementative, infatti in questa nuova soluzione, si separano nettamente il protocollo e l'algoritmo. Abbiamo una logica in cui, tramite uno specifico protocollo, i nodi scoprono altri nodi, 
 estrapolano informazioni da questi ultimi e condividono tali informazioni con altri nodi. Questo processo permette a tutti i nodi di avere una visione completa della rete.Solo a questo punto si utilizzano algoritmi di routing come Dijkstra per scoprire i percorsi più rapidi. Questo approccio comporta un maggiore utilizzo di memoria e una maggiore complessità computazionale. Tuttavia, se ogni nodo conosce tutta la rete, sarà in grado di reagire opportunamente in caso di guasto.
 
-**Conoscenza della Topologia Completa**:Ogni router mantiene una mappa completa della topologia della rete, conosciuta come la Link-State Database (LSDB). Questa mappa include informazioni su tutti i router e i collegamenti nella rete.
+**Conoscenza della Topologia Completa**:Ogni router mantiene una mappa completa della topologia della rete, conosciuta come la **Link-State Database (LSDB)**. Questa mappa include informazioni su tutti i router e i collegamenti nella rete.
 
-**Annunci di Stato del Collegamento (LSA)**:I router inviano periodicamente annunci di stato del collegamento (Link-State Advertisements, LSA) ai loro vicini.Gli LSA contengono informazioni sui collegamenti diretti del router, come lo stato del collegamento e il costo associato.
+**Annunci di Stato del Collegamento (LSA)**:I router inviano periodicamente annunci di stato del collegamento (**Link-State Advertisements (LSA)**) ai loro vicini. Gli LSA contengono informazioni sui collegamenti diretti del router, come lo stato del collegamento e il costo associato.
 
 **Dijkstra**: Ogni router utilizza l'algoritmo di Dijkstra per calcolare il percorso più breve verso ogni destinazione nella rete. L'algoritmo di Dijkstra utilizza le informazioni contenute nella LSDB per costruire un albero dei percorsi più brevi, noto come Shortest Path Tree (SPT).
 
@@ -627,7 +482,7 @@ richiedono più risorse computazionali.
 **Overhead di comunicazione**: La necessità di scambiare informazioni di stato tra i nodi può generare 
 un significativo overhead di comunicazione.
 
-### Processo di Routing Link State
+### Processo di Routing Link State Dettagliato
 1. **Scoperta dei vicini**: Ogni nodo scopre i nodi vicini tramite messaggi di **Hello Packet**.
 2. **Misurazione della distanza dai vicini**: Calcolo della distanza dai vicini tramite un messaggio **Echo Packet**.
 3. **Scambio di informazioni**: I nodi scambiano informazioni di stato tramite pacchetti di **Link State Advertisement (LSA)** contenenti: la lista dei propri vicini ed il peso del loro collegamento. I pacchetti LSA sono trasmessi con il flooding (simile al broadcast con alcune attenzioni in più), facendo attenzione a non rimandarli da dove sono già provenuti, a scartare pacchetti già visti o temporalmente più vecchi di altri già ricevuti.
@@ -695,7 +550,7 @@ un significativo overhead di comunicazione.
   - **Border Gateway Protocol (BGP)**: Successore di EGP.
 
 ### Sistemi Autonomi (AS)
-Un AS è un insieme di router gestiti da un’unica amministrazione e usa un unico protocollo di routing. Con CIDR, un AS è identificato da un insieme di prefissi IP gestiti in modo unitario. In sintesi estrema potremmo dire che è l'insieme di un prefisso di network. GARR (rete italiana degli enti di ricerca), infatti l'Unibo da sola non è un AS ma passa attraverso il GARR come tante altre università finendo per risultare un unico AS.
+Un AS è un insieme di router gestiti da un’unica amministrazione e usa un unico protocollo di routing. Con CIDR, un AS è identificato da un insieme di prefissi IP gestiti in modo unitario. In sintesi estrema potremmo dire che è l'insieme di un prefisso di network un esempio ne è il GARR (rete italiana degli enti di ricerca), infatti l'Unibo da sola non è un AS ma passa attraverso il GARR come tante altre università finendo per risultare un unico AS.
 
 Un AS svolge compiti di import e di export rispettivamente:
   - **Import**: L'AS riceve e accetta le rotte pubblicizzate da altri AS ritenuti affidabili, aggiornando le proprie tabelle di routing per includere queste nuove rotte.
@@ -709,7 +564,7 @@ Organizzazione che fornisce servizi per l'utilizzo di Internet e che solitamente
   - **Tier 2**: Acquista connettività da Tier 1.
   - **Tier 3**: ISP locali che acquistano connettività da Tier 2 o altri ISP locali.
 
-**Peering e interconnessione**: Il peering tra ISP non implica pagamenti diretti; è una relazione neutrale. Gli ISP nelle loro zone di pertinenza hanno dei POP (Points of Presence) che sono punti di raccolta collegati tra loro da maglie. Tali POP si trovano in punti strategici come città e snodi commerciali. Se ci sono più ISP in una stessa internet region, i POP saranno in posizioni limitrofe per entrambi gli ISP. Tuttavia, non è quasi mai possibile farli comunicare direttamente, poiché gli ISP si propongono come AS e quindi sarà necessario far avvenire la comunicazione in un punto di "contatto" che talvolta potrebbe essere molto distante dal POP geograficamente più vicino. Tale collegamento unico deve essere molto robusto data la sua unicità. Esso è fornito da compagnie dette **Internet Exchange** che forniscono tale infrastruttura detta **Internet Exchange Point** (IXP).
+**Peering e interconnessione**: Il peering tra ISP non implica pagamenti diretti; è una relazione neutrale. Gli ISP nelle loro zone di pertinenza hanno dei **POP (Points of Presence)** che sono punti di raccolta collegati tra loro da maglie. Tali POP si trovano in punti strategici come città e snodi commerciali. Se ci sono più ISP in una stessa internet region, i POP saranno in posizioni limitrofe per entrambi gli ISP. Tuttavia, non è quasi mai possibile farli comunicare direttamente, poiché gli ISP si propongono come AS e quindi sarà necessario far avvenire la comunicazione in un punto di "contatto" che talvolta potrebbe essere molto distante dal POP geograficamente più vicino. Tale collegamento unico deve essere molto robusto data la sua unicità. Esso è fornito da compagnie dette **Internet Exchange** che forniscono tale infrastruttura detta **Internet Exchange Point** (IXP).
 
 ### Stub Area e Routing verso l’Esterno
 Le **stub area** sono progettate per ottimizzare le risorse di rete in configurazioni con un solo punto di uscita. Il routing verso l’esterno si basa su un **default route**, riducendo la dimensione delle **tabelle di routing** e il carico sui router di bordo, ideali per le aree con basse risorse di memoria.
@@ -756,12 +611,6 @@ RIP è un protocollo di routing di tipo **distance vector**, il che significa ch
 **Problematiche del Protocollo RIP**
   Il protocollo RIP presenta diverse problematiche che ne limitano l'efficacia e la sicurezza, 
   specialmente nelle reti di grandi dimensioni:
-  - **Split Horizon**: RIP utilizza la tecnica dello split horizon per prevenire loop di routing. 
-  Tuttavia, le risposte (RESPONSE) inviate dalle diverse interfacce possono variare, complicando la gestione delle tabelle 
-  di routing.
-  - **Triggered Update**: RIP supporta gli aggiornamenti immediati (triggered update) per ridurre il tempo di convergenza. 
-  In questi aggiornamenti, non è necessario includere tutte le voci della tabella di routing, ma solo quelle appena modificate.
-   Questo può portare a una maggiore efficienza, ma anche a una complessità aggiuntiva nella gestione degli aggiornamenti.
   - **Mancanza di Supporto per CIDR**: RIP non supporta il **Classless Inter-Domain Routing (CIDR)**, limitando la flessibilità 
   nella gestione degli indirizzi IP e portando a un uso inefficiente dello spazio di indirizzamento.
   - **Sicurezza**: RIP è considerato un protocollo insicuro. Chiunque trasmetta datagrammi dalla porta UDP 520 viene 
@@ -770,6 +619,13 @@ RIP è un protocollo di routing di tipo **distance vector**, il che significa ch
     - Un router non autorizzato trasmette messaggi indicando una distanza di 0 tra se stesso e tutti gli altri nodi della rete.
     - Dopo un certo periodo, tutti i percorsi ottimali convergono su questo router non autorizzato, causando potenziali 
     disservizi e problemi di sicurezza.
+  
+  Soluzioni eveidenziate anche nel routing distance vector:
+  - **Split Horizon**: RIP utilizza la tecnica dello split horizon per prevenire loop di routing. 
+  Tuttavia, le risposte (RESPONSE) inviate dalle diverse interfacce possono variare, complicando la gestione delle tabelle 
+  di routing.
+  - **Triggered Update**: RIP supporta gli aggiornamenti immediati (triggered update) per ridurre il tempo di convergenza. 
+  In questi aggiornamenti, non è necessario includere tutte le voci della tabella di routing, ma solo quelle appena modificate.Questo può portare a una maggiore efficienza, ma anche a una complessità aggiuntiva nella gestione degli aggiornamenti.
 
 ## Protocollo RIP versione 2
 RIP versione 2 introduce miglioramenti significativi rispetto alla versione 1, affrontando alcune delle sue limitazioni principali. Le modifiche includono:
@@ -850,13 +706,7 @@ Il pacchetto OSPF è composto da diverse sezioni chiave, ciascuna con un ruolo s
 OSPF utilizza tre **sottoprotocolli** principali:
 - **Hello**: scopre i router vicini e far sapere della propria presenza agli altri, avvia l’elezione del DR e del BDR e costantemente verifica la presenza dei vicini
 - **Exchange**: sincronizza i database di **link-state** tra router adiacenti ed avviene solo all'inizio
-- **Update**: diffonde le informazioni di routing in tutta la rete via flooding, così facendo si vaa costruire debtro ad ogni router la mappa intera della rete.
-
-I **pacchetti principali** di OSPF includono:
-- **Hello** (Tipo 1), per rilevare i vicini
-- **Database Description** (Tipo 2), per descrivere il database
-- **Link State Request** (Tipo 3) e **Link State Update** (Tipo 4) per l’aggiornamento delle informazioni di routing
-- **Link State Acknowledge** (Tipo 5), per confermare la ricezione 
+- **Update**: diffonde le informazioni di routing in tutta la rete via flooding, così facendo si vaa costruire debtro ad ogni router la mappa intera della rete. 
 
 ## Protocolli EGP (Exterior Gateway Protocols)
 I protocolli di tipo EGP si distinguono dai protocolli di tipo IGP per le loro finalità e logiche operative:
@@ -879,10 +729,6 @@ BGP scambia informazioni di raggiungibilità per reti IP secondo lo schema **cla
 
 ### BGP e Path Vector
 BGP utilizza un protocollo di tipo **Path Vector**, un’evoluzione del distance vector, che offre l'**elenco degli AS nel percorso** contenente l'elenco esaustivo degli AS da attraversare per raggiungere uno specifico AS, risolvendo i cicli e permettendo politiche di routing più efficaci. La necessità di conoscere nel dettaglio tutte le path ha portato a un problema di grandezza delle tabelle. La frammentazione degli indirizzi ha reso necessario conservare in memoria "fette" di indirizzi sempre più frammentate, portando a tabelle con righe nell'ordine di quasi 10^6. Questo comporta una lettura di tali tabelle per l'instradamento di ogni singolo pacchetto. Inoltre, il fenomeno della crescita esponenziale della banda dei collegamenti aggrava la situazione. La combinazione di aumento esponenziale della grandezza delle tabelle e del numero di pacchetti trasportati per secondo rischia di mettere in crisi l'infrastruttura di collegamento.
-  
-**Politiche di routing**:
-  - **Export policies**: permette il transito solo verso destinazioni consentite.
-  - **Import policies**: esclude percorsi che coinvolgono AS non conformi alle politiche di routing o non considera le informazioni da esso ricevute.
 
 - **Struttura dei Path Vector**:
   - **Origin**: indica l’origine del percorso (IGP, EGP o incomplete).
@@ -909,17 +755,6 @@ A seconda del tipo di messaggio, l'header è seguito da campi specifici:
 - **Notification**: Fornisce dettagli sugli errori riscontrati e chiude la connessione.
 - **Keepalive**: Messaggio semplice utilizzato per mantenere attiva la connessione senza trasmettere nuove informazioni di routing.
 
-### BGP: Tipi di Messaggi
-I messaggi di BGP posso essere di tipo:
-
-**Open**: inizia una connessione BGP e include identificazione dell’AS, timeout e autenticazione.
-
-**Update**: trasmette il path vector e relativi attributi.
-
-**Notification**: notifica errori e chiusura della connessione.
-
-**Keepalive**: conferma la connessione attiva senza nuove informazioni di routing.
-
 ## Ifrastruttura regionale italiana
 In Italia, l'infrastruttura degli AS è distribuita tra reti private, reti pubbliche e diversi punti di interscambio fondamentali per il traffico Internet nazionale e internazionale. Gli AS italiani sono numerosi e variano per dimensione e scopo: dai provider di servizi Internet (ISP) alle reti aziendali, fino alle reti gestite dalle pubbliche amministrazioni. Due strutture cardine che facilitano l'interconnessione e migliorano l'efficienza del traffico Internet in Italia sono il **Milan Internet Exchange (MIX)** e la rete **LEPIDA**.
 
@@ -938,9 +773,6 @@ La virtualizzazione di rete permette la creazione di **versioni virtuali di infr
 La virtualizzazione di rete risponde alla crescente complessità dei requisiti di servizio dell’utenza, consentendo di realizzare topologie o funzionalità su infrastrutture esistenti, altrimenti difficili da modificare. Questo approccio spesso si basa su **reti overlay**, ovvero reti logiche sovrapposte all'infrastruttura fisica per creare funzionalità aggiuntive, le network IP nel loro piccolo ne sono un esempio. Tra le tecnologie che consentono questo tipo di virtualizzazione troviamo **VLAN (IEEE 802.1Q)**, **GRE (RFC 1701)**, **VXLAN (RFC 7348)** e **VPN**, che rappresentano alcune delle soluzioni per segmentare, incapsulare e isolare il traffico di rete virtuale.
 
 ### Reti Overlay: VLAN, GRE e VXLAN
-**VLAN (Virtual Local Area Network)**: Le VLAN creano domini di broadcast separati all'interno della stessa rete fisica, migliorando sicurezza e prestazioni. VLAN statiche e dinamiche permettono una gestione ottimizzata delle risorse, mentre l'uso del protocollo IEEE 802.1Q facilita l'instradamento su più switch.
-
-![](img\Reti\vlan.PNG)
 
 **GRE (Generic Routing Encapsulation)**: GRE permette l'incapsulamento di pacchetti su protocollo IP, creando un overlay di routing che separa logica e rete fisica, se analizzassimo dunque il pacchetto non vedremmo l'originale indirizzo IP ma quello che gli abbiamo attribito. Il GRE ha un header specifico che gli permette di specificare il protocollo contenuto ed altri parametri opzionali. Grazie al GRE potrò creare dei tunnel fittizi che vanno a modellare la topologia della rete, così facendo posso astrarre una rete fittizia che non varia al variare, dovuto per esempio ad una rottura, della rete fisica.
 
@@ -958,8 +790,10 @@ Nonostante i vantaggi, l'uso di VXLAN può introdurre alcuni problemi di prestaz
 
 ![](img\Reti\xvlan.PNG)
 
-## Virtual LAN
-Una VLAN permette di creare più LAN separate su un unico switch. Ogni VLAN è un dominio di broadcast separato. Se una VLAN corrisponde a una rete IP, i broadcast di una rete non raggiungono gli host di un’altra. Senza VLAN, i broadcast inviati da un host possono raggiungere tutti gli altri host sulla stessa rete fisica, causando congestione e riducendo le prestazioni. Con le VLAN, i broadcast sono limitati al **broadcast domain** (dominio broadcast) della VLAN specifica, migliorando l'efficienza della rete e riducendo il traffico non necessario. Questo impatta anche sulla sicurezza, dato che un soggetto di un dominio broadcast non potrà conoscere attraverso un broadcast soggetti esterni al suo dominio.
+## VLAN (Virtual Local Area Network
+Le VLAN creano domini di broadcast separati all'interno della stessa rete fisica. VLAN statiche e dinamiche permettono una gestione ottimizzata delle risorse, mentre l'uso del protocollo IEEE 802.1Q facilita l'instradamento su più switch. Se una VLAN corrisponde a una rete IP, i broadcast di una rete non raggiungono gli host di un’altra. Senza VLAN, i broadcast inviati da un host possono raggiungere tutti gli altri host sulla stessa rete fisica, causando congestione e riducendo le prestazioni. Con le VLAN, i broadcast sono limitati al **broadcast domain** (dominio broadcast) della VLAN specifica, migliorando l'efficienza della rete e riducendo il traffico non necessario. Questo impatta anche sulla sicurezza, dato che un soggetto di un dominio broadcast non potrà conoscere attraverso un broadcast soggetti esterni al suo dominio.
+
+![](img\Reti\vlan.PNG)
 
 ### Classificazione delle VLAN
 **VLAN statiche (Port-Based)**:
@@ -1249,9 +1083,9 @@ Nella **topologia bus**, il tempo di attraversamento di una trama sulla LAN non 
 Una trama impegna la **LAN** per un tempo $ T_0 $, limitando l’uso totale del canale. Il canale può essere utilizzato al massimo per $ T $ secondi ogni $ T_0 $.  
 
 **Formula dell’efficienza del MAC**:  
-  $$
+$$
   \eta = \frac{T}{T_0} = \frac{L/C}{L/C + d/v} = \frac{1}{1 + a}
-  $$
+$$
   - Dove $ a = C \cdot d / v \cdot L $ 
   - $ a $ rappresenta la **lunghezza della LAN** in termini di PDU. 
    
@@ -1275,6 +1109,26 @@ Il parametro **a** influenza direttamente le prestazioni della LAN.
 **Lunghezza del canale**: maggiore è la lunghezza in termini di trame, minore è il traffico massimo smaltibile (massimo throughput).
 
 I protocolli ad **accesso multiplo** sono efficienti se le distanze e le velocità di trasmissione sono limitate.
+
+### Interconnessione di LAN
+**Apparati di interconnessione:**
+  - **Repeater:**
+    - Livello 1 OSI, rigenera segnali.
+    - Estende la topologia LAN (entro i limiti di standard, es. 2500m in Ethernet).
+  - **Bridge:**
+    - Livello 2 OSI, separa domini di collisione.
+    - Learning bridge: impara gli indirizzi sorgenti per filtrare le trame.
+
+  ![](img\Reti\bridge.PNG)
+
+  **Switch:**
+    - Bridge multiporta, commutazione su indirizzi MAC.
+    - Permette comunicazioni simultanee migliorando prestazioni rispetto agli hub.
+    - Capacità aggregata superiore (es. switch Fast Ethernet: 200 Mbps vs 100 Mbps degli hub).
+
+**Differenze Hub vs Switch:**
+  - **Hub:** bus condiviso, trasmissione broadcast.
+  - **Switch:** selettività nella ritrasmissione, maggiore capacità aggregata.
 
 ## Protocollo a contesa: ALOHA
 Sviluppato nel 1970 per connettere università delle Hawaii utilizzando stazioni terrestri e un satellite geostazionario.
@@ -1352,13 +1206,6 @@ Traffico smaltito ($ A_s $):
 - Aumenta progressivamente $ T_b $ in caso di collisioni, raddoppiando l’intervallo dopo ogni tentativo fallito.
 - Garantisce stabilità ma può introdurre problemi di equità.
 
-### Derivati del protocollo ALOHA
-**Applicazioni**: Utilizzabile su qualsiasi mezzo trasmissivo e topologia ed è adatto per reti con alti ritardi di propagazione (es. satelliti).
-
-**CSMA** (Carrier Sensing Multiple Access):
-- Sfrutta la rilevazione di segnale sul canale prima della trasmissione.
-- Prevede algoritmi di back-off in caso di collisione.
-
 ## CSMA (Carrier Sensing Multiple Access)
 ### Principi di funzionamento: 
 **Carrier sensing**:  
@@ -1386,16 +1233,11 @@ Consideriamo due stazioni, **A** e **Z**, le più distanti sul bus, **$\tau$** r
 Utilizza uno slot temporale pari a $\tau$, lL’intervallo di vulnerabilità si riduce da $2\tau$ a $\tau$ e nonostante ciò, permangono problemi di stabilità, tipici dei protocolli a contesa. Può essere adottato un algoritmo di back-off esponenziale per migliorare la gestione delle collisioni. 
 
 ![](img\Reti\cmsa.PNG)
-![](img\Reti\csma-cd.PNG)
 
 ### CSMA/CD (Carrier Sensing Multiple Access with Collision Detection)  
 Migliora il protocollo permettendo il rilevamento immediato delle collisioni e rappresenta lo standard de facto per le reti LAN grazie alla semplicità e robustezza del protocollo.
 
-**Collision Detection (CD):** Una stazione monitora il canale durante la trasmissione per rilevare variazioni di potenza (indicative di collisioni), il tutto è facilitato dall’uso della **codifica di Manchester**, che garantisce transizioni regolari del segnale.  
-
-**In caso di collisione:** La stazione interrompe subito la trasmissione per evitare sprechi di banda ed invia una sequenza di bits chiamata **jamming signal** per avvisare le altre stazioni della collisione.  
-
-**Vantaggi rispetto al CSMA:** In caso di collisione, il canale è inutilizzato solo per l’intervallo di vulnerabilità ($\tau$) e per il tempo di rilevamento della collisione e della sequenza di jamming ($T_{CD}$) mentre nel CSMA puro il canale restava inutilizzato per un tempo pari all’intera durata della trama ($T$). 
+**Collision Detection (CD):** Una stazione monitora il canale durante la trasmissione per rilevare variazioni di potenza (indicative di collisioni), il tutto è facilitato dall’uso della **Codifica di Manchester**, che garantisce transizioni regolari del segnale. In caso di collisione la stazione interrompe subito la trasmissione per evitare sprechi di banda ed invia una sequenza di bits chiamata **jamming signal** per avvisare le altre stazioni della collisione. In caso di collisione, il canale è inutilizzato solo per l’intervallo di vulnerabilità ($\tau$) e per il tempo di rilevamento della collisione e della sequenza di jamming ($T_{CD}$) mentre nel CSMA puro il canale restava inutilizzato per un tempo pari all’intera durata della trama ($T$). 
 
 ### Codifica di Manchester:
 **Caratteristiche del segnale:**  
@@ -1408,7 +1250,9 @@ Migliora il protocollo permettendo il rilevamento immediato delle collisioni e r
     - **Carrier sensing** e **collision detection**.  
   - Simboli aggiuntivi (alto-alto e basso-basso) rappresentano segnali di non-dati. 
 
-**Svantaggi:** La necessità di un clock al doppio della velocità di trasmissione: per 10 Mbit/s serve un clock a 20 MHz.   
+**Svantaggi:** La necessità di un clock al doppio della velocità di trasmissione: per 10 Mbit/s serve un clock a 20 MHz. 
+
+![](img\Reti\csma-cd.PNG)
 
 ## Token Ring e IEEE 802.5 
 ### Token Ring:
@@ -1549,39 +1393,38 @@ $$
 
 **Fast Ethernet (IEEE 802.3u - 100 Mbps)**
 Introduce una maggiore velocità mantenendo la compatibilità con le reti Ethernet classiche. Offre diverse varianti:
-    - **100baseT4:** 
-      - Utilizza 4 coppie di cavi UTP di categoria 3, con una lunghezza massima di 100 metri.
-      - La trasmissione sfrutta una codifica **8B/6T**, che converte 8 bit in 6 simboli ternari.
+  - **100baseT4:** 
+    - Utilizza 4 coppie di cavi UTP di categoria 3, con una lunghezza massima di 100 metri.
+    - La trasmissione sfrutta una codifica **8B/6T**, che converte 8 bit in 6 simboli ternari.
 
-    - **100baseTX:**
-      - Richiede cavi UTP di categoria 5 o superiore.
-      - Utilizza 2 coppie per trasmissione dati (una per direzione) e offre comunicazioni full-duplex fino a 100 metri.
+  - **100baseTX:**
+    - Richiede cavi UTP di categoria 5 o superiore.
+    - Utilizza 2 coppie per trasmissione dati (una per direzione) e offre comunicazioni full-duplex fino a 100 metri.
 
-    - **100baseFX:**
-      - Si basa sulla fibra ottica multimodo, con una portata massima di 2000 metri.
-      - È ideale per connessioni tra edifici o cablaggi backbone.
+  - **100baseFX:**
+    - Si basa sulla fibra ottica multimodo, con una portata massima di 2000 metri.
+    - È ideale per connessioni tra edifici o cablaggi backbone.
 
 **Gigabit Ethernet (IEEE 802.3z - 1 Gbps)**
 Progettata per incrementare la velocità a 1 Gbps mantenendo la semplicità di Ethernet.
-    - **1000baseSX:** Utilizza fibra ottica multimodo per distanze fino a 550 metri.
-    - **1000baseLX:** Compatibile sia con fibra multimodo che monomodo, estende le connessioni fino a 5000 metri con quest'ultima.
-    - **1000baseCX:** Sfrutta 2 coppie di cavi intrecciati schermati (STP) ma è più costosa e meno performante rispetto alla fibra ottica.
-    - **1000baseT:** Impiega 4 coppie di cavi UTP di categoria 5, con una lunghezza massima di 100 metri ed utilizza una codifica innovativa che associa 2 bit a un simbolo con 5 livelli, garantendo una velocità netta di 1 Gbps.
+  - **1000baseSX:** Utilizza fibra ottica multimodo per distanze fino a 550 metri.
+  - **1000baseLX:** Compatibile sia con fibra multimodo che monomodo, estende le connessioni fino a 5000 metri con quest'ultima.
+  - **1000baseCX:** Sfrutta 2 coppie di cavi intrecciati schermati (STP) ma è più costosa e meno performante rispetto alla fibra ottica.
+  - **1000baseT:** Impiega 4 coppie di cavi UTP di categoria 5, con una lunghezza massima di 100 metri ed utilizza una codifica innovativa che associa 2 bit a un simbolo con 5 livelli, garantendo una velocità netta di 1 Gbps.
 
 **10 Gigabit Ethernet (IEEE 802.3ae)**
 È progettata esclusivamente per la fibra ottica, con velocità dieci volte superiori rispetto al Gigabit Ethernet.
-    - **Caratteristiche principali:** Supporta connessioni su fibra ottica con distanze che variano da pochi chilometri fino a diverse decine di chilometri, a seconda del tipo di fibra e della modalità di trasmissione. È prevalentemente utilizzata per backbone in reti aziendali o per Metropolitan Area Networks (MAN). L'elevato costo e l'hardware specifico rendono difficile l'adozione su larga scala per dispositivi comuni, riservandola principalmente a infrastrutture critiche.
+  - **Caratteristiche principali:** Supporta connessioni su fibra ottica con distanze che variano da pochi chilometri fino a diverse decine di chilometri, a seconda del tipo di fibra e della modalità di trasmissione. È prevalentemente utilizzata per backbone in reti aziendali o per Metropolitan Area Networks (MAN). L'elevato costo e l'hardware specifico rendono difficile l'adozione su larga scala per dispositivi comuni, riservandola principalmente a infrastrutture critiche.
 
 **Carrier Ethernet**
 Estende Ethernet oltre il contesto delle LAN per essere utilizzata come tecnologia di trasporto nei provider di rete.
-    - **Nuove Funzionalità:** Indirizzamento multilivello gerarchico per migliorare la scalabilità ed introduzione di meccanismi di segnalazione, gestione e recupero dei guasti.
-    - **Applicazioni:** È ideale per reti backbone, trasporto su lunghe distanze e reti aziendali distribuite.
-    - **Alternative:** Lo standard IEEE 802.17 (RPR, Resilient Packet Ring) è stato proposto come opzione alternativa per backbone MAN.
+  - **Nuove Funzionalità:** Indirizzamento multilivello gerarchico per migliorare la scalabilità ed introduzione di meccanismi di segnalazione, gestione e recupero dei guasti.
+  - **Applicazioni:** È ideale per reti backbone, trasporto su lunghe distanze e reti aziendali distribuite.
+  - **Alternative:** Lo standard IEEE 802.17 (RPR, Resilient Packet Ring) è stato proposto come opzione alternativa per backbone MAN.
 
 **Multigigabit Ethernet**
 Ethernet continua a evolversi con velocità superiori a 10 Gbps, supportando infrastrutture avanzate:
     - **Stato attuale:** Studi e implementazioni su velocità fino a 400 Gbps ed è già ampiamente utilizzata in data center e reti backbone.
-
 
 ### Cablaggio delle LAN Moderne
 **Caratteristiche Generali:**
@@ -1620,8 +1463,8 @@ Ethernet continua a evolversi con velocità superiori a 10 Gbps, supportando inf
 
 ### Architettura di rete 802.11
 **Nomenclatura:**
-- **Basic Service Set (BSS):** Un insieme di stazioni wireless che comunicano tra loro tramite un Access Point (AP).
 - **Access Point (AP):** Dispositivo che funge da ponte tra le stazioni wireless e la rete cablata, gestendo il traffico di rete.
+- **Basic Service Set (BSS):** Un insieme di stazioni wireless che comunicano tra loro tramite un Access Point (AP).
 - **Distribution System:** Sistema di distribuzione che collega più BSS, permettendo la comunicazione tra stazioni in diverse BSS.
 - **Wireless Station:** Dispositivo finale che si connette alla rete wireless, come laptop, smartphone o tablet.
 
@@ -1683,52 +1526,13 @@ Dato che la possibilità di collisione si limita ai pacchetti di richiesta e non
 
 ### Indirizzamento
 **IBSS (Ad-Hoc):**  
-  - SA = Mittente e trasmettitore  
-  - DA = Destinatario e ricevitore  
-  - Address 1 = DA, Address 2 = SA  
-  - BSSID = Casuale, generato da una stazione dell'IBSS  
-
 ![](img\Reti\ibss.PNG)
 
 **BSS/ESS (Uplink verso LAN):**  
-  - SA = Mittente e trasmettitore  
-  - DA = Destinatario  
-  - Address 1 = BSSID (Indirizzo MAC dell'AP)  
-  - To DS = 1, From DS = 0  
-
 ![](img\Reti\bss_ess.PNG)
 
 **BSS/ESS (Downlink da LAN):**  
-  - SA = Mittente  
-  - DA = Destinatario e ricevitore  
-  - Address 1 = DA, Address 2 = BSSID (AP)  
-  - To DS = 0, From DS = 1  
-
 ![](img\Reti\bss_ess2.PNG)
 
 **ESS con Wireless Distribution System:**  
-  - SA = Mittente, DA = Destinatario  
-  - Address 1 = RA (Ricevitore), Address 2 = TA (Trasmettitore)  
-  - To DS = 1, From DS = 1
-
 ![](img\Reti\ess2.PNG)
-
-## Interconnessione di LAN
-**Apparati di interconnessione:**
-  - **Repeater:**
-    - Livello 1 OSI, rigenera segnali.
-    - Estende la topologia LAN (entro i limiti di standard, es. 2500m in Ethernet).
-  - **Bridge:**
-    - Livello 2 OSI, separa domini di collisione.
-    - Learning bridge: impara gli indirizzi sorgenti per filtrare le trame.
-
-  ![](img\Reti\bridge.PNG)
-
-  **Switch:**
-    - Bridge multiporta, commutazione su indirizzi MAC.
-    - Permette comunicazioni simultanee migliorando prestazioni rispetto agli hub.
-    - Capacità aggregata superiore (es. switch Fast Ethernet: 200 Mbps vs 100 Mbps degli hub).
-
-**Differenze Hub vs Switch:**
-  - **Hub:** bus condiviso, trasmissione broadcast.
-  - **Switch:** selettività nella ritrasmissione, maggiore capacità aggregata.
