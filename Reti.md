@@ -15,7 +15,6 @@
     - [Struttura degli indirizzi IP](#struttura-degli-indirizzi-ip)
     - [Formato del pacchetto IP](#formato-del-pacchetto-ip)
     - [Frammentazione dei datagrammi](#frammentazione-dei-datagrammi)
-    - [Problematiche dell’IP](#problematiche-dellip)
     - [IPv6](#ipv6)
   - [Istradamento IP](#istradamento-ip)
     - [Componenti della Rete](#componenti-della-rete)
@@ -77,7 +76,7 @@
     - [La Rete LEPIDA](#la-rete-lepida)
   - [Virtualizzazione di Rete](#virtualizzazione-di-rete)
     - [Reti Overlay: VLAN, GRE e VXLAN](#reti-overlay-vlan-gre-e-vxlan)
-  - [VLAN (Virtual Local Area Network](#vlan-virtual-local-area-network)
+  - [VLAN (Virtual Local Area Network)](#vlan-virtual-local-area-network)
     - [Classificazione delle VLAN](#classificazione-delle-vlan)
     - [LAN Estesa e Gestione delle VLAN tra Switch](#lan-estesa-e-gestione-delle-vlan-tra-switch)
     - [Reti Private Virtuali (VPN) e la Sicurezza del Tunneling](#reti-private-virtuali-vpn-e-la-sicurezza-del-tunneling)
@@ -147,6 +146,7 @@
     - [Architettura di rete 802.11](#architettura-di-rete-80211)
     - [Problemi di accesso multiplo nelle WLAN](#problemi-di-accesso-multiplo-nelle-wlan)
   - [Protocollo MAC 802.11](#protocollo-mac-80211)
+    - [CSMA/CA (Carrier Sensing Multiple Access Collision Avoid)](#csmaca-carrier-sensing-multiple-access-collision-avoid)
     - [Protocollo MAC 802.11 – DCF (Distributed Coordination Function)](#protocollo-mac-80211--dcf-distributed-coordination-function)
     - [Protocollo MAC 802.11 – PCF (Point Coordination Function)](#protocollo-mac-80211--pcf-point-coordination-function)
     - [Indirizzamento](#indirizzamento)
@@ -232,7 +232,6 @@ Imposta un limite al numero di hop che un pacchetto può attraversare,il valore 
 **Riassemblaggio dei datagrammi**:
 I frammenti possono arrivare fuori sequenza o con tempi diversi. Il riassemblaggio avviene solo al terminale di destinazione. Utilizza i campi **Identification**, **Flags** e **Fragment** Offset per ricostruire correttamente il datagramma originale
 
-### Problematiche dell’IP
 **Mobilità**
 - **Indirizzi riferiti alla rete di appartenenza**: Gli indirizzi IP sono legati alla rete a cui appartengono. Se un host viene spostato in un’altra rete, il suo indirizzo IP deve cambiare.
 - **Configurazione automatica con DHCP**: Il Dynamic Host Configuration Protocol (DHCP) permette la configurazione automatica degli indirizzi IP, facilitando la gestione degli indirizzi in reti dinamiche.
@@ -247,19 +246,7 @@ I frammenti possono arrivare fuori sequenza o con tempi diversi. Il riassemblagg
 **Esaurimento degli indirizzi IPv4**: A causa dell'enorme diffusione di Internet, il numero di indirizzi IPv4 disponibili è insufficiente. Le reti IP private e il Network Address Translation (NAT) sono soluzioni temporanee per mitigare questo problema.
 
 ### IPv6
-**Supportare molti miliardi di host**: IPv6 è stato progettato per supportare un numero molto maggiore di indirizzi rispetto a IPv4.
-
-**Semplificare il routing**: IPv6 mira a rendere il routing più efficiente e scalabile.
-
-**Offrire meccanismi di sicurezza**: IPv6 include nativamente il supporto per IPSec, migliorando la sicurezza delle comunicazioni.
-
-**Offrire qualità di servizio (QoS)**: IPv6 fornisce meccanismi per garantire la qualità del servizio, essenziale per applicazioni multimediali.
-
-**Gestire multicast e broadcast**: IPv6 migliora la gestione del multicast e del broadcast rispetto a IPv4.
-
-**Consentire la mobilità**: IPv6 supporta la mobilità degli host, permettendo agli utenti di spostarsi tra diverse reti senza cambiare indirizzo IP.
-
-**Evoluzione futura e compatibilità**: IPv6 è progettato per consentire future evoluzioni e garantire la compatibilità con le versioni precedenti.
+IPv6 è stato progettato per supportare un numero molto maggiore di indirizzi rispetto a IPv4, semplificare il routing rendendolo più efficiente e scalabile, e migliorare la sicurezza delle comunicazioni includendo nativamente il supporto per IPSec. Inoltre, IPv6 fornisce meccanismi per garantire la qualità del servizio (QoS), essenziale per applicazioni multimediali, e migliora la gestione del multicast e del broadcast rispetto a IPv4. IPv6 supporta anche la mobilità degli host, permettendo agli utenti di spostarsi tra diverse reti senza cambiare indirizzo IP. Infine, IPv6 è progettato per consentire future evoluzioni e garantire la compatibilità con le versioni precedenti.
 
 ## Istradamento IP
 **Instradamento a pacchetto**: Internet utilizza la commutazione a pacchetto per trasmettere dati. Esistono più percorsi per raggiungere una destinazione. Il **routing** (instradamento) avviene pacchetto per pacchetto, e i router decidono quale percorso seguire.
@@ -932,7 +919,7 @@ Nonostante i vantaggi, l'uso di VXLAN può introdurre alcuni problemi di prestaz
 
 ![](img\Reti\xvlan.PNG)
 
-## VLAN (Virtual Local Area Network
+## VLAN (Virtual Local Area Network)
 Le VLAN creano domini di broadcast separati all'interno della stessa rete fisica. VLAN statiche e dinamiche permettono una gestione ottimizzata delle risorse, mentre l'uso del protocollo IEEE 802.1Q facilita l'instradamento su più switch. Se una VLAN corrisponde a una rete IP, i broadcast di una rete non raggiungono gli host di un’altra. Senza VLAN, i broadcast inviati da un host possono raggiungere tutti gli altri host sulla stessa rete fisica, causando congestione e riducendo le prestazioni. Con le VLAN, i broadcast sono limitati al **broadcast domain** (dominio broadcast) della VLAN specifica, migliorando l'efficienza della rete e riducendo il traffico non necessario. Questo impatta anche sulla sicurezza, dato che un soggetto di un dominio broadcast non potrà conoscere attraverso un broadcast soggetti esterni al suo dominio.
 
 ![](img\Reti\vlan.PNG)
@@ -1112,31 +1099,31 @@ I protocolli devono soddisfare due esigenze fondamentali:
 ### Gestione delle richieste in un sistema  
 Un sistema di comunicazione deve gestire diverse tipologie di **richieste**:  
 
-**Richieste offerte** ($ a(t) $): rappresentano il flusso di dati inviati al sistema.  
+**Richieste offerte** ($a(t)$): rappresentano il flusso di dati inviati al sistema.  
 
-**Richieste accettate** ($ s(t) $): sono quelle che il sistema può effettivamente processare.  
+**Richieste accettate** ($s(t)$): sono quelle che il sistema può effettivamente processare.  
 
-**Richieste perdute** ($ r(t) $): sono richieste rifiutate o non accettate, calcolate come $ r(t) = a(t) - s(t) $. 
+**Richieste perdute** ($r(t)$): sono richieste rifiutate o non accettate, calcolate come $r(t) = a(t) - s(t)$. 
 
 Il **tempo di servizio** ($\Theta$) è un parametro cruciale che rappresenta il tempo necessario a completare una **PDU (Protocol Data Unit)**, esso potrà essere deterministico (dimensione dei pacchetti fissa) o aleatorio (dimesione dei pacchetti variabile). 
 
-La **frequenza media di servizio** ($ \mu = \frac{1}{\Theta}  $) indica quanto velocemente il sistema smaltisce le richieste in condizioni operative, dunque potrà essere considerato come la capacità massima di servizio offribile.
+La **frequenza media di servizio** ($\mu = \frac{1}{\Theta} $) indica quanto velocemente il sistema smaltisce le richieste in condizioni operative, dunque potrà essere considerato come la capacità massima di servizio offribile.
 
 ### Sistema a coda
 Nelle **reti a pacchetto**, un modello frequente è quello di un sistema a **coda** con un singolo servitore. In questo contesto:  
 - L’utente trascorre un **tempo totale nel sistema**, che comprende:  
   - **Attesa in coda** ($T_A$): il tempo prima di essere servito.  
-  - **Tempo di servizio** ($ \bar{\Theta} $): il tempo effettivo per completare l’operazione.  
-  - Relazione complessiva: $ \bar{\Theta}_{totale} = \bar{\Theta} + T_A $.  
+  - **Tempo di servizio** ($\bar{\Theta}$): il tempo effettivo per completare l’operazione.  
+  - Relazione complessiva: $\bar{\Theta}_{totale} = \bar{\Theta} + T_A$.  
 - Le prestazioni del sistema dipendono da:  
-  - **Frequenza media degli arrivi** ($ \lambda $), cioè il ritmo con cui le richieste entrano nel sistema.  
-  - **Tempo medio di servizio** ($ \bar{\Theta} $), ovvero la durata media per completare ogni richiesta.  
-  - Il prodotto $ A = \lambda \cdot \bar{\Theta} $ determina il traffico medio, secondo il **teorema di Little**, il traffico è determinato dal rapporto tra la capacità di trasporto e la quantità di dati trasportati ed essendo una quantità a dimensionale  ne è preferibile l'utilizzo (si usa come unità di misura lo Erlang). 
+  - **Frequenza media degli arrivi** ($\lambda$), cioè il ritmo con cui le richieste entrano nel sistema.  
+  - **Tempo medio di servizio** ($\bar{\Theta}$), ovvero la durata media per completare ogni richiesta.  
+  - Il prodotto $A = \lambda \cdot \bar{\Theta}$ determina il traffico medio, secondo il **teorema di Little**, il traffico è determinato dal rapporto tra la capacità di trasporto e la quantità di dati trasportati ed essendo una quantità a dimensionale  ne è preferibile l'utilizzo (si usa come unità di misura lo Erlang). 
 
 ### Efficienza del protocollo
 L’efficienza di un protocollo dipende dalla capacità di ottimizzare il rapporto tra risorse utilizzate e dati utili trasmessi:  
 
-**Capacità teorica**: è determinata dalla velocità del **canale** ($ C $) e dalla lunghezza del **pacchetto** ($ L $), calcolata come $ \bar{\Theta}_{min} = \frac{L}{C} $.  
+**Capacità teorica**: è determinata dalla velocità del **canale** ($C$) e dalla lunghezza del **pacchetto** ($L$), calcolata come $\bar{\Theta}_{min} = \frac{L}{C}$.  
 
 **Riduzione di efficienza**: si verifica in presenza di fattori come:  
   - **PCI**  (Protocol Control Information).  
@@ -1170,7 +1157,7 @@ Le **LAN (Local Area Network)** rappresentano un'infrastruttura di telecomunicaz
 **Indipendenza**: I dispositivi nelle LAN non seguono un'architettura master-slave, operando invece come entità autonome.  
 
 ### Traffico offerto e capacità del sistema
- Quando il numero di utenti che utilizzano il servizio supera la capacità massima del servitore, il sistema accumula lavoro in coda.     Le curve temporali di utenti attivi e lavoro del servitore differiscono, ma la loro **media** coincide. Questa media è chiamata **traffico offerto** ($ A_0 $) e rappresenta un valore centrale per il dimensionamento delle reti. Anche quando gli utenti diventano zero, il servitore continua a lavorare per smaltire le richieste accumulate, compensa il sovraccarico continuando a elaborare i dati accumulati fino al completo smaltimento.  
+ Quando il numero di utenti che utilizzano il servizio supera la capacità massima del servitore, il sistema accumula lavoro in coda.     Le curve temporali di utenti attivi e lavoro del servitore differiscono, ma la loro **media** coincide. Questa media è chiamata **traffico offerto** ($A_0$) e rappresenta un valore centrale per il dimensionamento delle reti. Anche quando gli utenti diventano zero, il servitore continua a lavorare per smaltire le richieste accumulate, compensa il sovraccarico continuando a elaborare i dati accumulati fino al completo smaltimento.  
 
 ### Scelte progettuali delle LAN
 
@@ -1205,10 +1192,10 @@ L'accesso dinamico alloca le risorse in tempo reale, adattandosi alle esigenze d
 ### Prestazioni e parametri chiave delle LAN
 La scelta dell’algoritmo di controllo e accesso è determinata da un compromesso tra **complessità** e **prestazioni**.  
 
-  1. $ L $: lunghezza del pacchetto.  
-  2. $ C $: velocità di trasmissione del canale.  
-  3. $ D $: distanza massima tra due nodi della rete.  
-  4. $ v $: velocità di propagazione del segnale (tipicamente vicino alla velocità della luce nell’aria). 
+  1. $L$: lunghezza del pacchetto.  
+  2. $C $: velocità di trasmissione del canale.  
+  3. $D$: distanza massima tra due nodi della rete.  
+  4. $v$: velocità di propagazione del segnale (tipicamente vicino alla velocità della luce nell’aria). 
 
 In un sistema senza collisioni e con coordinamento perfetto, tutte le richieste vengono soddisfatte fino alla saturazione del canale.
 
@@ -1216,32 +1203,32 @@ In un sistema senza collisioni e con coordinamento perfetto, tutte le richieste 
 Nella **topologia bus**, il tempo di attraversamento di una trama sulla LAN non è istantaneo.  
 
 **Tempi di trasmissione**:  
-    1. $ t $: il nodo **A** inizia la trasmissione.  
-    2. $ t + L/C $: il nodo **A** completa la trasmissione.  
-    3. $ t + d/v $: il nodo **B** riceve il primo bit.  
-    4. $ t + L/C + d/v $: il nodo **B** riceve l’ultimo bit.  
+    1. $t$: il nodo **A** inizia la trasmissione.  
+    2. $t + L/C$: il nodo **A** completa la trasmissione.  
+    3. $t + d/v$: il nodo **B** riceve il primo bit.  
+    4. $t + L/C + d/v$: il nodo **B** riceve l’ultimo bit.  
 
 ### Efficienza del MAC ideale
-Una trama impegna la **LAN** per un tempo $ T_0 $, limitando l’uso totale del canale. Il canale può essere utilizzato al massimo per $ T $ secondi ogni $ T_0 $.  
+Una trama impegna la **LAN** per un tempo $T_0$, limitando l’uso totale del canale. Il canale può essere utilizzato al massimo per $T$ secondi ogni $T_0$.  
 
 **Formula dell’efficienza del MAC**:  
 $$
   \eta = \frac{T}{T_0} = \frac{L/C}{L/C + d/v} = \frac{1}{1 + a}
 $$
-  - Dove $ a = C \cdot d / v \cdot L $ 
-  - $ a $ rappresenta la **lunghezza della LAN** in termini di PDU. 
+  - Dove $a = C \cdot d / v \cdot L$ 
+  - $a$ rappresenta la **lunghezza della LAN** in termini di PDU. 
    
-L’efficienza pone un limite massimo al traffico che la LAN può smaltire ($ A_s $).  
+L’efficienza pone un limite massimo al traffico che la LAN può smaltire ($A_s$).  
 
 ### Traffico smaltito dalla LAN
-La quantità di traffico smaltito dipende dal rapporto $ A_0 $ (traffico offerto) e $ 1 / (1 + a) $:  
-  1. **Se $ A_0 < 1/(1+a) $**:  
+La quantità di traffico smaltito dipende dal rapporto $A_0$ (traffico offerto) e $1 / (1 + a)$:  
+  1. **Se $A_0 < 1/(1+a)$**:  
      - Tutte le trame in arrivo vengono trasmesse.  
-     - $ S = G = A_0 $.  
-  2. **Se $ A_0 \geq 1/(1+a) $**:  
+     - $S = G = A_0$.  
+  2. **Se$ A_0 \geq 1/(1+a)$**:  
      - Il MAC non è in grado di trasmettere tutte le trame.  
      - Una parte delle trame viene accodata.  
-     - $ A_s = h = 1/(1+a) $.  
+     - $A_s = h = 1/(1+a)$.  
 
 Questi limiti dipendono dalla **lunghezza della LAN** e dal comportamento del **canale di trasmissione**.
 
@@ -1258,8 +1245,8 @@ I protocolli ad **accesso multiplo** sono efficienti se le distanze e le velocit
     - Livello 1 OSI, rigenera segnali.
     - Estende la topologia LAN (entro i limiti di standard, es. 2500m in Ethernet).
   - **Bridge:**
-    - Livello 2 OSI, separa domini di collisione.
-    - Learning bridge: impara gli indirizzi sorgenti per filtrare le trame.
+    - Livello 2 OSI, separa domini di collisione, fa traduzione di formato e non semantica data che 802.3 e 802.11 hanno fomati molto simili e il bridge si limita a modificare i campi del servizio.
+    - **Learning bridge**: impara gli indirizzi sorgenti per filtrare le trame.
 
   ![](img\Reti\bridge.PNG)
 
@@ -1283,69 +1270,69 @@ Sviluppato nel 1970 per connettere università delle Hawaii utilizzando stazioni
   - **CRA** (Collision Resolution Algorithm):
     - Collisioni avvengono quando più stazioni trasmettono contemporaneamente.
     - Il satellite scarta le trame danneggiate.
-    - Le stazioni che rilevano una collisione avviano un **algoritmo di back-off**, ritrasmettendo in un momento scelto casualmente in un intervallo $ T_b $.
+    - Le stazioni che rilevano una collisione avviano un **algoritmo di back-off**, ritrasmettendo in un momento scelto casualmente in un intervallo $T_b$.
 
 ### Prestazioni di ALOHA
 **Traffico generato**:
-  - Gli arrivi di trame alle stazioni seguono un **processo di Poisson** con frequenza media $ \lambda $.
-  - Tenendo conto delle ritrasmissioni, il traffico effettivo verso il satellite è $ \lambda_r > \lambda $.
+  - Gli arrivi di trame alle stazioni seguono un **processo di Poisson** con frequenza media $\lambda$.
+  - Tenendo conto delle ritrasmissioni, il traffico effettivo verso il satellite è $\lambda_r > \lambda$.
 
 **Intervallo di vulnerabilità**:
-  - Definito come $ T_v = 2T $, rappresenta il periodo durante il quale una trasmissione può subire collisioni.
+  - Definito come $T_v = 2T$, rappresenta il periodo durante il quale una trasmissione può subire collisioni.
 
 ### Throughput di ALOHA
 Probabilità di trasmissione senza collisioni:  
-    $$
-    P_0 = e^{-2G}
-    $$
+$$
+P_0 = e^{-2G}
+$$
 
-Traffico smaltito ($ A_s $):  
-    $$
-    A_s = G \cdot e^{-2G}
-    $$
+Traffico smaltito ($A_s$):  
+$$
+A_s = G \cdot e^{-2G}
+$$
 
 **Massimo throughput**:
-    $$
-    A_{Smax} = \frac{1}{2e} \approx 0.18 \quad \text{per } G = 0.5
-    $$
+$$
+A_{Smax} = \frac{1}{2e} \approx 0.18 \quad \text{per } G = 0.5
+$$
 
 ### Slotted ALOHA
 **Miglioramento**:
-  - Il tempo è diviso in **slot** di lunghezza $ T $.
-  - Le trame sono trasmesse in istanti predefiniti, riducendo l’intervallo di vulnerabilità a $ T $.
+  - Il tempo è diviso in **slot** di lunghezza $T$.
+  - Le trame sono trasmesse in istanti predefiniti, riducendo l’intervallo di vulnerabilità a $T$.
 
 **Calcolo**:
-  - Probabilità di trasmissione senza collisioni:  
-    $$
-    P_0 = e^{-G}
-    $$
-  - Traffico smaltito ($ A_s $):  
-    $$
-    A_s = G \cdot e^{-G}
-    $$
+- Probabilità di trasmissione senza collisioni:  
+$$
+P_0 = e^{-G}
+$$
+- Traffico smaltito ($A_s$):  
+$$
+A_s = G \cdot e^{-G}
+$$
 
 **Massimo throughput**:  
-    $$
-    A_{Smax} = \frac{1}{e} \approx 0.36 \quad \text{per } G = 1
-    $$
+$$
+A_{Smax} = \frac{1}{e} \approx 0.36 \quad \text{per } G = 1
+$$
 
 ### Algoritmi di back-off
 **Aloha classico**:
-  - Ritrasmissione casuale nell’intervallo $ [0, T_b] $, con $ T_b \gg T $ per minimizzare collisioni.
+  - Ritrasmissione casuale nell’intervallo $[0, T_b]$, con $T_b \gg T$ per minimizzare collisioni.
 
 **Aloha slotted**:
   - Due approcci:
     - Ritrasmissione in uno slot scelto casualmente.
-    - Ritrasmissione nel primo slot disponibile con probabilità $ p_b $.
+    - Ritrasmissione nel primo slot disponibile con probabilità $p_b$.
 
 ### Stabilità del sistema
-**Equilibrio**: In condizioni stabili sarà $ A_0 = A_s $, se $ A_0 > A_{Smax} $, il sistema accumula traffico non smaltito, portando a instabilità.
+**Equilibrio**: In condizioni stabili sarà $A_0 = A_s$, se $A_0 > A_{Smax}$, il sistema accumula traffico non smaltito, portando a instabilità.
 
-**Numero finito di stazioni**: Il traffico offerto $A_0$ dipende dal numero di stazioni attive ($ k $) e dalle condizioni del sistema.
+**Numero finito di stazioni**: Il traffico offerto $A_0$ dipende dal numero di stazioni attive ($k$) e dalle condizioni del sistema.
 
 ### Controlled Aloha
 **Back-off esponenziale**:
-- Aumenta progressivamente $ T_b $ in caso di collisioni, raddoppiando l’intervallo dopo ogni tentativo fallito.
+- Aumenta progressivamente $T_b$ in caso di collisioni, raddoppiando l’intervallo dopo ogni tentativo fallito.
 - Garantisce stabilità ma può introdurre problemi di equità.
 
 ## CSMA (Carrier Sensing Multiple Access)
@@ -1628,11 +1615,12 @@ Problemi specifici rispetto alle LAN cablate:
 - **Stazione esposta:** difficoltà nell'utilizzo del canale.
 - Half-duplex impedisce collision detect.
 
-**Accesso al canale (CSMA/CA):**
+## Protocollo MAC 802.11
+
+### CSMA/CA (Carrier Sensing Multiple Access Collision Avoid)
+Esistono due diverse implementazioni che differiscono per la modialità di **accesso al canale**:
 - **DCF:** accesso distribuito (RTS/CTS per evitare collisioni, ACK per confermare trame ricevute).
 - **PCF:** AP gestisce il polling e trasmette beacon per sincronizzazione e associazione.
-
-## Protocollo MAC 802.11
 
 ### Protocollo MAC 802.11 – DCF (Distributed Coordination Function) 
 **Request to Send (RTS):** Prima che un mittente invii una trama, invia un RTS al destinatario. Questo avvisa le altre stazioni che il canale sta per essere occupato e indica la durata dell'occupazione.
