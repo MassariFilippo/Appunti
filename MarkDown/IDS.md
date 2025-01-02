@@ -199,56 +199,7 @@ La **delegazione** avviene quando un oggetto affida parte delle sue funzionalit�
 
 UML è uno standard aperto per la modellazione dei sistemi software, nato dalla collaborazione tra Grady Booch, Ivar Jacobson e Jim Rumbaugh (noti come i "tres amigos"). Adottato come standard dall’OMG (Object Management Group) dal 1997, UML è sostenuto da esperti e aziende leader nel settore informatico, come IBM, Microsoft e Rational Software. Questo linguaggio consente di generare automaticamente scheletri di codice e strutture dati da modelli UML, supportando così lo sviluppo software in modo efficiente.
 
-- **Caratteristiche di UML**
-  - **Linguaggio, non metodo**: UML definisce una notazione standard per descrivere i sistemi software senza imporre una sequenza di processi o metodologie specifiche.
-  - **Standard aperto**: Non è proprietario e la sua evoluzione è gestita dall'OMG.
-  - **Notazione integrata**: Basata su un metamodello che unifica gli oggetti e i concetti utilizzati nei sistemi software.
-  - **Versatilità**: Può essere utilizzato con diverse metodologie di sviluppo.
-
-- **Fasi Supportate da UML**
-  - **Analisi dei requisiti**: Utilizzando casi d’uso.
-  - **Analisi e progettazione object-oriented**: Per definire il modello logico del sistema.
-  - **Modellazione dei componenti**: Per rappresentare moduli di sistema e le loro interazioni.
-  - **Modellazione della struttura e configurazione**: Per descrivere l’architettura hardware e software.
-
-Ogni entità può essere rappresentata in più diagrammi che costituiscono viste diverse del modello.
-
-- **Diagramma vs. Modello**
-In UML, un modello rappresenta l'insieme delle informazioni di un sistema, mentre un diagramma è una visualizzazione di elementi specifici del modello. Un elemento può apparire in più diagrammi, ma la sua definizione è unica all'interno del modello.
-
-- **Struttura di UML**
-  - **Costituenti fondamentali**:
-    - **Entità**: Classe, interfaccia, nodo, componente.
-    - **Relazioni**: Dipendenze, associazioni, composizioni, generalizzazioni.
-    - **Diagrammi**: Rappresentazioni grafiche di aspetti statici e dinamici del sistema.
-  - **Meccanismi comuni**: Specifiche, ornamenti, distinzioni comuni, estendibilità.
-  - **Architettura**: Fornisce una vista complessiva del sistema, suddivisa in aspetti statici e dinamici.
-
-- **Entità**:
-
-![](img\IDS\entità.png)
-
-- **Relazioni**:
-
-![](img\IDS\relazioni.png)
-
-- **Tipi di Diagrammi UML**
-  1. **Statici**:
-     - **Diagramma delle classi**: Mostra la struttura dati e le relazioni tra le classi.
-     - **Diagramma degli oggetti**: Illustra gli oggetti e le loro relazioni.
-     - **Diagramma dei package**: Rappresenta i package e le loro dipendenze.
-     - **Diagramma dei componenti**: Descrive i moduli software e la loro interazione.
-     - **Diagramma di deployment**: Mostra la distribuzione fisica del sistema.
-     - **Diagramma delle strutture composite**: Rappresenta la struttura interna dei classificatori.
-
-  2. **Dinamici**:
-     - **Diagramma dei casi d’uso**: Illustra le interazioni tra attori e sistema.
-     - **Diagramma degli stati**: Usa automi di Harel per descrivere gli stati degli oggetti.
-     - **Diagramma di attività**: Mostra sequenze di eventi e transizioni di stato.
-     - **Diagrammi di interazione**:
-       - Sequenza, comunicazione, sintesi delle interazioni, tempi.
-  
-![](img\IDS\diagrammi.png)
+[PDF contenete tutte li informazioni tecniche su UML](MarkDown\resours\UML.pdf)
 
 ## Ingegneria del Software
 
