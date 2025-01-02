@@ -451,7 +451,7 @@ ICMP è un protocollo incaricato non di corregge gli errori, ma fornire informaz
     - **Timestamp Request/Reply (Type 13/14)**: Misura il tempo di transito nella rete. 
 
 ### PING
-Verifica se un host è raggiungibile inviando pacchetti ICMP di tipo "echo" e ricevendo "echo reply".
+Verifica quanto un host è lontano in termini temporali inviando pacchetti ICMP di tipo "echo" e ricevendo "echo reply", che vengono trasportati direttamente su IP senza pritocollo di trasporto.
 
 Opzioni: definire il numero di pacchetti, timeout, dimensione pacchetti, ecc.
 
@@ -812,7 +812,7 @@ il disegnato in modo tale da usarlo come centro ed evitare di sovraccaricare gli
 Ogni router OSPF ha un **Router ID** univoco e può avere una **priorità** (da 0 a 255) per determinare il **Designated Router (DR)**, si anrà infatti a sciegliere chi ha la priorità più alta come ruoter disignato. Nelle reti multi-accesso, il DR coordina le comunicazioni e ottimizza lo scambio di informazioni tra **router adiacenti** ovvero tutti quei router connessi in maniaera diretta e che utilizzano effettivamente tale connessione per comunicare, se non lo facessere nonostante siano collegati direttamente sarebbero detti **router vicini**.
 
 ### Struttura del Pacchetto OSPF
-Il pacchetto OSPF è composto da diverse sezioni chiave, ciascuna con un ruolo specifico nel protocollo:
+Il pacchetto OSPF è composto da diverse sezioni chiave,venendo instardati via flooding non necessita del iP del deatinatario, ciascuna con un ruolo specifico nel protocollo:
 
 **Header OSPF**:
   - **Version**: La versione del protocollo OSPF.
@@ -1193,7 +1193,7 @@ L'accesso dinamico alloca le risorse in tempo reale, adattandosi alle esigenze d
 La scelta dell’algoritmo di controllo e accesso è determinata da un compromesso tra **complessità** e **prestazioni**.  
 
   1. $L$: lunghezza del pacchetto.  
-  2. $C $: velocità di trasmissione del canale.  
+  2. $C$: velocità di trasmissione del canale.  
   3. $D$: distanza massima tra due nodi della rete.  
   4. $v$: velocità di propagazione del segnale (tipicamente vicino alla velocità della luce nell’aria). 
 
