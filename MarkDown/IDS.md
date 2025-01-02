@@ -1,12 +1,258 @@
 # APPUNTI DI INGEGNERIA DEL SOFTWARE
 
+## Ciclo di Vita dei Sistemi Informatici
+
+Il ciclo di vita di un sistema informatico comprende l’insieme delle attività svolte dal momento della sua ideazione fino alla sua dismissione. Le fasi principali sono: 
+1. **Definizione strategica**
+2. **Pianificazione**
+3. **Controllo di qualità**
+4. **Analisi dei requisiti**
+5. **Progettazione** (architetturale ed esecutiva)
+6. **Realizzazione e collaudo in fabbrica**
+7. **Certificazione**
+8. **Installazione**
+9. **Collaudo del sistema installato**
+10. **Esercizio**
+11. **Diagnosi e manutenzione**
+12. **Evoluzione**
+13. **Messa fuori servizio**
+
+### Fasi del Ciclo di Vita
+
+1. **Definizione Strategica**
+La fase in cui vengono prese decisioni sulle aree aziendali da automatizzare, stabilendo l'obiettivo principale dell'intervento.
+
+2. **Pianificazione**
+Consiste nel definire obiettivi, identificare fabbisogni e condurre uno studio di fattibilità. Questo fornisce una prima stima di costi, benefici e tempi di attuazione.
+
+3. **Controllo di Qualità**
+Prevede la creazione di un piano per garantire il rispetto delle specifiche del progetto e verificare che il sistema rispetti le attese.
+
+4. **Analisi dei Requisiti**
+Questa fase mira a identificare e formalizzare i requisiti dell’organizzazione, modellandoli attraverso tecniche specifiche per produrre un documento di specifica dei requisiti. Tale documento diventa la base per le successive fasi di progettazione e realizzazione.
+
+5. **Progettazione**
+La progettazione si suddivide in due fasi principali:
+- **Progettazione del sistema**: Si traduce l’analisi dei requisiti in una soluzione architetturale generale, producendo specifiche indipendenti dagli strumenti di implementazione.
+- **Progettazione esecutiva**: Descrive in dettaglio struttura e comportamento dei componenti per consentire la realizzazione di un prodotto funzionante.
+
+6. **Realizzazione e Collaudo in Fabbrica**
+Il sistema viene implementato sulla piattaforma scelta e testato internamente attraverso l'α-test, utilizzando i casi prova definiti nella fase di analisi.
+
+7. **Certificazione**
+Verifica che il software sia stato sviluppato seguendo i criteri previsti dalle specifiche tecniche, garantendo la conformità a tutta la documentazione di progetto.
+
+8. **Installazione**
+Include l’installazione e configurazione del sistema, oltre al recupero dei dati pregressi.
+
+9. **Collaudo del Sistema Installato**
+Prevede il **β-test**, dove gli utenti testano il sistema installato. Gli errori rilevati possono essere di tipo:
+- **Bloccanti**: Impediscono il collaudo.
+- **Non bloccanti**: Non impediscono il collaudo ma richiedono correzioni.
+- **Operativi e funzionali**: Malfunzionamenti nelle funzionalità richieste.
+
+10. **Esercizio**
+Il sistema viene messo in produzione, spesso in parallelo con il sistema preesistente, per poi sostituirlo completamente.
+
+11. **Diagnosi e Manutenzione**
+Durante l'esercizio, eventuali errori vengono segnalati e corretti:
+- **Manutenzione correttiva**: Risoluzione di errori.
+- **Manutenzione adattativa**: Modifiche per adattarsi a cambiamenti nel dominio applicativo.
+- **Manutenzione evolutiva**: Introduzione di nuove funzionalità.
+
+12. **Evoluzione**
+Consiste nell’aggiornamento del sistema per incorporare nuove funzionalità o migliorarne le prestazioni.
+
+13. **Messa Fuori Servizio**
+La fase finale, in cui il sistema viene dismesso, concludendo il ciclo di vita.
+
+### Analisi dei Requisiti
+
+L’obiettivo dell’analisi dei requisiti è comprendere i bisogni del cliente e dell’organizzazione, formalizzandoli in un documento di specifica che guida le successive fasi di progettazione e sviluppo. Si analizzano:
+- Sottosistemi aziendali
+- Risorse
+- Processi
+- Flussi informativi
+
+- **Specifica dei Requisiti**
+  Un documento che rappresenta un accordo tra produttore e consumatore. Deve essere:
+  - **Chiara**: Descrivere in modo univoco operazioni e soggetti coinvolti.
+  - **Non ambigua**: Evitare interpretazioni multiple.
+  - **Consistente**: Priva di contraddizioni interne.
+
+Più un errore è rilevato tardi nel ciclo di sviluppo, maggiore sarà il costo per correggerlo.
+
+### Metodi di Analisi
+- **Analisi Orientata agli Oggetti**
+Focalizza sull’identificazione degli oggetti e le loro interrelazioni. Gli oggetti mantengono proprietà stabili nel tempo, anche se il loro utilizzo può variare.
+
+- **Analisi Orientata alle Funzioni**
+Rappresenta il sistema come un insieme di flussi informativi e processi, costruendo una gerarchia funzionale.
+
+- **Analisi Orientata agli Stati**
+Modella il sistema in termini di stati operativi e transizioni di stato.
+
+- **Uso Integrato**
+Le moderne metodologie combinano approcci orientati a oggetti, funzioni e stati, adattandoli al tipo di applicazione.
+
+### Progettazione
+La progettazione collega l’analisi dei requisiti alla realizzazione del software. Dividendo il sistema in sottosistemi, si riduce la complessità e si facilita lo sviluppo parallelo. Deve bilanciare:
+- **Astrazione**: Per confrontare il progetto con le specifiche.
+- **Dettaglio**: Per agevolare la codifica.
+
+Le scelte progettuali devono essere flessibili, permettendo modifiche senza compromettere l’intero sistema.
+
+- **Obiettivi della Progettazione**
+  Produrre software di alta qualità:
+  - **Affidabile**: Funzionamento corretto e continuo.
+  - **Modificabile**: Facilità di aggiornamento.
+  - **Comprensibile**: Semplice da analizzare e mantenere.
+  - **Riutilizzabile**: Parti del software applicabili in altri contesti.
+
+Questi obiettivi riducono tempi e costi, migliorando la qualità complessiva.
+
+## Il Paradigma a Oggetti
+
+- **Concetti Fondamentali**
+  Il paradigma a oggetti si basa su alcuni concetti chiave:
+  - **Oggetto**: Entità che rappresenta un elemento del dominio applicativo, dotato di identità, stato e comportamento.
+  - **Astrazione**: Processo che permette di focalizzarsi sugli aspetti essenziali di un oggetto, ignorando i dettagli irrilevanti.
+  - **Classe**: Modello o schema che definisce un insieme di oggetti con caratteristiche comuni.
+  - **Incapsulamento**: Meccanismo che protegge lo stato interno di un oggetto, esponendo solo un'interfaccia controllata.
+  - **Ereditarietà**: Capacità di una classe di derivare caratteristiche da un'altra classe.
+  - **Polimorfismo**: Capacità di oggetti di classi diverse di rispondere a metodi con lo stesso nome in modo appropriato.
+  - **Delegazione**: Processo in cui un oggetto delega alcune funzionalità ad altri oggetti.
+
+Un **oggetto** è un'unità fondamentale del paradigma, rappresentando un'entità del mondo reale o concettuale. Ogni oggetto è caratterizzato da:
+- **Identità (OID)**: Identificativo unico e immutabile assegnato all'oggetto.
+- **Stato**: Valori degli attributi in un dato momento.
+- **Comportamento**: Insieme di operazioni che l'oggetto può eseguire.
+
+Un oggetto può contenere riferimenti ad altri oggetti, consentendo la creazione di entità complesse.
+
+Le **operazioni** rappresentano le funzionalità offerte da un oggetto. La **signature** di un'operazione specifica:
+  - Nome dell'operazione
+  - Parametri accettati
+  - Valore restituito
+
+L'insieme delle signature costituisce l'**interfaccia** dell'oggetto, che descrive le richieste che possono essere inviate.
+
+Un **tipo di dati astratto** è una descrizione generale che definisce:
+- La struttura dei dati.
+- Le operazioni disponibili.
+
+Un tipo può essere un **sottotipo** di un supertipo se eredita e amplia la sua interfaccia.
+
+La **classe** è una realizzazione di un tipo di dati astratto, fornendo implementazioni per i metodi associati. Gli oggetti sono istanze di una classe e condividono:
+- Attributi: Definiscono lo stato dell'oggetto.
+- Metodi: Possono restituire informazioni (metodi accessori) o modificare lo stato (metodi trasformatori).
+
+L’**incapsulamento** protegge lo stato interno di un oggetto, limitando l'accesso diretto agli attributi. I dati sono manipolabili solo tramite l'interfaccia pubblica. Questo approccio:
+- Riduce il rischio di errori.
+- Rende più agevole la manutenzione e il debugging.
+- Permette di modificare l'implementazione senza influire sull'interfaccia pubblica.
+
+L’**ereditarietà** consente la definizione di una classe basata su un’altra. Le relazioni tra classi possono essere:
+- **Specializzazione/Generalizzazione**: Una sottoclasse eredita attributi e metodi dalla superclasse, aggiungendo o modificando caratteristiche.
+- **Ereditarietà multipla**: Una sottoclasse può derivare da più superclassi, con strategie per risolvere eventuali conflitti.
+
+Il **polimorfismo** permette a oggetti di classi diverse di rispondere in modi specifici a metodi con lo stesso nome. Si distinguono:
+- **Overload**: Definizione di più metodi con lo stesso nome ma signature diversa.
+- **Override**: Ridefinizione di un metodo ereditato in una sottoclasse.
+
+Il **late binding** o **istanziamento dinamico** consente di scegliere l'implementazione del metodo solo a runtime.
+
+La **delegazione** avviene quando un oggetto affida parte delle sue funzionalità a un altro oggetto. Questo meccanismo è fondamentale per implementare associazioni tra classi e promuove la modularità.
+
+### Benefici del Paradigma a Oggetti
+
+- **Modellazione**: La decomposizione è orientata agli oggetti, che rispecchiano le entità del dominio.
+- **Manutenibilità**: Cambiamenti locali non influenzano l'intero sistema.
+- **Riusabilità**: Le classi possono essere riutilizzate in altri progetti.
+- **Produttività**: Permette lo sviluppo iterativo e rapido di prototipi.
+- **Stabilità**: I sistemi orientati agli oggetti si adattano meglio alle evoluzioni nel tempo rispetto a quelli procedurali.
+
+- **Dall’approccio Funzionale all’Approccio a Oggetti**
+
+  L’approccio funzionale tradizionale è limitato da:
+  - Mancanza di estendibilità e riusabilità.
+  - Elevati costi di manutenzione.
+  - Mancata iterazione nella progettazione.
+
+  L’approccio a oggetti supera queste limitazioni con:
+  - Decomposizione orientata alla modellazione.
+  - Iterazione del processo di sviluppo (modello a fontana).
+  - Riusabilità ed estendibilità grazie all’ereditarietà.
+
+- **Processo di Sviluppo a Oggetti**
+
+  1. **Analisi Object-Oriented**:
+     - Determinazione della funzionalità del sistema.
+     - Identificazione delle classi.
+     - Distribuzione delle responsabilità.
+
+  2. **Design Object-Oriented**:
+     - Progettazione di metodi e attributi.
+     - Ottimizzazione delle associazioni tra classi.
+  
+## Unified Modeling Language (UML)
+
+UML è uno standard aperto per la modellazione dei sistemi software, nato dalla collaborazione tra Grady Booch, Ivar Jacobson e Jim Rumbaugh (noti come i "tres amigos"). Adottato come standard dall’OMG (Object Management Group) dal 1997, UML è sostenuto da esperti e aziende leader nel settore informatico, come IBM, Microsoft e Rational Software. Questo linguaggio consente di generare automaticamente scheletri di codice e strutture dati da modelli UML, supportando così lo sviluppo software in modo efficiente.
+
+- **Caratteristiche di UML**
+  - **Linguaggio, non metodo**: UML definisce una notazione standard per descrivere i sistemi software senza imporre una sequenza di processi o metodologie specifiche.
+  - **Standard aperto**: Non è proprietario e la sua evoluzione è gestita dall'OMG.
+  - **Notazione integrata**: Basata su un metamodello che unifica gli oggetti e i concetti utilizzati nei sistemi software.
+  - **Versatilità**: Può essere utilizzato con diverse metodologie di sviluppo.
+
+- **Fasi Supportate da UML**
+  - **Analisi dei requisiti**: Utilizzando casi d’uso.
+  - **Analisi e progettazione object-oriented**: Per definire il modello logico del sistema.
+  - **Modellazione dei componenti**: Per rappresentare moduli di sistema e le loro interazioni.
+  - **Modellazione della struttura e configurazione**: Per descrivere l’architettura hardware e software.
+
+Ogni entità può essere rappresentata in più diagrammi che costituiscono viste diverse del modello.
+
+- **Diagramma vs. Modello**
+In UML, un modello rappresenta l'insieme delle informazioni di un sistema, mentre un diagramma è una visualizzazione di elementi specifici del modello. Un elemento può apparire in più diagrammi, ma la sua definizione è unica all'interno del modello.
+
+- **Struttura di UML**
+  - **Costituenti fondamentali**:
+    - **Entità**: Classe, interfaccia, nodo, componente.
+    - **Relazioni**: Dipendenze, associazioni, composizioni, generalizzazioni.
+    - **Diagrammi**: Rappresentazioni grafiche di aspetti statici e dinamici del sistema.
+  - **Meccanismi comuni**: Specifiche, ornamenti, distinzioni comuni, estendibilità.
+  - **Architettura**: Fornisce una vista complessiva del sistema, suddivisa in aspetti statici e dinamici.
+
+- **Entità**:
+
+![](img\IDS\entità.png)
+
+- **Relazioni**:
+
+![](img\IDS\relazioni.png)
+
+- **Tipi di Diagrammi UML**
+  1. **Statici**:
+     - **Diagramma delle classi**: Mostra la struttura dati e le relazioni tra le classi.
+     - **Diagramma degli oggetti**: Illustra gli oggetti e le loro relazioni.
+     - **Diagramma dei package**: Rappresenta i package e le loro dipendenze.
+     - **Diagramma dei componenti**: Descrive i moduli software e la loro interazione.
+     - **Diagramma di deployment**: Mostra la distribuzione fisica del sistema.
+     - **Diagramma delle strutture composite**: Rappresenta la struttura interna dei classificatori.
+
+  2. **Dinamici**:
+     - **Diagramma dei casi d’uso**: Illustra le interazioni tra attori e sistema.
+     - **Diagramma degli stati**: Usa automi di Harel per descrivere gli stati degli oggetti.
+     - **Diagramma di attività**: Mostra sequenze di eventi e transizioni di stato.
+     - **Diagrammi di interazione**:
+       - Sequenza, comunicazione, sintesi delle interazioni, tempi.
+  
+![](img\IDS\diagrammi.png)
+
 ## Ingegneria del Software
 
-### Che cos'è l’**Ingegneria del Software**?
-L’ingegneria del software è la disciplina che si occupa della **realizzazione di sistemi software** complessi, la cui **dimensione** e **complessità** richiedono l'intervento di team di sviluppo dedicati. Questo settore è emerso per affrontare la crescente complessità dei sistemi software, passando da semplici programmi individuali a **sistemi collaborativi** e commerciali, come OS 360 di IBM negli anni '50, fino a moderni standard di qualità come **ISO-9000**.
-
-### Definizioni fondamentali
-L’ingegneria del software è definita come un approccio **sistematico** alla **progettazione**, **manutenzione** e **ritiro** di sistemi software. La disciplina mira a produrre software in modo **sistematico** e **strutturato**, rispettando tempi e costi stabiliti. Si fonda su un **corpus di teorie, metodi e strumenti** sia tecnologici che organizzativi per garantire la **qualità** del software prodotto.
+L’ingegneria del software è la disciplina che si occupa della **realizzazione di sistemi software** complessi, la cui **dimensione** e **complessità** richiedono l'intervento di team di sviluppo dedicati. Questo settore è emerso per affrontare la crescente complessità dei sistemi software, passando da semplici programmi individuali a **sistemi collaborativi** e commerciali, come OS 360 di IBM negli anni '50, fino a moderni standard di qualità come **ISO-9000**. L’ingegneria del software è definita come un approccio **sistematico** alla **progettazione**, **manutenzione** e **ritiro** di sistemi software. La disciplina mira a produrre software in modo **sistematico** e **strutturato**, rispettando tempi e costi stabiliti. Si fonda su un **corpus di teorie, metodi e strumenti** sia tecnologici che organizzativi per garantire la **qualità** del software prodotto.
 
 ## Qualità del Software
 
@@ -17,28 +263,26 @@ Le qualità del software si suddividono in:
 
 Entrambe le qualità sono **interdipendenti**: un software non può avere alta qualità esterna senza adeguate qualità interne.
 
-### Caratteristiche principali della Qualità del Software
-1. **Correttezza**: rispetta le specifiche di progetto.
-2. **Affidabilità**: l’utente può contare sul software.
-3. **Robustezza**: capacità di reagire in modo ragionevole anche a input non previsti.
-4. **Efficienza**: utilizzo ottimale delle risorse di calcolo.
-5. **Facilità d'uso**: interfaccia intuitiva per l’utente.
-6. **Verificabilità**: facilità di valutare la correttezza e le prestazioni.
-7. **Riusabilità**: utilizzo del software per creare nuovi sistemi.
-8. **Portabilità**: capacità di funzionare su piattaforme diverse.
+- Caratteristiche principali della Qualità del Software
+  1. **Correttezza**: rispetta le specifiche di progetto.
+  2. **Affidabilità**: l’utente può contare sul software.
+  3. **Robustezza**: capacità di reagire in modo ragionevole anche a input non previsti.
+  4. **Efficienza**: utilizzo ottimale delle risorse di calcolo.
+  5. **Facilità d'uso**: interfaccia intuitiva per l’utente.
+  6. **Verificabilità**: facilità di valutare la correttezza e le prestazioni.
+  7. **Riusabilità**: utilizzo del software per creare nuovi sistemi.
+  8. **Portabilità**: capacità di funzionare su piattaforme diverse.
 
 ## Software Design e Principi di Progettazione
 
-### Software Design
-Il **software design** è il processo che trasforma le specifiche utente in un **insieme di specifiche** per i programmatori, producendo un’**architettura** chiara del software.
+- Software Design: Il **software design** è il processo che trasforma le specifiche utente in un **insieme di specifiche** per i programmatori, producendo un’**architettura** chiara del software.
 
-### Principi di Progettazione
-La progettazione si basa su principi come:
-1. **Formalità**: uso di **metodologie standardizzate** per ridurre errori.
-2. **Anticipazione dei cambiamenti**: progetta per i requisiti attuali e futuri.
-3. **Separazione degli argomenti**: suddivide problemi complessi in elementi più semplici.
-4. **Modularità**: scomposizione in moduli funzionali autonomi, che facilita manutenzione e riuso.
-5. **Astrazione**: identificazione degli aspetti fondamentali di un problema, ignorando i dettagli.
+- Principi di Progettazione:
+  1. **Formalità**: uso di **metodologie standardizzate** per ridurre errori.
+  2. **Anticipazione dei cambiamenti**: progetta per i requisiti attuali e futuri.
+  3. **Separazione degli argomenti**: suddivide problemi complessi in elementi più semplici.
+  4. **Modularità**: scomposizione in moduli funzionali autonomi, che facilita manutenzione e riuso.
+  5. **Astrazione**: identificazione degli aspetti fondamentali di un problema, ignorando i dettagli.
 
 ## Misurazione e Stima dei Costi
 
@@ -150,8 +394,11 @@ Consiste nelle fasi per costruire, consegnare e modificare un prodotto. Viene ge
 - **Benefici**: Rende evidenti ambiguità e migliora la comprensione dei requisiti.
 - **Tipologie**:
   - **Prototipazione Evolutiva**: Evoluzione del prototipo nel prodotto finale.
+  
   ![immagine in locale](img\IDS\Work_flow_rototipazione_evolutiva.PNG)
+
   - **Prototipo Usa e Getta**: Valida o deriva i requisiti, senza integrazione nel prodotto finale.
+  
   ![immagine in locale](img\IDS\work_flow_prototipazione_usa_e_getta.PNG)
 
 ### Prototipazione di Interfaccia
@@ -176,6 +423,7 @@ reazioni da parte del cliente
 
 ### MDD (Model-Driven Development)
 Tipo di sviluppo in cui si creano modelli formali del software che vengono poi fatti evolvere mentre il sistema viene progettato e implementato. I modelli diventano la guida del processo di sviluppo; infatti, MDD prevede l’uso di strumenti per la generazione automatica del codice e dei test case a partire dai modelli.
+
 ![immagine in locale](img\IDS\Schema_MDD.PNG)
 
 ### I modelli agili
@@ -534,17 +782,27 @@ La progettazione deve considerare:
 
 ### Tipologie di interfacce
 1. **Interfacce code-based**: utilizzano comandi testuali, ideali per compiti ripetitivi e complessi.
+
 ![](img\IDS\interfaccai_code_base.PNG)
+
 2. **Interfacce 3270**: caratteri testuali per data-entry strutturati e flussi predefiniti.
+
 ![](img\IDS\interfacca_3270.PNG)
+
 3. **Pseudo-GUI**: grafiche che richiamano interfacce testuali, adatte per dati strutturati con flessibilità.
+
 ![](img\IDS\interfacca_pseudogui.PNG)
+
 4. **Standard GUI**: ambienti grafici con manipolazione diretta, ottimali per applicazioni guidate dall’utente.
+
 ![](img\IDS\interfaccai_gui.PNG)
+
 5. **Special GUI**: enfatizzano la presentazione grafica, pensate per utenti inesperti e applicazioni self-service.
+
 ![](img\IDS\interfacca_special_gui.PNG)
 
 ### Strutturazione delle interfacce
+
 ![](img\IDS\struttura_2d.PNG)
 
 Le interfacce possono essere progettate con diversi modelli:
