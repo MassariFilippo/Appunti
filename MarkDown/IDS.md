@@ -199,7 +199,335 @@ La **delegazione** avviene quando un oggetto affida parte delle sue funzionalit�
 
 UML è uno standard aperto per la modellazione dei sistemi software, nato dalla collaborazione tra Grady Booch, Ivar Jacobson e Jim Rumbaugh (noti come i "tres amigos"). Adottato come standard dall’OMG (Object Management Group) dal 1997, UML è sostenuto da esperti e aziende leader nel settore informatico, come IBM, Microsoft e Rational Software. Questo linguaggio consente di generare automaticamente scheletri di codice e strutture dati da modelli UML, supportando così lo sviluppo software in modo efficiente.
 
-[PDF contenete tutte li informazioni tecniche su UML](MarkDown\resours\UML.pdf)
+- **Caratteristiche di UML**
+  - **Linguaggio, non metodo**: UML definisce una notazione standard per descrivere i sistemi software senza imporre una sequenza di processi o metodologie specifiche.
+  - **Standard aperto**: Non è proprietario e la sua evoluzione è gestita dall'OMG.
+  - **Notazione integrata**: Basata su un metamodello che unifica gli oggetti e i concetti utilizzati nei sistemi software.
+  - **Versatilità**: Può essere utilizzato con diverse metodologie di sviluppo.
+
+- **Fasi Supportate da UML**
+  - **Analisi dei requisiti**: Utilizzando casi d’uso.
+  - **Analisi e progettazione object-oriented**: Per definire il modello logico del sistema.
+  - **Modellazione dei componenti**: Per rappresentare moduli di sistema e le loro interazioni.
+  - **Modellazione della struttura e configurazione**: Per descrivere l’architettura hardware e software.
+
+Ogni entità può essere rappresentata in più diagrammi che costituiscono viste diverse del modello.
+
+- **Diagramma vs. Modello**
+In UML, un modello rappresenta l'insieme delle informazioni di un sistema, mentre un diagramma è una visualizzazione di elementi specifici del modello. Un elemento può apparire in più diagrammi, ma la sua definizione è unica all'interno del modello.
+
+- **Struttura di UML**
+  - **Costituenti fondamentali**:
+    - **Entità**: Classe, interfaccia, nodo, componente.
+    - **Relazioni**: Dipendenze, associazioni, composizioni, generalizzazioni.
+    - **Diagrammi**: Rappresentazioni grafiche di aspetti statici e dinamici del sistema.
+  - **Meccanismi comuni**: Specifiche, ornamenti, distinzioni comuni, estendibilità.
+  - **Architettura**: Fornisce una vista complessiva del sistema, suddivisa in aspetti statici e dinamici.
+
+- **Entità**:
+
+![](img\IDS\entità.png)
+
+- **Relazioni**:
+
+![](img\IDS\relazioni.png)
+
+- **Tipi di Diagrammi UML**
+  1. **Statici**:
+     - **Diagramma delle classi**: Mostra la struttura dati e le relazioni tra le classi.
+     - **Diagramma degli oggetti**: Illustra gli oggetti e le loro relazioni.
+     - **Diagramma dei package**: Rappresenta i package e le loro dipendenze.
+     - **Diagramma dei componenti**: Descrive i moduli software e la loro interazione.
+     - **Diagramma di deployment**: Mostra la distribuzione fisica del sistema.
+     - **Diagramma delle strutture composite**: Rappresenta la struttura interna dei classificatori.
+
+  2. **Dinamici**:
+     - **Diagramma dei casi d’uso**: Illustra le interazioni tra attori e sistema attraverso un elenco dei casi d'uso.
+     - **Diagramma degli stati**: Usa automi di Harel per descrivere gli stati degli oggetti.
+     - **Diagramma di attività**: Mostra sequenze di eventi-azioni-transizioni di stato.
+     - **Diagrammi di interazione**: Mostra le iterazioni tra gli oggetti durante vari scenari di funzionamento
+       - Sequenza
+       - Comunicazione
+       - Sintesi delle interazioni
+       - Tempi.
+  
+![](img\IDS\diagrammi.png)
+
+
+Le **specifiche** descrivono la semantica di un elemento o caso d’uso in modo testuale e comprensibile, costituendo uno strumento fondamentale per la comunicazione tra tutte le parti coinvolte nello sviluppo del sistema. Un esempio classico di specifica è il caso d’uso "APRI CONTO CORRENTE BANCARIO", che include uno scenario base e relative varianti:
+
+- **Scenario base**: Il cliente si presenta in banca, fornisce i dati, l’addetto crea il conto e comunica il numero al cliente.
+- **Varianti**: Ad esempio, il cliente può non accettare o il conto può avere più intestatari, richiedendo ulteriori verifiche.
+
+Gli **ornamenti** migliorano la comprensione degli elementi di modellazione, evidenziandone aspetti particolari. Possono includere:
+
+- **Annotazioni**: Informazioni aggiuntive, come l’autore o lo stato di sviluppo `{autore = Smith, stato = analisi}`.
+- **Proprietà**: Valori associati agli elementi, espressi come stringhe.
+- **Vincoli**: Regole che devono essere sempre vere, ad esempio `{disjoint, complete}`.
+
+- **Distinzioni comuni**
+  UML separa concetti fondamentali, come:
+  - **Classificatore/istanza**: Il classificatore è un’entità astratta, mentre l’istanza è la sua rappresentazione concreta.
+
+![](img\IDS\classificatore_istanza.PNG)
+
+  - **Interfaccia/implementazione**: L’interfaccia definisce "cosa fa" un oggetto, mentre l’implementazione specifica "come lo fa".
+
+![](img\IDS\interfaccia_impl.PNG)
+
+- **Meccanismi di Estendibilità**
+UML supporta estensioni attraverso:
+  - **Stereotipi**: Permettono di creare variazioni di elementi esistenti con scopi diversi. Possono essere predefiniti o definiti dall’utente.
+    - Esempio: `«attore» Utente`.
+  - **Proprietà**: Valori etichettati associati agli elementi, come `{abstract}`.
+  - **Vincoli**: Regole che definiscono condizioni o relazioni tra elementi.
+  - **Profili**: Insiemi di stereotipi, proprietà e vincoli per personalizzare UML.
+
+- **Architettura**
+  UML offre viste diverse per descrivere il sistema:
+  1. **Vista dei casi d’uso**: Illustra le funzionalità percepite dagli utenti, costituendo la base per le altre viste.
+  2. **Vista logica**: Descrive il dominio del problema con classi e oggetti.
+  3. **Vista dei processi**: Modella i thread e i processi come classi attive.
+  4. **Vista di implementazione**: Definisce moduli software e loro dipendenze.
+  5. **Vista di deployment**: Mostra la distribuzione fisica del sistema su hardware.
+
+![](img\IDS\sistema_complesso.PNG)
+![](img\IDS\sistema_medio.PNG)
+![](img\IDS\sistema_piccolo.PNG)
+
+### Diagrammi dei Casi d’Uso
+
+Questi diagrammi rappresentano i ruoli di utilizzo del sistema da parte di attori (utenti, sistemi esterni, ecc.). I casi d’uso descrivono interazioni e risultati osservabili utili agli attori. Non specificano la logica interna del sistema, ma sono espressi in forma testuale per essere comprensibili anche ai non esperti.
+
+Esempi di attori: clienti, dipendenti, applicazioni esterne. Ogni caso d’uso è attivato da un attore e produce un risultato utile per esso.
+
+- **Relazioni nei Diagrammi dei Casi d’Uso**
+
+  Le relazioni tra casi d’uso e attori includono:
+  - **Include**: Un caso d’uso dipende da un altro per essere completo.
+  - **Extend**: Un caso d’uso aggiunge funzionalità opzionali a un altro.
+  - **Generalizzazioni**: Sia tra attori che tra casi d’uso, indicano specializzazioni.
+
+![](img/IDS/relazioni_casi_d'uso.png)
+
+- **Scenari**
+
+Ogni esecuzione di un caso d’uso è uno **scenario**, che può essere di successo o fallimento. Lo scenario base rappresenta il flusso più semplice e positivo. Varianti arricchiscono lo scenario con alternative che portano a successo o fallimento.
+
+Esempio:
+**Caso d’uso**: "APRI CONTO CORRENTE BANCARIO".
+- **Scenario base**: Creazione conto con dati forniti dal cliente.
+- **Variante**: Il cliente non è censito; l’addetto registra i dati e completa la procedura.
+
+- **Specifiche del Caso d’Uso**
+
+UML non prescrive uno standard rigido per documentare un caso d’uso. Tuttavia, una specifica tipica include:
+- **Nome**: Identifica il caso d’uso.
+- **Attori**: Coinvolti primari e secondari.
+- **Precondizioni**: Condizioni che devono essere vere prima dell’esecuzione.
+- **Sequenza principale**: Passi che definiscono il caso d’uso.
+- **Postcondizioni**: Risultati attesi alla fine.
+- **Alternative**: Percorsi diversi dal flusso principale.
+
+Esempio:
+- **Nome**: "Apri conto corrente".
+- **Attore primario**: Cliente.
+- **Sequenza principale**: Raccolta dati, verifica, apertura conto.
+
+- **Realizzazione dei Casi d’Uso**
+
+  La realizzazione dei casi d’uso può essere modellata con:
+  1. **Diagrammi delle classi**: Mostrano classi o oggetti coinvolti.
+  2. **Diagrammi di interazione**: Evidenziano i messaggi scambiati tra oggetti durante la collaborazione per realizzare il caso d’uso.
+   
+![](img/IDS/collacorazione.png)
+
+### Diagrammi delle Classi
+I diagrammi delle classi rappresentano il nucleo fondamentale del linguaggio UML, descrivendo la **struttura statica** di un sistema in termini di classi e delle loro relazioni reciproche.  
+Ogni classe rappresenta un gruppo di oggetti che condividono proprietà, comportamento e relazioni.  
+
+- **Attributo**: È un valore che caratterizza un oggetto di una classe.  
+- **Operazioni**: Sono trasformazioni applicabili agli oggetti di una classe.  
+- **Stereotipi**: Specificano il ruolo di una classe nel modello.  
+- **Notazione**:  
+  Gli attributi e le operazioni sono descritti con la seguente sintassi:
+  - Attributi: `visibilità nome molteplicità : tipo = valoreDefault`
+  - Operazioni: `visibilità nome(parametro,...): tipoRestituito`
+
+![](img/IDS/classe.png)
+
+- **Notazione degli Elementi di Classe**
+  - **Visibilità**:
+    - Pubblica: `+`
+    - Privata: `-`
+    - Protetta: `#`
+    - Package: `~`
+  - **Molteplicità**: Specifica il numero di elementi associati.
+    - Esattamente uno: `1`
+    - Facoltativo: `0..1`
+    - Più elementi: `1..*`
+    - Intervallo: `x..y`
+  - **Ambito**:
+    - **Istanza**: Ogni oggetto ha una copia dell'attributo.
+    - **Classe**: L'attributo è condiviso tra tutti gli oggetti della classe.
+
+- **Relazioni tra Classi**
+  Le relazioni sono fondamentali per modellare l'interazione tra classi:
+  - **Generalizzazione**: Rappresenta una relazione di ereditarietà.
+  - **Associazione**: Connessione tra classi. Può essere bidirezionale o monodirezionale.
+  - **Aggregazione**: Relazione "parte-di" in cui le parti possono esistere indipendentemente dal tutto.
+  - **Composizione**: Caso speciale di aggregazione in cui le parti esistono solo in relazione al tutto.
+  - **Dipendenza**: Una classe dipende dai servizi forniti da un'altra.
+  
+![](img/IDS/relazioni_classi.png)
+
+- **Associazioni**
+
+Le associazioni sono connessioni tra classi, e includono:
+1. **Molteplicità**: Specifica il numero di oggetti partecipanti alla relazione.
+   - Esempi:
+     - Una persona può avere una sola casa (`1..1`).
+     - Un'azienda può avere molti dipendenti (`1..*`).
+2. **Ruoli e Navigabilità**: Indicano il nome del ruolo e se una relazione è navigabile in uno o entrambi i sensi.
+
+![](img/IDS/vincoli_classiAss.png)
+
+3. **Associazioni Qualificate**: Specificano un attributo che riduce un'associazione molti-a-molti a una uno-a-uno.
+
+![](img/IDS/qualificate.png)
+
+4. **Associazioni n-arie**: Includono più di due classi in una relazione.
+
+![](img/IDS/n-arie.png)
+
+- **Generalizzazione**
+  - **Ereditarietà**: Le sottoclassi ereditano attributi e metodi dalle superclassi.
+  - **Vincoli**:
+    - `disjoint`: Un'istanza può appartenere a una sola sottoclasse.
+    - `overlapping`: Un'istanza può appartenere a più sottoclassi.
+    - `complete`: La superclasse è completamente rappresentata dalle sue sottoclassi.
+    - `incomplete`: Non tutte le istanze della superclasse appartengono alle sottoclassi.
+
+### Elementi Derivati
+Un elemento derivato è calcolabile da altri elementi ma viene esplicitamente rappresentato nel modello per chiarezza.  
+
+![](img/IDS/elemDeriv.png)
+
+- **Aggregazione**:
+  - Relazione "parte-di" in cui il tutto e le parti possono esistere indipendentemente.
+  - Esempio: `Squadra -> Giocatori`.
+- **Composizione**:
+  - Le parti esistono solo in relazione al tutto.
+  - Esempio: `Finestra -> Pannelli`.
+
+- **Classi Astratte**
+  - Non possono essere istanziate direttamente.
+  - Servono come radici per gerarchie di specializzazione.
+  - Esprimono concetti generici e condivisi.
+
+- **Interfacce**
+  - Definiscono un insieme di operazioni pubbliche senza dettagli di implementazione.
+  - Utilizzano la "notazione a lecca-lecca" o una rappresentazione simile alle classi con lo stereotipo `«interface»`.
+
+![](img/IDS/interface.png)
+
+- **Dipendenze**
+
+![](img/IDS/dipendenze.png)
+
+- **Identificazione di Classi e Associazioni**
+  1. **Classi**:
+     - Devono essere coese e ben definite.
+     - Evitare classi "onnipotenti" o ridondanti.
+     - Riflettere concetti del dominio applicativo.
+     - Non rappresentare soluzioni implementative.
+     - Una classe è associata a un piccolo e ben definito insieme di responsabilità (normalmente tra 3 e 5).
+     - Nessuna classe può essere isolata.
+     - Se una proprietà esiste indipendentemente, o compare più volte all’interno del diagramma dovrebbe essere espressa come classe. Ne è un esempio il proprietario di un auto che sarà una classe persona e non un campo di auto.
+  2. **Associazioni**:
+     - Devono rappresentare proprietà strutturali, non eventi transitori.
+     - Preferire associazioni binarie a quelle n-arie complesse.
+     - Specificare ruoli e vincoli quando appropriato.
+     - Evidenziare le associazioni derivate, che cioè possono essere espresse in termini di altre associazioni.
+
+- **Raffinamenti del Modello**
+Il modello può essere raffinato iterativamente per includere dettagli aggiuntivi o correggere asimmetrie.
+
+![](img/IDS/raffinamentoEs1.png)
+![](img/IDS/raffinamentoEs2.png)
+
+### Identificare le Classi di Progettazione
+
+Le **classi di progettazione** definiscono con precisione come ciascuna classe realizzerà le proprie responsabilità, rappresentando un passaggio chiave nel processo di sviluppo.
+
+#### Caratteristiche delle Classi di Progettazione
+- **Completezza**: Ogni classe deve fornire tutti i servizi necessari ai propri clienti, coprendo ogni aspetto delle responsabilità assegnate.
+- **Sufficienza**: I metodi della classe devono essere strettamente finalizzati al raggiungimento dello scopo della classe, evitando funzionalità ridondanti o superflue.
+- **Essenzialità**: È fondamentale non introdurre più di un metodo per eseguire la stessa operazione, semplificando l'interfaccia e riducendo ambiguità.
+- **Coesione massima**: La classe deve modellare un unico concetto astratto, evitando di sovraccaricarsi con responsabilità multiple o non correlate.
+- **Interdipendenza minima**: Ogni classe deve essere associata al numero minimo necessario di altre classi per svolgere le proprie funzioni, riducendo il grado di accoppiamento e migliorando la modularità.
+
+---
+
+- **Identificare le Associazioni di Progettazione**
+
+Derivano dalle associazioni identificate durante l'analisi e sono adattate per essere implementabili.
+
+1. **Trasformazione dalle Associazioni di Analisi**:  
+   Le associazioni bidirezionali o le classi associative spesso non possono essere implementate direttamente. La progettazione deve trasformarle in costrutti più pratici, adattandole alle esigenze dell'applicazione.
+   
+2. **Elementi Fondamentali da Specificare**:  
+   - **Nome dell’Associazione**: Deve descrivere chiaramente lo scopo della relazione tra le classi.
+   - **Verso di Navigabilità**: Indica la direzione in cui una classe può accedere all'altra, determinando se l’associazione è unidirezionale o bidirezionale.
+   - **Molteplicità**: Deve essere esplicitata per entrambi gli estremi, specificando il numero minimo e massimo di oggetti partecipanti.
+   - **Ruolo della Destinazione**: Assegna un nome significativo al ruolo della classe associata, rendendo chiaro il contesto della relazione.
+
+### Obiettivi delle Associazioni di Progettazione
+- **Navigabilità Ottimizzata**: Minimizzare i percorsi necessari per accedere ai dati, migliorando le prestazioni e la leggibilità.
+- **Semplificazione**: Evitare complessità inutili come associazioni bidirezionali se non strettamente necessarie.
+- **Implementabilità**: Assicurarsi che ogni associazione progettata possa essere direttamente tradotta in codice.
+
+![](img/IDS/assEs1.png)
+![](img/IDS/assEs2.png)
+![](img/IDS/assEs3.png)
+
+### Diagrammi degli Oggetti
+
+I **diagrammi degli oggetti** rappresentano istanze specifiche di classi e costituiscono una particolare applicazione dei diagrammi delle classi.
+
+- **Oggetto come Istanza di una Classe**: Ogni oggetto rappresentato in un diagramma è una particolare istanza di una classe, con valori specifici associati ai suoi attributi e comportamenti definiti dai metodi della classe.
+
+- Un **oggetto composto** è un oggetto di alto livello che contiene al suo interno altri oggetti.
+
+- **Utilizzi dei Diagrammi degli Oggetti**:
+  - **Esempi di Strutture Dati**: Il principale scopo di un diagramma degli oggetti è mostrare esempi specifici di strutture dati.
+  - **Visualizzazione Dinamica**: Offre una vista concreta di come le classi interagiscono e come gli oggetti si collegano tra loro in un determinato momento dell’esecuzione.
+
+### Diagrammi dei Package
+
+I **diagrammi dei package** rappresentano la suddivisione del modello in gruppi logici chiamati package, evidenziando le dipendenze tra di essi.
+
+- **Tipi di Dipendenze tra Package**:
+  - **`«use»`** (default): Quando un elemento del package cliente utilizza in qualche modo un elemento del package fornitore.
+  - **`«import»`**: Gli elementi pubblici dello spazio dei nomi del package fornitore vengono aggiunti come elementi pubblici al package cliente.
+  - **`«access»`**: Gli elementi privati dello spazio dei nomi del package fornitore vengono aggiunti come elementi privati al package cliente.
+  - **`«trace»`**: Rappresenta l’evoluzione di un elemento in un altro elemento più dettagliato.
+
+- **Generalizzazioni tra Package**:
+Si verifica quando un package specifico si conforma all’interfaccia definita dal package generale.
+
+- **Individuare i Package d’Analisi**
+  I package d’analisi raggruppano elementi del modello con forti correlazioni semantiche:
+  - **Fonti Principali**:
+    - **Diagramma delle Classi**: Classi appartenenti a gerarchie di composizione o specializzazione possono essere raggruppate.
+    - **Diagramma dei Casi d’Uso**: Processi aziendali o attori che condividono funzionalità possono indicare un package.
+  - **Raffinamenti**:
+    - Ridistribuire classi tra package.
+    - Aggiungere o eliminare package per minimizzare le interdipendenze.
+    - Evitare dipendenze circolari.
+
+- **Dimensioni Ottimali dei Package**:
+  - Ogni package dovrebbe contenere idealmente tra 4 e 10 classi.
 
 ## Ingegneria del Software
 
