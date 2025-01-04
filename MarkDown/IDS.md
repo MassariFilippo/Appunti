@@ -467,8 +467,6 @@ Le **classi di progettazione** definiscono con precisione come ciascuna classe r
 - **Coesione massima**: La classe deve modellare un unico concetto astratto, evitando di sovraccaricarsi con responsabilità multiple o non correlate.
 - **Interdipendenza minima**: Ogni classe deve essere associata al numero minimo necessario di altre classi per svolgere le proprie funzioni, riducendo il grado di accoppiamento e migliorando la modularità.
 
----
-
 - **Identificare le Associazioni di Progettazione**
 
 Derivano dalle associazioni identificate durante l'analisi e sono adattate per essere implementabili.
@@ -552,6 +550,8 @@ I **diagrammi di interazione** rappresentano la struttura e la dinamica dell'int
   - **Messaggi di Distruzione**: Distrugge un’istanza destinataria.
   - **Invio di Segnali**: Trasferisce segnali informativi.
 
+![](img/IDS/messaggi.png)
+
 ### Diagrammi di Sequenza
 - **Caratteristiche Principali**:
   - Mostrano l’ordine temporale dei messaggi scambiati tra linee di vita.
@@ -580,14 +580,255 @@ I diagrammi di interazione sono utili per descrivere il flusso operativo, il coo
 
 ![](img/IDS/iterazioneEs6.png)
 
+### Diagrammi di Stato
+
+I **diagrammi di stato** rappresentano l’evoluzione temporale delle istanze di un classificatore (classe, caso d’uso, sottosistema) in risposta alle interazioni con altri oggetti.
+
+- **Caratteristiche Principali**:
+  - **Evoluzione Temporale**: Descrivono il comportamento dinamico di un’istanza nel tempo.
+  - **Associazione con Classi**: Ogni classe può avere un diagramma di stato associato per rappresentare i suoi cambiamenti.
+
+- **Notazione UML**:
+  - UML utilizza la notazione di **Harel**, che consente di esprimere:
+    - **Sottostati**: Stati annidati all'interno di stati più generali.
+    - **Stati Composti**: Stati complessi che raggruppano più sottostati.
+    - **Parallelismo**: Stati che possono essere attivi contemporaneamente.
+    - **Stati Storici**: Memorizzazione dello stato precedente per una ripresa coerente.
+    - **Gestione Eventi**: Risposta a eventi esterni o interni.
+    - **Operazioni**: Azioni eseguite durante la transizione tra stati.
+    - **Creazione e Distruzione di Oggetti**: Tracciamento dell'inizio e fine del ciclo di vita.
+    - **Marcamenti Temporali**: Temporizzazioni legate a stati o transizioni.i
+
+Lo **stato** di un oggetto in un determinato istante è una rappresentazione astratta dell’insieme dei valori dei suoi attributi e dei collegamenti.
+
+- **Configurazioni di Stato**:
+  - Le diverse configurazioni di valori e collegamenti vengono raggruppate in stati, in base al loro impatto sul comportamento generale dell’oggetto.
+
+- **Transizioni di Stato**:
+  - Gli **eventi** causano il passaggio da uno stato all’altro.
+  - Un oggetto rimane in uno stato per un periodo di tempo finito (intervallo tra due eventi consecutivi).
+
+- **Azioni e Attività**:
+  - **Azioni**:
+    - Operazioni **istantanee**, **atomiche** e **non interrompibili**.
+    - Tipicamente associate a transizioni che vengono attivate da eventi.
+  - **Attività**:
+    - Operazioni che richiedono un certo intervallo di tempo per essere completate.
+
+Una **transizione** rappresenta il passaggio di un oggetto da uno stato a un altro ed è associata a uno o più eventi. Può includere opzionalmente condizioni e azioni.
+
+- **Eventi**: Avvengono in un preciso istante di tempo e si assume che abbiano durata nulla. Possono essere raggruppati in **classi di eventi**, descritte da attributi.
+- **Condizioni**: Espressioni **booleane** che devono risultare vere affinché la transizione possa avvenire.
+- **Azioni**: Operazioni **istantanee**, **atomiche**, e **non interrompibili**, eseguite al momento della transizione.
+
+![](img/IDS/azione.png)
+
+- **Transizioni senza Evento**: Una transizione priva di evento indica che il passaggio di stato avviene al termine dell'attività nello stato di partenza.
+
+![](img/IDS/transazione.png)
+
+![](img/IDS/statoEs1.png)
+
+![](img/IDS/statoEs2.png)
+
+I **tipi di eventi** rappresentano diverse situazioni che possono innescare una transizione tra stati in un diagramma degli stati.
+
+- **Evento di variazione**:
+  - Si verifica quando una condizione diventa **vera**.
+  - Notazione: un’espressione **booleana**.  
+    *Esempio*: `bilancio < 0`.
+  - Comportamento: considerato come una condizione monitorata continuamente, anche se il controllo avviene solo al variare dei parametri coinvolti.
+
+- **Evento di segnale**:
+  - Avviene quando un oggetto riceve un **oggetto segnale** da un altro oggetto.
+
+- **Evento di chiamata**:
+  - È l’invocazione di una specifica operazione nell’istanza del classificatore del contesto.
+  - Notazione: **signature** dell’operazione.  
+    *Esempio*: `operazione(parametro)`.
+  - Può includere una sequenza di azioni separate da **";"**.
+
+- **Evento temporale**:
+  - Avviene allo scadere di un **periodo di tempo**.
+    - **Notazioni**:
+      - `when(data=01/01/2008)`: specifica una data esatta per la transizione.
+      - `after(10 seconds)`: specifica il tempo che deve trascorrere dallo stato attuale.
+      - È possibile aggiungere il riferimento al momento iniziale con la sintassi `since...`.
+
+### Stati Compositi
+
+Gli **stati compositi** rappresentano stati che contengono altri stati annidati, organizzati in uno o più automi.
+
+- **Ereditarietà**: Gli stati annidati ereditano tutte le transizioni definite dallo stato contenitore.
+
+![](img/IDS/sattoEs3.png)
+
+In un **stato composito ortogonale**, ogni sotto-automa può avere il proprio pseudo-stato finale, applicabile solo a quel sottosistema.
+
+![](img/IDS/statoEs4.png)
+
+Gli automi possono comunicare tra loro in modo **asincrono** utilizzando variabili condivise.
+
+![](img/IDS/statoEs5.png)
+
+### Diagrammi di Attività
+
+I **diagrammi di attività** sono utilizzati per modellare processi e workflow rappresentando attività come un insieme di nodi connessi da archi.
+
+- **Caratteristiche principali**:
+  - **Rappresentazione del processo**: Ogni diagramma descrive un'attività composta da nodi e archi.
+  - **Nuova semantica**: In UML 2, la semantica è basata sulle reti di Petri, distinguendosi dai diagrammi degli stati.
+  - **Contesto di utilizzo**: Un’attività può essere associata a:
+    - Caso d’uso.
+    - Operazione.
+    - Classe.
+    - Interfaccia.
+    - Componente.
+    - Collaborazione.
+  - **Modellazione business e workflow**: Efficace anche per processi aziendali e flussi di lavoro.
+
+![](img/IDS/attivitàEs1.png)
+
+- **Attività**
+  - **Modello a rete**: Le attività sono rappresentate come reti di nodi connessi da archi.
+  - **Tipi di nodi**:
+    - **Nodi azione**: Rappresentano compiti atomici all’interno dell’attività.
+    - **Nodi controllo**: Gestiscono il flusso all’interno dell’attività.
+    - **Nodi oggetto**: Indicano gli oggetti utilizzati o generati nell’attività.
+  - **Tipi di archi**:
+    - **Flussi di controllo**: Rappresentano il flusso del controllo attraverso l’attività.
+    - **Flussi di oggetti**: Rappresentano il flusso degli oggetti utilizzati o creati durante l’attività.
+
+- **Nodi Azione**
+  - **Nodo azione di chiamata**:
+    - Chiama un comportamento.
+    - Chiama un’attività.
+    - Chiama un’operazione.
+  - **Nodo azione di accettazione evento temporale**:
+    - Produce un evento ogni volta che una condizione temporale diventa vera.
+    - Si attiva solo quando viene attivato l’arco associato.
+
+- **Nodi Controllo**
+
+![](img/IDS/attivitàEs2.png)
+
+- **Nodi Oggetto**
+  - **Rappresentazione degli oggetti**:
+    - Indicano la disponibilità di istanze di una classe in punti specifici dell’attività.
+  - **Flussi di oggetti**:
+    - Gli archi rappresentano il flusso di oggetti creati o consumati dai nodi azione.
+  - **Stato dell’oggetto**:
+    - È possibile rappresentare esplicitamente lo stato degli oggetti nei nodi.
+
+![](img/IDS/attivitàEs3.png)
+
+- **Corsie (Swimlanes)**
+  - **Partizionamento dell’attività**:
+    - Le corsie suddividono l’attività in insiemi di azioni correlate.
+  - **Corrispondenza delle corsie**:
+    - Possono rappresentare:
+      - Casi d’uso.
+      - Classi.
+      - Componenti.
+      - Unità organizzative.
+      - Ruoli.
+  - **Descrizione semantica**:
+    - Ogni insieme di corsie è descritto da una specifica dimensione semantica.
+
+![](img/IDS/attivitàEs4.png)
+
+### Diagramma dei Componenti
+
+I **diagrammi dei componenti** rappresentano i componenti di un sistema software e le loro interdipendenze, evidenziando la modularità e la struttura del sistema.
+
+![](img/IDS/compEs1.png)
+
+- **Definizione di Componente**:
+  - Un componente è una **parte modulare** del sistema che incapsula i propri contenuti, comportandosi come una **scatola nera** (black box).
+  - I componenti possono possedere:
+    - **Attributi**: proprietà che descrivono lo stato o le caratteristiche del componente.
+    - **Operazioni**: comportamenti o funzionalità offerte dal componente.
+  - Possono partecipare a relazioni come **associazioni** e **generalizzazioni**.
+
+![](img/IDS/compEs2.png)
+
+- **Relazioni tra Componenti**:
+  - I componenti sono connessi tra loro mediante **dipendenze**.
+  - Possono interagire attraverso **interfacce**, che specificano i servizi offerti o richiesti.
+
+- **Utilità**:
+  - Rappresentano una vista logica e fisica del sistema.
+  - Facilitano la comprensione delle dipendenze tra le parti del sistema, evidenziando le possibilità di riuso e modularità.
+
+![](img/IDS/compEs3.png)
+
+### Diagramma di Deployment
+
+I **diagrammi di deployment** rappresentano la disposizione fisica del software su risorse hardware, mostrando come le componenti software vengono distribuite e interagiscono attraverso l’hardware.
+
+- **Caratteristiche Principali**:
+  - Specificano l’**hardware** su cui il software verrà eseguito.
+  - Mostrano come il **software è dislocato** sull’hardware.
+  - Possono essere rappresentati in due modalità:
+    - **Descrittore**: include nodi, relazioni tra nodi e manufatti, rappresentando i tipi di architetture.
+    - **Istanza**: descrive istanze specifiche di nodi, relazioni e manufatti per modellare un deployment su un particolare sito.
+
+- Un **nodo** rappresenta una risorsa computazionale su cui possono essere eseguiti i manufatti.
+- **Tipi di nodi**:
+  - **«device»**: rappresenta una periferica fisica, come un PC o un server fisico.
+  - **«executionEnvironment»**: rappresenta un ambiente software di esecuzione, come un web server o una JVM.
+- **Relazioni tra nodi**:
+  - Un’associazione tra nodi rappresenta un **canale di comunicazione** tra di essi.
+  - I nodi possono essere **annidati** per indicare una relazione gerarchica.
+- È possibile utilizzare stereotipi o icone aggiuntive per migliorare la leggibilità del diagramma.
+
+- Un **manufatto** rappresenta un’entità concreta del mondo reale associata al software.
+- Esempi di manufatti:
+  - File sorgenti.
+  - File eseguibili.
+  - Script.
+  - Tabelle di database.
+  - Documenti.
+  - Modelli UML.
+- I manufatti vengono **dislocati sui nodi**, specificando dove risiedono e come vengono utilizzati.
+
+![](img/IDS/deply.png)
+
+- **Utilità del Diagramma di Deployment**
+  - Fornisce una vista chiara sull’**infrastruttura fisica** del sistema.
+  - Evidenzia le relazioni tra **hardware e software**, agevolando il deployment e l’integrazione del sistema.
+
+### Benefici, Complessità e Adattabilità di UML
+
+**Benefici di UML**  
+UML ha superato le difficoltà derivanti dalla presenza di molteplici metodi di analisi e disegno, fornendo uno standard unico e condiviso. Questo consente:  
+- Uniformità nei concetti e nelle notazioni utilizzate.  
+- Interoperabilità tra strumenti di sviluppo.  
+- Indipendenza da produttori, tecnologie e metodi specifici.  
+
+UML risponde alle esigenze di sviluppo di sistemi complessi con ambienti visuali, concentrandosi sul processo e sugli approcci adottati. Inoltre, il suo **metamodello comune** facilita la comunicazione tra strumenti e ambienti di progettazione.
+
+**Complessità di UML**  
+- Il **metamodello complesso** è progettato per rappresentare qualsiasi tipo di sistema software a diversi livelli di astrazione.  
+- Il numero di diagrammi è elevato e spesso le rappresentazioni possono variare.  
+- UML non prescrive una sequenza fissa nell’utilizzo dei diagrammi, lasciando ampia libertà ai progettisti.  
+
+**Personalizzazioni**  
+UML è flessibile e adattabile:  
+- Si adatta a contesti eterogenei, da chi lavora individualmente a grandi team aziendali.  
+- Permette di rispondere a esigenze di formalizzazione e documentazione differenti.  
+- È versatile per progetti di varie dimensioni e complessità.  
+
+Tuttavia, **non ha senso utilizzare UML sempre nello stesso modo**: occorre selezionare i diagrammi e le tecniche in base alle esigenze specifiche del progetto. 
+
+UML è uno **standard potente e articolato** che può rappresentare qualunque sistema software a diversi livelli di astrazione. Tuttavia, la sua **complessità** richiede che venga adattato in base alle esigenze dei progettisti e del contesto specifico, utilizzando solo ciò che è necessario per il progetto.
 
 ## Ingegneria del Software
 
 L’ingegneria del software è la disciplina che si occupa della **realizzazione di sistemi software** complessi, la cui **dimensione** e **complessità** richiedono l'intervento di team di sviluppo dedicati. Questo settore è emerso per affrontare la crescente complessità dei sistemi software, passando da semplici programmi individuali a **sistemi collaborativi** e commerciali, come OS 360 di IBM negli anni '50, fino a moderni standard di qualità come **ISO-9000**. L’ingegneria del software è definita come un approccio **sistematico** alla **progettazione**, **manutenzione** e **ritiro** di sistemi software. La disciplina mira a produrre software in modo **sistematico** e **strutturato**, rispettando tempi e costi stabiliti. Si fonda su un **corpus di teorie, metodi e strumenti** sia tecnologici che organizzativi per garantire la **qualità** del software prodotto.
 
-## Qualità del Software
+### Qualità del Software
 
-### Tipi di Qualità
 Le qualità del software si suddividono in:
 - **Qualità interne**: aspetti legati allo **sviluppo** del software, invisibili agli utenti.
 - **Qualità esterne**: aspetti legati alle **funzionalità** del prodotto, visibili agli utenti.
@@ -604,7 +845,7 @@ Entrambe le qualità sono **interdipendenti**: un software non può avere alta q
   7. **Riusabilità**: utilizzo del software per creare nuovi sistemi.
   8. **Portabilità**: capacità di funzionare su piattaforme diverse.
 
-## Software Design e Principi di Progettazione
+### Software Design e Principi di Progettazione
 
 - Software Design: Il **software design** è il processo che trasforma le specifiche utente in un **insieme di specifiche** per i programmatori, producendo un’**architettura** chiara del software.
 
@@ -615,12 +856,10 @@ Entrambe le qualità sono **interdipendenti**: un software non può avere alta q
   4. **Modularità**: scomposizione in moduli funzionali autonomi, che facilita manutenzione e riuso.
   5. **Astrazione**: identificazione degli aspetti fondamentali di un problema, ignorando i dettagli.
 
-## Misurazione e Stima dei Costi
+### Misurazione e Stima dei Costi
 
-### Misurazione dei Costi
 Nel ciclo di vita del software, la **misurazione** permette di prevedere tempi di consegna, **costi** e qualità del prodotto. Sebbene le caratteristiche del software rendano ambigue alcune misure, la disciplina ha proposto **metodi e metriche** per agevolare la valutazione.
 
-### Stima dei Costi
 I costi del software includono:
 - **Risorse di sviluppo** (personale tecnico, supporto, materiali).
 - **Metriche dimensionali** (numero di istruzioni o linee di codice) e **funzionali** (es. Function Points).
@@ -639,7 +878,6 @@ Per calcolare il numero di Function Points non pesato, è necessario seguire que
 2. **Assegnare un peso a ciascuna funzionalità**: Ogni funzionalità viene classificata in base alla sua complessità (bassa, media, alta) e viene assegnato un peso corrispondente.
 3. **Calcolare il totale dei Function Points non pesato**: Moltiplicare il numero di ciascun tipo di funzionalità per il peso assegnato e sommare i risultati.
 
-### Ambito del Conteggio e Confine delle Applicazioni
 - **Definizione dell'Ambito del Conteggio**: L’ambito del conteggio definisce le funzionalità che devono essere considerate in un conteggio.
 - **Progetti di Sviluppo e Preservazione dei Vecchi Dati**
   - **Progetti di Sviluppo**: Includono tutte le nuove funzionalità che devono essere sviluppate.
