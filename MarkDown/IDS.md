@@ -529,6 +529,58 @@ Si verifica quando un package specifico si conforma all’interfaccia definita d
 - **Dimensioni Ottimali dei Package**:
   - Ogni package dovrebbe contenere idealmente tra 4 e 10 classi.
 
+### Diagrammi di Interazione
+
+I **diagrammi di interazione** rappresentano la struttura e la dinamica dell'interazione tra oggetti durante uno specifico scenario, evidenziando il flusso di messaggi scambiati tra loro.
+
+- **Tipi di Diagrammi di Interazione**:
+  - **Diagramma di Sequenza**: Enfatizza la sequenza temporale degli scambi di messaggi tra le linee di vita.
+  - **Diagramma di Comunicazione**: Focalizza le relazioni strutturali tra gli oggetti coinvolti nell'interazione.
+  - **Diagramma di Sintesi dell’Interazione**: Illustra come comportamenti complessi vengono composti da interazioni più semplici.
+  - **Diagramma di Temporizzazione**: Sottolinea gli aspetti temporali e real-time dell’interazione.
+
+- **Terminologia Chiave**
+  - **Interazione**: Un’unità di comportamento di un classificatore che comprende un insieme di messaggi scambiati tra linee di vita con l'obiettivo di ottenere un risultato.
+  - **Linea di Vita**: Rappresenta la partecipazione di un’istanza di un classificatore all’interazione, spesso disegnata con una riga verticale tratteggiata.
+  - **Messaggio**: Una comunicazione istantanea tra due linee di vita che trasporta informazioni per avviare un’attività.
+
+- **Tipologie di Messaggi**
+  - **Messaggi di Chiamata**: Un’operazione viene invocata su una linea di vita.
+    - **Sincrono**: Il mittente attende il completamento dell’operazione.
+    - **Asincrono**: Il mittente continua l’esecuzione senza attendere.
+  - **Messaggi di Creazione**: Crea un’istanza del classificatore destinatario.
+  - **Messaggi di Distruzione**: Distrugge un’istanza destinataria.
+  - **Invio di Segnali**: Trasferisce segnali informativi.
+
+### Diagrammi di Sequenza
+- **Caratteristiche Principali**:
+  - Mostrano l’ordine temporale dei messaggi scambiati tra linee di vita.
+  - Le due dimensioni principali:
+    - **Verticale**: Rappresenta il tempo (dal passato verso il futuro).
+    - **Orizzontale**: Rappresenta le linee di vita coinvolte nell’interazione.
+  - **Attivazioni**: Periodi in cui una linea di vita esegue un’azione, rappresentando il controllo e la durata.
+- **Componenti Avanzati**:
+  - **Nodi Decisionali**: Indicazioni su percorsi alternativi basati su condizioni.
+  - **Iterazioni**: Ripetizioni di messaggi o azioni.
+  - **Annidamenti**: Esecuzioni di operazioni subordinate.
+
+- **Utilizzo dei Diagrammi di Interazione**
+  
+I diagrammi di interazione sono utili per descrivere il flusso operativo, il coordinamento tra componenti, e per analizzare scenari complessi che richiedono un’ampia visione delle dipendenze temporali e strutturali tra gli oggetti.
+
+![](img/IDS/iterazioneEs1.png)
+
+![](img/IDS/iterazioneEs2.png)
+
+![](img/IDS/iterazioneEs3.png)
+
+![](img/IDS/iterazioneEs4.png)
+
+![](img/IDS/iterazioneEs5.png)
+
+![](img/IDS/iterazioneEs6.png)
+
+
 ## Ingegneria del Software
 
 L’ingegneria del software è la disciplina che si occupa della **realizzazione di sistemi software** complessi, la cui **dimensione** e **complessità** richiedono l'intervento di team di sviluppo dedicati. Questo settore è emerso per affrontare la crescente complessità dei sistemi software, passando da semplici programmi individuali a **sistemi collaborativi** e commerciali, come OS 360 di IBM negli anni '50, fino a moderni standard di qualità come **ISO-9000**. L’ingegneria del software è definita come un approccio **sistematico** alla **progettazione**, **manutenzione** e **ritiro** di sistemi software. La disciplina mira a produrre software in modo **sistematico** e **strutturato**, rispettando tempi e costi stabiliti. Si fonda su un **corpus di teorie, metodi e strumenti** sia tecnologici che organizzativi per garantire la **qualità** del software prodotto.
