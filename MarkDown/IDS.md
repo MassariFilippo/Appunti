@@ -24,6 +24,7 @@
     - [Diagrammi di Attività](#diagrammi-di-attività)
     - [Diagramma dei Componenti](#diagramma-dei-componenti)
     - [Diagramma di Deployment](#diagramma-di-deployment)
+    - [Confronto tra Diagrammi](#confronto-tra-diagrammi)
     - [Benefici, Complessità e Adattabilità di UML](#benefici-complessità-e-adattabilità-di-uml)
   - [Ingegneria del Software](#ingegneria-del-software)
     - [Qualità del Software](#qualità-del-software)
@@ -594,7 +595,7 @@ I **diagrammi di interazione** rappresentano la struttura e la dinamica dell'int
 
 ### Diagrammi di Sequenza
 - **Caratteristiche Principali**:
-  - Mostrano l’ordine temporale dei messaggi scambiati tra linee di vita.
+  - Mostrano l’ordine temporale dei messaggi scambiati tra linee di vita 0vvero oggetti o componenti capaci di svolgere specifici compiti.
   - Le due dimensioni principali:
     - **Verticale**: Rappresenta il tempo (dal passato verso il futuro).
     - **Orizzontale**: Rappresenta le linee di vita coinvolte nell’interazione.
@@ -711,7 +712,7 @@ Gli automi possono comunicare tra loro in modo **asincrono** utilizzando variabi
 
 ### Diagrammi di Attività
 
-I **diagrammi di attività** sono utilizzati per modellare processi e workflow rappresentando attività come un insieme di nodi connessi da archi.
+I **diagrammi di attività** sono utilizzati per modellare processi e workflow rappresentando attività come un insieme di nodi connessi da archi, il focus rimane sempre sul sussegiursi delle attività da svolgere e la possibilità di essere parallelizzate.
 
 - **Caratteristiche principali**:
   - **Rappresentazione del processo**: Ogni diagramma descrive un'attività composta da nodi e archi.
@@ -835,6 +836,21 @@ I **diagrammi di deployment** rappresentano la disposizione fisica del software 
 - **Utilità del Diagramma di Deployment**
   - Fornisce una vista chiara sull’**infrastruttura fisica** del sistema.
   - Evidenzia le relazioni tra **hardware e software**, agevolando il deployment e l’integrazione del sistema.
+
+### Confronto tra Diagrammi
+
+| Caratteristica          | Diagrammi di Attività                                      | Diagrammi di Sequenza                                  | Diagrammi degli Stati                                | Diagrammi delle Classi                              | Diagrammi dei Casi d'Uso                           |
+|-------------------------|-----------------------------------------------------------|-------------------------------------------------------|-----------------------------------------------------|----------------------------------------------------|---------------------------------------------------|
+| *Scopo*               | Modellare flussi di attività o processi                   | Modellare interazioni tra oggetti                     | Modellare il comportamento di un oggetto nel tempo  | Descrivere la struttura statica del sistema        | Descrivere le funzionalità del sistema            |
+| *Focus*               | Flusso di controllo e dati                                | Sequenza temporale dei messaggi                       | Transizioni tra stati di un oggetto                 | Classi, attributi, metodi e relazioni              | Attori, casi d'uso e loro relazioni               |
+| *Elementi principali* | Nodi di attività, decisioni, fork/join                    | Oggetti, messaggi, attivazioni                        | Stati, transizioni, eventi, azioni                  | Classi, interfacce, associazioni, ereditarietà     | Attori, casi d'uso, relazioni (include/extend)    |
+| *Quando usarlo*       | Processi aziendali, workflow complessi                    | Interazioni dinamiche, casi d'uso                     | Comportamento di un singolo oggetto o componente    | Progettazione della struttura del sistema          | Analisi dei requisiti e delle funzionalità        |
+| *Esempi di contesti*  | - Processo di approvazione di un documento                | - Prelievo da un bancomat                             | - Ciclo di vita di un ordine (es. "In attesa", "Spedito") | - Modellazione di un sistema di gestione libreria  | - Sistema di prenotazione online                  |
+|                         | - Flusso di lavoro di una fabbrica                        | - Acquisto online                                     | - Stati di un semaforo (es. "Verde", "Giallo", "Rosso") | - Relazioni tra classi in un'app di e-commerce     | - Interazione tra utente e sistema di login       |
+|                         | - Processo di prenotazione di un viaggio                  | - Login in un'app                                     | - Comportamento di un utente in un'app (es. "Loggato", "Non loggato") | - Gerarchia di classi in un gioco                  | - Flusso di interazione per un carrello acquisti  |
+| *Dettagli aggiuntivi* | - Mostra attività parallele e condizioni (if-else)        | - Mostra l'ordine temporale delle interazioni         | - Utile per oggetti con comportamenti complessi     | - Mostra la struttura e le relazioni tra classi    | - Descrive come gli attori interagiscono con il sistema |
+|                         | - Utile per descrivere flussi di lavoro complessi         | - Utile per analizzare collaborazioni tra oggetti     | - Si concentra su cambiamenti di stato              | - Fondamentale per la progettazione OOP (Object-Oriented Programming) | - Aiuta a identificare i requisiti funzionali     |
+|                         | - Rappresenta il comportamento globale di un sistema      | - Si concentra su un caso d'uso specifico             | - Rappresenta il ciclo di vita di un oggetto        | - Supporta l'astrazione e l'organizzazione del codice | - Facilita la comunicazione con gli stakeholder   |
 
 ### Benefici, Complessità e Adattabilità di UML
 
