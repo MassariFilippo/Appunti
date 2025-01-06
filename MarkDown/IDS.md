@@ -1,4 +1,45 @@
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });</script>
+
 # APPUNTI DI INGEGNERIA DEL SOFTWARE
+
+- [APPUNTI DI INGEGNERIA DEL SOFTWARE](#appunti-di-ingegneria-del-software)
+  - [Ciclo di Vita dei Sistemi Informatici](#ciclo-di-vita-dei-sistemi-informatici)
+    - [Fasi del Ciclo di Vita](#fasi-del-ciclo-di-vita)
+    - [Analisi dei Requisiti](#analisi-dei-requisiti)
+    - [Metodi di Analisi](#metodi-di-analisi)
+    - [Progettazione](#progettazione)
+  - [Il Paradigma a Oggetti](#il-paradigma-a-oggetti)
+  - [Unified Modeling Language (UML)](#unified-modeling-language-uml)
+    - [Diagrammi dei Casi d’Uso](#diagrammi-dei-casi-duso)
+    - [Diagrammi delle Classi](#diagrammi-delle-classi)
+    - [Diagrammi degli Oggetti](#diagrammi-degli-oggetti)
+    - [Diagrammi dei Package](#diagrammi-dei-package)
+    - [Diagrammi di Interazione](#diagrammi-di-interazione)
+    - [Diagrammi di Sequenza](#diagrammi-di-sequenza)
+    - [Diagrammi di Stato](#diagrammi-di-stato)
+    - [Diagrammi di Attività](#diagrammi-di-attività)
+    - [Diagramma dei Componenti](#diagramma-dei-componenti)
+    - [Diagramma di Deployment](#diagramma-di-deployment)
+    - [Benefici, Complessità e Adattabilità di UML](#benefici-complessità-e-adattabilità-di-uml)
+  - [Ingegneria del Software](#ingegneria-del-software)
+    - [Qualità del Software](#qualità-del-software)
+    - [Principi di Progettazione del Software](#principi-di-progettazione-del-software)
+    - [Misurazione nel Ciclo di Vita del Software](#misurazione-nel-ciclo-di-vita-del-software)
+    - [Stima dei Costi](#stima-dei-costi)
+    - [Metodo Function Points](#metodo-function-points)
+    - [Numero Ciclomatico](#numero-ciclomatico)
+    - [COnstructive COst MOdel (COCOMO)](#constructive-cost-model-cocomo)
+    - [Produzione del Software](#produzione-del-software)
+    - [Modelli Evolutivi e Prototipazione](#modelli-evolutivi-e-prototipazione)
+    - [Verifica del software](#verifica-del-software)
+    - [Certificazione](#certificazione)
+    - [Manutenzione Software](#manutenzione-software)
+  - [Progettazione di Interfacce Utente](#progettazione-di-interfacce-utente)
+
 
 ## Ciclo di Vita dei Sistemi Informatici
 
@@ -164,7 +205,7 @@ Il **late binding** o **istanziamento dinamico** consente di scegliere l'impleme
 
 La **delegazione** avviene quando un oggetto affida parte delle sue funzionalità a un altro oggetto. Questo meccanismo è fondamentale per implementare associazioni tra classi e promuove la modularità.
 
-### Benefici del Paradigma a Oggetti
+**Benefici del Paradigma a Oggetti**
 
 - **Modellazione**: La decomposizione è orientata agli oggetti, che rispecchiano le entità del dominio.
 - **Manutenibilità**: Cambiamenti locali non influenzano l'intero sistema.
@@ -408,8 +449,7 @@ Le associazioni sono connessioni tra classi, e includono:
     - `complete`: La superclasse è completamente rappresentata dalle sue sottoclassi.
     - `incomplete`: Non tutte le istanze della superclasse appartengono alle sottoclassi.
 
-### Elementi Derivati
-Un elemento derivato è calcolabile da altri elementi ma viene esplicitamente rappresentato nel modello per chiarezza.  
+Un **elemento derivato** è calcolabile da altri elementi ma viene esplicitamente rappresentato nel modello per chiarezza.  
 
 ![](img/IDS/elemDeriv.png)
 
@@ -456,11 +496,10 @@ Il modello può essere raffinato iterativamente per includere dettagli aggiuntiv
 ![](img/IDS/raffinamentoEs1.png)
 ![](img/IDS/raffinamentoEs2.png)
 
-### Identificare le Classi di Progettazione
-
 Le **classi di progettazione** definiscono con precisione come ciascuna classe realizzerà le proprie responsabilità, rappresentando un passaggio chiave nel processo di sviluppo.
 
-#### Caratteristiche delle Classi di Progettazione
+**Caratteristiche delle Classi di Progettazione**
+
 - **Completezza**: Ogni classe deve fornire tutti i servizi necessari ai propri clienti, coprendo ogni aspetto delle responsabilità assegnate.
 - **Sufficienza**: I metodi della classe devono essere strettamente finalizzati al raggiungimento dello scopo della classe, evitando funzionalità ridondanti o superflue.
 - **Essenzialità**: È fondamentale non introdurre più di un metodo per eseguire la stessa operazione, semplificando l'interfaccia e riducendo ambiguità.
@@ -480,7 +519,8 @@ Derivano dalle associazioni identificate durante l'analisi e sono adattate per e
    - **Molteplicità**: Deve essere esplicitata per entrambi gli estremi, specificando il numero minimo e massimo di oggetti partecipanti.
    - **Ruolo della Destinazione**: Assegna un nome significativo al ruolo della classe associata, rendendo chiaro il contesto della relazione.
 
-### Obiettivi delle Associazioni di Progettazione
+**Obiettivi delle Associazioni di Progettazione**
+
 - **Navigabilità Ottimizzata**: Minimizzare i percorsi necessari per accedere ai dati, migliorando le prestazioni e la leggibilità.
 - **Semplificazione**: Evitare complessità inutili come associazioni bidirezionali se non strettamente necessarie.
 - **Implementabilità**: Assicurarsi che ogni associazione progettata possa essere direttamente tradotta in codice.
@@ -655,8 +695,6 @@ I **tipi di eventi** rappresentano diverse situazioni che possono innescare una 
       - `after(10 seconds)`: specifica il tempo che deve trascorrere dallo stato attuale.
       - È possibile aggiungere il riferimento al momento iniziale con la sintassi `since...`.
 
-### Stati Compositi
-
 Gli **stati compositi** rappresentano stati che contengono altri stati annidati, organizzati in uno o più automi.
 
 - **Ereditarietà**: Gli stati annidati ereditano tutte le transizioni definite dallo stato contenitore.
@@ -830,71 +868,264 @@ L’ingegneria del software è la disciplina che si occupa della **realizzazione
 ### Qualità del Software
 
 Le qualità del software si suddividono in:
-- **Qualità interne**: aspetti legati allo **sviluppo** del software, invisibili agli utenti.
-- **Qualità esterne**: aspetti legati alle **funzionalità** del prodotto, visibili agli utenti.
+- **Qualità interne (I)**: aspetti legati allo **sviluppo** del software, invisibili agli utenti.
+- **Qualità esterne (E)**: aspetti legati alle **funzionalità** del prodotto, visibili agli utenti.
 
 Entrambe le qualità sono **interdipendenti**: un software non può avere alta qualità esterna senza adeguate qualità interne.
 
+- **Relative al prodotto (P)**: riguardano le caratteristiche stesse del sw e sono sempre valutabili.
+- **Relative al processo (PC)**: riguardano i metodi utilizzati durante lo sviluppo del sw.
+
+
 - Caratteristiche principali della Qualità del Software
-  1. **Correttezza**: rispetta le specifiche di progetto.
-  2. **Affidabilità**: l’utente può contare sul software.
-  3. **Robustezza**: capacità di reagire in modo ragionevole anche a input non previsti.
-  4. **Efficienza**: utilizzo ottimale delle risorse di calcolo.
-  5. **Facilità d'uso**: interfaccia intuitiva per l’utente.
-  6. **Verificabilità**: facilità di valutare la correttezza e le prestazioni.
-  7. **Riusabilità**: utilizzo del software per creare nuovi sistemi.
-  8. **Portabilità**: capacità di funzionare su piattaforme diverse.
+  1. **Correttezza (E,P)**: rispetta le specifiche di progetto.
+  2. **Affidabilità (E,P)**: l’utente può contare sul software.
+  3. **Robustezza (E,P,PC)**: capacità di reagire in modo ragionevole anche a input non previsti.
+  4. **Efficienza (E,P)**: utilizzo ottimale delle risorse di calcolo.
+  5. **Facilità d'uso (E,P)**: interfaccia intuitiva per l’utente.
+  6. **Verificabilità (I,P,PC)**: facilità di valutare la correttezza e le prestazioni.
+  7. **Riusabilità (I,P)**: utilizzo del software per creare nuovi sistemi.
+  8. **Portabilità (E,P)**: capacità di funzionare su piattaforme diverse.
+  9. **Facilità di manutenzione (I,P)**: un sw è facile da manutenere non solo se è strutturato in modo tale da facilitare la ricerca degli errori (modifiche correttive) ma anche se la sua struttura permette di aggiungere nuove funzionalità al sistema (modifiche perfettive) o di adattarlo ai cambiamenti del dominio applicativo (modifiche adattative).
 
-### Software Design e Principi di Progettazione
+![](img/IDS/costoDelSoftware.png)
 
-- Software Design: Il **software design** è il processo che trasforma le specifiche utente in un **insieme di specifiche** per i programmatori, producendo un’**architettura** chiara del software.
+  10. **Interoperabilità (E,P)**: fa riferimento all’abilità di un sistema di coesistere e cooperare con altri sistemi (es. un word processor in cui possono essere creati grafici)
+  11. **Produttività (PC)**: misura l’efficienza del processo di produzione del software in termini di velocità di consegna del sw.
+  12. **Tempestività (PC)**: misura la capacità del processo di produzione del software di valutare e rispettare i tempi di consegna del prodotto.
+  13. **Trasparenza (PC)**: un processo di produzione del software si dice trasparente se permette di capire il suo stato attuale e tutti i suoi passi
 
-- Principi di Progettazione:
-  1. **Formalità**: uso di **metodologie standardizzate** per ridurre errori.
-  2. **Anticipazione dei cambiamenti**: progetta per i requisiti attuali e futuri.
-  3. **Separazione degli argomenti**: suddivide problemi complessi in elementi più semplici.
-  4. **Modularità**: scomposizione in moduli funzionali autonomi, che facilita manutenzione e riuso.
-  5. **Astrazione**: identificazione degli aspetti fondamentali di un problema, ignorando i dettagli.
+**Software Design e Principi di Progettazione**
 
-### Misurazione e Stima dei Costi
+- Il **software design** è il processo che trasforma le specifiche utente in un **insieme di specifiche** per i programmatori, producendo un’**architettura** chiara del software.
 
-Nel ciclo di vita del software, la **misurazione** permette di prevedere tempi di consegna, **costi** e qualità del prodotto. Sebbene le caratteristiche del software rendano ambigue alcune misure, la disciplina ha proposto **metodi e metriche** per agevolare la valutazione.
+### Principi di Progettazione del Software
 
-I costi del software includono:
-- **Risorse di sviluppo** (personale tecnico, supporto, materiali).
-- **Metriche dimensionali** (numero di istruzioni o linee di codice) e **funzionali** (es. Function Points).
+L'utilizzo di formalismi e metodologie standardizzate durante le fasi di progettazione, implementazione e documentazione del sistema consente di ridurre significativamente errori di progetto quali incompletezza, inconsistenza e ambiguità.
 
-### Il Metodo dei Function Points
-I **Function Points** (FP) rappresentano una metrica per valutare la **dimensione funzionale** del software. Introdotto negli anni '70, il metodo consente di quantificare le funzionalità offerte all’utente, indipendentemente dall’ambiente tecnologico.
+**Anticipazione dei Cambiamenti**
 
--  **Conteggio e Tipi di Function Points
-Il conteggio dei Function Points prevede l’identificazione di:
-- **Funzioni di tipo dati**: file interni logici ed esterni di interfaccia.
-- **Funzioni di tipo transazione**: input, output, e interrogazioni.
+La progettazione deve considerare non solo le specifiche attuali, ma anche quelle future, per garantire manutenzione e riusabilità. 
 
--  **Calcolo del Numero di Function Points Non Pesato
-Per calcolare il numero di Function Points non pesato, è necessario seguire questi passaggi:
-1. **Identificare le funzionalità**: Determinare tutte le funzionalità del sistema, suddividendole in funzioni di tipo dati e funzioni di tipo transazione.
-2. **Assegnare un peso a ciascuna funzionalità**: Ogni funzionalità viene classificata in base alla sua complessità (bassa, media, alta) e viene assegnato un peso corrispondente.
-3. **Calcolare il totale dei Function Points non pesato**: Moltiplicare il numero di ciascun tipo di funzionalità per il peso assegnato e sommare i risultati.
+**Tipologie di Cambiamenti:**
+1. **Noti a priori**: 
+   - Ogni software evolve rispetto alla sua prima release.
+   - I servizi futuri, anche se non implementati subito, devono essere considerati.
+2. **Non noti a priori**: 
+   - La progettazione deve rendere il sistema facilmente modificabile.
 
-- **Definizione dell'Ambito del Conteggio**: L’ambito del conteggio definisce le funzionalità che devono essere considerate in un conteggio.
-- **Progetti di Sviluppo e Preservazione dei Vecchi Dati**
-  - **Progetti di Sviluppo**: Includono tutte le nuove funzionalità che devono essere sviluppate.
-  - **Preservazione dei Vecchi Dati**: Includono le attività necessarie per garantire che i dati esistenti siano mantenuti e accessibili.
-- **Manutenzione Evolutiva**: Riguarda le modifiche e gli aggiornamenti che migliorano o estendono le funzionalità esistenti di un'applicazione.
-- **Applicazione Esistente**: Si riferisce a un'applicazione già in uso che potrebbe richiedere aggiornamenti, correzioni di bug o miglioramenti.
+**Aree di Cambiamento:**
 
-### Funzioni di Tipo Dati
+- Periferiche e hardware.
+- Dominio di applicazione.
+- **Algoritmi e strutture dati**: 
+   - Nelle versioni iniziali si preferiscono soluzioni semplici per velocizzare sviluppo e debugging.
+
+**Separazione degli Argomenti**
+
+**Obiettivo:** semplificare la soluzione dividendo gli aspetti complessi del problema. 
+
+**Metodi di Suddivisione:**
+1. **Tempo**: separazione delle attività lungo il ciclo di produzione del software.
+2. **Livello di qualità**: inizialmente progettazione corretta, poi ristrutturazione per efficienza.
+3. **Vista**: distinzione tra flussi di dati e flusso di controllo.
+4. **Livello di astrazione**: specifiche progressivamente raffinate.
+5. **Dimensione**: modularizzazione per semplificare gestione e manutenzione.
+
+**Modularità**
+
+Un modulo è il componente di base di un sistema software che raccoglie funzionalità strettamente correlate.  
+**Benefici della Modularità:**
+- Scomposizione di sistemi complessi.
+- Riutilizzo di moduli esistenti.
+- Migliore comprensione e modifica del sistema.
+
+**Linee Guida per la Modularizzazione:**
+1. Servizi connessi nello stesso modulo.
+2. Moduli indipendenti tra loro.
+3. Minima conoscenza del contenuto degli altri moduli.
+
+**Concetto di Information Hiding:**
+- L'interfaccia di un modulo deve contenere solo le informazioni necessarie per il suo utilizzo, nascondendo dettagli implementativi.  
+- **Elementi chiave dell’interfaccia:**
+  - Servizi offerti.
+  - Modalità di fruizione.
+  - Parametri di input.
+  - Descrizione dell’output (inclusi codici di errore).
+
+**Relazioni tra Moduli:**
+1. **Di utilizzo (USES)**: quali moduli vengono utilizzati per completare i servizi.
+2. **Di composizione (IS PART OF)**: descrive la struttura del sistema.
+3. **Temporale**: sequenza di realizzazione dei moduli.  
+*Strumento utile:* grafi per rappresentare queste relazioni.
+
+**Astrazione**
+
+L'astrazione è fondamentale per analizzare problemi complessi, consentendo di concentrarsi sugli aspetti essenziali ignorando i dettagli.  
+**Modelli di astrazione:** rappresentano la realtà evidenziando gli elementi rilevanti.
+
+**Generalità**
+
+Nella risoluzione di un problema, si identifica il problema più generale che lo sottende.  
+**Vantaggi della Generalità:**
+- Soluzioni più semplici e riusabili.
+- Possibile riutilizzo di soluzioni già esistenti.
+- Fondamentale per software **off-the-shelf**.
+
+Questi principi costituiscono le basi per una progettazione efficace e flessibile, garantendo al software la capacità di evolversi nel tempo, facilitandone la manutenzione e la riusabilità.
+
+### Misurazione nel Ciclo di Vita del Software
+
+La **misurazione** è essenziale nel ciclo di vita del software per stimare tempi di consegna, costi e qualità del prodotto, permettendo un confronto tra oggetti e fenomeni distinti per valutazioni e decisioni. Nonostante la "non fisicità" del software renda le misure in parte ambigue, l'ingegneria del software ha sviluppato numerosi metodi e misure standard.
+
+**Scopi della Misurazione**
+
+1. **Previsione**: stimare caratteristiche future del software in base alla fase attuale del ciclo di vita.  
+2. **Stima**: valutare caratteristiche presenti del software nella fase attuale.
+
+**Fasi della Misurazione**
+
+1. **Progettazione**:
+   - Prevedere la manutenibilità del software.
+   - Prevenire problemi post-rilascio.
+2. **Collaudo e Test**:
+   - Confrontare il prodotto con le specifiche iniziali.
+3. **Dopo il Rilascio**:
+   - Misurare l'impatto del software su efficienza ed efficacia.
+   - Confrontare prestazioni con prodotti comparabili.
+   - Identificare aree di miglioramento.
+   - Decidere il momento del ritiro dalla produzione.
+
+**Obiettivo**: prendere decisioni informate e agire di conseguenza.
+
+### Stima dei Costi
+
+**Fonti di costo**:
+- Personale tecnico e di supporto.
+- Risorse informatiche.
+- Materiali di consumo.
+- Costi generali della struttura.
+
+**Fattori di costo**:
+- Numero di istruzioni da codificare (benefici del riuso).
+- Capacità, motivazione e coordinamento del team.
+- Complessità del programma.
+- Stabilità dei requisiti.
+- Caratteristiche dell’ambiente di sviluppo.
+
+**Metriche di Misurazione**
+
+**Metriche Dimensionali**
+
+Basate sul numero di istruzioni del programma, ad esempio:  
+- **LOC (Lines of Code)** o **DSI (Delivered Source Instructions)**.
+
+**Calcoli principali**:
+- **Produttività**: $P = \frac{\text{LOC}}{M}$, con $M$ mesi/uomo totali.
+- **Qualità**: $Q = \frac{E}{\text{LOC}}$, con $E$ numero totale di errori.
+- **Costo unitario**: $C = \frac{\$}{\text{LOC}}$, con $\$$ costo totale.
+- **Documentazione**: $D = \frac{\text{PD}}{\text{LOC}}$, con $\text{PD}$ pagine di documentazione.
+
+**Metriche Funzionali**
+
+Misurano le caratteristiche funzionali del programma, ad esempio: **Metodo dei Punti Funzione (Function Points)**.
+
+La misurazione è un **processo strategico** per migliorare la qualità del software e ottimizzare i processi di sviluppo, garantendo decisioni basate su dati concreti.
+
+### Metodo Function Points
+
+I **Function Points (FP)** sono una delle metriche software più vecchie e diffuse, introdotta da **Allan Albrecht negli anni '70**. 
+
+**Caratteristiche Principali dei Function Points**
+
+- **Parametro Adimensionale**: misura la dimensione del software in termini di funzionalità offerte all’utente.
+- **Indipendente dal Linguaggio di Programmazione**: non ha correlazioni con le funzioni dei linguaggi di programmazione.
+- **Basato sul Disegno Logico**: utilizza specifiche in linguaggio naturale, schemi Entity-Relationship, diagrammi di flusso dei dati, ecc.
+- **Applicabile Presto**: può essere utilizzato sin dalla prima fase di sviluppo e aggiornato in base a cambiamenti nelle specifiche.
+- **Indipendente dall’Ambiente Tecnologico**: può essere applicato in qualsiasi contesto tecnologico.
+- **Utile per Confronti**: permette confronti tra progetti e organizzazioni.
+
+**Utilizzi del Metodo Function Points**
+
+1. **Determinazione della Complessità**:
+   - Misura la complessità di pacchetti applicativi acquistati.
+2. **Valutazione del Beneficio**:
+   - Aiuta a quantificare le funzioni di un pacchetto applicativo che soddisfano i requisiti dell’organizzazione.
+3. **Misurazione di Prodotti**:
+   - Supporta analisi su qualità e produttività.
+4. **Stime di Costi e Risorse**:
+   - Strumento per stimare le risorse necessarie per lo sviluppo e la manutenzione.
+5. **Fattore di Normalizzazione**:
+   - Consente confronti standardizzati sul software.
+
+**Processo di Conteggio dei Function Points**
+
+1. **Identificazione delle Funzioni**:
+   - **Funzioni di tipo dati**:
+     - File Interni Logici (FIL).
+     - File Esterni di Interfaccia (FEI).
+   - **Funzioni di tipo transazione**:
+     - Input Esterno (EI).
+     - Output Esterno (EO).
+     - Interrogazioni Esterne (EQ).
+2. **Assegnazione dei Pesi**:
+   - Ogni funzione riceve un peso basato su quantità di dati e complessità.
+   - **Tabella dei Pesi**:
+
+   | Tipo                       | Peso Semplice | Peso Medio | Peso Complesso |
+   |----------------------------|---------------|------------|----------------|
+   | Input Esterno (EI)         | 3             | 4          | 6              |
+   | Output Esterno (EO)        | 4             | 5          | 7              |
+   | Interrogazione Esterna (EQ)| 3             | 4          | 6              |
+   | File Interno Logico (FIL)  | 7             | 10         | 15             |
+   | File Esterno di Interfaccia (FEI)| 5      | 7          | 10             |
+
+3. **Calcolo del Numero di Function Points Non Pesati**:
+   - Somma dei pesi di tutte le funzioni identificate.
+4. **Determinazione del Fattore di Aggiustamento**:
+   - Basato su 14 **Caratteristiche Generali del Sistema**.
+5. **Calcolo dei Function Points Pesati**:
+   - Moltiplicando i Function Points Non Pesati per il Fattore di Aggiustamento.
+
+**Tipi di Conteggio**
+
+1. **Progetti di Sviluppo**:
+   - Calcolo dei FP per software da realizzare da zero, includendo eventuali conversioni di dati.
+2. **Progetti di Manutenzione Evolutiva**:
+   - Misura delle modifiche a software esistente (aggiunte, modifiche, cancellazioni e conversioni).
+3. **Applicazioni Esistenti**:
+   - **Calcolo FP Iniziali**: misura il software già installato senza considerare conversioni.
+   - **Aggiornamento FP**: aggiorna il conteggio sottraendo i punti delle funzioni cancellate dopo ogni manutenzione evolutiva.
+
+**Vantaggi del Metodo Function Points**
+
+- Consente una **misurazione continua** durante tutto il ciclo di vita dell'applicazione.
+- Supporta una **valutazione standardizzata** per la stima e il confronto di progetti software.
+
+**Identificare l’Ambito del Conteggio**
+
+Identificare l’ambito del conteggio significa identificare le funzionalità che devono essere considerate in un conteggio.
+
+**Confine**: La linea di separazione tra le applicazioni che si stanno misurando e le applicazioni esterne o l’utente.
+
+**Regole:**
+
+1. Il confine è determinato basandosi sul punto di vista dell’utente.
+2. Il confine tra applicazioni collegate è basato su aree funzionali distinte dal punto di vista dell’utente e non in funzione degli aspetti tecnologici.
+
+**Funzioni di Tipo Dati**
+
 - **File Interno Logico (ILF)**: È un insieme di dati o informazioni di controllo logicamente collegati, riconoscibili dall’utente e mantenuti all’interno dell’applicazione.
 - **File Esterno di Interfaccia (EIF)**: Insieme di dati o informazioni di controllo riconoscibili dall’utente, referenziati dall'applicazione ma mantenuti all'interno di un'altra applicazione.
 
-### Funzioni di Tipo Transazione
+**Funzioni di Tipo Transazione**
+
 - **Input Esterno (EI)**: Processo elementare che elabora dati provenienti dall’esterno del confine dell’applicazione.
 - **Output Esterno (EO)**: Processo che invia dati fuori dal confine, utilizzando logiche di processo complesse per presentare informazioni.
 - **Interrogazione Esterna (EQ)**: Processo che recupera dati da un ILF o EIF senza calcoli complessi e senza creare dati derivati.
 
-### Fattore di Aggiustamento
+**Fattore di Aggiustamento**
+
 - **Scopo**: Adatta il totale dei Function Points per rappresentare funzionalità generali del sistema non coperte dalle funzioni dati e transazionali.
 - **Calcolo**: Si basa sul Total Degree of Influence (TDI) calcolati su una serie di fattori, con il fattore di aggiustamento che varia tra 0.65 e 1.35.
 
@@ -902,100 +1133,214 @@ Per calcolare il numero di Function Points non pesato, è necessario seguire que
 
 Il numero ciclomatico è una metrica del software proposta da McCabe nel 1976, che misura la complessità del flusso di controllo di un programma.
 
-### Calcolo del Numero Ciclomatico
 Il numero ciclomatico di un grafo fortemente connesso si calcola come:
-\[ v(G) = e - n + 2 \]
+$$ v(G) = e - n + 2 $$
 dove:
-- \( e \) è il numero degli archi
-- \( n \) è il numero dei nodi
+- $e$ è il numero degli archi
+- $n$ è il numero dei nodi
 
-### Teorema di Mills
 Secondo il teorema di Mills:
-\[ v(G) = d + 1 \]
+$$ v(G) = d + 1 $$
 dove:
-- \( d \) è il numero di punti di decisione del programma
+- $d$ è il numero di punti di decisione del programma
 
-### Programmi con Procedure Interne
+**Programmi con Procedure Interne**
+
 Se il programma ha procedure interne, il numero ciclomatico totale è la somma dei numeri ciclomatici dei singoli grafi indipendenti:
-\[ v(G) = e - n + 2p \]
+$$ v(G) = e - n + 2p $$
 dove:
-- \( p \) è il numero di grafi indipendenti
+- $p$ è il numero di grafi indipendenti
 
-### Importanza del Numero Ciclomatico
 Il numero ciclomatico cattura la complessità del flusso di controllo e sperimentalmente si correla con il numero di errori riscontrati. Si raccomanda che la complessità ciclomatica di un modulo non superi il valore 10.
 
-### Stima della Dimensione del Software
-Basata sul numero di linee di codice o Function Points (FP), utilizzando tabelle di conversione per linguaggi specifici.
+![](img/IDS/NCilclomaticoEs.png)
 
-### Determinazione della Classe del Software
-Le categorie (Organic, Semi-detached, Embedded) differenziano le formule di costo in base alla complessità e dimensione.
+### COnstructive COst MOdel (COCOMO)
 
-### Applicazione degli Stimatori di Costo
-Considera proprietà del prodotto, caratteristiche hardware, esperienza del team e specifiche del progetto.
+Il **COCOMO** è un modello utilizzato per stimare il costo di sviluppo del software in termini di mesi/uomo. Si basa su una serie di parametri e calcoli specifici che considerano la complessità del progetto, le caratteristiche del team e le peculiarità del prodotto.
 
-## Produzione del Software
 
-### Processo di Produzione
-Consiste nelle fasi per costruire, consegnare e modificare un prodotto. Viene gestito tramite modelli di processo come quelli:
-- A cascata
-- Incrementali
-- Evolutivi
-- Agili
+**Determinazione della Classe del Software**
 
-### Modelli Prescrittivi
-- **Caratteristiche**: Definiscono attività, azioni e prodotti per ingegnerizzare software di alta qualità, creando stabilità e controllo.
-- **Attività Comuni**: Comunicazione (raccolta dei requisiti), pianificazione, modellazione, costruzione (testing), e deployment.
+I software sono classificati in tre categorie, ognuna con difficoltà crescente e formule specifiche per il calcolo del costo:
 
-### Modello a Cascata (Waterfall)
-- **Descrizione**: Approccio sequenziale in cui ogni fase rappresenta l’input della successiva; non adatto a requisiti incerti.
-- **Limite**: Non consente modifiche retroattive e non offre una versione funzionante fino alla fine del progetto.
+| **Categoria**   | **Formula del Costo (Mesi Uomo)**  |
+|------------------|------------------------------------|
+| **Organic**      | \( M_{Nom} = 3.2 \times KDSI^{1.05} \) |
+| **Semi-detached**| \( M_{Nom} = 3.0 \times KDSI^{1.12} \) |
+| **Embedded**     | \( M_{Nom} = 2.8 \times KDSI^{1.20} \) |
 
-### Modello Incrementale
-- **Caratteristiche**: Combina aspetti del modello a cascata, producendo software a incrementi tramite sequenze lineari.
-- **Vantaggio**: Permette aggiornamenti frequenti e integrazione graduale di nuove funzionalità.
+**Criteri di Classificazione**:
 
-### Modello RAD (Rapid Application Development)
-- **Descrizione**: Modello incrementale che punta a cicli di sviluppo rapidi. Adatto per progetti modulari completabili in meno di tre mesi.
-- **Limiti**: Può fallire se l’utente non riesce a seguire il ritmo o se il sistema non è modularizzabile.
+| **Parametro**                              | **Organic** | **Semi-detached** | **Embedded** |
+|--------------------------------------------|-------------|--------------------|--------------|
+| Conoscenza nel settore applicativo         | Limitata    | Normale           | Completa     |
+| Esperienza del team                        | Estesa      | Considerevole     | Moderata     |
+| Comunicazione con sistemi esterni          | Limitata    | Considerevole     | Elevata      |
+| Presenza di vincoli di progetto            | Limitata    | Considerevole     | Elevata      |
+| Necessità di sviluppare hardware           | Limitata    | Normale           | Elevata      |
+| Innovazione in strutture dati/algoritmi    | Limitata    | Normale           | Elevata      |
+| Premi per consegna anticipata              | Bassi       | Normali           | Elevati      |
+| Dimensione del prodotto                    | <50 KDSI    | <300 KDSI         | >300 KDSI    |
+
+
+**Applicazione degli Stimatori di Costo**
+
+Gli stimatori di costo modificano il valore calcolato a seconda di proprietà specifiche del prodotto, dell'hardware, del team e del progetto.
+
+**Proprietà del Prodotto**
+
+| **Proprietà**                   | **Molto Bassa** | **Bassa** | **Normale** | **Alta** | **Molto Alta** | **Extra** |
+|---------------------------------|-----------------|-----------|-------------|----------|----------------|-----------|
+| Affidabilità del software       | 0.75           | 0.88      | 1.00        | 1.15     | 1.40           | -         |
+| Complessità della base dati     | -              | 0.94      | 1.00        | 1.08     | 1.16           | -         |
+| Complessità del prodotto        | 0.70           | 0.85      | 1.00        | 1.15     | 1.30           | 1.65      |
+
+**Caratteristiche dell'Hardware**
+
+| **Caratteristica**              | **Molto Bassa** | **Bassa** | **Normale** | **Alta** | **Molto Alta** |
+|---------------------------------|-----------------|-----------|-------------|----------|----------------|
+| Vincoli di efficienza           | -              | 1.00      | 1.11        | 1.30     | 1.66           |
+| Vincoli di memoria              | -              | 1.00      | 1.06        | 1.21     | 1.56           |
+| Variabilità ambiente di sviluppo| 0.87           | 1.00      | 1.15        | 1.30     | -              |
+| Tempi di risposta               | 0.87           | 1.00      | 1.07        | 1.15     | -              |
+
+**Caratteristiche del Team**
+
+| **Caratteristica**              | **Molto Bassa** | **Bassa** | **Normale** | **Alta** | **Molto Alta** |
+|---------------------------------|-----------------|-----------|-------------|----------|----------------|
+| Capacità degli analisti         | 1.46           | 1.19      | 1.00        | 0.86     | 0.71           |
+| Esperienza nella classe         | 1.29           | 1.13      | 1.00        | 0.91     | 0.82           |
+| Capacità dei programmatori      | 1.42           | 1.17      | 1.00        | 0.86     | 0.70           |
+| Esperienza linguaggio           | 1.14           | 1.07      | 1.00        | 0.95     | -              |
+| Esperienza ambiente sviluppo    | 1.21           | 1.10      | 1.00        | 0.90     | -              |
+
+**Caratteristiche del Progetto**
+
+| **Caratteristica**              | **Molto Bassa** | **Bassa** | **Normale** | **Alta** | **Molto Alta** |
+|---------------------------------|-----------------|-----------|-------------|----------|----------------|
+| Modernità del processo          | 1.24           | 1.10      | 1.00        | 0.91     | 0.82           |
+| Utilizzo di tool di sviluppo     | 1.24           | 1.10      | 1.00        | 0.91     | 0.83           |
+| Presenza di un piano temporale  | 1.23           | 1.08      | 1.00        | 1.04     | 1.10           |
+
+
+**Uso del Modello**
+
+Il modello COCOMO consente di stimare i costi di sviluppo, le risorse necessarie e i tempi di realizzazione, adattandosi a diverse complessità e categorie di software.
+
+### Produzione del Software
+
+Il processo di produzione del software comprende tutte le operazioni necessarie per costruire, consegnare e modificare un prodotto. La complessità dei sistemi informatici e la volatilità del mercato rendono indispensabile l’uso di modelli di processo potenti e flessibili.
+
+**Modelli di Processo**
+
+**Tipologie Principali**
+- **Modello a cascata**
+- **Modelli incrementali**
+- **Modelli evolutivi**
+- **Modelli agili**
+
+**I Modelli Prescrittivi**
+
+Definiscono un insieme strutturato di attività per produrre software di alta qualità, introducendo stabilità, controllo e organizzazione.  
+Le **attività strutturali generiche** includono:
+- **Comunicazione**: raccolta dei requisiti.
+- **Pianificazione**: stime e controllo.
+- **Modellazione**: analisi e progettazione.
+- **Costruzione**: programmazione e testing.
+- **Deployment**: consegna e feedback.
+
+**Il Modello a Cascata (Waterfall)**
+
+- Introdotto nel 1970, segue un approccio lineare e sequenziale.
+- **Svantaggi**: non adatto a requisiti incerti; non consente modifiche retroattive.
+- Genera una versione funzionante solo al termine del progetto.
+
+**Fasi del Modello:**
+1. Comunicazione: raccolta dei requisiti.
+2. Pianificazione: stime e controllo.
+3. Modellazione: analisi e progettazione.
+4. Costruzione: programmazione e testing.
+5. Deployment: consegna e supporto.
+
+![](img/IDS/modelloCascata.png)
+
+**Il Modello Incrementale**
+
+- Combina aspetti del modello a cascata applicati a sottosistemi.
+- **Processo**: sviluppo in più sequenze lineari (stadi incrementali).
+- Il primo stadio realizza un prodotto base; ogni successivo stadio aggiunge funzionalità basate sul feedback.
+
+![](img/IDS/modelloIncrementale.png)
+
+**Il Modello RAD (Rapid Application Development)**
+
+- Un modello incrementale che accelera lo sviluppo grazie a componenti modulari.
+- Adatto a progetti in cui ogni modulo può essere completato in meno di 3 mesi.
+- **Fallimenti tipici**:
+  - Impossibilità di modularizzare il sistema.
+  - Utenti non in grado di supportare il ritmo rapido.
+  - Necessità di alte prestazioni.
+
+![](img/IDS/modelloRad.png)
+
+**Incrementale vs. Iterativo**
+
+| **Caratteristica**           | **Incrementale**                              | **Iterativo**                                 |
+|-------------------------------|-----------------------------------------------|-----------------------------------------------|
+| **Funzionalità/Sottosistemi** | Aggiunti progressivamente.                   | Presenti sin dall’inizio, poi raffinati.       |
+| **Requisiti**                 | Generalmente noti fin dall’inizio.           | Possono cambiare durante il processo.         |
+
+**I Modelli Evolutivi**
+
+- Iterativi per definizione, producono versioni sempre più complete del software.
+- Ideali per:
+  - Requisiti in continua evoluzione.
+  - Situazioni in cui i clienti definiscono solo obiettivi generali.
+- **Processo**: si inizia con una versione limitata basata su requisiti noti e si estende successivamente.
 
 ### Modelli Evolutivi e Prototipazione
+
 - **Prototipazione**: Versione preliminare del software, usata per chiarire requisiti poco definiti e addestrare l’utente.
 - **Benefici**: Rende evidenti ambiguità e migliora la comprensione dei requisiti.
 - **Tipologie**:
   - **Prototipazione Evolutiva**: Evoluzione del prototipo nel prodotto finale.
   
-  ![immagine in locale](img\IDS\Work_flow_rototipazione_evolutiva.PNG)
+  ![](img\IDS\Work_flow_rototipazione_evolutiva.PNG)
 
   - **Prototipo Usa e Getta**: Valida o deriva i requisiti, senza integrazione nel prodotto finale.
   
-  ![immagine in locale](img\IDS\work_flow_prototipazione_usa_e_getta.PNG)
+  ![](img\IDS\work_flow_prototipazione_usa_e_getta.PNG)
 
-### Prototipazione di Interfaccia
+**Prototipazione di Interfaccia**
+
 - **Importanza**: È impossibile specificare in anticipo il look and feel di una interfaccia utente in maniera efficace, quindi prototipare è essenziale.
 - **Sviluppo di GUI**: Lo sviluppo di GUI (Graphical User Interface) sta diventando una attività che prende la maggior parte del costo dello sviluppo del sistema.
 - **Generatori di Interfacce Utente**: Possono essere usati per “disegnare” l’interfaccia e simularne la funzionalità.
 
-### Modello a Spirale
+**Modello a Spirale**
+
 - **Descrizione**: Fa crescere incrementalmente il grado di definizione e implementazione del sistema, riducendo il livello di rischio e producendo un insieme di milestone per garantire la fattibilità delle soluzioni intraprese.
 1. Customer communication: Colloquio tra
 cliente e team di sviluppo
-2. Planning: Raccolta requisiti e definizione
+1. Planning: Raccolta requisiti e definizione
 piano di progetto
-3. Risk analysis: Stima e prevenzione dei
+1. Risk analysis: Stima e prevenzione dei
 rischi tecnici e di gestione
-4. Engineering: Modellazione e
+1. Engineering: Modellazione e
 progettazione
-5. Construction & release: Realizzazione,
+1. Construction & release: Realizzazione,
 collaudo e installazione
-6. Costumer evaluation: Rilevazione delle
+1. Costumer evaluation: Rilevazione delle
 reazioni da parte del cliente 
 
-### MDD (Model-Driven Development)
+**MDD (Model-Driven Development)**
+
 Tipo di sviluppo in cui si creano modelli formali del software che vengono poi fatti evolvere mentre il sistema viene progettato e implementato. I modelli diventano la guida del processo di sviluppo; infatti, MDD prevede l’uso di strumenti per la generazione automatica del codice e dei test case a partire dai modelli.
 
 ![immagine in locale](img\IDS\Schema_MDD.PNG)
 
-### I modelli agili
+**I modelli agili**
 
 I modelli agili sono stati ideati per superare le limitazioni dei modelli prescrittivi tradizionali, che, basati su una disciplina rigida, non tengono conto della complessità e della fragilità degli sviluppatori di software. I modelli agili presentano alcune caratteristiche distintive:
 
@@ -1006,7 +1351,7 @@ I modelli agili sono stati ideati per superare le limitazioni dei modelli prescr
 - **Semplicità di sviluppo**: incoraggiano un approccio semplice e lineare al processo di sviluppo.
 - **Comunicazione continua**: enfatizzano l'importanza della comunicazione costante tra sviluppatori e utenti per garantire che le esigenze siano sempre allineate.
 
-### Extreme Programming (XP)
+**Extreme Programming (XP)**
 
 Extreme Programming (XP) è uno dei modelli di processo agile più diffusi, nato nel 1999. XP adotta un approccio orientato agli oggetti e si basa su quattro attività strutturali principali: pianificazione, design, programmazione e testing.
 
@@ -1042,92 +1387,101 @@ La fase di testing inizia già prima della programmazione con la definizione deg
 - Questi test vengono implementati con strumenti che ne permettono l'automazione.
 - A ogni modifica del software, si esegue un test di regressione (dato che l'implementazione di nuove funzionalità potrebbe compromettere vecche funzionalità implementate) per garantire che il sistema continui a funzionare correttamente.
 
-### Misurazione della velocità del progetto
+**Misurazione della velocità del progetto**
 
 Dopo il primo rilascio, il team XP calcola la **velocità del progetto**, che rappresenta il numero di user story completate nella prima release. La velocità del progetto è uno strumento fondamentale che consente di:
 
 - Stimare le date di consegna e le pianificazioni delle release successive.
 - Identificare eventuali sottovalutazioni delle user story, consentendo di modificare il contenuto delle future release o di rivedere le date di consegna.
 
-### Unified Process
+**Unified Process (UP)**
 
-Unified Process (UP) è un modello di sviluppo del software creato da Booch, Rumbaugh e Jacobson, gli stessi autori di UML. Si tratta di un processo:
+Il **Unified Process (UP)** è un processo di sviluppo software ideato da Booch, Rumbaugh e Jacobson (gli autori di UML). Si distingue per essere:  
+- **Guidato dai casi d’uso**: utilizza i casi d’uso per raccogliere e specificare i requisiti.  
+- **Centrato sull’architettura**: l’architettura del sistema è il focus principale.  
+- **Iterativo e incrementale**: sviluppa il software in iterazioni successive, aggiungendo funzionalità progressivamente.  
+- **Model-based e component-based**: si basa su modelli e componenti riutilizzabili.  
+- **Object-oriented**: segue i principi della programmazione orientata agli oggetti.  
+- **Configurabile**: può essere adattato alle esigenze specifiche di ogni progetto.
 
-- **Guidato dai casi d’uso**: utilizza i casi d'uso come base per identificare e definire i requisiti del sistema.
-- **Centrato sull’architettura**: pone l'architettura come fondamento dello sviluppo.
-- **Iterativo e incrementale**: prevede cicli di sviluppo ripetuti, ognuno dei quali aggiunge funzionalità al sistema.
-- **Model-based e component-based**: focalizzato sui modelli e sull'uso di componenti riutilizzabili.
-- **Object-oriented**: adotta la programmazione orientata agli oggetti come base metodologica.
-- **Configurabile**: il processo può essere adattato alle specifiche esigenze del progetto.
+**Componenti di UP**
 
-### Un modello di UP
-
-UP è organizzato in modo tale da definire **CHI, COSA e QUANDO** per ogni attività.
-
-- **CHI**: definisce i ruoli e le responsabilità, assegnando a ogni ruolo il comportamento specifico e le responsabilità, che possono essere svolte da individui o gruppi.
-- **COSA**: definisce il comportamento del ruolo, espresso in termini di attività (cosa fare) e manufatti (cosa produrre).
-- **QUANDO**: rappresenta i flussi di lavoro, cioè sequenze di attività correlate che vengono eseguite da ruoli specifici per produrre i manufatti del processo.
+1. **CHI**: Risorse o ruoli che definiscono il comportamento e le responsabilità di individui o gruppi.  
+2. **COSA**: Comportamenti espressi tramite attività e manufatti.  
+3. **QUANDO**: Flussi di lavoro che modellano sequenze di attività correlate, eseguite da ruoli per produrre manufatti.
 
 **Manufatti**
 
-UP prevede la produzione di vari set di manufatti, ciascuno contenente elementi essenziali per il progetto:
+UP produce diversi tipi di manufatti suddivisi in insiemi:  
+- **Set di Gestione**:  
+  - Elaborati di pianificazione (es. software development plan, studio economico).  
+  - Elaborati operazionali (es. stato di avanzamento, descrizione versione).  
+- **Set dei Requisiti**:  
+  - Documento di visione.  
+  - Modello dei casi d’uso.  
+  - Modello di business.  
+- **Set di Progettazione**:  
+  - Modello di design.  
+  - Modello architetturale.  
+  - Modello di test.  
+- **Set di Implementazione**:  
+  - Codice sorgente ed eseguibili.  
+  - File di dati.  
+- **Set di Rilascio agli Utenti**:  
+  - Script di installazione.  
+  - Documentazione utente.  
+  - Materiale formativo.
 
-- **Set di gestione**:
-  - Elaborati di pianificazione, come il software development plan e lo studio economico.
-  - Elaborati operazionali, come gli stati di avanzamento e le descrizioni delle versioni.
-- **Set dei requisiti**:
-  - Documento di visione, modello dei casi d’uso e modello di business.
-- **Set di progettazione**:
-  - Modello di design, modello architetturale e modello di test.
-- **Set di implementazione**:
-  - Codice sorgente ed eseguibili, insieme ai file di dati.
-- **Set di rilascio agli utenti**:
-  - Script di installazione, documentazione per l’utente e materiale formativo.
+**Flussi di Lavoro**
 
-**Flussi di lavoro**
+I flussi di lavoro in UP non sono rigidamente sequenziali e vengono ripetuti in ogni iterazione:  
+1. **Requisiti**: Definisce ciò che il sistema deve fare.  
+2. **Analisi**: Raffina i requisiti e li struttura.  
+3. **Progettazione**: Traduce i requisiti in un’architettura.  
+4. **Implementazione**: Realizza il software.  
+5. **Test**: Verifica che l’implementazione soddisfi i requisiti.  
+6. **Deployment**: Configura e distribuisce il sistema.  
+7. **Gestione Configurazione**: Mantiene le versioni del sistema.  
+8. **Gestione Progetto**: Stabilisce strategie per processi iterativi.  
+9. **Ambiente**: Definisce le infrastrutture di sviluppo.
 
-I flussi di lavoro in UP non seguono una sequenza rigida, ma si svolgono iterativamente nel corso del progetto:
+**Fasi del Processo**
 
-- **Requisiti**: definizione delle funzionalità e dei requisiti di sistema.
-- **Analisi**: raffinamento e strutturazione dei requisiti.
-- **Progettazione**: sviluppo dell’architettura e del design del sistema.
-- **Implementazione**: sviluppo e costruzione del software.
-- **Test**: verifica che l’implementazione rispetti i requisiti definiti.
-- **Deployment**: configurazione e distribuzione del sistema nell'ambiente di produzione.
-- **Gestione configurazione**: mantenimento delle versioni del sistema.
-- **Gestione progetto**: pianificazione e gestione dell’intero processo iterativo.
-- **Ambiente**: definizione delle infrastrutture e strumenti di sviluppo necessari.
+Le fasi sono sequenziali e rappresentano milestone significative:
+1. **Inception (Avvio)**:  
+   - Definizione degli obiettivi del progetto.  
+   - Valutazione di fattibilità, costi, rischi e mercato.  
+   - Analisi dei prodotti concorrenti.  
+2. **Elaboration (Elaborazione)**:  
+   - Pianificazione dettagliata del progetto.  
+   - Definizione delle caratteristiche funzionali, strutturali e architetturali.  
+3. **Construction (Costruzione)**:  
+   - Sviluppo iterativo del prodotto.  
+   - Testing e preparazione della documentazione.  
+4. **Transition (Transizione)**:  
+   - Consegna del sistema agli utenti finali.  
+   - Include marketing, installazione, configurazione, formazione e supporto.  
 
-**Fasi**
-
-Le fasi del processo UP sono sequenziali e rappresentano milestone significative per gli stakeholder del progetto:
-
-- **Inception (avvio)**: definizione degli obiettivi del progetto, analisi della fattibilità, stima di costi e rischi, valutazione del mercato e confronto con prodotti concorrenti.
-- **Elaboration**: pianificazione del progetto e definizione delle caratteristiche funzionali, strutturali e architetturali.
-- **Construction**: sviluppo del prodotto attraverso iterazioni, testing e preparazione della documentazione.
-- **Transition**: consegna del sistema agli utenti finali, includendo attività di marketing, installazione, configurazione, formazione, supporto e manutenzione.
-
-Ogni fase può includere una o più iterazioni, determinate dalle scelte del Project Manager e dai rischi del progetto.
+![](img/IDS/fasi_UP.PNG)
 
 **Milestone**
 
-Ogni fase prevede una milestone (punto cardine) che rappresenta il completamento di obiettivi chiave e consegan di relativo materiale:
+| **Fase**        | **Milestone**                                         |
+|------------------|-------------------------------------------------------|
+| **Inception**    | Documenti di fattibilità.                            |
+| **Elaboration**  | Specifica dei requisiti software e architettura verificata. |
+| **Construction** | Versione del sistema in pre-produzione (Beta).       |
+| **Transition**   | Versione del sistema in produzione.                  | 
 
-- **Inception**: documentazione della fattibilità del progetto.
-- **Elaboration**: specifica dei requisiti software e architettura consolidata e verificata.
-- **Construction**: versione del sistema in pre-produzione (Beta).
-- **Transition**: rilascio del sistema in produzione per gli utenti finali.
 
-![](img\IDS\fasi_UP.PNG)
-
-## Verifica del software
+### Verifica del software
 
 La fase di verifica del software è finalizzata a controllare che il sistema sviluppato sia conforme alle specifiche di progetto. Questo processo non si limita al prodotto finale, ma accompagna ogni fase del progetto e dello sviluppo del software, assicurando la coerenza del prodotto con i requisiti originali. Le tecniche di verifica del software possono essere suddivise in due categorie principali:
 
 - **Dinamiche o di testing**: queste tecniche verificano il corretto funzionamento del sistema attraverso prove sperimentali che valutano il comportamento del software in una varietà di situazioni rappresentative. Si tratta delle tecniche di verifica più utilizzate nella pratica.
 - **Statiche o di analisi**: mirano a verificare il funzionamento del sistema esaminando la struttura dei moduli e il codice sorgente. A differenza delle tecniche dinamiche, le verifiche statiche possono essere applicate in ogni fase del ciclo di vita del software.
 
-### Testing
+**Testing**
 
 Il testing è una delle operazioni più critiche per la verifica del software. Tuttavia, come osservato da Dijkstra nel 1972, "le operazioni di testing possono individuare la presenza di errori nel software ma non possono dimostrarne la correttezza". L’obiettivo del testing è quindi verificare il comportamento del sistema in un insieme di casi abbastanza ampio da garantire, con una buona probabilità, che il sistema risponderà correttamente anche nelle situazioni non testate.
 
@@ -1166,19 +1520,19 @@ Questi criteri permettono di coprire in modo significativo le possibili esecuzio
     3. Permettere il rilascio graduale di sottoparti autonome e funzionanti, migliorando la continuità operativa del progetto.
   - **Test di sistema**: verifica il comportamento dell’intero sistema in base alle specifiche esterne, accertando che tutti i moduli e componenti funzionino correttamente in sinergia e rispondano ai requisiti dell’applicazione completa.
 
-### Analisi del Software
+**Analisi del Software**
 
 L'analisi di un software consiste nell’ispezionare il codice per comprenderne le caratteristiche e funzionalità, permettendo la verifica di un insieme di esecuzioni piuttosto che di singoli casi, come nel testing. Questo processo si basa su modelli della realtà e può essere applicato sia al codice che allo pseudocodice. Tuttavia, l’analisi è soggetta a errori interpretativi, derivanti dalla soggettività di chi la conduce. Esistono due principali metodi di analisi del codice: **Code walk-through** e **Code inspection**.
 
-### Code Walk-Through
+**Code Walk-Through**
 
 Il **code walk-through** è un’analisi informale condotta da un piccolo team (3-5 persone), che seleziona porzioni di codice specifiche e valori di input per simulare su carta il comportamento del programma. L'analisi, della durata di poche ore, mira esclusivamente a individuare problemi, senza includere i manager per mantenere un clima collaborativo. La documentazione del codice è fornita dal progettista in anticipo, e lo scopo è cercare eventuali errori senza necessariamente risolverli.
 
-### Code Inspection
+**Code Inspection**
 
 Nella **code inspection**, un team analizza specifiche classi di errori nel codice, verificando la presenza di problematiche come variabili non inizializzate, cicli infiniti, letture di dati non allocati e deallocazioni improprie di memoria. A differenza del walk-through, si cerca un tipo specifico di errore piuttosto che simulare esecuzioni generiche.
 
-### Analisi del Flusso dei Dati
+**Analisi del Flusso dei Dati**
 
 Un tipo specifico di code inspection è l’**analisi di flusso dei dati**, che si concentra sull’evoluzione dei valori associati alle variabili durante l'esecuzione del programma. Attraverso questo metodo, ogni comando viene categorizzato come:
 - **Definizione (d)**: l’inizializzazione di una variabile.
@@ -1187,7 +1541,7 @@ Un tipo specifico di code inspection è l’**analisi di flusso dei dati**, che 
 
 L’analisi riduce sequenze di comandi a successioni di queste operazioni per ogni variabile, permettendo di identificare anomalie come l’uso di valori non definiti e definizioni non utilizzate. Per esempio, in una procedura `swap` che utilizza la variabile locale `x`, la sequenza risultante per `x` potrebbe essere **auu**, dove il valore viene usato senza essere definito in precedenza. Errori simili emergono quando sequenze di operazioni non seguono le regole.
 
-### Esempio di Analisi di Flusso dei Dati
+**Esempio di Analisi di Flusso dei Dati**
 
 Consideriamo il seguente programma `swap`:
 
@@ -1203,7 +1557,7 @@ Consideriamo il seguente programma `swap`:
 
 La sequenza delle operazioni per `x` è `auu` (annullamento, uso, uso), evidenziando che `x` è utilizzata senza definizione previa. La sequenza per `x2` risulta `ddd`, indicando definizioni consecutive senza uso intermedio, che suggerisce un’assegnazione superflua.
 
-### Regole Generali di Validità delle Sequenze di Flusso
+**Regole Generali di Validità delle Sequenze di Flusso**
 
 Per prevenire anomalie, si applicano le seguenti regole generali:
 1. **Uso preceduto da definizione**: ogni uso di una variabile deve essere preceduto da una sua definizione, senza annullamenti intermedi.
@@ -1211,15 +1565,15 @@ Per prevenire anomalie, si applicano le seguenti regole generali:
 
 Sequenze come `aduduu` e `duadudu` rispettano queste regole, mentre `aduddu` e `dauduu` no, indicando la presenza di anomalie.
 
-### Eccezioni nelle Sequenze di Flusso
+**Eccezioni nelle Sequenze di Flusso**
 
 Non tutte le sequenze apparentemente anomale indicano errori: ad esempio, una sequenza `au` potrebbe apparire in un generatore di numeri casuali, mentre una sequenza `dd` potrebbe essere giustificata da strutture programmatiche più complesse che usano lo stesso valore in diverse esecuzioni. 
 
 Questa analisi approfondisce le relazioni tra i valori delle variabili e i comandi del programma, contribuendo all’identificazione di problemi di utilizzo delle variabili, a vantaggio della sicurezza e robustezza del codice.
 
-## Certificazione
+### Certificazione
 
-### Sistema di Controllo della Qualità in Europa
+**Sistema di Controllo della Qualità in Europa**
 
 La Comunità Europea regola la qualità nei vari settori produttivi attraverso due classi di norme:
 
@@ -1229,7 +1583,7 @@ La Comunità Europea regola la qualità nei vari settori produttivi attraverso d
 2. **Norme Tecniche Consensuali**  
    Queste norme sono sviluppate da enti di normazione riconosciuti (nazionali come UNI e CEI, europei come EN, e internazionali come ISO e IEC) e coinvolgono rappresentanti governativi e industriali. La loro applicazione è facoltativa, salvo disposizioni legali che ne rendano obbligatoria l’adozione. Un esempio è la famiglia **ISO 9000**, destinata alla gestione e assicurazione della qualità.
 
-### ISO 9000: Obiettivi Principali
+**ISO 9000: Obiettivi Principali**
 
 La famiglia ISO 9000 comprende norme per:
 
@@ -1239,7 +1593,7 @@ La famiglia ISO 9000 comprende norme per:
 - **Assicurazione della Qualità**  
   Stabilisce i requisiti per permettere ai clienti di valutare l’idoneità del sistema qualità del fornitore, in relazione alla capacità di soddisfare le esigenze stabilite.
 
-### Certificazione e Accreditamento
+**Certificazione e Accreditamento**
 
 - **Certificazione**  
    La certificazione è il riconoscimento ufficiale, rilasciato da un ente accreditato, che attesta la conformità di un prodotto, processo o sistema qualità ai requisiti di una specifica norma.
@@ -1247,11 +1601,11 @@ La famiglia ISO 9000 comprende norme per:
 - **Accreditamento**  
    È il riconoscimento formale che un laboratorio o un organismo certificatore possiede la competenza necessaria per svolgere prove specifiche o certificazioni.
 
-### Processo di Certificazione ISO 9000
+**Processo di Certificazione ISO 9000**
 
 La certificazione ISO 9000 può coprire intere aziende o solo alcune porzioni; l'estensione viene decisa dall'organismo di certificazione in accordo con l'azienda. Gli elementi e processi inclusi nella certificazione sono documentati nel **manuale qualità**, che descrive sia i processi soggetti al sistema di qualità sia la documentazione di supporto.
 
-### Fasi della Certificazione
+**Fasi della Certificazione**
 
 - **Verifica Ispettiva**  
    È una fase cruciale in cui i valutatori, sulla base del manuale qualità, visitano l'azienda e verificano l'applicazione delle procedure aziendali. Durante l’ispezione, vari responsabili aziendali (direzione, ufficio acquisti, laboratori, ecc.) vengono intervistati e le unità produttive vengono ispezionate.
@@ -1261,7 +1615,7 @@ La certificazione ISO 9000 può coprire intere aziende o solo alcune porzioni; l
 
 ![](img\IDS\workflow_ISO_9000_certificazione.PNG)
 
-### Non Conformità
+**Non Conformità**
 
 La **non conformità** è definita come il "non soddisfacimento dei requisiti specificati" e può riferirsi alla mancanza di una caratteristica di qualità o di un elemento del sistema qualità. Durante le verifiche, le non conformità riscontrate si classificano in:
 
@@ -1271,9 +1625,9 @@ La **non conformità** è definita come il "non soddisfacimento dei requisiti sp
 
 ![](img\IDS\documenti_progetto.PNG)
 
-## Manutenzione Software
+### Manutenzione Software
 
-### Tipi di manutenzione
+**Tipi di manutenzione**
 La manutenzione software comprende vari interventi per migliorare o adattare i sistemi, assicurandone la funzionalità e prolungandone il ciclo di vita. Le principali tipologie di manutenzione sono:
 
 1. **Manutenzione Correttiva**
@@ -1311,8 +1665,6 @@ La manutenzione software comprende vari interventi per migliorare o adattare i s
    - **Costi**: Elevati e spesso occulti fino alla fase operativa.
    - **Risultati**: Maggiore potenza e funzionalità, ma anche aumento dell’entropia e rischio di riduzione della robustezza, a meno di un’attenta pianificazione.
 
-### Manutenibilità del Sistema: L'Importanza dell'Architettura
-
 La manutenibilità di un sistema è determinata dalla qualità della sua architettura originale, progettata per facilitare interventi successivi e adattamenti. Alcuni esempi includono:
 
 - **Automobili**: Architettura modulare e smontabile per interventi facili, con funzioni stabili nel tempo.
@@ -1323,13 +1675,16 @@ Spesso i programmi software sono progettati come case (non modulari), ma devono 
 
 ## Progettazione di Interfacce Utente
 
-### Cos’è un’interfaccia?
+**Cos’è un’interfaccia?**
+
 Un’interfaccia consente il dialogo tra due entità o sistemi. Nel contesto informatico, permette il transito di informazioni tra dispositivi, supportando la comunicazione e l’interazione.
 
-### Tecnologia ed ergonomia
+**Tecnologia ed ergonomia**
+
 La progettazione di un’interfaccia combina aspetti tecnologici, legati al funzionamento fisico, e aspetti ergonomici, che riguardano l’interazione cognitiva con l’utente. Questo equilibrio è essenziale per garantire usabilità e accessibilità.
 
-### Paradigmi di interazione
+**Paradigmi di interazione**
+
 Esistono diversi approcci che guidano l'interazione utente-sistema:
 - Terminali scriventi basati su scrittura e lettura.
 - Terminali video che consentono di scegliere e compilare informazioni.
@@ -1337,19 +1692,23 @@ Esistono diversi approcci che guidano l'interazione utente-sistema:
 - Sistemi multimediali che supportano la comunicazione vocale.
 - Realtà virtuale che permette all’utente di agire direttamente in un ambiente simulato.
 
-### L’importanza delle GUI per l’utente
+**L’importanza delle GUI per l’utente**
+
 Le interfacce grafiche (GUI) sfruttano le capacità cognitive umane, come il riconoscimento, l’associazione, la generalizzazione e la deduzione. Utilizzano metafore visive, colori e la capacità di presentare molte informazioni simultaneamente per semplificare la navigazione e l’interazione.
 
-### Riconoscere vs ricordare
+**Riconoscere vs ricordare**
+
 Gli utenti trovano più semplice riconoscere informazioni già viste rispetto a ricordarle. Le interfacce basate su icone o associazioni con oggetti reali sono particolarmente efficaci nel facilitare il riconoscimento, riducendo il carico mnemonico.
 
-### Progettazione di un’interfaccia
+**Progettazione di un’interfaccia**
+
 La progettazione deve considerare:
 - **Utenti**: numero, esperienza, età, motivazione e frequenza d’uso.
 - **Obiettivi**: rapidità, efficacia, flessibilità e qualità.
 - **Tecnologia**: compatibilità con le esigenze specifiche.
 
-### Tipologie di interfacce
+**Tipologie di interfacce**
+
 1. **Interfacce code-based**: utilizzano comandi testuali, ideali per compiti ripetitivi e complessi.
 
 ![](img\IDS\interfaccai_code_base.PNG)
@@ -1370,7 +1729,7 @@ La progettazione deve considerare:
 
 ![](img\IDS\interfacca_special_gui.PNG)
 
-### Strutturazione delle interfacce
+**Strutturazione delle interfacce**
 
 ![](img\IDS\struttura_2d.PNG)
 
@@ -1381,7 +1740,8 @@ Le interfacce possono essere progettate con diversi modelli:
 
 ![](img\IDS\strtture_std.PNG)
 
-### Standard progettuale
+**Standard progettuale**
+
 Gli standard progettuali sono fondamentali per garantire un'interfaccia utente coerente e intuitiva. Ecco una spiegazione dettagliata dei concetti chiave:
 
 - **Definizione degli standard per:**
@@ -1394,7 +1754,9 @@ Gli standard progettuali sono fondamentali per garantire un'interfaccia utente c
   - **Consistenza interna subordinata all’usabilità**: Mantenere la coerenza interna dell'interfaccia, ma sempre con l'obiettivo principale di migliorare l'usabilità. Se una modifica interna può migliorare significativamente l'esperienza utente, dovrebbe essere considerata.
 
 Questi standard progettuali aiutano a creare interfacce che non solo sono facili da usare, ma anche efficienti e piacevoli per l'utente.
-### Elementi visivi
+
+**Elementi visivi**
+
 - **Affordance**: evidenzia come interagire con un oggetto tramite aspetti visivi come ombreggiatura o tridimensionalità.
 - **Metafore**: collegano concetti del mondo reale con funzioni digitali per migliorare la comprensione (es. cestino = elimina).
 - **Layout**: la posizione degli elementi aiuta a stabilire relazioni visive.
@@ -1402,41 +1764,48 @@ Questi standard progettuali aiutano a creare interfacce che non solo sono facili
 - **Icone**: devono essere semplici, autoesplicative e distinguibili, arricchite da colori e, se necessario, testo.
 - **Font**: devono essere leggibili e coerenti con lo stile dell'interfaccia. Utilizzare al massimo 2-3 tipi di font per mantenere la coerenza visiva.
 
-### Metodologia di progettazione
+**Metodologia di progettazione**
+
 La progettazione di un’interfaccia segue un processo articolato:
 1. **Fase preliminare**: definire attività, criteri di usabilità e modello concettuale.
 2. **Fase di analisi e progettazione**: stabilire strutture base, standard e prototipi per verificare l’allineamento con gli obiettivi.
 3. **Fase di sviluppo**: completare l’interfaccia e integrarla con la logica applicativa.
 
-### Test con l’utente
+**Test con l’utente**
+
 I test valutano se l’interfaccia soddisfa gli standard progettuali e gli obiettivi di usabilità. Possono includere:
 - **Simulatore**: l’utente osserva.
 - **Dimostratore**: l’utente interagisce con parti critiche.
 - **Prototipo**: l’utente utilizza l’intero sistema in una versione beta.
 
-## Criteri di Usabilità nelle Interfacce
+**Usabilità**
 
-### Usabilità
 L’usabilità si misura in termini di efficacia, efficienza e soddisfazione:
 - **Efficacia**: in che misura i compiti previsti vengono svolti.
 - **Efficienza**: risorse necessarie per completare un compito.
 - **Soddisfazione**: quanto gli utenti trovano piacevole e accettabile il sistema.
 Criteri come facilità di apprendimento, navigazione intuitiva, prevenzione degli errori e velocità d’uso sono fondamentali.
 
-### Apprendibilità
+**Apprendibilità**
+
 L’apprendibilità di un sistema mira a garantire che i nuovi utenti possano imparare rapidamente a utilizzare l’applicazione. L’obiettivo specifico è che almeno l’80% degli utenti inesperti riesca a completare una singola attività in meno di 30 minuti. Questo aspetto è particolarmente rilevante in contesti caratterizzati da un elevato turnover del personale, dove il tempo dedicato alla formazione deve essere ridotto al minimo, o quando gli utenti interagiscono con il sistema solo saltuariamente. L’apprendibilità è fondamentale anche per sistemi con cicli di vita brevi o frequentemente sottoutilizzati per mancanza di training.
 
-### Velocità
+**Velocità**
+
 Un’interfaccia ben progettata deve consentire l’esecuzione rapida delle operazioni. L’obiettivo tipico è raggiungere una velocità di 10 inserimenti ogni 2 minuti, rendendo il sistema adatto a utilizzi intensivi e attività ripetitive, come l’inserimento dati in ambienti lavorativi quotidiani. La velocità operativa diventa cruciale per garantire efficienza in questi contesti.
 
-### Soddisfazione
+**Soddisfazione**
+
 La soddisfazione degli utenti è un criterio essenziale per il successo di un sistema. L’obiettivo è che almeno il 90% degli utenti trovi l’applicazione piacevole da utilizzare. Questo aspetto è particolarmente importante in sistemi self-service, dove l’interazione è autonoma, e in iniziative di rinnovamento aziendale, come il Business Process Reengineering, dove la soddisfazione degli utenti può influire significativamente sull’adozione e l’efficacia del sistema.
 
-### Facilità di Navigazione
+**Facilità di Navigazione**
+
 La navigazione deve essere intuitiva e consentire all’utente di accedere a diverse funzionalità senza dover continuamente tornare al menu principale. Un sistema ben progettato dovrebbe permettere di avviare fino a sei attività differenti su un singolo oggetto. Questo criterio è particolarmente utile quando il cliente guida il processo decisionale, come in un ristorante, o in applicazioni con procedure strutturate, ad esempio nelle mense aziendali. La facilità di navigazione diventa inoltre fondamentale in ambienti con elevato turnover del personale, dove gli utenti hanno bisogno di imparare rapidamente a muoversi nel sistema.
 
-### Memorabilità
+**Memorabilità**
+
 Un’interfaccia memorabile permette agli utenti di riprendere confidenza con il sistema anche dopo lunghi periodi di inattività, senza necessità di ulteriore formazione. Questo criterio è rilevante per applicazioni utilizzate raramente o in circostanze eccezionali, come strumenti attivati in momenti specifici (es. durante scadenze) o applicazioni secondarie.
 
-### Prevenzione degli Errori
+**Prevenzione degli Errori**
+
 La prevenzione degli errori si concentra sulla riduzione di quelli irreparabili, noti come errori catastrofici. Questo aspetto è cruciale in contesti dove i risultati richiedono un impegno significativo, come attività correlate alla sicurezza o risultati immediatamente visibili ai clienti. Ridurre al minimo questi errori migliora la fiducia e la qualità percepita del sistema.
