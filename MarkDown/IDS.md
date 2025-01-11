@@ -6,6 +6,8 @@
 
 # APPUNTI DI INGEGNERIA DEL SOFTWARE
 
+<div style="page-break-after: always;"></div>
+
 - [APPUNTI DI INGEGNERIA DEL SOFTWARE](#appunti-di-ingegneria-del-software)
   - [Ciclo di Vita dei Sistemi Informatici](#ciclo-di-vita-dei-sistemi-informatici)
     - [Fasi del Ciclo di Vita](#fasi-del-ciclo-di-vita)
@@ -110,13 +112,9 @@ La fase finale, in cui il sistema viene dismesso, concludendo il ciclo di vita.
 
 ### Analisi dei Requisiti
 
-L’obiettivo dell’analisi dei requisiti è comprendere i bisogni del cliente e dell’organizzazione, formalizzandoli in un documento di specifica che guida le successive fasi di progettazione e sviluppo. Si analizzano:
-- Sottosistemi aziendali
-- Risorse
-- Processi
-- Flussi informativi
+L’obiettivo dell’analisi dei requisiti è comprendere i bisogni del cliente e dell’organizzazione, formalizzandoli in un documento di specifica che guida le successive fasi di progettazione e sviluppo. Si analizzano: Sottosistemi aziendali, Risorse, Processi e Flussi informativi.
 
-- **Specifica dei Requisiti**
+**Specifica dei Requisiti**
   Un documento che rappresenta un accordo tra produttore e consumatore. Deve essere:
   - **Chiara**: Descrivere in modo univoco operazioni e soggetti coinvolti.
   - **Non ambigua**: Evitare interpretazioni multiple.
@@ -837,6 +835,8 @@ I **diagrammi di deployment** rappresentano la disposizione fisica del software 
   - Fornisce una vista chiara sull’**infrastruttura fisica** del sistema.
   - Evidenzia le relazioni tra **hardware e software**, agevolando il deployment e l’integrazione del sistema.
 
+<div style="page-break-after: always;"></div>
+
 ### Confronto tra Diagrammi
 
 | Caratteristica          | Diagrammi di Attività                                      | Diagrammi di Sequenza                                  | Diagrammi degli Stati                                | Diagrammi delle Classi                              | Diagrammi dei Casi d'Uso                           |
@@ -851,6 +851,8 @@ I **diagrammi di deployment** rappresentano la disposizione fisica del software 
 | *Dettagli aggiuntivi* | - Mostra attività parallele e condizioni (if-else)        | - Mostra l'ordine temporale delle interazioni         | - Utile per oggetti con comportamenti complessi     | - Mostra la struttura e le relazioni tra classi    | - Descrive come gli attori interagiscono con il sistema |
 |                         | - Utile per descrivere flussi di lavoro complessi         | - Utile per analizzare collaborazioni tra oggetti     | - Si concentra su cambiamenti di stato              | - Fondamentale per la progettazione OOP (Object-Oriented Programming) | - Aiuta a identificare i requisiti funzionali     |
 |                         | - Rappresenta il comportamento globale di un sistema      | - Si concentra su un caso d'uso specifico             | - Rappresenta il ciclo di vita di un oggetto        | - Supporta l'astrazione e l'organizzazione del codice | - Facilita la comunicazione con gli stakeholder   |
+
+<div style="page-break-after: always;"></div>
 
 ### Benefici, Complessità e Adattabilità di UML
 
@@ -892,7 +894,6 @@ Entrambe le qualità sono **interdipendenti**: un software non può avere alta q
 - **Relative al prodotto (P)**: riguardano le caratteristiche stesse del sw e sono sempre valutabili.
 - **Relative al processo (PC)**: riguardano i metodi utilizzati durante lo sviluppo del sw.
 
-
 - Caratteristiche principali della Qualità del Software
   1. **Correttezza (E,P)**: rispetta le specifiche di progetto.
   2. **Affidabilità (E,P)**: l’utente può contare sul software.
@@ -904,7 +905,7 @@ Entrambe le qualità sono **interdipendenti**: un software non può avere alta q
   8. **Portabilità (E,P)**: capacità di funzionare su piattaforme diverse.
   9. **Facilità di manutenzione (I,P)**: un sw è facile da manutenere non solo se è strutturato in modo tale da facilitare la ricerca degli errori (modifiche correttive) ma anche se la sua struttura permette di aggiungere nuove funzionalità al sistema (modifiche perfettive) o di adattarlo ai cambiamenti del dominio applicativo (modifiche adattative).
 
-![](img/IDS/costoDelSoftware.png)
+  ![](img/IDS/costoDelSoftware.png)
 
   10. **Interoperabilità (E,P)**: fa riferimento all’abilità di un sistema di coesistere e cooperare con altri sistemi (es. un word processor in cui possono essere creati grafici)
   11. **Produttività (PC)**: misura l’efficienza del processo di produzione del software in termini di velocità di consegna del sw.
@@ -913,7 +914,7 @@ Entrambe le qualità sono **interdipendenti**: un software non può avere alta q
 
 **Software Design e Principi di Progettazione**
 
-- Il **software design** è il processo che trasforma le specifiche utente in un **insieme di specifiche** per i programmatori, producendo un’**architettura** chiara del software.
+Il **software design** è il processo che trasforma le specifiche utente in un **insieme di specifiche** per i programmatori, producendo un’**architettura** chiara del software.
 
 ### Principi di Progettazione del Software
 
@@ -1063,16 +1064,11 @@ I **Function Points (FP)** sono una delle metriche software più vecchie e diffu
 
 **Utilizzi del Metodo Function Points**
 
-1. **Determinazione della Complessità**:
-   - Misura la complessità di pacchetti applicativi acquistati.
-2. **Valutazione del Beneficio**:
-   - Aiuta a quantificare le funzioni di un pacchetto applicativo che soddisfano i requisiti dell’organizzazione.
-3. **Misurazione di Prodotti**:
-   - Supporta analisi su qualità e produttività.
-4. **Stime di Costi e Risorse**:
-   - Strumento per stimare le risorse necessarie per lo sviluppo e la manutenzione.
-5. **Fattore di Normalizzazione**:
-   - Consente confronti standardizzati sul software.
+1. **Determinazione della Complessità**: Misura la complessità di pacchetti applicativi acquistati.
+2. **Valutazione del Beneficio**: Aiuta a quantificare le funzioni di un pacchetto applicativo che soddisfano i requisiti dell’organizzazione.
+3. **Misurazione di Prodotti**: Supporta analisi su qualità e produttività.
+4. **Stime di Costi e Risorse**: Strumento per stimare le risorse necessarie per lo sviluppo e la manutenzione.
+5. **Fattore di Normalizzazione**: Consente confronti standardizzati sul software.
 
 **Processo di Conteggio dei Function Points**
 
@@ -1182,9 +1178,9 @@ I software sono classificati in tre categorie, ognuna con difficoltà crescente 
 
 | **Categoria**   | **Formula del Costo (Mesi Uomo)**  |
 |------------------|------------------------------------|
-| **Organic**      | \( M_{Nom} = 3.2 \times KDSI^{1.05} \) |
-| **Semi-detached**| \( M_{Nom} = 3.0 \times KDSI^{1.12} \) |
-| **Embedded**     | \( M_{Nom} = 2.8 \times KDSI^{1.20} \) |
+| **Organic**      | $M_{Nom} = 3.2 \times KDSI^{1.05}$ |
+| **Semi-detached**| $M_{Nom} = 3.0 \times KDSI^{1.12}$ |
+| **Embedded**     | $M_{Nom} = 2.8 \times KDSI^{1.20}$ |
 
 **Criteri di Classificazione**:
 
@@ -1336,19 +1332,13 @@ Le **attività strutturali generiche** includono:
 
 **Modello a Spirale**
 
-- **Descrizione**: Fa crescere incrementalmente il grado di definizione e implementazione del sistema, riducendo il livello di rischio e producendo un insieme di milestone per garantire la fattibilità delle soluzioni intraprese.
-1. Customer communication: Colloquio tra
-cliente e team di sviluppo
-1. Planning: Raccolta requisiti e definizione
-piano di progetto
-1. Risk analysis: Stima e prevenzione dei
-rischi tecnici e di gestione
-1. Engineering: Modellazione e
-progettazione
-1. Construction & release: Realizzazione,
-collaudo e installazione
-1. Costumer evaluation: Rilevazione delle
-reazioni da parte del cliente 
+Fa crescere incrementalmente il grado di definizione e implementazione del sistema, riducendo il livello di rischio e producendo un insieme di milestone per garantire la fattibilità delle soluzioni intraprese.
+1. **Customer communication**: Colloquio tra cliente e team di sviluppo
+2. **Planning**: Raccolta requisiti e definizione piano di progetto
+3. **Risk analysis**: Stima e prevenzione dei rischi tecnici e di gestione
+4. **Engineering**: Modellazione e progettazione
+4. **Construction & release**: Realizzazione, collaudo e installazione
+6. **Costumer evaluation**: Rilevazione delle reazioni da parte del cliente 
 
 **MDD (Model-Driven Development)**
 
@@ -1505,27 +1495,16 @@ Poiché un **testing esaustivo** (cioè verificare il sistema in tutte le possib
 Le operazioni di testing si dividono in due tipologie principali:
 
 - **Testing in the small**: riguarda l’esame di singoli moduli o porzioni specifiche di codice che risultano particolarmente complesse o rilevanti per il corretto funzionamento del sistema. Questo tipo di testing è detto **white-box**, in quanto richiede accesso diretto al codice, e in particolare al flusso di controllo, che viene utilizzato per identificare un insieme significativo di input da somministrare al software. Attraverso alcuni **criteri di copertura**, si selezionano i test case utili per garantire una rappresentatività degli input e coprire efficacemente le varie parti del codice. I principali criteri di copertura includono:
-  (NON CAPITE, VERIFICARE LA CORRETTEZZA)
+  
   - **Criterio di copertura dei programmi (statement test)**: consiste nel selezionare un insieme di test tali che, eseguendo il programma su tutti i casi di test selezionati, ogni istruzione elementare del programma venga eseguita almeno una volta. Questo criterio si basa sull’idea che un errore nel codice non può essere rilevato se la parte di codice che lo contiene non viene eseguita almeno una volta. È applicabile solo conoscendo la struttura interna del codice, quindi fa parte del white-box testing.
 
   - **Criterio di copertura delle decisioni (branch test)**: prevede la selezione di un insieme di test in modo che, durante l’esecuzione del programma, ogni ramo o percorso decisionale del grafo di controllo venga attraversato almeno una volta. Questo criterio si focalizza sul flusso di controllo e richiede che per ogni condizione presente nel codice sia utilizzato un test che produca sia un esito TRUE sia un esito FALSE. Anche questo tipo di verifica si basa sulla conoscenza della struttura interna del codice e rientra nel white-box testing.
 
   - **Criterio di copertura delle decisioni e delle condizioni**: questo criterio è ancora più rigoroso rispetto al precedente e richiede che ogni arco del grafo di controllo sia percorso, e che tutti i possibili risultati delle condizioni composte siano valutati almeno una volta. Ogni condizione composta deve quindi essere testata per generare esiti TRUE e FALSE, permettendo un’analisi più dettagliata delle combinazioni logiche presenti nel codice. Anche in questo caso, la verifica è possibile solo conoscendo la struttura interna del codice ed è una tecnica di white-box testing.
 
-Questi criteri permettono di coprire in modo significativo le possibili esecuzioni del codice, riducendo la probabilità che errori sfuggano al controllo durante le fasi di verifica ma sono fallacei e dipendono dalla struttura del codice e dalla posizione dell'errore in esso.
-
 - **Testing in the large**: si concentra sull’intero sistema e verifica la funzionalità complessiva, assicurandosi che tutte le componenti interagiscano correttamente per soddisfare i requisiti stabiliti. Poiché in sistemi complessi si presenta un’enorme quantità di situazioni possibili, l’uso di tecniche white-box diventa impraticabile a causa dell’esplosione combinatoria delle variabili da testare. Per questo motivo, il testing in the large adotta un approccio black-box: il sistema viene trattato come una "scatola nera" in cui l’attenzione si sposta sull’analisi dei rapporti input-output senza considerare l’implementazione interna.
 
-  L’insieme di test viene definito a partire dalle specifiche di progetto, le quali determinano i valori di input e i relativi output attesi. In questa fase, il **diagramma UML dei use case** risulta essenziale: esso definisce i casi d’uso del sistema, descrivendo tutte le interazioni previste con gli utenti e permettendo di identificare e progettare i test case per ciascuno di questi scenari d’uso.
-
-  Ad esempio, se il sistema deve elaborare una fattura strutturata e inserirla in un archivio ordinato per data, si devono eseguire diversi test per coprire i possibili casi. Supponendo che la fattura venga inserita in ordine di arrivo quando esistono più fatture con la stessa data, alcuni test di input-output potrebbero includere:
-
-    - Fattura con data odierna
-    - Fattura con data passata per cui esistono altre fatture
-    - Fattura con data passata senza altre fatture presenti
-    - Fattura il cui cliente non è stato ancora inserito in archivio
-
-  Questi test verificano il comportamento esterno del sistema in condizioni realistiche senza necessità di accedere alla logica interna.
+  L’insieme di test viene definito a partire dalle specifiche di progetto, le quali determinano i valori di input e i relativi output attesi. In questa fase, il **diagramma UML dei use case** risulta essenziale: esso definisce i casi d’uso del sistema, descrivendo tutte le interazioni previste con gli utenti e permettendo di identificare e progettare i test case per ciascuno di questi scenari d’uso. Questi test verificano il comportamento esterno del sistema in condizioni realistiche senza necessità di accedere alla logica interna.
 
   **Tipi di testing in the large**:
   
@@ -1585,37 +1564,26 @@ Sequenze come `aduduu` e `duadudu` rispettano queste regole, mentre `aduddu` e `
 
 Non tutte le sequenze apparentemente anomale indicano errori: ad esempio, una sequenza `au` potrebbe apparire in un generatore di numeri casuali, mentre una sequenza `dd` potrebbe essere giustificata da strutture programmatiche più complesse che usano lo stesso valore in diverse esecuzioni. 
 
-Questa analisi approfondisce le relazioni tra i valori delle variabili e i comandi del programma, contribuendo all’identificazione di problemi di utilizzo delle variabili, a vantaggio della sicurezza e robustezza del codice.
-
 ### Certificazione
 
 **Sistema di Controllo della Qualità in Europa**
 
 La Comunità Europea regola la qualità nei vari settori produttivi attraverso due classi di norme:
 
-1. **Regole Tecniche**  
-   Emanate da enti statali tramite leggi, decreti e regolamenti, queste norme sono obbligatorie e devono rispettare le direttive comunitarie.
-
-2. **Norme Tecniche Consensuali**  
-   Queste norme sono sviluppate da enti di normazione riconosciuti (nazionali come UNI e CEI, europei come EN, e internazionali come ISO e IEC) e coinvolgono rappresentanti governativi e industriali. La loro applicazione è facoltativa, salvo disposizioni legali che ne rendano obbligatoria l’adozione. Un esempio è la famiglia **ISO 9000**, destinata alla gestione e assicurazione della qualità.
+- **Regole Tecniche**: Emanate da enti statali tramite leggi, decreti e regolamenti, queste norme sono obbligatorie e devono rispettare le direttive comunitarie.
+- **Norme Tecniche Consensuali**: Queste norme sono sviluppate da enti di normazione riconosciuti (nazionali come UNI e CEI, europei come EN, e internazionali come ISO e IEC) e coinvolgono rappresentanti governativi e industriali. La loro applicazione è facoltativa, salvo disposizioni legali che ne rendano obbligatoria l’adozione. Un esempio è la famiglia **ISO 9000**, destinata alla gestione e assicurazione della qualità.
 
 **ISO 9000: Obiettivi Principali**
 
 La famiglia ISO 9000 comprende norme per:
 
-- **Gestione della Qualità**  
-  Fornisce una guida alle aziende per sviluppare o migliorare un sistema di qualità, con l'obiettivo di ottimizzare processi e attività aziendali.
-
-- **Assicurazione della Qualità**  
-  Stabilisce i requisiti per permettere ai clienti di valutare l’idoneità del sistema qualità del fornitore, in relazione alla capacità di soddisfare le esigenze stabilite.
+- **Gestione della Qualità**: Fornisce una guida alle aziende per sviluppare o migliorare un sistema di qualità, con l'obiettivo di ottimizzare processi e attività aziendali.
+- **Assicurazione della Qualità**: Stabilisce i requisiti per permettere ai clienti di valutare l’idoneità del sistema qualità del fornitore, in relazione alla capacità di soddisfare le esigenze stabilite.
 
 **Certificazione e Accreditamento**
 
-- **Certificazione**  
-   La certificazione è il riconoscimento ufficiale, rilasciato da un ente accreditato, che attesta la conformità di un prodotto, processo o sistema qualità ai requisiti di una specifica norma.
-
-- **Accreditamento**  
-   È il riconoscimento formale che un laboratorio o un organismo certificatore possiede la competenza necessaria per svolgere prove specifiche o certificazioni.
+- **Certificazione**: La certificazione è il riconoscimento ufficiale, rilasciato da un ente accreditato, che attesta la conformità di un prodotto, processo o sistema qualità ai requisiti di una specifica norma.
+- **Accreditamento**: È il riconoscimento formale che un laboratorio o un organismo certificatore possiede la competenza necessaria per svolgere prove specifiche o certificazioni.
 
 **Processo di Certificazione ISO 9000**
 
@@ -1623,11 +1591,8 @@ La certificazione ISO 9000 può coprire intere aziende o solo alcune porzioni; l
 
 **Fasi della Certificazione**
 
-- **Verifica Ispettiva**  
-   È una fase cruciale in cui i valutatori, sulla base del manuale qualità, visitano l'azienda e verificano l'applicazione delle procedure aziendali. Durante l’ispezione, vari responsabili aziendali (direzione, ufficio acquisti, laboratori, ecc.) vengono intervistati e le unità produttive vengono ispezionate.
-
-- **Visite di Sorveglianza**  
-   Dopo la certificazione, l’organismo effettua visite periodiche di controllo (da 1 a 4 volte l’anno) per assicurarsi che l’azienda continui a rispettare i requisiti.
+- **Verifica Ispettiva**: È una fase cruciale in cui i valutatori, sulla base del manuale qualità, visitano l'azienda e verificano l'applicazione delle procedure aziendali. Durante l’ispezione, vari responsabili aziendali (direzione, ufficio acquisti, laboratori, ecc.) vengono intervistati e le unità produttive vengono ispezionate.
+- **Visite di Sorveglianza**: Dopo la certificazione, l’organismo effettua visite periodiche di controllo (da 1 a 4 volte l’anno) per assicurarsi che l’azienda continui a rispettare i requisiti.
 
 ![](img\IDS\workflow_ISO_9000_certificazione.PNG)
 
@@ -1680,14 +1645,6 @@ La manutenzione software comprende vari interventi per migliorare o adattare i s
      - Potenziamento delle capacità di reporting.
    - **Costi**: Elevati e spesso occulti fino alla fase operativa.
    - **Risultati**: Maggiore potenza e funzionalità, ma anche aumento dell’entropia e rischio di riduzione della robustezza, a meno di un’attenta pianificazione.
-
-La manutenibilità di un sistema è determinata dalla qualità della sua architettura originale, progettata per facilitare interventi successivi e adattamenti. Alcuni esempi includono:
-
-- **Automobili**: Architettura modulare e smontabile per interventi facili, con funzioni stabili nel tempo.
-- **Hi-Fi**: Struttura a moduli, ma con componenti strettamente integrati e difficilmente aggiornabili.
-- **Case**: Architettura non modulare con elementi nascosti (tubi, cavi), progettate per un impianto fisso piuttosto che per frequenti modifiche.
-
-Spesso i programmi software sono progettati come case (non modulari), ma devono essere manutenuti come automobili, rendendo essenziale un’architettura che ne faciliti l’adattamento e la lunga durata.
 
 ## Progettazione di Interfacce Utente
 
