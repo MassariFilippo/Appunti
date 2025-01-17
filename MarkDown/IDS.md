@@ -77,8 +77,8 @@ Questa fase mira a identificare e formalizzare i requisiti dell’organizzazione
 
 5. **Progettazione**
 La progettazione si suddivide in due fasi principali:
-- **Progettazione del sistema**: Si traduce l’analisi dei requisiti in una soluzione architetturale generale, producendo specifiche indipendenti dagli strumenti di implementazione.
-- **Progettazione esecutiva**: Descrive in dettaglio struttura e comportamento dei componenti per consentire la realizzazione di un prodotto funzionante.
+   - **Progettazione del sistema**: Si traduce l’analisi dei requisiti in una soluzione architetturale generale, producendo specifiche indipendenti dagli strumenti di implementazione.
+   - **Progettazione esecutiva**: Descrive in dettaglio struttura e comportamento dei componenti per consentire la realizzazione di un prodotto funzionante.
 
 6. **Realizzazione e Collaudo in Fabbrica**
 Il sistema viene implementato sulla piattaforma scelta e testato internamente attraverso l'α-test, utilizzando i casi prova definiti nella fase di analisi.
@@ -91,21 +91,23 @@ Include l’installazione e configurazione del sistema, oltre al recupero dei da
 
 9. **Collaudo del Sistema Installato**
 Prevede il **β-test**, dove gli utenti testano il sistema installato. Gli errori rilevati possono essere di tipo:
-- **Bloccanti**: Impediscono il collaudo.
-- **Non bloccanti**: Non impediscono il collaudo ma richiedono correzioni.
-- **Operativi e funzionali**: Malfunzionamenti nelle funzionalità richieste.
+   - **Bloccanti**: Impediscono il collaudo.
+   - **Non bloccanti**: Non impediscono il collaudo ma richiedono correzioni.
+   - **Operativi e funzionali**: Malfunzionamenti nelle funzionalità richieste.
 
 10. **Esercizio**
 Il sistema viene messo in produzione, spesso in parallelo con il sistema preesistente, per poi sostituirlo completamente.
 
 11. **Diagnosi e Manutenzione**
 Durante l'esercizio, eventuali errori vengono segnalati e corretti:
-- **Manutenzione correttiva**: Risoluzione di errori.
-- **Manutenzione adattativa**: Modifiche per adattarsi a cambiamenti nel dominio applicativo.
-- **Manutenzione evolutiva**: Introduzione di nuove funzionalità.
+  - **Manutenzione correttiva**: Risoluzione di errori ripetto alle specifiche del capitolato digara.
+  - **Manutenzione adattativa**: Modifiche per adattarsi a cambiamenti nel dominio applicativo.
+  - **Manutenzione evolutiva**: Introduzione di nuove funzionalità.
+    
 
 12. **Evoluzione**
 Consiste nell’aggiornamento del sistema per incorporare nuove funzionalità o migliorarne le prestazioni.
+  - **Manutenzione perfettiva**: Aumentare qualitativamente le funzionalità o le caratteristiche tecniche del sistema.
 
 13. **Messa Fuori Servizio**
 La fase finale, in cui il sistema viene dismesso, concludendo il ciclo di vita.
@@ -1135,6 +1137,16 @@ Identificare l’ambito del conteggio significa identificare le funzionalità ch
 - **Input Esterno (EI)**: Processo elementare che elabora dati provenienti dall’esterno del confine dell’applicazione.
 - **Output Esterno (EO)**: Processo che invia dati fuori dal confine, utilizzando logiche di processo complesse per presentare informazioni.
 - **Interrogazione Esterna (EQ)**: Processo che recupera dati da un ILF o EIF senza calcoli complessi e senza creare dati derivati.
+
+
+| **Caratteristica**            | **ILF (Internal Logical File)**                                                                                    | **EIF (External Interface File)**                                                                               | **EI (External Input)**                                                                                   | **EO (External Output)**                                                                                     | **EQ (External Inquiry)**                                                                                     |
+|--------------------------------|--------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| **Definizione**                | Gruppo di dati o informazioni di controllo mantenuti **all’interno dei confini dell’applicazione**.                | Gruppo di dati o informazioni di controllo **referenziati** dall’applicazione ma mantenuti in un’altra applicazione. | Processo che elabora dati o informazioni di controllo **provenienti dall’esterno** dell’applicazione.      | Processo che manda dati o informazioni di controllo **all’esterno** dell’applicazione.                         | Processo che manda dati o informazioni di controllo **all’esterno** tramite il recupero di dati esistenti.     |
+| **Posizione dei dati**         | Interna all’applicazione.                                                                                          | Esterna, mantenuta da un’altra applicazione.                                                                     | Provenienti dall’esterno.                                                                                  | Generati internamente ma destinati all’esterno.                                                               | Recuperati internamente (ILF o EIF) e inviati all’esterno.                                                     |
+| **Compito primario**           | Contenere dati mantenuti tramite uno o più processi elementari dell’applicazione.                                  | Contenere dati referenziati da uno o più processi elementari dell’applicazione.                                  | Mantenere uno o più ILF o modificare il comportamento del sistema.                                          | Presentare informazioni elaborate all’utente con logica di processo, calcoli o creazione di dati derivati.     | Presentare informazioni recuperando dati da un ILF o EIF senza elaborazioni o calcoli significativi.           |
+| **Interazione con altre app**  | Nessuna: il file è mantenuto solo dall’applicazione stessa.                                                        | Referenziato dalla nostra applicazione, ma mantenuto da un’altra.                                                | Riceve dati dall’esterno per mantenere o aggiornare ILF o cambiare il sistema.                             | Invia dati o informazioni all’esterno tramite logiche e calcoli.                                               | Recupera dati interni (ILF o EIF) per inviarli all’esterno senza logica complessa.                             |
+| **Richiede logica di processo**| No, contiene solo dati statici mantenuti dai processi.                                                             | No, contiene solo dati referenziati.                                                                             | Sì, per mantenere o modificare i dati (ILF) o il sistema.                                                  | Sì, logiche di calcolo, trasformazioni o modifiche al comportamento del sistema.                               | No, presenta dati recuperati senza modifiche o logiche complesse.                                              |
+| **Esempi**                     | Archivio clienti, archivio ordini, tabella dei prodotti.                                                           | Archivio clienti di un sistema CRM referenziato da un sistema di gestione ordini.                                | Inserimento di un nuovo cliente o modifica di un ordine.                                                  | Generazione di una fattura PDF con calcoli o invio di un report statistico.                                    | Visualizzazione di un elenco filtrato di ordini senza calcoli (es. query per stato di spedizione).             |
 
 **Fattore di Aggiustamento**
 
