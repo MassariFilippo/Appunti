@@ -11,8 +11,7 @@
 - [**Ricerca Operativa**](#ricerca-operativa)
   - [**Programmazione Matematica**](#programmazione-matematica)
   - [**Programmazione Lineare (PL)**](#programmazione-lineare-pl)
-  - [**Spreadsheet e Online LP Solvers**](#spreadsheet-e-online-lp-solvers)
-  - [**Algoritmo Branch and Bound per la Programmazione Lineare Intera (PLI)**](#algoritmo-branch-and-bound-per-la-programmazione-lineare-intera-pli)
+  - [**Programmazione Lineare Intera (PLI)**](#programmazione-lineare-intera-pli)
   - [**Modelli di Programmazione Lineare Intera (PLI)**](#modelli-di-programmazione-lineare-intera-pli)
   - [**Constraint Programming (CP)**](#constraint-programming-cp)
   - [**Teoria dei Grafi**](#teoria-dei-grafi)
@@ -84,11 +83,15 @@ Ecco una panoramica della notazione utilizzata:
     $$
   - Esempio: Se $x, y \in \mathbb{R}^2$, $z$ è un punto sul segmento che congiunge $x$ e $y$.
 
+![](img/RO/combinazioneConvessa1.png)
+
 - **Combinazione Convessa di $K$ punti**:
   - Dati $p_1, p_2, \dots, p_K \in \mathbb{R}^n$, $z$ è una combinazione convessa se:
     $$
     z = \sum_{i=1}^K \lambda_i p_i \quad \text{con} \quad \lambda_i \geq 0 \quad \text{e} \quad \sum_{i=1}^K \lambda_i = 1
     $$
+
+![](img/RO/combinazioneConvessa2.png)
 
 **Insiemi Convessi**
 
@@ -112,7 +115,8 @@ Ecco una panoramica della notazione utilizzata:
     $$
     \phi(\lambda x + (1 - \lambda) y) \leq \lambda \phi(x) + (1 - \lambda) \phi(y)
     $$
-  - Esempio: $\phi(x) = x^2$ è una funzione convessa.
+
+  ![](img/RO/funzioneConvessa.png)
 
 **Problemi di Ottimizzazione**
 
@@ -211,21 +215,6 @@ $$
 - **Regione ammissibile $F$**: È un **poliedro convesso**, ovvero un insieme convesso definito dall'intersezione di un numero finito di semispazi.
 - **Vertici**: La soluzione ottima di un problema di PL si trova sempre in uno dei vertici del poliedro $F$.
 
-**Esempio di Problema di PL**
-**Problema**:
-$$
-\min 3x_1 - 2x_2 + x_3
-$$
-soggetto a:
-$$
-2x_1 + x_2 - x_3 \geq 2, \quad x_1 + 2x_3 \geq 1, \quad x_1, x_2, x_3 \geq 0
-$$
-
-**Forma matriciale**:
-- $c^T = [3, -2, 1]$
-- $A = \begin{pmatrix} 2 & 1 & -1 \\ 1 & 0 & 2 \end{pmatrix}$
-- $d = \begin{pmatrix} 2 \\ 1 \end{pmatrix}$
-
 **Formulazione di Problemi di PL**
 La formulazione di un problema di PL segue questi passi:
 1. **Identificare le variabili decisionali**.
@@ -236,18 +225,66 @@ La formulazione di un problema di PL segue questi passi:
 **Esempi Pratici di PL**
 
 **Esempio 1: Produzione di Sedie**
-- **Variabili decisionali**:
-  - $x_1$: Numero di sedie in legno prodotte.
-  - $x_2$: Numero di sedie in alluminio prodotte.
-- **Funzione obiettivo**:
-  $$
-  \max z = 30x_1 + 50x_2
-  $$
-- **Vincoli**:
-  - $10x_1 \leq 40$ (Lavorazione legno).
-  - $20x_2 \leq 120$ (Lavorazione alluminio).
-  - $30x_1 + 20x_2 \leq 180$ (Lavorazione tessuto).
-  - $x_1, x_2 \geq 0$.
+
+**Descrizione del Problema**
+Un'azienda produce due tipi di sedie: **Sedia in Legno (SL)** e **Sedia in Alluminio (SA)**. La produzione utilizza tre reparti:
+- **Lavorazione parti in Legno (RL)**: dedicato alla lavorazione delle parti in legno.
+- **Lavorazione parti in Alluminio (RA)**: dedicato alla lavorazione delle parti in alluminio.
+- **Lavorazione parti in Tessuto (RT)**: dedicato al rivestimento delle sedie.
+
+**Dati di Produzione**
+- **Tempi di produzione (minuti per pezzo)**:
+  - **SL**: RL = 10, RT = 30.
+  - **SA**: RA = 20, RT = 20.
+- **Ricavo netto (euro per pezzo)**:
+  - **SL**: 30 €/pezzo.
+  - **SA**: 50 €/pezzo.
+- **Disponibilità dei reparti (minuti per periodo)**:
+  - RL: 40 minuti.
+  - RA: 120 minuti.
+  - RT: 180 minuti.
+
+**Formulazione del Problema**
+
+**Variabili decisionali**:
+- $x_1$: Numero di sedie in legno prodotte in un periodo.
+- $x_2$: Numero di sedie in alluminio prodotte in un periodo.
+
+**Funzione obiettivo**:
+Massimizzare il ricavo totale:
+$$
+\max z = 30x_1 + 50x_2
+$$
+
+**Vincoli**:
+1. Lavorazione parti in legno (RL):
+   $$
+   10x_1 \leq 40
+   $$
+2. Lavorazione parti in alluminio (RA):
+   $$
+   20x_2 \leq 120
+   $$
+3. Lavorazione parti in tessuto (RT):
+   $$
+   30x_1 + 20x_2 \leq 180
+   $$
+4. Vincoli di non negatività:
+   $$
+   x_1 \geq 0, \, x_2 \geq 0
+   $$
+
+**Modello Lineare Completo**
+$$
+\begin{aligned}
+&\max \, z = 30x_1 + 50x_2 \\
+\text{soggetto a:} \\
+&10x_1 \leq 40 \quad \text{(RL)} \\
+&20x_2 \leq 120 \quad \text{(RA)} \\
+&30x_1 + 20x_2 \leq 180 \quad \text{(RT)} \\
+&x_1, x_2 \geq 0
+\end{aligned}
+$$
 
 **Esempio 2: Produzione di Vasche**
 - **Variabili decisionali**:
@@ -325,7 +362,7 @@ $$
 - **Divisibilità**: Le variabili possono assumere valori non interi.
 - **Certezza**: I parametri sono noti e costanti.
 
-## **Spreadsheet e Online LP Solvers**
+**Spreadsheet e Online LP Solvers**
 
 **Risoluzione di Problemi di PL con più di 2 Variabili**
 - **Caso 3D (3 Variabili)**:
@@ -416,7 +453,7 @@ $$
   - [WolframAlpha LP Solver](https://www.wolframalpha.com/widgets/view.jsp?id=1e692c6f72587b2cbd3e7be018fd8960)
   - [Desmos Calculator](https://www.desmos.com/calculator/tdhxorkxgb) (utile per rappresentare graficamente le regioni ammissibili).
 
-**Appunti di Programmazione Lineare Intera (PLI)**
+## **Programmazione Lineare Intera (PLI)**
 
 **Introduzione alla Programmazione Lineare Intera (PLI)**
 La **Programmazione Lineare Intera (PLI)** è una variante della Programmazione Lineare (PL) in cui le variabili decisionali devono assumere valori **interi**. Questo vincolo aggiuntivo rende il problema più complesso da risolvere rispetto alla PL continua.
@@ -492,7 +529,7 @@ Un semplice algoritmo euristico per PLI è il seguente:
   - **Branch-and-Cut**: Combina Branch-and-Bound con Cutting Planes.
   - **Branch-and-Price/Column Generation**: Utilizzato per problemi con un numero elevato di variabili.
 
-## **Algoritmo Branch and Bound per la Programmazione Lineare Intera (PLI)**
+-**Algoritmo Branch and Bound per la Programmazione Lineare Intera (PLI)**
 
 **Introduzione all'Algoritmo Branch and Bound**
 L'algoritmo **Branch and Bound** (B&B) è una tecnica generale per risolvere problemi di ottimizzazione combinatoria, tra cui la Programmazione Lineare Intera (PLI). Si basa sulla suddivisione del problema originale in sottoproblemi più semplici, che vengono esplorati in modo sistematico.
@@ -687,7 +724,8 @@ La **Programmazione Lineare Intera (PLI)** è una tecnica di ottimizzazione in c
   - 2 mesi: 700 €
   - 3 mesi: 900 €
 - **Fabbisogno mensile**:
-  | Mese | Gen | Feb | Mar | Apr | Mag | Giu ----|
+  | Mese | Gen | Feb | Mar | Apr | Mag | Giu |
+  |------|-----|-----|-----|-----|-----|-----|
   | Fabbisogno | 9 | 5 | 7 | 9 | 10 | 5 |
 
 **Formulazione PLI**:
@@ -748,7 +786,8 @@ La **Programmazione Lineare Intera (PLI)** è una tecnica di ottimizzazione in c
 **Problema**:
 - **Obiettivo**: Minimizzare il numero di persone necessarie per coprire i turni settimanali.
 - **Requisiti giornalieri**:
-  | Giorno | Lun | Mar | Mer | Gio | Ven | Sab | Dom ------|
+  | Giorno | Lun | Mar | Mer | Gio | Ven | Sab | Dom |
+  |--------|-----|-----|-----|-----|-----|-----|-----|
   | Personale | 22 | 18 | 13 | 14 | 15 | 18 | 25 |
 
 **Formulazione PLI**:
@@ -1578,6 +1617,7 @@ Il **Problema della Cricca Massima** consiste nel trovare, in un grafo non orien
 Consideriamo la seguente rete sociale:
 
 | ID | Nome        | Amici con       |
+|----|-------------|-----------------|
 | 0  | Toi         | 2, 9, 6         |
 | 1  | Brain       | 4, 6, 9         |
 | 2  | Annamaria   | 0, 9, 10        |
