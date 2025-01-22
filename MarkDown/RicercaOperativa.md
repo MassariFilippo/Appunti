@@ -24,8 +24,6 @@
   - [**Problema del Massimo Insieme Indipendente (Maximum Independent Set Problem)**](#problema-del-massimo-insieme-indipendente-maximum-independent-set-problem)
   - [**Problema della Colorazione dei Grafi (Graph Coloring Problem)**](#problema-della-colorazione-dei-grafi-graph-coloring-problem)
   - [**Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)**](#problema-di-pianificazione-di-progetti-con-vincoli-di-risorse-rcpsp)
-  - [**Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)**](#problema-di-pianificazione-di-progetti-con-vincoli-di-risorse-rcpsp-1)
-  - [**Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)**](#problema-di-pianificazione-di-progetti-con-vincoli-di-risorse-rcpsp-2)
 
 
 <div style="page-break-after: always;"></div>
@@ -811,6 +809,126 @@ La **Programmazione Lineare Intera (PLI)** è una tecnica di ottimizzazione in c
   x_1, x_2, \dots, x_7 \geq 0 \quad \text{e intere}
   $$
 
+**Problema dello Zaino (Knapsack Problem - KP01)**
+- **Definizione**:  
+  - **n oggetti**, ciascuno con un **profitto $P_j$** e un **peso $W_j$**.
+  - **1 zaino** con capacità massima $K$.
+  - **Obiettivo**: Selezionare un sottoinsieme di oggetti che massimizzi il profitto totale, senza superare la capacità $K$.
+
+- **Modello PLI**:
+  $$
+  \text{max } \sum_{j=1}^n P_j x_j
+  $$
+  $$
+  \sum_{j=1}^n W_j x_j \leq K
+  $$
+  $$
+  x_j \in \{0, 1\} \quad \text{(dove } x_j = 1 \text{ se l'oggetto } j \text{ è selezionato, altrimenti } 0\text{)}
+  $$
+
+- **Esempio pratico**:
+  - **Oggetti**: 8 articoli con valori e pesi specifici.
+  - **Capacità zaino**: 21 lbs.
+  - **Obiettivo**: Massimizzare il valore degli articoli selezionati senza superare i 21 lbs.
+
+**Problema dello Zaino Multiplo (Multi-Knapsack Problem - MKP01)**
+- **Definizione**:
+  - **n oggetti**, ciascuno con profitto $P_j$ e peso $W_j$.
+  - **m contenitori**, ciascuno con capacità $K_i$.
+  - **Vincolo aggiuntivo**: Ogni oggetto può essere assegnato a **al massimo un contenitore**.
+  - **Obiettivo**: Massimizzare il profitto totale, rispettando i vincoli di capacità di ogni contenitore.
+
+- **Modello PLI**:
+  $$
+  \text{max } \sum_{j=1}^n P_j \left( \sum_{i=1}^m x_{ij} \right)
+  $$
+  $$
+  \sum_{j=1}^n W_j x_{ij} \leq K_i \quad \text{(per ogni contenitore } i\text{)}
+  $$
+  $$
+  \sum_{i=1}^m x_{ij} \leq 1 \quad \text{(per ogni oggetto } j\text{)}
+  $$
+  $$
+  x_{ij} \in \{0, 1\} \quad \text{(dove } x_{ij} = 1 \text{ se l'oggetto } j \text{ è assegnato al contenitore } i\text{)}
+  $$
+
+**Problema del Bin Packing (1BP)**
+- **Definizione**:
+  - **n oggetti**, ciascuno con peso $W_j$.
+  - **n contenitori (bin)**, ciascuno con capacità $K$.
+  - **Obiettivo**: Impacchettare tutti gli oggetti nel **minor numero possibile di contenitori**, senza superare la capacità $K$ in ogni contenitore.
+
+- **Modello PLI**:
+  $$
+  \text{min } \sum_{i=1}^n y_i
+  $$
+  $$
+  \sum_{j=1}^n W_j x_{ij} \leq K y_i \quad \text{(per ogni contenitore } i\text{)}
+  $$
+  $$
+  \sum_{i=1}^n x_{ij} = 1 \quad \text{(per ogni oggetto } j\text{)}
+  $$
+  $$
+  y_i \in \{0, 1\} \quad \text{(dove } y_i = 1 \text{ se il contenitore } i \text{ è utilizzato)}
+  $$
+  $$
+  x_{ij} \in \{0, 1\} \quad \text{(dove } x_{ij} = 1 \text{ se l'oggetto } j \text{ è assegnato al contenitore } i\text{)}
+  $$
+
+**Problema di Assegnazione di Incarichi**
+- **Definizione**:
+  - **n persone** e **n incarichi**.
+  - **Costo $c_{ij}$**: Costo per assegnare l'incarico $j$ alla persona $i$.
+  - **Obiettivo**: Assegnare ogni persona a un incarico e ogni incarico a una persona, minimizzando il costo totale.
+
+- **Modello PLI**:
+  $$
+  \text{min } \sum_{i=1}^n \sum_{j=1}^n c_{ij} x_{ij}
+  $$
+  $$
+  \sum_{j=1}^n x_{ij} = 1 \quad \text{(per ogni persona } i\text{)}
+  $$
+  $$
+  \sum_{i=1}^n x_{ij} = 1 \quad \text{(per ogni incarico } j\text{)}
+  $$
+  $$
+  x_{ij} \in \{0, 1\} \quad \text{(dove } x_{ij} = 1 \text{ se la persona } i \text{ è assegnata all'incarico } j\text{)}
+  $$
+
+**Problema di Sequenziamento di Lavorazioni**
+- **Definizione**:
+  - **n lavorazioni**, ciascuna con tempo di processamento $p_j$.
+  - **m macchine identiche**.
+  - **Vincoli**:
+    - Nessuna prelazione (una lavorazione non può essere interrotta).
+    - Ogni macchina può eseguire una sola lavorazione alla volta.
+  - **Obiettivo**: Assegnare le lavorazioni alle macchine in modo da minimizzare il **tempo totale di completamento (makespan)**.
+
+- **Modello PL Misto**:
+  $$
+  \text{min } z
+  $$
+  $$
+  \sum_{j=1}^n p_j x_{ij} \leq z \quad \text{(per ogni macchina } i\text{)}
+  $$
+  $$
+  \sum_{i=1}^m x_{ij} = 1 \quad \text{(per ogni lavorazione } j\text{)}
+  $$
+  $$
+  x_{ij} \in \{0, 1\} \quad \text{(dove } x_{ij} = 1 \text{ se la lavorazione } j \text{ è assegnata alla macchina } i\text{)}
+  $$
+  $$
+  z \geq 0 \quad \text{(variabile continua per il makespan)}
+  $$
+
+**Riepilogo delle Applicazioni**
+- **KP01**: Selezione ottimale di oggetti con vincoli di capacità.
+- **MKP01**: Estensione a più contenitori con vincoli aggiuntivi.
+- **1BP**: Ottimizzazione dell'uso dei contenitori.
+- **Assegnazione di incarichi**: Ottimizzazione di costi/tempi in contesti di assegnazione.
+- **Sequenziamento di lavorazioni**: Minimizzazione del tempo totale di completamento in contesti produttivi.
+
+
 ## **Constraint Programming (CP)**
 
 **Concetti Fondamentali della Programmazione a Vincoli (CP)**
@@ -931,14 +1049,6 @@ La **Teoria dei Grafi** è una branca della matematica che studia le proprietà 
   - Un grafo non orientato $G = (V, E)$ è definito da:
     - $V$: Insieme di vertici (nodi).
     - $E$: Insieme di lati, dove ogni lato $e = \{i, j\}$ connette due vertici $i$ e $j$.
-  - Esempio:
-```mermaid
-    graph LR
-         B
-         C
-         D
-         D
-```
 
 - **Grafi orientati**:
   - Un grafo orientato $G = (V, A)$ è definito da:
@@ -970,10 +1080,13 @@ La **Teoria dei Grafi** è una branca della matematica che studia le proprietà 
 - **Grafi completi**: Ogni coppia di vertici è connessa da un lato.
 - Esempio di grafo completo:
 ```mermaid
-  graph LR
-       B
-       C
-       C
+  graph TD
+    A --- B
+    A --- C
+    A --- D
+    B --- C
+    B --- D
+    C --- D
 ```
 
 **Applicazioni dei Grafi**
@@ -984,16 +1097,20 @@ La **Teoria dei Grafi** è una branca della matematica che studia le proprietà 
 
 **Taglio di un Grafo**
 
+In teoria dei grafi, **tagliare un grafo** si riferisce a una operazione che divide il grafo in due o più parti disgiunte, rimuovendo un insieme di archi o nodi. Questo concetto è fondamentale in diverse applicazioni, come l'ottimizzazione di reti, l'analisi di flussi, la segmentazione di immagini e molto altro. Ecco una spiegazione dettagliata:
+Un **taglio** è una partizione dei vertici (nodi) di un grafo in due sottoinsiemi disgiunti, solitamente indicati come $S$ e $T$. Formalmente, dato un grafo $G = (V, E)$, un taglio è una partizione di $V$ in due insiemi $S$ e $T$ tali che:
+$$
+S \cup T = V \quad \text{e} \quad S \cap T = \emptyset
+$$
+
+- **Archi del taglio**: Gli archi che collegano un nodo in $S$ a un nodo in $T$ sono detti **archi del taglio**.
+- **Peso del taglio**: Se il grafo è pesato, il peso del taglio è la somma dei pesi degli archi del taglio.
+
+In sintesi, **tagliare un grafo** significa dividerlo in due parti rimuovendo un insieme di archi o nodi, e questa operazione ha numerose applicazioni pratiche. Se hai bisogno di ulteriori chiarimenti o esempi, fammelo sapere! 😊
+
 **Taglio in Grafi Non Orientati**
 - Dato un sottoinsieme $S \subseteq V$, il **taglio** $\delta(S)$ è l'insieme dei lati che connettono $S$ a $V \setminus S$.
-- Esempio:
-```mermaid
-  graph LR
-       B
-       C
-       D
-       D
-```
+
   Se $S = \{A, B\}$, allora $\delta(S) = \{\{A, C\}, \{B, D\}\}$.
 
 **Taglio in Grafi Orientati**
@@ -1020,7 +1137,6 @@ La **Teoria dei Grafi** è una branca della matematica che studia le proprietà 
 ```
 
 **Alberi**
-
 - Un **albero** è un grafo connesso e aciclico.
 - Proprietà:
   - Ha $n-1$ lati.
@@ -1048,8 +1164,8 @@ La **Teoria dei Grafi** è una branca della matematica che studia le proprietà 
 - Esempio:
 ```mermaid
   graph LR
-       B
-       C
+    A --- B
+    A --- C
 ```
   Matrice di adiacenza:
 $$
@@ -1201,54 +1317,68 @@ graph LR
 ```
 - **Cammino minimo**: $A \rightarrow B \rightarrow D \rightarrow E \rightarrow G \rightarrow H$ con distanza $8$.
 
-**Esempio 2: Cammino Minimo da $A$ a $H$**
-```mermaid
-graph LR
-    A --1--> B
-    A --3--> C
-    B --2--> D
-    C --1--> D
-    D --4--> E
-    D --2--> F
-    E --3--> G
-    F --1--> G
-    G --2--> H
-```
-- **Cammino minimo**: $A \rightarrow C \rightarrow D \rightarrow F \rightarrow G \rightarrow H$ con distanza $7$.
-
 **Esercizi**
 
 **Esercizio 1: Applicazione dell'Algoritmo di Dijkstra**
-1. **Trova i cammini minimi da**:
-   - **a) Nodo $A$**:
-```mermaid
-     graph LR
-         A --2--> B
-         A --4--> C
-         B --1--> D
-         C --3--> D
-         D --2--> E
-         D --5--> F
-         E --1--> G
-         F --3--> G
-         G --2--> H
-```
-   - **b) Nodo $F$**:
-```mermaid
-     graph LR
-         F --3--> G
-         G --2--> H
-         F --5--> D
-         D --2--> E
-         D --1--> B
-         B --2--> A
-         D --3--> C
-         C --4--> A
-```
-
-1. **Costruisci un modello di Programmazione Lineare Intera (PLI) per trovare i cammini minimi**:
+![](img/RO/grafo1.png)
+**Costruisci un modello di Programmazione Lineare Intera (PLI) per trovare i cammini minimi**:
    - **c) Da $A$ a $G$**.
    - **d) Da $C$ a $E$**.
+
+**Passo 1: Definire le Variabili Decisionali**
+- Per ogni arco $(i, j)$ nel grafo, definiamo una variabile binaria:
+  $$
+  x_{ij} = 
+  \begin{cases}
+  1 & \text{se l'arco } (i, j) \text{ è incluso nel cammino} \\
+  0 & \text{altrimenti}
+  \end{cases}
+  $$
+
+**Passo 2: Funzione Obiettivo**
+Minimizzare il **costo totale del cammino**, dove $c_{ij}$ è il costo dell'arco $(i, j)$:
+$$
+\text{Min } Z = \sum_{(i, j) \in E} c_{ij} \cdot x_{ij}
+$$
+
+**Passo 3: Vincoli**
+1. **Vincoli di Conservazione del Flusso**:
+   - **Nodo sorgente** (es. A per A→G o C per C→E):
+    $$
+    \sum_{(s, j) \in E} x_{sj} - \sum_{(k, s) \in E} x_{ks} = 1
+    $$
+   - **Nodo destinazione** (es. G per A→G o E per C→E):
+    $$
+    \sum_{(k, d) \in E} x_{kd} - \sum_{(d, j) \in E} x_{dj} = 1
+    $$
+   - **Nodi intermedi** (tutti gli altri nodi):
+    $$
+    \sum_{(i, k) \in E} x_{ik} = \sum_{(k, j) \in E} x_{kj} \quad \forall k \neq s, d
+    $$ 
+     **Cosa significa "conservazione del flusso"?**
+      Immagina di dover inviare **1 unità di acqua** dal nodo $A$ (sorgente) al nodo $G$ (destinazione).  
+      I nodi intermedi ($B, C, D, E$) sono come **serbatoi**: l’acqua che entra deve uscire tutta, senza accumularsi.  
+      - **Se entra 1 unità in un nodo, deve uscirne 1**.
+      - **Se non entra acqua, non può uscirne**.
+
+      **Esempio Pratico: Nodo $B$**
+      Supponiamo che il nodo $B$ abbia:
+      - **Arco entrante**: $A \rightarrow B$.
+      - **Archi uscenti**: $B \rightarrow C$, $B \rightarrow E$.
+
+      **Vincolo di conservazione per $B$**:
+        $$
+        x_{AB} = x_{BC} + x_{BE}
+        $$
+        - **Se $x_{AB} = 1$** (l’acqua passa da $A$ a $B$):  
+          Deve uscire 1 unità da $B$, quindi:  
+          $$
+          x_{BC} + x_{BE} = 1 \quad \text{(o } B \rightarrow C \text{ o } B \rightarrow E \text{ è attivo)}.
+          $$
+        - **Se $x_{AB} = 0$** (nessun flusso entra in $B$):  
+          $$
+          x_{BC} + x_{BE} = 0 \quad \text{(nessun arco uscente da } B \text{ è attivo)}.
+          $$
 
 ## **Alberi Ricoprenti (Spanning Trees)**
 
@@ -1258,14 +1388,6 @@ Un **albero ricoprente** (spanning tree) di un grafo è un sottografo che includ
 - Un **albero** è un grafo connesso e aciclico.
 - Ogni coppia di nodi è connessa da un unico cammino.
 - Un albero con $n$ nodi ha esattamente $n-1$ lati.
-
-**Esempio di albero**:
-```mermaid
-graph TD
-     B
-     C
-     D
-```
 
 **Problema dell'Albero Ricoprente Minimo (MST)**
 
@@ -1302,67 +1424,96 @@ L'algoritmo di Prim è un metodo efficiente per trovare l'albero ricoprente mini
 3. **Terminazione**:
    - Ripeti il passo 2 fino a quando tutti i nodi sono inclusi nell'albero.
 
-**Esempio**:
-```mermaid
-graph LR
-    A --2--> B
-    A --4--> C
-    B --1--> D
-    C --3--> D
-```
-- **Albero ricoprente minimo**: $A \rightarrow B \rightarrow D$ con costo totale $3$.
+**Modello PLI per l’MST**
 
-**Esempio 1: Trovare l'Albero Ricoprente Minimo**
-```mermaid
-graph LR
-    A --2--> B
-    A --4--> C
-    B --1--> D
-    C --3--> D
-    D --2--> E
-    D --5--> F
-    E --1--> G
-    F --3--> G
-    G --2--> H
-```
-- **Albero ricoprente minimo**:
-  - $A \rightarrow B \rightarrow D \rightarrow E \rightarrow G \rightarrow H$
-  - Costo totale: $8$.
+**1. Variabili Decisionali**
+Per ogni arco $\{i, j\} \in E$, definiamo una **variabile binaria**:
+$$
+x_{ij} =
+\begin{cases}
+1 & \text{se l'arco } \{i, j\} \text{ è incluso nell'albero} \\
+0 & \text{altrimenti}
+\end{cases}
+$$
 
-**Esempio 2: Trovare l'Albero Ricoprente Minimo**
-```mermaid
-graph LR
-    A --1--> B
-    A --3--> C
-    B --2--> D
-    C --1--> D
-    D --4--> E
-    D --2--> F
-    E --3--> G
-    F --1--> G
-    G --2--> H
-```
-- **Albero ricoprente minimo**:
-  - $A \rightarrow B \rightarrow D \rightarrow F \rightarrow G \rightarrow H$
-  - Costo totale: $7$.
+**2. Funzione Obiettivo**
+Minimizzare il **costo totale** dell’albero:
+$$
+\text{Min } Z = \sum_{\{i, j\} \in E} c_{ij} \cdot x_{ij}
+$$
 
-**Esercizio 1: Applicazione dell'Algoritmo di Prim**
-1. **Trova l'albero ricoprente minimo per la seguente rete**:
-```mermaid
-   graph LR
-       A --2--> B
-       A --4--> C
-       B --1--> D
-       C --3--> D
-       D --2--> E
-       D --5--> F
-       E --1--> G
-       F --3--> G
-       G --2--> H
-```
+**3. Vincoli**
 
-1. **Costruisci un modello di Programmazione Lineare Intera (PLI) per trovare l'albero ricoprente minimo**:
-   - **a) Per la rete data sopra**.
+1. **Numero di archi**:
+   Un albero ricoprente deve avere esattamente $|N| - 1$ archi (dove $|N|$ è il numero di nodi).  
+   **Vincolo**:
+  $$
+   \sum_{\{i, j\} \in E} x_{ij} = |N| - 1
+  $$
+
+1. **Assenza di cicli**:
+   Per evitare cicli, dobbiamo garantire che per ogni **sottoinsieme di nodi $S \subset N$**, il numero di archi selezionati all’interno di $S$ sia al massimo $|S| - 1$.  
+   **Vincolo**:
+  $$
+   \sum_{\{i, j\} \in E(S)} x_{ij} \leq |S| - 1 \quad \forall S \subset N, S \neq \emptyset
+  $$
+   - $E(S)$ è l’insieme degli archi i cui estremi sono entrambi in $S$.
+   - Questo vincolo garantisce che non si formino cicli all’interno di nessun sottoinsieme di nodi.
+
+**Esempio Pratico**
+Consideriamo un grafo con 4 nodi ($A, B, C, D$) e i seguenti archi con i relativi costi:
+- $\{A, B\}$, costo 1
+- $\{A, C\}$, costo 4
+- $\{B, C\}$, costo 2
+- $\{B, D\}$, costo 5
+- $\{C, D\}$, costo 3
+
+**Variabili Decisionali**:
+$$
+x_{AB}, x_{AC}, x_{BC}, x_{BD}, x_{CD}
+$$
+
+**Funzione Obiettivo**:
+$$
+\text{Min } Z = 1x_{AB} + 4x_{AC} + 2x_{BC} + 5x_{BD} + 3x_{CD}
+$$
+
+**Vincoli**:
+1. **Numero di archi**:
+  $$
+   x_{AB} + x_{AC} + x_{BC} + x_{BD} + x_{CD} = 3 \quad (\text{poiché } |N| = 4)
+  $$
+
+2. **Assenza di cicli**:
+   - Per $S = \{A, B, C\}$:
+    $$
+     x_{AB} + x_{AC} + x_{BC} \leq 2
+    $$
+   - Per $S = \{B, C, D\}$:
+    $$
+     x_{BC} + x_{BD} + x_{CD} \leq 2
+    $$
+   - Per $S = \{A, B, D\}$:
+    $$
+     x_{AB} + x_{BD} \leq 2
+    $$
+   - E così via per tutti i sottoinsiemi $S \subset N$.
+
+**Osservazioni Importanti**
+1. **Numero di vincoli**:
+   - Il vincolo di assenza di cicli richiede di considerare **tutti i sottoinsiemi $S \subset N$**.  
+   - Questo porta a un numero esponenziale di vincoli, rendendo il modello complesso da risolvere per grafi grandi.
+
+2. **Alternative pratiche**:
+   - In pratica, si utilizzano algoritmi specifici per l’MST (es. **Kruskal** o **Prim**), che sono più efficienti della PLI.
+   - La PLI è utile per estensioni del problema (es. MST con vincoli aggiuntivi).
+
+**Riepilogo del Modello PLI**
+- **Variabili**: $x_{ij} \in \{0, 1\}$ per ogni arco $\{i, j\} \in E$.
+- **Funzione obiettivo**: Minimizzare il costo totale.
+- **Vincoli**:
+  1. Numero di archi $= |N| - 1$.
+  2. Assenza di cicli per ogni sottoinsieme $S \subset N$.
 
 ## **Problema del Commesso Viaggiatore (TSP)**
 
@@ -1397,6 +1548,45 @@ Il **Problema del Commesso Viaggiatore (TSP)** consiste nel trovare il percorso 
       $$
       u_i \geq 2 \quad \text{per ogni } i \in N \setminus \{1\}
       $$
+
+      1. **Variabili ausiliarie**:
+         - $u_i$: Variabile intera che rappresenta l’ordine di visita del nodo $i$.
+         - $x_{i,j}$: Variabile binaria che indica se l’arco $(i, j)$ è incluso nel percorso/albero.
+
+      2. **Vincoli MTZ**:
+        $$
+         u_i - u_j + 1 \leq |N| \cdot (1 - x_{i,j}) \quad \text{per ogni } i, j \in N, i, j \neq 1
+        $$
+         - $|N|$: Numero totale di nodi nel grafo.
+         - Questo vincolo garantisce che, se $x_{i,j} = 1$ (l’arco $(i, j)$ è attivo), allora $u_i < u_j$, ovvero il nodo $i$ viene visitato prima del nodo $j$.
+
+      3. **Vincolo sul nodo iniziale**:
+        $$
+         u_1 = 1
+        $$
+         - Il nodo $1$ è il **nodo iniziale** e ha ordine di visita $1$.
+
+      4. **Vincoli sugli ordini di visita**:
+        $$
+         u_i \geq 2 \quad \text{per ogni } i \in N \setminus \{1\}
+        $$
+         - Tutti gli altri nodi hanno un ordine di visita maggiore o uguale a $2$.
+
+      **Come Funzionano i Vincoli MTZ?**
+      - **Se $x_{i,j} = 1$**:  
+        Il vincolo diventa:
+       $$
+        u_i - u_j + 1 \leq 0 \quad \Rightarrow \quad u_i < u_j
+       $$
+        Questo impone che il nodo $i$ sia visitato prima del nodo $j$.
+
+      - **Se $x_{i,j} = 0$**:  
+        Il vincolo diventa:
+       $$
+        u_i - u_j + 1 \leq |N|
+       $$
+        Questo è sempre soddisfatto, poiché $u_i$ e $u_j$ sono limitati superiormente da $|N|$.
+
 - **Funzione obiettivo**:
   $$
   \min \sum_{(i,j) \in A} c_{i,j} x_{i,j}
@@ -1404,7 +1594,7 @@ Il **Problema del Commesso Viaggiatore (TSP)** consiste nel trovare il percorso 
 
 **Algoritmi Euristici**
 
-**3. Euristica del Vicino più Vicino (Nearest Neighbor, NN)**
+**Euristica del Vicino più Vicino (Nearest Neighbor, NN)**
 L'euristica del Vicino più Vicino è un metodo semplice per trovare una soluzione approssimata al TSP.
 
 **Passi**:
@@ -1420,21 +1610,6 @@ L'euristica del Vicino più Vicino è un metodo semplice per trovare una soluzio
    - Ripeti il passo 2 fino a quando tutti i nodi sono inclusi nel tour.
    - Chiudi il tour tornando al nodo di partenza.
 
-**Esempio**:
-```mermaid
-graph LR
-    A --2--> B
-    A --4--> C
-    B --1--> D
-    C --3--> D
-    D --2--> E
-    D --5--> F
-    E --1--> G
-    F --3--> G
-    G --2--> H
-```
-- **Tour NN**: $A \rightarrow B \rightarrow D \rightarrow E \rightarrow G \rightarrow H \rightarrow F \rightarrow C \rightarrow A$.
-
 **Ricerca Locale: 2-Opt**
 L'algoritmo 2-Opt è una tecnica di ricerca locale che migliora un tour esistente scambiando coppie di archi.
 
@@ -1449,54 +1624,6 @@ L'algoritmo 2-Opt è una tecnica di ricerca locale che migliora un tour esistent
 
 3. **Terminazione**:
    - Ripeti il passo 2 fino a quando non è possibile migliorare ulteriormente il tour.
-
-**Esempio**:
-```mermaid
-graph LR
-    A --2--> B
-    B --1--> D
-    D --2--> E
-    E --1--> G
-    G --2--> H
-    H --3--> F
-    F --5--> D
-    D --3--> C
-    C --4--> A
-```
-- **Tour migliorato con 2-Opt**: $A \rightarrow B \rightarrow D \rightarrow F \rightarrow H \rightarrow G \rightarrow E \rightarrow C \rightarrow A$.
-
-**Esempi di Applicazione**
-
-**Esempio 1: TSP con 5 Città**
-```mermaid
-graph LR
-    A --3--> B
-    A --4--> C
-    A --2--> D
-    A --7--> E
-    B --3--> C
-    B --6--> D
-    B --3--> E
-    C --5--> D
-    C --8--> E
-    D --6--> E
-```
-- **Tour ottimale**: $A \rightarrow D \rightarrow C \rightarrow B \rightarrow E \rightarrow A$ con costo totale $20$.
-
-**Esempio 2: TSP con 6 Città**
-```mermaid
-graph LR
-    A --2--> B
-    A --4--> C
-    B --1--> D
-    C --3--> D
-    D --2--> E
-    D --5--> F
-    E --1--> G
-    F --3--> G
-    G --2--> H
-```
-- **Tour ottimale**: $A \rightarrow B \rightarrow D \rightarrow E \rightarrow G \rightarrow H \rightarrow F \rightarrow C \rightarrow A$ con costo totale $16$.
 
 ## **Problema del Commesso Viaggiatore Asimmetrico (ATSP)**
 
@@ -1562,19 +1689,6 @@ $$
 1 - n + n \cdot x_{i,j} \leq u_j - u_i \leq n - 1 - (n - 2) \cdot x_{i,j} \quad \text{per ogni } i, j \in V, i \neq j, i > 1, j > 1
 $$
 
-**Confronto Computazionale**
-
-Sawik (2016) ha confrontato le prestazioni dei seguenti modelli:
-1. **ATSP_MTZen**: Modello con i vincoli MTZ migliorati (inclusi i vincoli di confine e intermedi).
-2. **ATSP_MTZ**: Modello con i vincoli MTZ classici.
-3. **ATSP_DL**: Modello con i vincoli MTZ sollevati (lifted) da Desrochers e Laporte.
-
-I risultati hanno mostrato che:
-- Il modello **ATSP_MTZen** è stato in grado di trovare soluzioni ottimali per tutte le istanze testate entro un limite di tempo di 3600 secondi.
-- I modelli **ATSP_MTZ** e **ATSP_DL** hanno fallito nel trovare soluzioni ottimali per alcune istanze più complesse, come **p43.atsp**.
-- Il modello **ATSP_DL** non ha trovato alcuna soluzione ammissibile per l'istanza **rbg358.atsp** con le impostazioni predefinite di CPLEX.
-
-
 ## **Problema della Cricca Massima (Maximum Clique Problem)**
 
 Il **Problema della Cricca Massima** consiste nel trovare, in un grafo non orientato $G = (V, E)$, un sottoinsieme di nodi $C \subseteq V$ tale che ogni coppia di nodi in $C$ sia connessa da un arco, e la cardinalità di $C$ sia massima. Questo problema è **NP-hard**, il che lo rende estremamente difficile da risolvere in modo ottimale per istanze di grandi dimensioni.
@@ -1636,9 +1750,90 @@ Consideriamo la seguente rete sociale:
 3. Trova una cricca utilizzando l'euristica del grado massimo.
 4. Trova una cricca di peso massimo, dove il peso di un nodo è il suo indice.
 
+**Trovare una cricca massima utilizzando la programmazione intera**
+
+**Modello PLI per la cricca massima**
+- **Variabili decisionali**:  
+  $x_i \in \{0, 1\}$ per ogni nodo $i$, dove $x_i = 1$ se il nodo $i$ è incluso nella cricca.
+- **Funzione obiettivo**:  
+  $$
+  \text{Max } \sum_{i=0}^{10} x_i
+  $$
+- **Vincoli**:  
+  Per ogni coppia di nodi $(i, j)$ **non connessi**, aggiungi il vincolo:  
+  $$
+  x_i + x_j \leq 1
+  $$
+  Questo garantisce che due nodi non connessi non possano essere entrambi nella cricca.
+
+**Applicazione alla rete sociale**
+- **Nodi non connessi**:  
+  Ad esempio, Toi (0) non è amico di Brain (1), quindi:  
+  $$
+  x_0 + x_1 \leq 1
+  $$
+  Analogamente per tutte le coppie non connesse.
+
+**Soluzione**
+Risolvendo il modello, una **cricca massima** trovata è:  
+**{4 (Walton), 3 (Nina), 9 (Harry)}**  
+- **Connessioni**:  
+  - Walton (4) è amico di Nina (3) e Harry (9).  
+  - Nina (3) è amica di Harry (9).  
+
+**Trovare tutte le cricche massime utilizzando la programmazione intera**
+
+**Approccio iterativo**
+1. **Prima cricca**: Risolvi il modello PLI per trovare una cricca massima.  
+2. **Aggiungi vincoli**: Per escludere la cricca trovata, aggiungi un vincolo del tipo:  
+   $$
+   \sum_{i \in \text{cricca}} x_i \leq |\text{cricca}| - 1
+   $$
+3. **Ripeti**: Risolvi nuovamente il modello fino a quando non ci sono più soluzioni.
+
+**Cricche massime trovate**
+1. **{4, 3, 9}**  
+2. **{4, 3, 8}** (Walton, Nina, Alessandra)  
+3. **{9, 0, 2}** (Harry, Toi, Annamaria)  
+
+**Trovare una cricca utilizzando l'euristica del grado massimo**
+
+**Passi dell’euristica**
+1. **Calcola i gradi**:  
+   | Nodo | Grado |  
+   |------|-------|  
+   | 4    | 7     |  
+   | 3    | 6     |  
+   | 9    | 6     |  
+   | 6    | 5     |  
+
+2. **Seleziona il nodo con grado massimo**: Walton (4).  
+3. **Filtra i suoi amici**: {1, 3, 5, 6, 7, 8, 9}.  
+4. **Cerca la cricca più grande tra gli amici comuni**:  
+   - I nodi {4, 3, 9} sono mutualmente connessi.  
+
+**Risultato**: Cricca **{4, 3, 9}**.
+
+**Trovare una cricca di peso massimo (peso = ID del nodo)**
+
+**Modello PLI modificato**
+- **Funzione obiettivo**:  
+  $$
+  \text{Max } \sum_{i=0}^{10} i \cdot x_i
+  $$
+- **Vincoli**: Stessi vincoli della domanda 1.
+
+**Soluzione**
+La cricca con peso massimo è:  
+**{9 (Harry), 10 (Simona), 5 (Virgilio)}**  
+- **Peso totale**: $9 + 10 + 5 = 24$.  
+- **Connessioni**:  
+  - Harry (9) è amico di Simona (10) e Virgilio (5).  
+  - Simona (10) è amica di Virgilio (5).  
+
 ## **Problema della Quasi-Cricca Massima (Maximum Quasi-Clique Problem)**
 
-Una **quasi-cricca** è un sottoinsieme di nodi in cui è consentita l'assenza di un numero limitato di archi. Formalmente, una \(\epsilon\)-quasi-cricca è una cricca a cui mancano al massimo \(\epsilon\) archi.
+Una **quasi-cricca** è un sottoinsieme di nodi in cui è consentita l'assenza di un numero limitato di archi. Formalmente, una $\epsilon$-quasi-cricca è una cricca a cui mancano al massimo $\epsilon$ archi.
 
 **Formulazione del Problema**
 
@@ -1664,6 +1859,8 @@ Una **quasi-cricca** è un sottoinsieme di nodi in cui è consentita l'assenza d
 
 Un **insieme indipendente** è un sottoinsieme di nodi in cui nessuna coppia di nodi è connessa da un arco. Il **Problema del Massimo Insieme Indipendente** consiste nel trovare un insieme indipendente di cardinalità massima in un grafo $G$.
 Un insieme indipendente in $G$ è una cricca nel grafo complementare $\overline{G}$. Pertanto, un algoritmo per trovare una cricca massima in $\overline{G}$ risolve anche il problema del massimo insieme indipendente in $G$.
+
+![](img/RO/grafo2.png)
 
 **Formulazione del Problema**
 
@@ -1803,6 +2000,72 @@ Trovare una schedulazione delle attività che:
 - **Profilo delle attività**: Mostra il numero di attività attive in ogni periodo.
 - **Profilo delle risorse**: Mostra il consumo di ogni risorsa in ogni periodo.
 
+**Algoritmo di Ordinamento Topologico (TopoSort)**
+
+**Descrizione**:
+L'algoritmo di ordinamento topologico è un metodo euristico per risolvere il RCPSP. Si basa sull'ordinamento delle attività in base alle precedenze e sulla loro schedulazione nel rispetto dei vincoli di risorse.
+
+**Passi**:
+1. **Inizializzazione**:
+   - Crea una schedulazione vuota $S$.
+   - Crea una rete di precedenza ausiliaria $N' = N$.
+2. **Ordinamento e schedulazione**:
+   - Ripeti fino a quando tutte le attività sono schedulate:
+     a) Seleziona un'attività $j$ non ancora schedulata e senza predecessori in $N'$.
+     b) Rimuovi $j$ da $N'$.
+     c) Schedula $j$ in $S$ al più presto possibile, rispettando i vincoli di risorse e precedenze.
+
+**Esempio**:
+Consideriamo il seguente progetto:
+- Attività: A (2 giorni), B (3 giorni), C (1 giorno), D (4 giorni), E (5 giorni), F (1 giorno).
+- Precedenze: A → D, B → F, C → E, D → E.
+- Risorse: 4 persone, 5 costi.
+
+**Schedulazione con TopoSort**:
+1. Schedula A al tempo 0.
+2. Schedula B al tempo 0.
+3. Schedula C al tempo 0.
+4. Schedula D al tempo 2 (dopo A).
+5. Schedula F al tempo 3 (dopo B).
+6. Schedula E al tempo 6 (dopo C e D).
+
+**Euristica del Punto Alfa (α-Point Heuristic)**
+
+L'euristica del punto alfa utilizza il rilassamento lineare (LP) del problema RCPSP per determinare un ordinamento delle attività basato su valori frazionari $x_{j,t}$. L'obiettivo è trovare una schedulazione approssimata che rispetti i vincoli di precedenza e risorse.
+
+**Passi**:
+1. **Risoluzione del rilassamento lineare (LP)**:
+   - Risolvi il rilassamento lineare del modello RCPSP per ottenere valori frazionari $x_{j,t}$.
+2. **Calcolo dei punti alfa**:
+   - Per ogni attività $j$, calcola il punto alfa $t$ tale che $\sum_{t'=0}^{t} x_{j,t'} \geq \alpha$.
+3. **Ordinamento e schedulazione**:
+   - Ordina le attività in base ai punti alfa e schedula rispettando i vincoli di precedenza e risorse.
+
+**Esempio**:
+Utilizzando lo stesso progetto dell'esempio precedente:
+- Risolvi il LP per ottenere i valori $x_{j,t}$.
+- Calcola i punti alfa per $\alpha = 0.5$.
+- Ordina le attività in base ai punti alfa e schedula rispettando i vincoli.
+
+**Esempi di Applicazione**
+
+**Esempio 1: Progetto di Costruzione**
+- **Attività**: A (2 giorni), B (3 giorni), C (1 giorno), D (4 giorni), E (5 giorni), F (1 giorno).
+- **Precedenze**: A → D, B → F, C → E, D → E.
+- **Risorse**: 4 persone, 5 costi.
+
+**Schedulazione con TopoSort**:
+1. A inizia al tempo 0.
+2. B inizia al tempo 0.
+3. C inizia al tempo 0.
+4. D inizia al tempo 2.
+5. F inizia al tempo 3.
+6. E inizia al tempo 6.
+
+**Schedulazione con α-Point Heuristic**:
+- Risolvi il LP e calcola i punti alfa.
+- Ordina le attività e schedula rispettando i vincoli.
+
 **Esempio: Costruzione di un Ufficio**
 
 Consideriamo il seguente progetto di ristrutturazione di un ufficio:
@@ -1836,18 +2099,6 @@ Consideriamo il seguente progetto di ristrutturazione di un ufficio:
    - Determinare di quanto aumenta il makespan se la disponibilità della risorsa 1 (Persone) viene ridotta a 5.
    - Verificare i risultati visivamente.
 
-
-## **Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)**
-
-Il **Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)** è un problema di ottimizzazione complesso che consiste nel pianificare un insieme di attività (job) rispettando i vincoli di precedenza e la disponibilità delle risorse, con l'obiettivo di minimizzare la durata totale del progetto (makespan). Questo problema è **NP-hard**, il che lo rende estremamente difficile da risolvere in modo ottimale per istanze di grandi dimensioni.
-
-**Definizione del Problema**
-- **Attività**: Un progetto è composto da $J$ attività, ciascuna con una durata $p_j$.
-- **Precedenze**: Le attività sono soggette a vincoli di precedenza, rappresentati da un grafo aciclico (DAG). Un'attività $j$ non può iniziare prima che tutte le sue attività predecessore $i \in P_j$ siano completate.
-- **Risorse**: Sono disponibili $K$ risorse rinnovabili, ciascuna con una disponibilità costante $R_k$ per periodo.
-- **Consumo di risorse**: Ogni attività $j$ richiede $r_{jk}$ unità di risorsa $k$ in ogni periodo in cui è in esecuzione.
-- **Obiettivo**: Minimizzare il makespan, ovvero il tempo totale di completamento del progetto.
-
 **Estensioni e Varianti del RCPSP**
 
 **Attività con Modalità Multiple (Multi-Mode RCPSP)**
@@ -1879,7 +2130,7 @@ Il **Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)** è 
 - **Combinazione di PL e CP**: Utilizza il rilassamento lineare per ottenere limiti superiori e euristiche basate su list scheduling per generare soluzioni fattibili.
 - **Riduzione del problema**: Tecniche di riduzione per diminuire le dimensioni delle istanze.
 
-**Applicazioni della Pianificazione di Progetti con Vincoli di Risorse (RCPSP)**
+**Applicazioni**
 
 Il **Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)** è un problema di ottimizzazione complesso che consiste nel pianificare un insieme di attività (job) rispettando i vincoli di precedenza e la disponibilità delle risorse, con l'obiettivo di minimizzare la durata totale del progetto (makespan). Questo problema è **NP-hard**, il che lo rende estremamente difficile da risolvere in modo ottimale per istanze di grandi dimensioni.
 
@@ -1984,102 +2235,3 @@ Il **Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)** è 
 - **Applicazione della Programmazione a Vincoli**:
   - Esplorare ulteriori applicazioni della CP in contesti minerari.
 
-## **Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)**
-
-Il **Problema di Pianificazione di Progetti con Vincoli di Risorse (RCPSP)** consiste nel pianificare un insieme di attività (job) rispettando i vincoli di precedenza e la disponibilità delle risorse, con l'obiettivo di minimizzare la durata totale del progetto (makespan). Questo problema è **NP-hard**, il che lo rende estremamente difficile da risolvere in modo ottimale per istanze di grandi dimensioni.
-
-**Formulazione del Problema**
-
-**Modello di Programmazione Lineare Intera (PLI)**
-- **Variabili decisionali**:
-  - $x_{j,t} = 1$ se l'attività $j$ inizia al tempo $t$, $0$ altrimenti.
-- **Vincoli**:
-  - **Precedenze**: Ogni attività $j$ non può iniziare prima che tutte le sue attività predecessore $i \in P_j$ siano completate.
-    $$
-    \sum_{t \in T} t \cdot x_{j,t} \geq \sum_{t \in T} (t + p_i) \cdot x_{i,t} \quad \forall (i, j) \in A
-    $$
-  - **Risorse**: Il consumo totale di risorse in ogni periodo non deve superare la disponibilità.
-    $$
-    \sum_{j \in J} \sum_{t' = t - p_j + 1}^{t} r_{j,k} \cdot x_{j,t'} \leq R_k \quad \forall t \in T, \, k \in R
-    $$
-  - **Assegnazione unica**: Ogni attività deve essere schedulata esattamente una volta.
-    $$
-    \sum_{t \in T} x_{j,t} = 1 \quad \forall j \in J
-    $$
-- **Funzione obiettivo**:
-  $$
-  \min \sum_{t \in T} t \cdot x_{n,t}
-  $$
-  dove $n$ è l'attività finale.
-
-**Algoritmi Euristici**
-
-**Algoritmo di Ordinamento Topologico (TopoSort)**
-
-**Descrizione**:
-L'algoritmo di ordinamento topologico è un metodo euristico per risolvere il RCPSP. Si basa sull'ordinamento delle attività in base alle precedenze e sulla loro schedulazione nel rispetto dei vincoli di risorse.
-
-**Passi**:
-1. **Inizializzazione**:
-   - Crea una schedulazione vuota $S$.
-   - Crea una rete di precedenza ausiliaria $N' = N$.
-2. **Ordinamento e schedulazione**:
-   - Ripeti fino a quando tutte le attività sono schedulate:
-     a) Seleziona un'attività $j$ non ancora schedulata e senza predecessori in $N'$.
-     b) Rimuovi $j$ da $N'$.
-     c) Schedula $j$ in $S$ al più presto possibile, rispettando i vincoli di risorse e precedenze.
-
-**Esempio**:
-Consideriamo il seguente progetto:
-- Attività: A (2 giorni), B (3 giorni), C (1 giorno), D (4 giorni), E (5 giorni), F (1 giorno).
-- Precedenze: A → D, B → F, C → E, D → E.
-- Risorse: 4 persone, 5 costi.
-
-**Schedulazione con TopoSort**:
-1. Schedula A al tempo 0.
-2. Schedula B al tempo 0.
-3. Schedula C al tempo 0.
-4. Schedula D al tempo 2 (dopo A).
-5. Schedula F al tempo 3 (dopo B).
-6. Schedula E al tempo 6 (dopo C e D).
-
-**Euristica del Punto Alfa (α-Point Heuristic)**
-
-L'euristica del punto alfa utilizza il rilassamento lineare (LP) del problema RCPSP per determinare un ordinamento delle attività basato su valori frazionari $x_{j,t}$. L'obiettivo è trovare una schedulazione approssimata che rispetti i vincoli di precedenza e risorse.
-
-**Passi**:
-1. **Risoluzione del rilassamento lineare (LP)**:
-   - Risolvi il rilassamento lineare del modello RCPSP per ottenere valori frazionari $x_{j,t}$.
-2. **Calcolo dei punti alfa**:
-   - Per ogni attività $j$, calcola il punto alfa $t$ tale che $\sum_{t'=0}^{t} x_{j,t'} \geq \alpha$.
-3. **Ordinamento e schedulazione**:
-   - Ordina le attività in base ai punti alfa e schedula rispettando i vincoli di precedenza e risorse.
-
-**Esempio**:
-Utilizzando lo stesso progetto dell'esempio precedente:
-- Risolvi il LP per ottenere i valori $x_{j,t}$.
-- Calcola i punti alfa per $\alpha = 0.5$.
-- Ordina le attività in base ai punti alfa e schedula rispettando i vincoli.
-
-**Esempi di Applicazione**
-
-**Esempio 1: Progetto di Costruzione**
-- **Attività**: A (2 giorni), B (3 giorni), C (1 giorno), D (4 giorni), E (5 giorni), F (1 giorno).
-- **Precedenze**: A → D, B → F, C → E, D → E.
-- **Risorse**: 4 persone, 5 costi.
-
-**Schedulazione con TopoSort**:
-1. A inizia al tempo 0.
-2. B inizia al tempo 0.
-3. C inizia al tempo 0.
-4. D inizia al tempo 2.
-5. F inizia al tempo 3.
-6. E inizia al tempo 6.
-
-**Schedulazione con α-Point Heuristic**:
-- Risolvi il LP e calcola i punti alfa.
-- Ordina le attività e schedula rispettando i vincoli.
-
-**Confronto tra Algoritmi**
-- **TopoSort**: Semplice e veloce, ma non garantisce l'ottimalità.
-- **α-Point Heuristic**: Più complesso, ma fornisce soluzioni migliori grazie all'uso del rilassamento lineare.
