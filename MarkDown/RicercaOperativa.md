@@ -655,11 +655,11 @@ La **Programmazione Lineare Intera (PLI)** è una tecnica di ottimizzazione in c
 - **Obiettivo**: Massimizzare il profitto settimanale.
 
 **Dati**:
-| Prodotto | Ore di Lavoro | Legno (piedi²) | Prezzo di Vendita (€) | Costi Variabili (€) |
-|------------------|-------------------|------------------|-------------------|-------------------|
-| Scrivanie| 16            | 10             | 330                   | 82                  |
-| Armadi   | 29            | 15             | 620                   | 97                  |
-| Sedie    | 10            | 3              | 150                   | 28                  |
+| Prodotto  | Ore di Lavoro | Legno (piedi²) | Prezzo di Vendita (€) | Costi Variabili (€) |
+| --------- | ------------- | -------------- | --------------------- | ------------------- |
+| Scrivanie | 16            | 10             | 330                   | 82                  |
+| Armadi    | 29            | 15             | 620                   | 97                  |
+| Sedie     | 10            | 3              | 150                   | 28                  |
 
 **Formulazione PLI**:
 - **Variabili decisionali**:
@@ -722,9 +722,9 @@ La **Programmazione Lineare Intera (PLI)** è una tecnica di ottimizzazione in c
   - 2 mesi: 700 €
   - 3 mesi: 900 €
 - **Fabbisogno mensile**:
-  | Mese | Gen | Feb | Mar | Apr | Mag | Giu |
-  |------|-----|-----|-----|-----|-----|-----|
-  | Fabbisogno | 9 | 5 | 7 | 9 | 10 | 5 |
+  | Mese       | Gen | Feb | Mar | Apr | Mag | Giu |
+  | ---------- | --- | --- | --- | --- | --- | --- |
+  | Fabbisogno | 9   | 5   | 7   | 9   | 10  | 5   |
 
 **Formulazione PLI**:
 - **Variabili decisionali**:
@@ -784,9 +784,9 @@ La **Programmazione Lineare Intera (PLI)** è una tecnica di ottimizzazione in c
 **Problema**:
 - **Obiettivo**: Minimizzare il numero di persone necessarie per coprire i turni settimanali.
 - **Requisiti giornalieri**:
-  | Giorno | Lun | Mar | Mer | Gio | Ven | Sab | Dom |
-  |--------|-----|-----|-----|-----|-----|-----|-----|
-  | Personale | 22 | 18 | 13 | 14 | 15 | 18 | 25 |
+  | Giorno    | Lun | Mar | Mer | Gio | Ven | Sab | Dom |
+  | --------- | --- | --- | --- | --- | --- | --- | --- |
+  | Personale | 22  | 18  | 13  | 14  | 15  | 18  | 25  |
 
 **Formulazione PLI**:
 - **Variabili decisionali**:
@@ -1106,8 +1106,6 @@ $$
 - **Archi del taglio**: Gli archi che collegano un nodo in $S$ a un nodo in $T$ sono detti **archi del taglio**.
 - **Peso del taglio**: Se il grafo è pesato, il peso del taglio è la somma dei pesi degli archi del taglio.
 
-In sintesi, **tagliare un grafo** significa dividerlo in due parti rimuovendo un insieme di archi o nodi, e questa operazione ha numerose applicazioni pratiche. Se hai bisogno di ulteriori chiarimenti o esempi, fammelo sapere! 😊
-
 **Taglio in Grafi Non Orientati**
 - Dato un sottoinsieme $S \subseteq V$, il **taglio** $\delta(S)$ è l'insieme dei lati che connettono $S$ a $V \setminus S$.
 
@@ -1141,13 +1139,6 @@ In sintesi, **tagliare un grafo** significa dividerlo in due parti rimuovendo un
 - Proprietà:
   - Ha $n-1$ lati.
   - Se si rimuove un lato, il grafo diventa disconnesso.
-- Esempio:
-```mermaid
-  graph TD
-       B
-       C
-       D
-```
 
 **Rappresentazione dei Grafi**
 
@@ -1185,13 +1176,8 @@ $$
   0 & \text{altrimenti}
   \end{cases}
 $$
-- Esempio:
-```mermaid
-  graph LR
-       B
-       C
-```
-  Matrice di incidenza:
+
+**Matrice di incidenza**:
 $$
   D = \begin{bmatrix}
   1 & 1 \\
@@ -1202,12 +1188,7 @@ $$
 
 **Liste di Adiacenza**
 - Ogni vertice ha una lista dei vertici adiacenti.
-- Esempio:
-```mermaid
-  graph LR
-       B
-       C
-```
+
 **Liste di adiacenza**:
   - $A$: $[B, C]$
   - $B$: $[A]$
@@ -1624,6 +1605,140 @@ L'algoritmo 2-Opt è una tecnica di ricerca locale che migliora un tour esistent
 
 3. **Terminazione**:
    - Ripeti il passo 2 fino a quando non è possibile migliorare ulteriormente il tour.
+ 
+Per valutare le prestazioni degli algoritmi euristici come l'**Euristica del Vicino più Vicino (NN)** e la **Ricerca Locale 2-Opt**, puoi utilizzare il **Minimum Spanning Tree (MST)** come strumento di confronto e analisi. Ecco come puoi farlo:
+
+**Utilizzo dell'MST come benchmark**
+L'MST (Minimum Spanning Tree) è un albero che connette tutti i nodi di un grafo con il costo minimo totale. Nel contesto del TSP (Traveling Salesman Problem), l'MST può essere utilizzato come limite inferiore per il costo ottimale del tour. Questo perché il costo dell'MST è sempre inferiore o uguale al costo del tour ottimale del TSP.
+
+**Valutazione dell'Euristica del Vicino più Vicino (NN)**
+- **Passi**:
+  1. Applica l'euristica NN per ottenere un tour.
+  2. Calcola il costo del tour NN.
+  3. Confronta il costo del tour NN con il costo dell'MST.
+  4. Calcola il **rapporto di approssimazione**:  
+     $$
+     \text{Rapporto} = \frac{\text{Costo del tour NN}}{\text{Costo dell'MST}}
+     $$
+  5. Ripeti il processo su diverse istanze del problema per valutare la consistenza dell'euristica.
+
+**Valutazione della Ricerca Locale 2-Opt**
+- **Passi**:
+  1. Applica l'euristica NN per ottenere un tour iniziale.
+  2. Migliora il tour utilizzando l'algoritmo 2-Opt.
+  3. Calcola il costo del tour migliorato.
+  4. Confronta il costo del tour 2-Opt con il costo dell'MST.
+  5. Calcola il **rapporto di approssimazione**:  
+     $$
+     \text{Rapporto} = \frac{\text{Costo del tour 2-Opt}}{\text{Costo dell'MST}}
+     $$
+  6. Ripeti il processo su diverse istanze per valutare l'efficacia del 2-Opt.
+
+- **Limiti dell'MST**:
+  - Ricorda che l'MST fornisce solo un limite inferiore. Il costo ottimale del TSP potrebbe essere significativamente più alto, specialmente in grafi con strutture complesse.
+
+**Algoritmo di Christofides**  
+L’algoritmo di Christofides è un metodo euristico per risolvere il **problema del commesso viaggiatore (TSP)** su grafi metrici, ovvero grafi in cui vale la **disuguaglianza triangolare** (il costo diretto tra due nodi è sempre minore o uguale al costo di un percorso che passa attraverso un nodo intermedio). Proposto da Nicos Christofides nel 1976, questo algoritmo garantisce un **rapporto di approssimazione di 1.5**, il che significa che il costo del tour trovato è al massimo 1.5 volte il costo del tour ottimale. Ecco i passaggi dettagliati:
+
+**1. Calcolo del Minimum Spanning Tree (MST)**  
+- **Obiettivo**: Trovare un albero che connette tutti i nodi del grafo con il costo minimo totale.  
+- **Metodo**: Utilizza algoritmi come quello di Kruskal o Prim per costruire l’MST.  
+- **Significato**: L’MST rappresenta una struttura di base che collega tutti i nodi senza cicli e con il costo minimo possibile.  
+
+**2. Identificazione dei nodi di grado dispari**  
+- **Obiettivo**: Trovare tutti i nodi nell’MST che hanno un numero dispari di archi incidenti (grado dispari).  
+- **Proprietà**: In qualsiasi grafo, il numero di nodi di grado dispari è sempre pari.  
+- **Significato**: Questi nodi rappresentano i punti in cui il percorso non è bilanciato e devono essere "corretti" per creare un grafo euleriano.  
+
+**3. Matching perfetto di costo minimo**  
+- **Obiettivo**: Trovare un **matching perfetto** (accoppiamento) tra i nodi di grado dispari, in modo che ogni nodo sia connesso a un altro nodo e il costo totale degli archi del matching sia minimo.  
+- **Metodo**: Utilizza algoritmi come quello di Edmonds per trovare il matching perfetto di costo minimo.  
+- **Significato**: Il matching aggiunge archi al grafo per bilanciare i nodi di grado dispari, trasformando l’MST in un grafo euleriano.  
+
+**4. Creazione del grafo euleriano**  
+- **Obiettivo**: Unire l’MST e il matching perfetto per formare un grafo in cui tutti i nodi hanno grado pari (grafo euleriano).  
+- **Proprietà**: In un grafo euleriano, è possibile trovare un ciclo che passa attraverso ogni arco esattamente una volta.  
+- **Significato**: Questo grafo è la base per costruire un percorso che visita tutti i nodi.  
+
+**5. Costruzione del tour hamiltoniano**  
+- **Obiettivo**: Trasformare il percorso euleriano in un **tour hamiltoniano** (un ciclo che visita ogni nodo esattamente una volta).  
+- **Metodo**:  
+  1. Trova un ciclo euleriano nel grafo euleriano.  
+  2. Percorri il ciclo euleriano, "saltando" i nodi già visitati per evitare ripetizioni.  
+- **Significato**: Questo passaggio garantisce che il tour sia valido per il TSP, rispettando il vincolo di visitare ogni nodo una sola volta.  
+
+**6. Garanzia di approssimazione**  
+- **Teorema**: L’algoritmo di Christofides garantisce che il costo del tour trovato sia al massimo **1.5 volte** il costo del tour ottimale.  
+- **Dimostrazione**:  
+  - Il costo dell’MST è inferiore o uguale al costo del tour ottimale.  
+  - Il costo del matching perfetto è al massimo la metà del costo del tour ottimale.  
+  - Quindi, il costo totale del tour è al massimo $\text{MST} + \text{Matching} \leq \text{OPT} + 0.5 \cdot \text{OPT} = 1.5 \cdot \text{OPT}$.  
+
+**7. Vantaggi e limiti**  
+- **Vantaggi**:  
+  - Garantisce una soluzione di alta qualità con un rapporto di approssimazione noto.  
+  - Efficace per grafi metrici che rispettano la disuguaglianza triangolare.  
+- **Limiti**:  
+  - Non è applicabile a grafi non metrici.  
+  - Richiede il calcolo di un matching perfetto, che può essere computazionalmente costoso per grafi molto grandi.  
+
+**Algoritmo di Simulated Annealing per il TSP**  
+Il **Simulated Annealing** (SA) è una meta-euristica ispirata al processo di ricottura in metallurgia, utilizzata per risolvere problemi di ottimizzazione come il TSP. A differenza degli algoritmi deterministici, il SA esplora lo spazio delle soluzioni in modo probabilistico, permettendo di evitare minimi locali accettando occasionalmente soluzioni peggiori. Ecco i passaggi dettagliati applicati al TSP:
+
+
+**1. Inizializzazione**  
+- **Soluzione iniziale**: Genera una soluzione iniziale, ad esempio utilizzando l’euristica del Vicino più Vicino (NN) o una permutazione casuale dei nodi.  
+- **Temperatura iniziale ($T_0$)**: Imposta una temperatura iniziale alta, che determina la probabilità di accettare soluzioni peggiori.  
+- **Parametri**: Definisci il tasso di raffreddamento (\(\alpha\)), il numero di iterazioni per ogni temperatura e il criterio di arresto (es. temperatura minima $T_{min}$ o numero massimo di iterazioni).  
+
+
+**2. Ciclo principale**  
+Ripeti i seguenti passi finché non viene raggiunto il criterio di arresto:  
+
+**a. Generazione di una soluzione vicina**  
+- **Mossa**: Modifica la soluzione corrente applicando una piccola perturbazione, ad esempio:  
+  - **2-Opt swap**: Seleziona due archi del tour e scambiali per creare un nuovo percorso.  
+  - **Inversione di un sotto-tour**: Inverti l’ordine di visita di un sottoinsieme di nodi.  
+- **Calcolo del costo**: Calcola il costo della nuova soluzione ($C_{new}$) e confrontalo con il costo della soluzione corrente ($C_{current}$).  
+
+**b. Accettazione della nuova soluzione**  
+- **Se $C_{new} < C_{current}$**: Accetta sempre la nuova soluzione (miglioramento).  
+- **Se $C_{new} \geq C_{current}$**: Accetta la nuova soluzione con probabilità:  
+  $$
+  P = e^{-\frac{(C_{new} - C_{current})}{T}}
+  $$  
+  dove $T$ è la temperatura corrente. Questa probabilità diminuisce con l’aumentare della differenza di costo e con la riduzione della temperatura. 
+
+![](img/RO/annnealing.png) 
+
+**c. Aggiornamento della temperatura**  
+- Riduci la temperatura secondo il tasso di raffreddamento:  
+  $$
+  T = \alpha \cdot T  
+  $$  
+  dove $\alpha$ è tipicamente compreso tra 0.95 e 0.99.  
+
+
+**3. Terminazione**  
+- **Criterio di arresto**: L’algoritmo termina quando la temperatura raggiunge un valore minimo ($T_{min}$) o dopo un numero massimo di iterazioni.  
+- **Soluzione finale**: Restituisci la migliore soluzione trovata durante l’esecuzione.  
+
+
+**Parametri chiave e tuning**  
+- **Temperatura iniziale ($T_0$)**: Deve essere abbastanza alta da permettere l’esplorazione iniziale di soluzioni peggiori.  
+- **Tasso di raffreddamento (\(\alpha\))**: Controlla la velocità con cui la temperatura diminuisce. Valori più alti permettono un’esplorazione più lunga.  
+- **Numero di iterazioni per temperatura**: Determina quante mosse vengono eseguite a ogni livello di temperatura.  
+
+
+**Vantaggi e limiti**  
+- **Vantaggi**:  
+  - Può evitare minimi locali grazie all’accettazione di soluzioni peggiori.  
+  - Flessibile e adattabile a diversi problemi di ottimizzazione.  
+- **Limiti**:  
+  - Richiede un tuning accurato dei parametri per ottenere buoni risultati.  
+  - Computazionalmente costoso per istanze molto grandi.   
+
+
 
 ## **Problema del Commesso Viaggiatore Asimmetrico (ATSP)**
 
@@ -1730,19 +1845,19 @@ Il **Problema della Cricca Massima** consiste nel trovare, in un grafo non orien
 
 Consideriamo la seguente rete sociale:
 
-| ID | Nome        | Amici con       |
-|----|-------------|-----------------|
-| 0  | Toi         | 2, 9, 6         |
-| 1  | Brain       | 4, 6, 9         |
-| 2  | Annamaria   | 0, 9, 10        |
-| 3  | Nina        | 4, 6, 7, 8, 9, 10 |
-| 4  | Walton      | 1, 3, 5, 6, 7, 8, 9 |
-| 5  | Virgilio    | 4, 6, 8, 10     |
-| 6  | Teena       | 0, 1, 3, 4, 5   |
-| 7  | Darrin      | 3, 4, 9         |
-| 8  | Alessandra  | 3, 4, 5         |
-| 9  | Harry       | 0, 1, 2, 3, 4, 7 |
-| 10 | Simona      | 2, 3, 5         |
+| ID  | Nome       | Amici con           |
+| --- | ---------- | ------------------- |
+| 0   | Toi        | 2, 9, 6             |
+| 1   | Brain      | 4, 6, 9             |
+| 2   | Annamaria  | 0, 9, 10            |
+| 3   | Nina       | 4, 6, 7, 8, 9, 10   |
+| 4   | Walton     | 1, 3, 5, 6, 7, 8, 9 |
+| 5   | Virgilio   | 4, 6, 8, 10         |
+| 6   | Teena      | 0, 1, 3, 4, 5       |
+| 7   | Darrin     | 3, 4, 9             |
+| 8   | Alessandra | 3, 4, 5             |
+| 9   | Harry      | 0, 1, 2, 3, 4, 7    |
+| 10  | Simona     | 2, 3, 5             |
 
 **Domande**:
 1. Trova una cricca massima utilizzando la programmazione intera.
@@ -1800,12 +1915,12 @@ Risolvendo il modello, una **cricca massima** trovata è:
 
 **Passi dell’euristica**
 1. **Calcola i gradi**:  
-   | Nodo | Grado |  
-   |------|-------|  
-   | 4    | 7     |  
-   | 3    | 6     |  
-   | 9    | 6     |  
-   | 6    | 5     |  
+   | Nodo | Grado |
+   | ---- | ----- |
+   | 4    | 7     |
+   | 3    | 6     |
+   | 9    | 6     |
+   | 6    | 5     |
 
 2. **Seleziona il nodo con grado massimo**: Walton (4).  
 3. **Filtra i suoi amici**: {1, 3, 5, 6, 7, 8, 9}.  
@@ -2070,14 +2185,14 @@ Utilizzando lo stesso progetto dell'esempio precedente:
 
 Consideriamo il seguente progetto di ristrutturazione di un ufficio:
 
-| Attività | Simbolo | Precedenza | Durata | Persone | Costi (in 1000) |
-|----------|---------|------------|--------|---------|-----------------|
-| Preparare opzioni di finanziamento | A | - | 2 | 3 | 3 |
-| Preparare schizzi preliminari | B | - | 3 | 2 | 1 |
-| Delineare le specifiche | C | - | 1 | 1 | 3 |
-| Preparare disegni | D | A | 4 | 3 | 4 |
-| Scrivere le specifiche | E | C, D | 5 | 3 | 1 |
-| Eseguire le stampe | F | B | 1 | 1 | 1 |
+| Attività                           | Simbolo | Precedenza | Durata | Persone | Costi (in 1000) |
+| ---------------------------------- | ------- | ---------- | ------ | ------- | --------------- |
+| Preparare opzioni di finanziamento | A       | -          | 2      | 3       | 3               |
+| Preparare schizzi preliminari      | B       | -          | 3      | 2       | 1               |
+| Delineare le specifiche            | C       | -          | 1      | 1       | 3               |
+| Preparare disegni                  | D       | A          | 4      | 3       | 4               |
+| Scrivere le specifiche             | E       | C, D       | 5      | 3       | 1               |
+| Eseguire le stampe                 | F       | B          | 1      | 1       | 1               |
 
 **Disponibilità delle risorse**:
 - $q_{Persone} = 4$
