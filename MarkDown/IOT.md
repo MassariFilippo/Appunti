@@ -1,5 +1,1180 @@
 # Appunti IOT
 
+## Sistemi Embedded
+
+**Definizione di Sistemi Embedded**
+I sistemi embedded sono sistemi informatici a scopo speciale, progettati per svolgere una funzione o un compito specifico all'interno di dispositivi o sistemi fisici/elettronici.
+Caratteristiche principali:
+- Interazione con il mondo fisico tramite sensori e attuatori.
+- Struttura composta da **hardware e software**, anche se in alcuni casi il software può mancare.
+
+**Applicazioni dei Sistemi Embedded**
+I sistemi embedded trovano applicazione in diversi settori:
+- **Elettrodomestici**: dispositivi smart per la casa (es. termostati Nest, serrature Kevo).
+- **Automotive**: controllo motore, sistemi di sicurezza.
+- **Avionica**: controllo di volo, navigazione.
+- **Industria**: automazione industriale, Industry 4.0.
+- **Sanità**: dispositivi medici (es. WristOx).
+- **Dispositivi mobili e indossabili**: smartwatch, braccialetti fitness.
+
+**Caratteristiche dei Sistemi Embedded**
+- **Funzionalità specifica**: progettati per un'applicazione particolare.
+- **Esecuzione continua**: spesso funzionano in loop infinito.
+- **Progettazione robusta**: devono essere affidabili e ottimizzati in termini di risorse.
+- **Vincoli stringenti**: limitazioni su CPU, memoria, consumo energetico.
+- **Metriche di progettazione**:
+  - Costo (inclusi i costi NRE - Non-Recurring Engineering)
+  - Dimensioni, prestazioni, efficienza energetica
+- **Sistemi critici**:
+  - Elevata affidabilità e disponibilità
+  - Sicurezza e protezione (safety & security)
+- **Reattività e real-time**:
+  - Devono rispondere agli stimoli dell'ambiente entro un limite di tempo prestabilito.
+  - Nei sistemi hard real-time, il mancato rispetto della scadenza porta al fallimento del sistema.
+
+**Sistemi Cyber-Fisici (CPS)**
+I CPS integrano computazione con processi fisici e si distinguono dai normali sistemi di elaborazione delle informazioni per:
+- **Gestione del tempo**: essenziale per la correttezza del sistema.
+- **Concorrenza**: i processi fisici avvengono in parallelo.
+- **Reattività e eventi asincroni**.
+- **Struttura**:
+  - **Parte fisica**: dispositivi, sistemi meccanici/biologici, utenti.
+  - **Parte computazionale**: piattaforme di calcolo con sensori, attuatori e computer.
+  - **Parte di rete**: meccanismi di connessione tra le piattaforme computazionali.
+
+**Architettura dei Sistemi Embedded**
+- **CPU (Central Processing Unit)**
+- **Memoria ROM (Read-Only Memory)**
+- **Memoria RAM (Random Access Memory)**
+- **Sensori e dispositivi di input**
+- **Attuatori e dispositivi di output**
+- **Circuiteria specifica per applicazione**
+- **Interfacce di comunicazione**
+
+**Tecnologie della CPU**
+Tre principali tipologie di processori:
+- **Processori general-purpose**: architettura predefinita con un set di istruzioni (ISA), l'esecuzione è definita dal software.
+- **Processori a scopo specifico**: circuiti digitali progettati per un compito specifico (es. ASIC - Application-Specific Integrated Circuit).
+- **Processori specifici per applicazioni (ASIP)**: programmabili ma ottimizzati per una classe di applicazioni (es. microcontrollori, SoC, DSP).
+
+**Processori a Scopo Specifico**
+Diversi livelli di implementazione:
+- **Full-Custom/VLSI**: progettazione completamente personalizzata.
+- **Semi-custom (ASIC)**: utilizzo di livelli predefiniti.
+- **PLD (Programmable Logic Device)**: dispositivi logici programmabili.
+
+**Tipologie di PLD**
+- **PLA (Programmable Logic Array)**: array di porte logiche programmabili.
+- **PAL (Programmable Array Logic)**: variante semplificata del PLA.
+- **FPGA (Field Programmable Gate Array)**: circuiti integrati programmabili via software, utilizzabili per logiche complesse.
+  - Linguaggi di programmazione: Verilog, VHDL, LabView.
+
+**Microcontroller Unit (MCU)**
+I microcontrollori si differenziano dai microprocessori perché integrano su un unico chip tutti i componenti necessari:
+- CPU, memoria persistente e volatile, canali di I/O, unità di gestione delle interruzioni e altri componenti specializzati.
+- Possono essere basati su architettura **CISC** (Von Neumann) o **RISC** (es. MSP430).
+- Classificati in **8, 16, 32 bit**.
+
+**Esempi di microcontrollori**
+- **Storici**: Motorola 68000, Intel 8080, Zilog Z80, Intel 8051.
+- **Moderni**: Atmel AVR, Texas Instruments MSP430, Microchip PIC16C84, ARM 32-bit, PowerPC.
+
+**Microcontrollori vs. Microprocessori**
+| Caratteristica       | Microcontrollore | Microprocessore |
+--|
+| Max clock speed    | 200 MHz        | 4 GHz          |
+| Max MegaFLOPS     | 200            | 5000           |
+| Consumo energetico | 1 W            | 50 W           |
+
+**Single-Board Microcontroller**
+Le soluzioni single-board integrano un microcontrollore e i circuiti necessari per eseguire compiti di controllo.
+Esempi:
+- **Arduino** (mercato consumer e maker).
+- **XMC family** (industriale).
+
+**Famiglia Arduino**
+
+![](img/IOT/arduino.png)
+
+- **Arduino UNO**: Microcontrollore a 8 bit, 16 MHz, 2 KB di SRAM, 32 KB di flash memory, 14 pin digitali + 6 pin analogici.
+- **Arduino Mega**: 8 bit, 16 MHz, 8 KB di SRAM, 256 KB di flash memory, 54 pin digitali + 16 pin analogici.
+- **Arduino Yun**: 32 bit, 400 MHz, 64 MB di RAM, 16 MB di flash memory.
+- **Arduino M0**: 32 bit, 48 MHz, 32 KB di SRAM, 256 KB di flash memory.
+
+**ESP**
+- **ESP8266**: SoC per IoT con processore a 32 bit, 80 MHz, 64 KB di RAM per istruzioni, 96 KB di RAM per dati, 16 pin GPIO, Wi-Fi integrato.
+- **ESP32**: Successore dell'ESP8266 con processore dual-core a 32 bit, 160-240 MHz, 520 KB di RAM, 448 KB di ROM, 34 pin GPIO, Wi-Fi e Bluetooth integrati.
+
+**SoC (System-on-a-Chip)**
+
+Integra CPU, memoria, controller I/O e di rete. Esempi: Broadcom BCM2837 (Raspberry Pi 3), ARM Sitara AM335x (BeagleBone).
+
+**Famiglia Raspberry Pi**
+- **Raspberry Pi (2012)**: SoC Broadcom BCM2835, 700 MHz, 256 MB RAM.
+- **Raspberry Pi 2 (2015)**: SoC Broadcom BCM2836, 900 MHz quad-core, 1 GB RAM.
+- **Raspberry Pi 3 (2016)**: SoC Broadcom BCM2837, 1.2 GHz quad-core, 1 GB RAM.
+- **Raspberry Pi 4 (2019)**: SoC Broadcom BCM2711, 1.5 GHz quad-core, 1-4 GB RAM.
+- **Raspberry Pi 5 (2023)**: SoC Broadcom BCM2712, 2.4 GHz quad-core, 4-8 GB RAM.
+
+**Sensori e Attuatori**
+- **Sensori**: Dispositivi che misurano fenomeni fisici (temperatura, umidità, accelerazione) o chimici (fumo). Possono essere analogici o digitali.
+
+![](img/IOT/sensori.png)
+
+- **Attuatori**: Dispositivi che producono effetti misurabili sull'ambiente.
+
+**Protocolli di Comunicazione**
+- **I2C, SPI, JTAG**: Protocolli di comunicazione seriale.
+- **CAN-bus**: Protocollo seriale usato nel settore automobilistico.
+- **UART**: Protocollo seriale asincrono per la conversione di flussi di bit paralleli in sequenziali.
+- **Wireless**: Bluetooth, ZigBee, Z-Wave, LoRaWAN, Wi-Fi.
+
+Ecco degli appunti dettagliati e ben organizzati sugli elementi dei microcontrollori, basati sul materiale che hai fornito.
+
+
+## Microcontrollori
+
+**Componenti Principali**
+
+Un microcontrollore è un sistema integrato costituito da diversi componenti essenziali:
+- **CPU** (Central Processing Unit)
+- **Memoria** (Flash, SRAM, EEPROM)
+- **Porte di I/O generiche** (GPIO - General Purpose Input/Output)
+- **Convertitori Analogico/Digitale (ADC)**
+- **Timer**
+- **Bus di comunicazione seriale** (SPI, I2C, UART)
+- **Clock** (per il sincronismo del sistema)
+- **Circuito di alimentazione** (gestione della tensione di funzionamento)
+
+
+**Architettura di Riferimento: Arduino Uno**
+
+**Arduino Uno** è basato sul microcontrollore **ATMega328P**, con le seguenti caratteristiche:
+- **CPU AVR 8-bit a 16 MHz**
+- **Memoria:**
+  - **Flash:** 32 KB (di cui 0.5 KB occupati dal bootloader)
+  - **SRAM:** 2 KB
+  - **EEPROM:** 1 KB
+- **I/O:**
+  - **14 pin digitali**, di cui 6 supportano **PWM**
+  - **6 ingressi analogici**
+- **Connettività:**
+  - **Porta USB** per la programmazione e alimentazione
+  - **Connettore ICSP** (In-Circuit Serial Programming)
+  - **Jack di alimentazione**
+  - **Pulsante di reset**
+- **Alimentazione:**
+  - **Tensione operativa:** 5V
+  - **Tensione di ingresso raccomandata:** 7-12V
+  - **Corrente massima per ogni pin I/O:** 40 mA
+  - **Corrente massima sulla linea 3.3V:** 50 mA
+
+
+**Architetture della CPU nei Microcontrollori**
+
+L'architettura **Von Neumann** segue un ciclo **fetch-decode-execute**:
+1. **Fetch:** preleva l'istruzione dalla memoria
+2. **Decode:** decodifica l'istruzione
+3. **Execute:** esegue l'operazione e aggiorna i registri/memoria
+
+**Architettura Harvard**
+- Separazione tra memoria **dati** e memoria **istruzioni**
+- Usata in microcontrollori come **ATMega328P** per migliorare prestazioni e consumo energetico
+- **Flash** per il codice (lettura veloce, scrittura lenta)
+- **SRAM** per i dati (lettura e scrittura veloci)
+- **EEPROM** per dati persistenti
+
+
+**4. Memoria nei Microcontrollori**
+| **Tipo di Memoria** | **Caratteristiche** |
+| **Flash** | Non volatile, lettura veloce, scrittura lenta, ~100.000 cicli di scrittura |
+| **SRAM** | Veloce, volatile, consuma più energia |
+| **EEPROM** | Non volatile, lenta, utilizzabile con la libreria Arduino EEPROM |
+
+**Nota**: la quantità di **SRAM** è limitata, quindi bisogna ottimizzare l'uso delle variabili.
+
+
+**Programmazione dei Microcontrollori**
+- Il codice viene scritto su un PC e compilato in un file **eseguibile**.
+- Il programma viene trasferito al microcontrollore tramite:
+  - **USB** con bootloader
+  - **ICSP** (In-Circuit Serial Programming)
+- Il microcontrollore esegue il codice senza un sistema operativo.
+
+**Caso Arduino**
+- Programmazione tramite **Arduino IDE** (basato su Wiring e avr-gcc)
+- Linguaggio **C/C++**
+- **Bootloader** per l'upload via USB (occupa 0.5 KB di memoria)
+- Possibilità di usare strumenti avanzati come **AVR Libc** e **avr-objdump** per debugging.
+
+**GPIO - General Purpose Input/Output**
+- **I pin possono essere configurati come input o output**.
+- **Pin digitali**: possono assumere valori **HIGH (1)** o **LOW (0)**.
+- **Pin analogici**: possono leggere valori continui (0-5V su Arduino).
+- Alcuni pin hanno **funzioni multiple** (es. pin 0 e 1 usati anche per la comunicazione seriale).
+
+**GPIO su ATMega328P**
+- **23 linee I/O** suddivise in **3 porte**:
+  - **Porta B**: pin 8-13
+  - **Porta C**: pin analogici
+  - **Porta D**: pin 0-7
+
+**Parametri operativi**
+- **Tensione operativa:** 5V (Arduino) o 3.3V (ESP, Raspberry Pi)
+- **Corrente massima per I/O:** 40mA (Arduino), 12mA (ESP)
+- **Pull-up resistor**: resistenze interne per evitare stati indefiniti nei pin di input
+
+**Super Loop**
+Struttura di base senza uso di sistemi operativi:
+```c
+void setup() {
+  // Inizializzazione
+}
+
+void loop() {
+  // Eseguito continuamente
+}
+```
+**Pro**:
+- Semplice, efficiente, affidabile
+- Non richiede un sistema operativo
+
+**Contro**:
+- Non preciso nei tempi
+- Bassa flessibilità
+- Alto consumo energetico se non ottimizzato
+
+
+**Ciclo di Esecuzione e Prestazioni**
+- **Clock ATMega328P**: 16 MHz → 1 ciclo macchina = **62.5 ns**
+- **Istruzioni eseguite in 1-2 cicli** → tempo di esecuzione prevedibile
+- Importante per **sistemi real-time**
+
+
+**Assembly AVR**
+- Il codice viene tradotto in **linguaggio macchina** tramite il compilatore:
+```assembly
+00000090 <setup>:
+ 90: 08 95    ret
+00000092 <loop>:
+ 92: 08 95    ret
+```
+
+## Setting, Writing, Reading a Pin in Wiring
+
+**Wiring API per la gestione dei Pin**
+
+L'API di Wiring permette di lavorare con i pin della scheda:
+- `pinMode(pin, mode)`: imposta la direzione del pin (INPUT/OUTPUT)
+- `digitalWrite(pin, value)`: imposta il valore di un pin in OUTPUT
+- `digitalRead(pin)`: legge il valore di un pin in INPUT
+
+Internamente, questa API interagisce con i registri delle porte del microcontrollore.
+
+**Esempio di OUTPUT: Blinking LED**
+```cpp
+#define LED_PIN 13
+void setup() {
+    pinMode(LED_PIN, OUTPUT);
+}
+void loop() {
+    digitalWrite(LED_PIN, HIGH);
+    delay(1000);
+    digitalWrite(LED_PIN, LOW);
+    delay(1000);
+}
+```
+
+**Dettagli su delay()**
+- `delay(ms)`: blocca l'esecuzione per il tempo specificato in millisecondi usando una busy-waiting.
+- Utilizza internamente `millis()`, che restituisce il numero di millisecondi trascorsi dall'accensione del dispositivo.
+- Svantaggi: riduce la reattività del sistema.
+
+Implementazione in Wiring:
+```cpp
+void delay(unsigned long ms) {
+    unsigned long start = millis();
+    while (millis() - start <= ms);
+}
+```
+
+**Esempio di INPUT/OUTPUT: Button-LED**
+```cpp
+const int buttonPin = 2;
+const int ledPin = 13;
+int buttonState = 0;
+void setup() {
+    pinMode(ledPin, OUTPUT);
+    pinMode(buttonPin, INPUT);
+}
+void loop() {
+    buttonState = digitalRead(buttonPin);
+    if (buttonState == HIGH) {
+        digitalWrite(ledPin, HIGH);
+    } else {
+        digitalWrite(ledPin, LOW);
+    }
+}
+```
+
+**Funzioni Multiplexed dei Pin**
+Alcuni pin hanno funzionalità aggiuntive:
+- Pin 0 e 1: interfaccia seriale TTL
+- Pin 2 e 3: interrupt
+- Pin 3, 5, 6, 9, 10, 11: PWM
+- Pin 10, 11, 12, 13: SPI bus
+- Pin 13: LED integrato
+- Pin A4 e A5: I2C bus
+
+**Segnali Analogici e ADC**
+- Un segnale digitale può assumere solo due valori (HIGH/LOW, 1/0).
+- Un segnale analogico può assumere qualsiasi valore in un intervallo di tensione.
+- Un ADC (Analog-to-Digital Converter) converte segnali analogici in digitali.
+- Arduino UNO utilizza un ADC a 10 bit, quindi converte il segnale in un valore da 0 a 1023.
+
+API per leggere i valori analogici:
+```cpp
+int analogRead(int PIN);
+```
+
+Funzione per rimappare un valore in un altro intervallo:
+```cpp
+int map(valore, min1, max1, min2, max2);
+```
+
+**Esempio: Lettura di un Potenziometro**
+```cpp
+const int analogInPin = A0;
+const int analogOutPin = 9;
+int sensorValue = 0;
+int outputValue = 0;
+void setup() {
+    Serial.begin(9600);
+}
+void loop() {
+    sensorValue = analogRead(analogInPin);
+    outputValue = map(sensorValue, 0, 1023, 0, 255);
+    analogWrite(analogOutPin, outputValue);
+    Serial.print("sensor = "); Serial.print(sensorValue);
+    Serial.print("\t output = "); Serial.println(outputValue);
+    delay(2);
+}
+```
+
+**PWM (Pulse Width Modulation)**
+- Metodo per simulare un segnale analogico su un pin digitale generando un'onda quadra.
+- La tensione media dipende dal duty cycle.
+- Pin PWM su Arduino: 3, 5, 6, 9, 10, 11.
+- API: `analogWrite(pin, value)` (dove `value` va da 0 a 255).
+
+Esempio: Fade di un LED
+```cpp
+int led = 9;
+int brightness = 0;
+int fadeAmount = 5;
+void setup() {
+    pinMode(led, OUTPUT);
+}
+void loop() {
+    analogWrite(led, brightness);
+    brightness = brightness + fadeAmount;
+    if (brightness == 0 || brightness == 255) {
+        fadeAmount = -fadeAmount;
+    }
+    delay(30);
+}
+```
+
+**Interrupts su Arduino**
+- Gli interrupt permettono alla CPU di reagire a eventi esterni.
+- ATMega328P ha due pin per gli interrupt esterni: 2 e 3.
+- Tipologie di trigger:
+  - `RISING` (fronte di salita)
+  - `FALLING` (fronte di discesa)
+  - `CHANGE` (qualsiasi variazione)
+  - `LOW` (stato basso)
+
+Esempio:
+```cpp
+volatile int count = 0;
+void setup() {
+    attachInterrupt(digitalPinToInterrupt(2), inc, RISING);
+    Serial.begin(9600);
+}
+void loop() {
+    Serial.println(count);
+}
+void inc() {
+    count++;
+}
+```
+
+Disabilitare/abilitare interrupt:
+```cpp
+noInterrupts(); // Disabilita
+interrupts(); // Abilita
+```
+
+Miglioramento con gestione della concorrenza:
+```cpp
+#define BUTTON_PIN 2
+volatile int count = 0;
+int prev = 0;
+void setup() {
+    Serial.begin(9600);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), inc, RISING);
+}
+void loop() {
+    noInterrupts();
+    int current = count;
+    interrupts();
+    if (current != prev) {
+        Serial.println(current);
+        prev = current;
+    }
+}
+void inc() { count++; }
+```
+
+**Timer e Interrupt su ATMega328**
+- ATMega328 ha 3 timer:
+  - `timer0` e `timer2`: 8 bit
+  - `timer1`: 16 bit
+- Timer usati per:
+  - Misurare intervalli di tempo
+  - PWM
+  - Timeout e allarmi
+  - Multi-tasking con scheduling preemptivo
+- Modalità CTC (Clear Timer on Compare Match): genera un interrupt quando il contatore raggiunge un valore predefinito.
+
+Esempio API timer:
+```cpp
+unsigned long millis() {
+    unsigned long m;
+    uint8_t oldSREG = SREG;
+    cli();
+    m = timer0_millis;
+    SREG = oldSREG;
+    return m;
+}
+```
+
+**TIMER E PWM**
+- Nei microcontrollori Arduino, i timer sono utilizzati per gestire il segnale di uscita PWM.
+- I timer specifici per i pin PWM sono:
+  - **Timer0**: Pin 5 e 6
+  - **Timer1**: Pin 9 e 10
+  - **Timer2**: Pin 11 e 3
+
+**WATCHDOG TIMER**
+- Timer che conta fino a un valore specificato, quindi genera un segnale di reset per riavviare il sistema.
+- Funzionamento:
+  - Se il sistema funziona normalmente, il watchdog riceve periodicamente un segnale di reset.
+  - Se non riceve il segnale in tempo, significa che il microprocessore potrebbe essere bloccato, quindi viene eseguito un reset.
+- Ampiamente utilizzato nei sistemi embedded.
+
+**MULTIPLEXING E INTERFERENZE**
+- I timer e le interruzioni vengono utilizzati per più funzioni in Wiring.
+- Possibili interferenze e malfunzionamenti se più funzioni utilizzano lo stesso timer.
+- Per evitare problemi, consultare attentamente la documentazione delle API.
+
+**GESTIONE DELL'ENERGIA**
+- La maggior parte dei microcontrollori supporta la gestione energetica con modalità di basso consumo (sleep mode).
+- **ATMega328P**: 5 modalità di risparmio energetico:
+  1. **Idle Mode**: Ferma la CPU ma consente il funzionamento di SPI, USART, ADC, Timer, Watchdog.
+  2. **ADC Noise Reduction Mode**: Ferma la CPU ma mantiene attivi ADC, interruzioni esterne, Timer2, Watchdog.
+  3. **Power-save Mode**: Simile a Power-down, ma Timer2 continua a funzionare se è asincrono.
+  4. **Standby Mode**: Simile a Power-down, ma l'oscillatore rimane attivo.
+  5. **Power-down Mode**: Disattiva quasi tutti i clock, lasciando attive solo alcune funzioni asincrone.
+
+**REGISTRO DI CONTROLLO MCU (MCUCR)**
+- Contiene bit di controllo per la gestione dell'energia.
+- **Bit 7 - SE (Sleep Enable)**: Attiva la modalità sleep.
+- **Bit 6-4 - SM2..0 (Sleep Mode Select)**: Seleziona la modalità di sleep tra le 5 disponibili.
+
+**ESEMPIO ARDUINO - MODALITÀ SLEEP**
+```cpp
+void sleepNow() {
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  sleep_enable();
+  attachInterrupt(0, wakeUpNow, LOW);
+  sleep_mode();
+  sleep_disable();
+  detachInterrupt(0);
+}
+```
+
+**BUS E PROTOCOLLI DI COMUNICAZIONE**
+- **Parallelo**: Trasferisce più bit contemporaneamente (8-bit, 16-bit, 32-bit).
+- **Seriale**: Trasmette dati bit per bit su un singolo canale.
+  - **Asincrono**: Nessuna linea di clock (USB, RS-232, TTL).
+  - **Sincrono**: Utilizza un segnale di clock per la sincronizzazione (I2C, SPI).
+
+**INTERFACCIA SERIALE ASINCRONA**
+- Comunicazione seriale senza segnale di clock.
+- Sincronizzazione ottenuta tramite protocollo con:
+  - **Baud rate** (tipico: 9600 bps, max: 115200 bps).
+  - **Frame dati** (start bit, dati 5-9 bit, stop bit, bit di parità).
+
+**ESEMPIO ASINCRONO ARDUINO - ECHO PROGRAM**
+```cpp
+char data;
+void setup() {
+  Serial.begin(9600);
+}
+void loop() {
+  if (Serial.available()) {
+    data = Serial.read();
+    Serial.print(data);
+  }
+}
+```
+
+**I2C - BUS E PROTOCOLLO**
+- Protocollo sincrono standard con solo 2 linee (SDA per dati, SCL per clock).
+- Bus a 7 o 10 bit con velocità fino a 100 kbit/s in modalità standard.
+
+**SPI - SERIAL PERIPHERAL INTERFACE**
+- Protocollo seriale sincrono ad alta velocità.
+- Richiede almeno 3 linee:
+  - MOSI (Master Out, Slave In)
+  - MISO (Master In, Slave Out)
+  - SCLK (Clock)
+- Può supportare più dispositivi slave con una linea CS (Chip Select) per ciascuno.
+
+
+**Codice di esempio per Arduino (lettura della temperatura):**
+
+```cpp
+#include <Wire.h>
+int temp_address = 72; //1001000 in decimale
+
+void setup() {
+  Serial.begin(9600);
+  Wire.begin(); // Inizializzazione della libreria Wire
+}
+
+void loop() {
+  Wire.beginTransmission(temp_address); 
+  Wire.write(0); // Comando di lettura
+  Wire.endTransmission(); 
+  Wire.requestFrom(temp_address, 1); // Richiesta di 1 byte
+  while(Wire.available() == 0);
+  int c = Wire.read(); // Lettura del dato
+  Serial.print(c);
+  Serial.print("C ");
+  delay(500);
+}
+```
+
+**Funzioni della libreria Wire:**
+- `Wire.beginTransmission`: Avvia la sessione di comunicazione con il dispositivo.
+- `Wire.write`: Invia il comando per leggere il valore dal registro dati.
+- `Wire.endTransmission`: Invia il segnale di fine scrittura.
+- `Wire.requestFrom`: La master richiede un byte.
+- `Wire.available()`: Controlla se i dati sono arrivati.
+- `Wire.read()`: Legge il valore.
+
+**Altri esempi di dispositivi I2C:**
+- **MPU6050**: Sensore combinato accelerometro + giroscopio.
+- **LSM330**: Sensore combinato bussola + accelerometro.
+
+**Dispositivi SPI:**
+- **LED Display**: Display a 16x2 caratteri.
+
+**Protocollo SPI:**
+- **Descrizione**: Protocollo seriale full-duplex che consente la comunicazione bidirezionale tra master e slave. Utilizza linee separate per la trasmissione e ricezione dei dati, e una linea di selezione per scegliere lo slave con cui comunicare.
+- **Struttura**:
+   - 3 linee di comunicazione: SCK (clock), MOSI (master out slave in), MISO (master in slave out).
+   - Linea SS (Slave Select) per selezionare lo slave.
+
+**Comunicazione SPI su Arduino (ATmega328P):**
+- Pin di SPI predefiniti: 10 (SS), 11 (MOSI), 12 (MISO), 13 (SCK).
+
+**Libreria SPI su Arduino**:
+- Metodi per inizializzare e chiudere la comunicazione (`SPI.beginTransaction()` / `SPI.endTransaction()`).
+- Trasferimento di dati con `SPI.transfer()`.
+
+**Controllo di un potenziometro digitale (MCP4231)**:
+- **Funzionalità**: Due potenziometri su un chip, risoluzione a 7 bit, intervallo di resistenza 0-10 kOhm.
+- **Pinout**:
+   - P0A, P0W, P0B per il primo potenziometro.
+   - P1A, P1W, P1B per il secondo potenziometro.
+   - CS per la selezione dello slave (SS).
+
+**Comandi SPI per MCP4231**:
+- 8-bit: Incremento del potenziometro.
+- 16-bit: Impostazione completa del valore del potenziometro.
+
+**Esempio di controllo della luminosità di LED con MCP4231 (2 potenziometri, 4 LED):**
+
+```cpp
+#include <SPI.h>
+const int SS1 = 10; // Slave Select Chip 1
+const int SS2 = 9;  // Slave Select Chip 2
+const byte REG0 = B00000000; // Comando per il registro 0
+const byte REG1 = B00010000; // Comando per il registro 1
+
+void setup() {
+  pinMode(SS1, OUTPUT);
+  pinMode(SS2, OUTPUT);
+  SPI.begin();
+}
+
+void setLed(int SS, int reg, int level) {
+  digitalWrite(SS, LOW); 
+  SPI.transfer(reg); 
+  SPI.transfer(level); 
+  digitalWrite(SS, HIGH); 
+}
+
+void loop() {
+  for (int i = 0; i <= 128; i++) {
+    setLed(SS1, REG0, i);
+    setLed(SS1, REG1, i);
+    setLed(SS2, REG0, i);
+    setLed(SS2, REG1, i);
+    delay(10);
+  }
+  delay(300);
+
+  for (int i = 128; i >= 0; i--) {
+    setLed(SS1, REG0, i);
+    setLed(SS1, REG1, i);
+    setLed(SS2, REG0, i);
+    setLed(SS2, REG1, i);
+    delay(10);
+  }
+  delay(300);
+}
+```
+
+**Confronto tra I2C e SPI**:
+- **I2C**:
+   - 2 linee di comunicazione.
+   - Modalità di indirizzamento slave più flessibile.
+- **SPI**:
+   - Può lavorare a velocità più elevate.
+   - Non necessita di resistenze di pull-up.
+
+## Sensori ed Attuatori
+
+Gli **embedded systems** (sistemi embedded) interagiscono con l'ambiente esterno tramite sensori e attuatori.
+
+**Sensori**
+- Dispositivi trasduttori che misurano un fenomeno fisico (es. temperatura, umidità, radiazioni, ecc.) o rilevano e quantificano concentrazioni chimiche (es. gas).
+- Forniscono una rappresentazione misurabile di un fenomeno su una scala o intervallo di misurazione.
+  - Esempio: tensione.
+- Possono essere **analogici** (se il valore elettrico prodotto in uscita, come tensione o corrente, è continuo) o **digitali** (se il valore elettrico è discreto).
+- I microcontroller utilizzano un dispositivo specifico chiamato **convertitore analogico-digitale (ADC)** per convertire i segnali analogici in digitali.
+
+**Attuatori**
+- Dispositivi che producono un effetto sull'ambiente (rispetto ai sensori che rilevano fenomeni).
+- Possono essere **analogici** o **digitali** (equipaggiati con un **convertitore digitale-analogico (DAC)**).
+
+
+**Quantità Fisiche e Segnali**
+
+Le **quantità fisiche** possono essere classificate in:
+- **Continua**: valori che variano all'interno di un certo intervallo (es. temperatura, distanza, velocità angolare di un motore, ecc.).
+- **Discreta**: possono assumere solo un set discreto di valori (es. direzione di rotazione, numero di pezzi lavorati, ecc.).
+
+I segnali associati alle quantità fisiche possono essere:
+- **Analogici**: valori continui.
+- **Discreti**: ulteriormente classificabili in:
+  - **Logici**: con due valori ammessi (vero/falso).
+  - **Codificati**: con più di due valori, codificati in una stringa di bit.
+
+
+**Principi di Funzionamento dei Sensori**
+
+I sensori si basano su leggi fisiche che regolano la relazione tra una quantità fisica da misurare e una quantità elettrica di uscita (ad esempio, tensione).
+
+**Esempio**: **termoresistenza** (sensore di temperatura):
+- La resistività cambia al variare della temperatura. Per acquisire il segnale, è necessario fornire una corrente (o tensione) e misurare la tensione (o corrente) generata.
+
+
+**Sensori - Tipologie**
+
+In base al tipo di segnale che forniscono, i sensori si distinguono in:
+- **Analogici**: forniscono un segnale elettrico continuo con risoluzione infinita.
+- **Digitali**: forniscono un'informazione numerica con risoluzione finita, assumendo un numero finito di valori.
+- **Logici**: con uscita booleana, di tipo vero (presenza) o falso (assenza).
+- **Codificati**: uscita numerica codificata in una stringa di bit.
+
+
+**Campionamento e Quantizzazione dei Segnali**
+
+Per poter essere elaborato da un computer digitale, un segnale analogico prodotto da un sensore deve essere campionato tramite un dispositivo **convertitore analogico-digitale (ADC)**.
+- **Campionamento**: leggere i campioni del segnale in tempi discreti specificati.
+- **Quantizzazione**: il segnale campionato è approssimato al valore digitale più vicino.
+
+
+**Incertezza e Errori di Misura**
+
+Quando vengono effettuate più misurazioni dello stesso parametro, i valori ottenuti possono variare. Questo è dovuto a diverse cause, tra cui gli strumenti di misura e l'ambiente.
+
+- **Incertezza di misura**: indica il livello di confidenza rispetto al risultato. Si rappresenta come un valore ± l'incertezza (errore).
+- **Errori di misura**:
+  - **Sistematici**: errori che si verificano in modo ripetitivo sotto le stesse condizioni.
+  - **Casuali**: errori che cambiano variando le condizioni di misurazione.
+  - **Gravi**: errori dovuti all'operatore o a guasti degli strumenti di misura.
+
+
+**Caratteristiche Metrologiche degli Strumenti di Misura**
+
+- **Caratteristiche statiche**: riguardano il comportamento dello strumento quando l'ingresso varia lentamente.
+  - Esempi: accuratezza, precisione, linearità, sensibilità, risoluzione, ripetibilità, stabilità.
+- **Caratteristiche dinamiche**: riguardano il comportamento dello strumento quando l'ingresso varia rapidamente.
+  - Risposta dinamica critica in quanto può limitare la larghezza di banda dell'intero sistema di controllo.
+  - **Tempo di risposta**: il tempo necessario per raggiungere una percentuale del valore finale.
+
+
+**Calibrazione e Precisione**
+
+- **Calibrazione**: processo di regolazione dei parametri del sensore per allineare i valori di uscita con quelli corretti misurati con uno strumento di riferimento.
+- **Precisione**: misura di quanto un sensore è influenzato da errori casuali. Più misurazioni di un sensore preciso saranno concentrate attorno al valore medio.
+
+**Esempio di precisione**:
+- Misurazioni ripetute della dimensione di una stanza da un sonar danno valori che variano leggermente. La precisione è data dalla deviazione massima dai valori medi.
+
+
+ **Comportamento Dinamico**
+
+- Quando un segnale di ingresso è un **segnale a gradino**, la risposta del sensore varia fino a stabilizzarsi al nuovo valore.
+- I tempi critici includono:
+  - **Tempo di salita**: tempo per passare dal 10% al 90% del valore finale.
+  - **Tempo di risposta**: tempo necessario per raggiungere una percentuale del valore finale.
+
+
+**Tipi di Sensori**
+I sensori si suddividono in diverse categorie, tra cui:
+- **Sensori di prossimità**
+- **Sensori di movimento**
+- **Trasduttori di posizione angolare**
+- **Sensori di accelerazione**
+- **Sensori di contatto**
+- **Sensori ottici**
+- **Sensori di elettricità e magnetismo**
+- **Sensori ambientali**
+- **Sensori fisiologici/vitali**
+- **Sensori acustici**
+- **Sensori di localizzazione**
+- **Sensori di identità**
+
+Ogni tipologia di sensore è progettata per misurare specifiche grandezze fisiche, come temperatura, forza, pressione, posizione, velocità, intensità luminosa, ecc. 
+
+**Wiring Libraries e Arduino Playground**
+- **Wiring Libraries su sensori e attuatori**:  
+  Le librerie di Wiring permettono di interfacciarsi con sensori e attuatori in modo semplice ed efficiente. Un elenco delle librerie disponibili si trova sul sito ufficiale di Wiring.  
+  Link: [Wiring Libraries](http://wiring.org.co/learning/libraries/)
+
+- **Arduino Project Hub**:  
+  Una piattaforma con esempi e progetti realizzati con Arduino, dove è possibile esplorare varie applicazioni pratiche.  
+  Link: [Arduino Project Hub](https://create.arduino.cc/projecthub)
+
+**Sensori di Prossimità**
+
+Questi sensori rilevano la presenza di oggetti a una certa distanza, senza misurarne la distanza esatta. I sensori di prossimità si basano su tecnologie diverse:
+- Sonar (ultrasuoni)
+- Ottico (infrarossi)
+- Induttivo
+- Magnetico
+
+- **Sensori di Prossimità a Ultrasuoni**:  
+  Funzionano emettendo un impulso sonar e rilevando l'eco che ritorna, utile per rilevare la presenza di un oggetto entro una distanza nominale.  
+  - **Vantaggi**:  
+    - Distanze nominali lunghe (fino a 10 m)
+    - Non influenzati da interferenze elettromagnetiche
+    - Possono rilevare oggetti di materiali diversi
+  - **Svantaggi**:  
+    - Risposta lenta
+    - Sensibilità alla superficie dell'oggetto (orientamento)
+  - Esempio: **HC-SR04**.  
+    - Distanza di rilevamento: 3 cm - 6 m
+    - Due pin di controllo: **Echo** e **Trig**
+    - Funzionamento: L'impulso inviato sul pin **Trig** viene misurato sul pin **Echo** per calcolare la distanza.
+
+- **Calcolo della Distanza**:  
+  La distanza viene calcolata conoscendo la velocità del suono, che dipende dalla temperatura.  
+  Formula:  
+  $$
+  d = \frac{v_s \times \Delta t}{2}
+  $$
+  dove:
+  - $v_s$ = velocità del suono (343 m/s a 20°C)
+  - $\Delta t$ = tempo di ritorno dell'eco in secondi
+  - $d$ = distanza dell'oggetto
+
+- **Esempio di Programma Arduino**:  
+  Il programma utilizza la libreria **pulseIn()** per misurare il tempo di ritorno dell'impulso.  
+  Ecco un esempio di codice per l'HC-SR04:
+  ```cpp
+  const int trigPin = 8;
+  const int echoPin = 7;
+  const float vs = 331.5 + 0.6 * 20;  // velocità del suono a 20°C
+  
+  void setup() {
+    Serial.begin(9600);
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+  }
+  
+  float getDistance() {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(3);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(5);
+    digitalWrite(trigPin, LOW);
+    
+    float tUS = pulseIn(echoPin, HIGH);
+    float t = tUS / 1000000.0 / 2;
+    float d = t * vs;
+    return d;
+  }
+  
+  void loop() {
+    float d = getDistance();
+    Serial.println(d);
+    delay(200);
+  }
+  ```
+
+**Sensori di Prossimità Ottici**
+
+  Questi sensori si basano sulla luce (tipicamente infrarossa) e rilevano la riflessione della luce da un oggetto.  
+  - La distanza nominale è generalmente tra 10 e 100 cm, ma con un riflettore montato sull'oggetto, può arrivare fino a 50 m.
+  - Esempio: **Sharp GP2Y0A41SK0F**.
+
+
+**Sensori di Movimento PIR**
+
+  I sensori PIR (Passive Infrared) rilevano variazioni nel livello di radiazione infrarossa dovuta a movimenti.  
+  - Funzionano rilevando variazioni di temperatura rispetto a una situazione di riferimento.
+  - Esempio di utilizzo: rilevamento di presenza umana in una stanza.
+  - Link di esempio: [PIR Sensor Guide](https://learn.adafruit.com/pir-passive-infraredproximity-motion-sensor/)
+
+**Trasduttori di Posizione Angolare**
+
+  Rilevano la posizione angolare di un oggetto. Esistono due tipologie:
+  1. **Inclinometro**: Rileva la posizione sfruttando la forza di gravità.
+  2. **Encoder**: Dispositivo che converte la posizione angolare in impulsi elettrici.
+
+
+**Sensori di Accelerazione e Giroscopi**
+
+- **Accelerometri**:  
+  Rilevano l'accelerazione di un oggetto. Esempio: **MPU-6050**, che combina accelerometro e giroscopio.
+  
+- **Giroscopi**:  
+  Dispositivi che preservano una direzione fissa per il loro asse di rotazione. Utilizzati in applicazioni come la bussola digitale.
+
+- **Tecnologia MEMS**:  
+  I sensori di accelerazione e giroscopi si basano sulla tecnologia MEMS (Micro Electro-Mechanical Systems), che integra dispositivi elettronici e meccanici in un chip di silicio.
+
+
+**Sensori di Contatto**
+
+- **Pulsanti Tattile e Microswitches**:  
+  I sensori di contatto rilevano la pressione fisica su un oggetto, come nel caso di un pulsante o un interruttore meccanico.
+
+- **Potenzimetro**:  
+  Sensore che cambia la resistenza e quindi il livello di tensione in un circuito in risposta a un movimento meccanico.
+
+- **Sensori Capacitive**:  
+  Rilevano la capacità elettrica creata da un oggetto vicino, senza contatto fisico diretto.
+
+
+**Sensori di Pressione**
+
+- **Sensore di Forza Sensibile (FSR)**:  
+  Rileva la forza esercitata su una superficie sensibile. Esempio: sensore FSR da Adafruit.
+
+
+**Sensori Ottici e Fotoelettrici**
+
+- **Fotoresistori**:  
+  Sensori che rilevano l'intensità luminosa. La resistenza dipende dalla quantità di luce percepita, con resistenza bassa in presenza di luce intensa.  
+  - Esempio: Fotoresistore LDR.
+
+- **Sensori a Diode e Fotocellule**:  
+  Sensori più avanzati come i fotodiodi, che rilevano la radiazione elettromagnetica in base alla sua intensità.
+
+
+**Sensori Chimici**
+
+- **Sensori di Gas**:  
+  Utilizzati per rilevare la presenza di gas specifici nell'aria, come il sensore **MQ** per il gas metano.
+
+- **Sensori di Polvere**:  
+  Rilevano la qualità dell'aria, come il **PM2.5 Air Quality Sensor**.
+
+
+**Sistemi di Localizzazione**
+
+- **GPS**:  
+  Il **GPS** è un sistema di posizionamento globale che utilizza una rete di satelliti per determinare la posizione geografica.  
+  - Precisione: circa metri, dipende dalle condizioni atmosferiche e dalla qualità del ricevitore.
+
+- **RFID e NFC**:  
+  Tecnologie per la localizzazione e l'identificazione basate su tag e lettori.  
+  - **RFID**: Funziona su distanze da pochi cm a qualche metro.
+  - **NFC**: Funziona su distanze molto brevi.
+
+- **UWB**:  
+  Tecnologia di localizzazione molto precisa (fino a pochi cm) ma costosa.
+
+
+**Attuatori e Dispositivi di Uscita**
+
+- **Transduttori di Uscita**:  
+  Convertitori di energia che permettono di agire sull'ambiente fisico. Esempi di attuatori:
+  - LED
+  - Buzzer piezoelettrici
+  - Relè (interruttori elettrici)
+
+- **LED**:  
+  Diode che emettono luce quando attraversati da corrente elettrica. Sono molto efficienti, durevoli e consumano poca energia.
+
+**Display LCD**
+
+I display LCD (Liquid Crystal Display) funzionano grazie alle proprietà ottiche dei cristalli liquidi, che sono intrappolati tra due superfici di vetro dotate di numerosi contatti elettrici. Questi contatti generano un campo elettrico che influisce sui cristalli liquidi, controllando così la visualizzazione delle immagini.
+
+- **Proprietà**:
+  - Basso consumo energetico, molto utile per i sistemi embedded.
+  - Ogni contatto elettrico controlla una piccola porzione del pannello, corrispondente a un pixel (o subpixel in uno schermo a colori).
+  
+**Esempio di Display LCD**
+Un esempio comune è il display LCD 16x2, che ha 16 colonne e 2 righe, con un singolo connettore a 16 pin. Tutti i display LCD paralleli hanno lo stesso pinout e possono essere collegati a un Arduino in vari modi, ad esempio:
+- **Modalità a 8 pin**: 6 pin digitali devono essere collegati ai pin digitali dell'Arduino + 2 pin per VCC e GND.
+- **Modalità a 6 pin**: 4 pin sono usati per inviare i dati e i restanti 2 per il controllo.
+
+**Programmazione**:
+- La libreria LiquidCrystal è inclusa nell'IDE di Arduino, con una versione che supporta anche I2C. Le funzionalità includono il controllo del cursore, lo scorrimento del testo, e la creazione di caratteri personalizzati.
+
+**Esempio di codice per Arduino**:
+```cpp
+#include <LiquidCrystal.h>
+int time = 0
+LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
+void setup()
+{
+ lcd.begin(16, 2); 
+ lcd.print("Cesena");
+}
+void loop()
+{
+ lcd.setCursor(0,1);
+ lcd.print(time);
+ delay(1000);
+ time++;
+}
+```
+
+**Motori Elettrici**
+
+I motori elettrici sono dispositivi che convertono l'energia elettrica in un effetto meccanico (movimento). Un motore elettrico è composto principalmente da due parti:
+- **Stator**: la parte fissa del motore.
+- **Rotor**: la parte mobile, che include l'albero.
+
+**Tipologie di motori elettrici**:
+- Motori a corrente continua (DC)
+- Motori passo-passo (stepper)
+- Servomotori
+
+**Motori a Corrente Continua (DC)**
+
+Utilizzati in progetti in cui è necessario:
+- Rotazione continua
+- Controllo della velocità angolare
+- Movimenti a 360° completi.
+
+**Principio di funzionamento**:
+Il motore DC sfrutta un campo magnetico generato dalla corrente che passa in una bobina avvolta attorno a un nucleo di ferro. Un commutatore permette di alternare l'energia elettrica tra le bobine, creando un campo magnetico rotante che interagisce con il campo magnetico dei magneti fissi nello statore, facendo ruotare l'albero.
+
+**Esempio di motore per Arduino**:
+Motore Hobby 711696 con ingranaggi:
+[Link al prodotto](http://www.robot-italy.com/it/hobby-motor-gear.html)
+
+**Motore Passo-Passo (Stepper)**
+
+Un motore passo-passo è un motore brushless che divide la rotazione in passi precisi, consentendo un controllo molto preciso della posizione dell'albero. Utilizzato in applicazioni come:
+- Stampanti 3D
+- Macchine a controllo numerico
+- Controllo degli arti nei robot
+
+**Servomotori**
+
+I servomotori permettono un controllo preciso della posizione dell'albero, ma a differenza dei motori passo-passo, la posizione è assoluta, non relativa all'attuale posizione dell'albero. La gamma di rotazione è limitata a 180° (non a 360° come nei motori DC).
+
+**Esempio di servo economico**:
+Servomotore HS-53 Microservo:
+[Link al prodotto](http://www.robot-italy.com/it/hs-53-microservo.html)
+
+**Controllo dei Servomotori**:
+Il controllo avviene inviando un segnale di impulsi digitali a una frequenza di circa 50 Hz, dove la durata dell'impulso determina l'angolo di rotazione. La durata dell'impulso varia tipicamente da 1 ms per -90° a 2 ms per +90°.
+
+**Controllo del Motore con Arduino**:
+
+Ecco un esempio di codice per controllare un servomotore in Arduino:
+```cpp
+int servoPin = 2;
+void pulseServo(int servoPin, int pulseLen)
+{
+ digitalWrite(servoPin, HIGH);
+ delayMicroseconds(pulseLen);
+ digitalWrite(servoPin, LOW);
+ delay(15);
+}
+int c;
+enum { MINUS_90, PLUS_90 } state;
+void setup()
+{
+ pinMode(servoPin, OUTPUT);
+ state = MINUS_90;
+ Serial.begin(9600);
+ c = 0;
+}
+void loop(){
+ c++;
+ switch (state) {
+ case MINUS_90:
+ pulseServo(servoPin, 250);
+ if (c > 100){
+ Serial.println("--> +90");
+ state = PLUS_90;
+ c = 0;
+ }
+ break;
+ case PLUS_90:
+ pulseServo(servoPin, 2250);
+ if (c > 100){
+ Serial.println("--> -90");
+ state = MINUS_90;
+ c = 0;
+ }
+ }
+}
+```
+
+**Motori a Corrente Continua (DC) con PWM**:
+
+I motori DC sono disponibili in due tipi:
+- **Brushless (stepper)**
+- **Brushed (spazzolati)**
+
+I motori brushed sono meno costosi ma hanno una durata inferiore. La velocità di rotazione si controlla cambiando la tensione ai terminali, mentre la direzione si inverte invertendo la tensione.
+
+**Controllo della velocità con Arduino tramite PWM**:
+Per controllare la velocità di un motore DC, si utilizza un segnale PWM che regola il duty cycle, ovvero la percentuale del tempo in cui il segnale è alto.
+
+Ecco un esempio di codice Arduino:
+```cpp
+const int MOTOR = 9;
+void setup() {
+ pinMode(MOTOR, OUTPUT);
+}
+void loop() {
+ for (int i = 0; i < 256; i++) {
+ analogWrite(MOTOR,i);
+ delay(10);
+ }
+ delay(2000);
+ for (int i = 255; i >= 0; i--) {
+ analogWrite(MOTOR,i);
+ delay(10);
+ }
+ delay(2000);
+}
+```
+
+**Controllo della Direzione con H-Bridge**:
+Per invertire la direzione di un motore, si utilizza un circuito H-bridge che include quattro transistor. Questo circuito permette di controllare la direzione e la velocità di un motore DC.
+
+Ecco un esempio di codice per controllare la direzione del motore con un H-bridge:
+```cpp
+const int EN = 9; // Half bridge Enable
+const int MC1 = 3; // Motor Control 1
+const int MC2 = 2; // Motor Control 2
+const int POT = 9; // POT on Analog pin 0
+int val = 0; // Valore del potenziometro
+int velocity = 0; // Velocità desiderata
+
+void forward(int rate) {
+ digitalWrite(EN, LOW);
+ digitalWrite(MC1, HIGH);
+ digitalWrite(MC2, LOW);
+ analogWrite(EN, rate);
+}
+
+void backward(int rate) {
+ digitalWrite(EN, LOW);
+ digitalWrite(MC1, LOW);
+ digitalWrite(MC2, HIGH);
+ analogWrite(EN, rate);
+}
+
+void brake() {
+ digitalWrite(EN, LOW);
+ digitalWrite(MC1, LOW);
+ digitalWrite(MC2, LOW);
+ digitalWrite(EN, HIGH);
+}
+
+void loop() {
+ val = analogRead(POT);
+ if (val > 562) {
+ velocity = map(val, 563, 1023, 0, 255);
+ forward(velocity);
+ } else if (val < 462) {
+ velocity = map(val, 0, 461, 0, 255);
+ forward(velocity);
+ } else {
+ brake();
+ }
+}
+```
+
+**Controllo di Circuiti Esterni**
+
+Per controllare circuiti esterni, inclusi quelli alimentati a corrente alternata (AC), i microcontrollori possono usare dispositivi elettronici come interruttori, ad esempio transistor, relè o optocoupler.
+
+**Relè**:
+Un relè è un interruttore elettromeccanico che può aprire o chiudere un circuito ad alta tensione, come quelli che gestiscono l'AC, ma controllato tramite il microcontrollore.
+
+
+**Problema**
+
+I sensori e gli attuatori possono operare a due diversi livelli di tensione: generalmente 5V (ad esempio con Arduino) e 3,3V (ad esempio con ESP32, Raspberry Pi, ecc.). Quando è necessario interfacciare sensori o attuatori che lavorano a 3,3V con schede MCU che operano a 5V, è fondamentale adottare strategie specifiche per evitare di danneggiare i componenti.
+
+Questo problema si presenta anche quando si collegano sistemi tramite bus seriali, come ad esempio collegando un Arduino e un ESP tramite seriale asincrona o sincrona.
+
+- **Seriale Asincrona:**
+  - **TX (ESP)** => **RX (Arduino)**: Non c'è problema, poiché il livello di 3,3V è sufficiente per essere interpretato come un segnale alto su Arduino.
+  - **TX (Arduino)** => **RX (ESP)**: Qui sorge un problema! 5V in ingresso sull'ESP può danneggiare la scheda.
+
+Una soluzione possibile per affrontare questo problema è l'uso di **partitori di tensione**.
+
+**Partitore di Tensione**
+
+Un partitore di tensione è un circuito che permette di ridurre una tensione di ingresso (ad esempio 5V) a una tensione di uscita inferiore (ad esempio 3,3V). 
+
+La relazione fondamentale per ottenere una tensione di uscita $V_{out}$ è data dalla formula:
+
+$$
+V_{out} = V_{in} \times \frac{R_2}{R_1 + R_2}
+$$
+
+Dove:
+- $R_1$ e $R_2$ sono le resistenze del circuito.
+- $V_{in}$ è la tensione di ingresso (ad esempio 5V).
+- $V_{out}$ è la tensione di uscita desiderata (ad esempio 3,3V).
+
+**Importante:**
+- La chiave per ottenere una corretta tensione di uscita è il **rapporto tra le resistenze**, non i loro valori assoluti.
+- Tuttavia, i valori assoluti delle resistenze influenzano la corrente che attraversa il circuito, quindi devono essere scelti in modo appropriato per non sovraccaricare il circuito.
+- Utilizzando i partitori di tensione, possiamo connettere dispositivi a 5V (come Arduino) con dispositivi a 3,3V (come l'ESP32), evitando danni ai componenti elettronici a causa di livelli di tensione incompatibili.
+
 ## Architetture Task-Based e la Modellazione dei Sistemi Embedded
 
 Nell'ambito della progettazione di sistemi embedded complessi, uno dei problemi principali è la modellazione e il design del software. La sfida consiste nel trovare metodi appropriati per decomporre e modularizzare il comportamento e le funzionalità del sistema, in modo da gestire la complessità crescente.
@@ -131,25 +1306,25 @@ Con un periodo abbastanza ampio, lo scheduler può sfruttare la modalità sleep 
 
 Nei sistemi FSM sincroni, si suppone che le azioni siano istantanee. Tuttavia, in un sistema reale, bisogna considerare la durata reale delle azioni per evitare eccezioni di overrun. Il parametro di **utilizzo della CPU (U)** è la percentuale di tempo in cui la CPU è utilizzata per eseguire un task, calcolata come:
 
-   \[
+   $$
    U = \left(\frac{\text{tempo utilizzato dal task}}{\text{tempo totale}}\right) * 100\%
-   \]
+   $$
 
 ### Esempio di Calcolo di U con più Task
 Per il caso di più task con lo stesso periodo, il WCET totale è la somma dei WCET di ciascun task. Ad esempio, nel caso del LED-Show con `BlinkLed` e `ThreeLeds`, entrambi con periodo 500 ms:
 
 - **WCET** per `BlinkLed` = 3 istruzioni → 0.03 s.
 - **WCET** per `ThreeLeds` = 9 istruzioni → 0.09 s.
-- **Utilizzo della CPU U** = \( \frac{0.03 + 0.09}{0.5} = 24\% \)
+- **Utilizzo della CPU U** = $\frac{0.03 + 0.09}{0.5} = 24\%$
 
 Se il WCET totale superasse il 100%, si verificherebbe un **overrun**, che può essere risolto aumentando il periodo della FSM, ottimizzando il codice, utilizzando un MCU più veloce, o rimuovendo funzionalità.
 
 ### Gestione di Task con Periodi Diversi
 Per task con periodi diversi, si calcola il WCET sull’**iperperiodo** (minimo comune multiplo dei periodi). Ad esempio, per `BlinkLed` con periodo 300 ms e `ThreeLeds` con periodo 200 ms, l'iperperiodo è 600 ms, in cui `BlinkLed` viene eseguito 2 volte e `ThreeLeds` 3 volte. Il parametro U diventa:
 
-   \[
+   $$
    U = \frac{(2 \times 20 \text{ms} + 3 \times 90 \text{ms})}{600 \text{ms}} = 55\%
-   \]
+   $$
 
 ### Conclusione
 
