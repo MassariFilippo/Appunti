@@ -4,9 +4,26 @@
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });</script>
 
-# **IOT**
+# IOT
 
 <div style="page-break-after: always;"></div>
+
+- [IOT](#iot)
+  - [Sistemi Embedded](#sistemi-embedded)
+  - [Microcontrollori](#microcontrollori)
+  - [Setting, Writing, Reading a Pin in Wiring](#setting-writing-reading-a-pin-in-wiring)
+  - [Sensori ed Attuatori](#sensori-ed-attuatori)
+  - [OOP per Sistemi Embedded](#oop-per-sistemi-embedded)
+  - [Architetture Task-Based](#architetture-task-based)
+  - [Event-Based Architetture](#event-based-architetture)
+  - [FSM Asincrone](#fsm-asincrone)
+  - [Embedded basati su SoC e RTOS](#embedded-basati-su-soc-e-rtos)
+  - [Internet of Things (IoT)](#internet-of-things-iot)
+  - [Tecnologie e Protocolli di Comunicazione Wirless](#tecnologie-e-protocolli-di-comunicazione-wirless)
+  - [Protocolli IoT – CoAP e MQTT](#protocolli-iot--coap-e-mqtt)
+  - [**Introduzione ai protocolli IoT: CoAP e MQTT**](#introduzione-ai-protocolli-iot-coap-e-mqtt)
+    - [**Differenze principali tra CoAP e MQTT**](#differenze-principali-tra-coap-e-mqtt)
+
 
 ## Sistemi Embedded
 
@@ -1183,7 +1200,7 @@ Dove:
 - Tuttavia, i valori assoluti delle resistenze influenzano la corrente che attraversa il circuito, quindi devono essere scelti in modo appropriato per non sovraccaricare il circuito.
 - Utilizzando i partitori di tensione, possiamo connettere dispositivi a 5V (come Arduino) con dispositivi a 3,3V (come l'ESP32), evitando danni ai componenti elettronici a causa di livelli di tensione incompatibili.
 
-## **Modellazione e Programmazione OO per Sistemi Embedded**
+## OOP per Sistemi Embedded
 
 Esistono due principali approcci alla modellazione:
 
@@ -1353,8 +1370,8 @@ Un'evoluzione del sistema Button-Led prevede:
 - Nei sistemi **distribuiti** (es. **IoT, smart home, smart city**), più agenti collaborano.  
 - I **Multi-Agent Systems (MAS)** permettono di modellare interazioni e cooperazioni complesse.  
 
+**OOP**
 
-## OOP
 I modelli per i sistemi embedded comprendono sia **componenti discreti** che **continui**:
 - I **componenti continui** evolvono in modo fluido nel tempo.
 - I **componenti discreti** cambiano stato in maniera brusca, con transizioni **atomiche**.
@@ -1567,7 +1584,7 @@ void loop() {
 - Le **FSM sincrone** sono utili per sistemi con vincoli temporali.
 - Le **FSM estese (EFSM)** permettono di gestire stati complessi con variabili.
 
-## Architetture Task-Based e la Modellazione dei Sistemi Embedded
+## Architetture Task-Based
 
 Nell'ambito della progettazione di sistemi embedded complessi, uno dei problemi principali è la modellazione e il design del software. La sfida consiste nel trovare metodi appropriati per decomporre e modularizzare il comportamento e le funzionalità del sistema, in modo da gestire la complessità crescente. Un'architettura task-based scompone il comportamento del software embedded in una serie di task concorrenti, dove ogni task rappresenta una specifica unità di lavoro ben definita. Ogni task può essere descritto mediante una Macchina a Stati Finita (FSM) e il comportamento complessivo del sistema è dato dall'interazione e dall'esecuzione parallela di queste FSM. Un esempio è il "LED-Show", dove più LED operano con logiche differenti:
 
@@ -1718,7 +1735,7 @@ $$
 
 L'approccio task-based semplifica la gestione di sistemi embedded complessi grazie a modularità, facilità di debugging e possibilità di riutilizzo. Tuttavia, richiede una gestione attenta delle variabili condivise, del consumo energetico e dell’utilizzo della CPU per evitare overrun e garantire l’affidabilità del sistema.
 
-## event-based architetture
+## Event-Based Architetture
 
 **Dalgli interrupt alle Architetture Basate su Eventi**  
 
@@ -1779,7 +1796,7 @@ L'approccio task-based semplifica la gestione di sistemi embedded complessi graz
   - È necessario **rendere atomico l’accesso alle variabili condivise** tra il super-loop e i listener per evitare **race condition**:  
     - Questo si ottiene **disabilitando e riabilitando gli interrupt** durante l’accesso a tali variabili.  
 
-## **FSM Asincrone (Asynchronous Finite State Machines - Async FSMs)**  
+## FSM Asincrone
 
 **Concetti chiave:**  
 - Le FSM asincrone sfruttano gli **interrupt** per progettare e implementare sistemi **basati su eventi**.  
@@ -1833,12 +1850,10 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
 
 ## Embedded basati su SoC e RTOS
 
-### Introduzione 
 - I sistemi embedded basati su **SoC (System-On-a-Chip)** superano i microcontrollori tradizionali, integrando una CPU, memoria sufficiente e componenti per ospitare un sistema operativo, spesso **RTOS (Real-Time Operating System)**.
 - **RTOS**: sistema operativo progettato per rispondere a eventi in tempo reale, ottimizzato per sistemi con vincoli temporali stringenti.
 
-
-### **SoC: System-On-a-Chip**
+**SoC: System-On-a-Chip**
 - **Definizione**: circuito integrato che combina componenti essenziali di un computer o sistema elettronico (CPU, memoria, controller I/O, interfacce di rete, ecc.).
 - **Esempi**:
   - BROADCOM BCM2837 (Raspberry Pi 3).
@@ -1861,7 +1876,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
 ![](img\IOT\architettura_ESP32.PNG)
 ![](img\IOT\architettura_raspberry.PNG)
 
-### Sistemi Operativi Embedded e RTOS
+**Sistemi Operativi Embedded e RTOS**
 - I SoC forniscono le risorse necessarie per ospitare sistemi operativi completi, come RTOS, progettati per sistemi embedded.
 - Gli **RTOS** ottimizzano la gestione di eventi e risorse, garantendo tempi di risposta deterministici.
 
@@ -1876,7 +1891,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
     3. **Coordinamento**: interazione tra applicazioni, utenti e risorse.
 
 
-### Architettura a Livelli nei Sistemi Embedded
+**Architettura a Livelli nei Sistemi Embedded**
 - La progettazione di un sistema è basata su una struttura gerarchica, composta da moduli che incapsulano funzionalità specifiche, organizzati su più livelli:
   - **Hardware**: circuiti logici, CPU, memoria.
   - **Sistema Operativo**: interfaccia tra hardware e software applicativo.
@@ -1900,7 +1915,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
     - Permette il controllo dell’OS e l’accesso sicuro all’hardware.
 
 
-### API e Mediatore OS
+**API e Mediatore OS**
 - **API (Application Programming Interface)**:
   - Fornisce una serie di funzioni o primitive OS (system calls) per interfacciarsi con le risorse hardware.
   - Garantisce indipendenza tra software applicativo e hardware.
@@ -1910,18 +1925,18 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
     - Converte richieste applicative in operazioni eseguibili sull’hardware.
     - Favorisce indipendenza tra applicazioni e hardware.
 
-### Virtualizzazione e Astrazione
+**Virtualizzazione e Astrazione**
 - **Macchina Virtuale**: permette di astrarre l’hardware fisico, fornendo un ambiente di esecuzione uniforme per le applicazioni.
 - La virtualizzazione consente di suddividere il sistema in livelli più gestibili:
   - **Macchina fisica**: hardware reale.
   - **Macchina virtuale**: strato intermedio tra hardware e software.
 
-### Organizzazione del Sistema Operativo
+**Organizzazione del Sistema Operativo**
 - **Driver**: gestione periferiche.
 - **Gestore della memoria**: allocazione e traduzione della memoria.
 - **Scheduler**: gestione della pianificazione dei processi.
 
-### Sistema Operativo come Macchina Virtuale
+**Sistema Operativo come Macchina Virtuale**
 - Il sistema operativo (OS) nasconde la complessità dell’hardware sottostante, presentando agli sviluppatori una macchina virtuale o astratta:
   - Più semplice rispetto alla macchina fisica.
   - Fornisce un livello superiore di astrazione.
@@ -1932,7 +1947,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
     2. **Portabilità dei programmi**: lo stesso programma può essere eseguito su diverse macchine virtuali, semplificando il passaggio da un OS all’altro.
 
 
-### Sistema Operativo come Gestore delle Risorse
+**Sistema Operativo come Gestore delle Risorse**
 - **Gestione delle risorse**:
   - Condivisione delle risorse tra più programmi, eventualmente in esecuzione concorrente.
   - Protezione e sicurezza per evitare interferenze tra programmi.
@@ -1941,7 +1956,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
   2. Sicurezza e protezione dei dati.
   3. Gestione multi-utente e multi-programmazione.
 
-### Virtualizzazione delle Risorse
+**Virtualizzazione delle Risorse**
 - **Memoria virtuale**: ogni programma vede uno spazio di memoria lineare e teoricamente illimitato.
 - **File system virtuale**: accesso uniforme ai file indipendentemente dal loro tipo o posizione (locale o remota).
 
@@ -1954,7 +1969,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
     - La CPU è condivisa tra i programmi in base a specifici algoritmi di scheduling.
 
 
-### Sistemi Embedded e RTOS
+**Sistemi Embedded e RTOS**
 - **Caratteristiche generali**:
   - Compattezza, efficienza, affidabilità.
   - Determinismo e prevedibilità (soprattutto nei sistemi hard real-time).
@@ -1965,7 +1980,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
   - Commerciali: VxWorks, QNX, Windows IoT Core.
 
 
-### Sistemi Real-Time
+**Sistemi Real-Time**
 - **Classificazione**:
   - **Hard real-time**: le scadenze temporali devono essere rigorosamente rispettate (es. sistemi di sicurezza critici).
   - **Soft real-time**: le scadenze possono essere violate occasionalmente, ma devono essere gestite.
@@ -1973,8 +1988,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
   - Essenziale per prevedere il tempo massimo necessario per completare un’azione.
   - Il sistema deve garantire tempi di latenza e di cambio contesto noti.
 
-
-### Funzioni del Kernel di un RTOS
+**Funzioni del Kernel di un RTOS**
 1. **Gestione dei task**:
    - Scheduling preemptivo per massimizzare l’uso della CPU.
    - Supporto per multi-threading e sincronizzazione (semafori, mutex).
@@ -1986,7 +2000,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
    - Prevenzione di problemi come il priority inversion.
 
 
-### Scheduling nei Sistemi Real-Time
+**Scheduling nei Sistemi Real-Time**
 1. **Algoritmi principali**:
    - **Rate Monotonic (RM)**: assegna priorità fisse, dove i task con periodo più breve hanno priorità più alta.
    - **Earliest Deadline First (EDF)**: priorità dinamiche basate sulle scadenze temporali più vicine.
@@ -2016,12 +2030,12 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
 
 ## Internet of Things (IoT)  
 
-### Definizione e Origini
+**Definizione e Origini**
 - Il termine **Internet of Things (IoT)** è stato introdotto nel 1999 da Kevin Ashton, durante progetti sull'RFID al MIT.  
   - Obiettivo iniziale: digitalizzare automaticamente il mondo fisico (oggetti, identificazioni, misurazioni, eventi) tramite sensori che inviano dati in tempo reale a Internet, evitando errori manuali.   
 - L'IoT ha un impatto significativo non solo sul piano tecnico ma anche sulla società, contribuendo a trasformazioni in vari settori.   
 
-### Elementi Principali  
+**Elementi Principali**
 1. **“Things” (oggetti fisici)**:  
    - Tipicamente sistemi embedded dotati di sensori e attuatori.  
 2. **Connettività e Comunicazione**:  
@@ -2031,19 +2045,19 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
    - **Sicurezza**: Identità, autenticazione e autorizzazione.  
    - **Privacy e proprietà dei dati**: Protezione delle informazioni sensibili.   
 
-### Smart Things
+**Smart Things**
 - Gli oggetti smart combinano oggetti fisici, sensori e connessione Internet.  
 - **Esempi di oggetti smart**:  
   - Interruttori WeMo, termostati Google Nest, smartwatch Fitbit.  
 - Gli oggetti sono "incantati" (enchanted), secondo la visione di David Rose, integrando tecnologia avanzata in oggetti comuni.  
 
-### Il Ruolo degli Smartphone nell'IoT
+**Il Ruolo degli Smartphone nell'IoT**
 - Gli smartphone possono essere:  
   - **Sistemi embedded**: Dotati di sensori per raccogliere dati e inviarli a Internet.  
   - **Controller universali**: Interfacce utente per gestire dispositivi smart.  
   - **Unità di controllo**: Governano dispositivi vicini tramite Bluetooth e connessioni con dispositivi indossabili.   
 
-### 5 Fasi dell’Evoluzione
+**5 Fasi dell’Evoluzione**
 1. **Prodotti base**: Dispositivi semplici come un condizionatore.  
 2. **Prodotti smart**: Dispositivi programmabili, come un condizionatore con programmazione automatica.  
 3. **Prodotti connessi**: Dispositivi controllabili via Internet, con manutenzione predittiva basata sui dati raccolti.  
@@ -2053,14 +2067,14 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
      - Piattaforme come Apple HomeKit, Amazon Echo, e Samsung SmartThings.  
 5. **Sistemi di sistemi**: Collaborazione tra elettrodomestici, sistemi di sicurezza, automobili e dispositivi medici.  
 
-### Dall’IoT all’IoT Industriale e Aziendale  
+**Dall’IoT all’IoT Industriale e Aziendale**
 - **Industry 4.0**  
   - La quarta rivoluzione industriale si basa sull’integrazione di sensori, Big Data e sistemi in tempo reale per ottimizzare la produzione e i processi aziendali.  
   - **Differenze tra Enterprise IoT e Industrial IoT (I-IoT)**:  
     - **Enterprise IoT**: Termine generico per applicazioni IoT nel contesto aziendale.  
     - **I-IoT**: Specifico per il settore manifatturiero e industriale.  
 
-### Architettura e Sistemi SCADA  
+**Architettura e Sistemi SCADA**
 - **Sistemi SCADA**: Supervisory Control and Data Acquisition (SCADA): Sistemi industriali per monitorare e controllare processi su larga scala.  
   - **Elementi principali**:  
     - **RTU (Remote Terminal Units)**: Rilevano e digitalizzano i dati dai sensori.  
@@ -2075,14 +2089,14 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
   - **Testo strutturato** (testuale).  
   - **Grafici sequenziali** (per programmi complessi). 
 
-### Standard OPC: Open Platform Communication
+**Standard OPC: Open Platform Communication**
 - L'OPC è uno **strato software** che facilita l'interazione tra le sorgenti di dati industriali e i sistemi esterni.  
 - Funzioni principali:  
   - Traduce i protocolli specifici di **PLC** (Programmable Logic Controller) o **DCS** (Distributed Control Systems), come Modbus e Profibus, in un'interfaccia standard.  
   - Agisce come mediatore per sistemi SCADA e simili, convertendo richieste OPC generiche in richieste specifiche per i dispositivi, e viceversa.  
   - Espone **tag**, serie temporali, eventi e sequenze di eventi (SOE) ai sistemi che implementano l'interfaccia OPC.  
 
-### Specifiche OPC 
+**Specifiche OPC** 
 1. **OPC Classic**:  
    - Introdotto nel 1995.  
    - Basato su Windows, utilizza tecnologie come OLE e DCOM.  
@@ -2091,13 +2105,13 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
    - Architettura orientata ai servizi (Service-Oriented Architecture, SOA).  
    - Compatibile con dispositivi piccoli e non solo su Windows.  
 
-### Il Dispositivo Edge 
+**Il Dispositivo Edge**
 - Situato fisicamente in fabbrica, il dispositivo edge collega:  
   - **Dati industriali** tramite server OPC.  
   - **Cloud** tramite gateway IoT. Il Cloud Computing è un modello di erogazione di servizi IT che consente l'accesso on-demand a un pool condiviso di risorse computazionali configurabili (ad esempio, reti, server, storage, applicazioni e servizi) che possono essere rapidamente fornite e rilasciate con uno sforzo minimo di gestione o interazione con il fornitore di servizi. Questo modello offre diversi vantaggi, tra cui scalabilità, flessibilità, efficienza dei costi e accessibilità globale.
 - I dispositivi edge sono fondamentali per l’implementazione dell'IIoT e si adattano a diversi approcci industriali.  
 
-### IoT e Cloud
+**IoT e Cloud**
 - **Caratteristiche Principali del Cloud nell'IoT**  
   - **Capacità di invio dati** direttamente o indirettamente su Internet.  
   - **Gestione di Big Data e Big Streams**:  
@@ -2107,7 +2121,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
     - Archiviazione e analisi dati offline.  
     - Sistemi aperti per lo scambio dati tra applicazioni, incluse le mobile app.  
 
-### Modelli di Cloud Computing  
+**Modelli di Cloud Computing**
   1. **IaaS** (Infrastructure as a Service):  
     - Risorse virtualizzate come server, rete e storage.  
   2. **PaaS** (Platform as a Service):  
@@ -2117,7 +2131,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
 
 ![](img\IOT\livelli_cloud.PNG)  
 
-### Domini Applicativi e Sfide dell'IoT
+**Domini Applicativi e Sfide dell'IoT**
 - **Applicazioni e Smart City**  
   - **Domini applicativi**: Logistica, smart home, eHealth, smart city.  
   - **Smart City**:  
@@ -2128,7 +2142,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
   3. **Interoperabilità**: Standard e architetture di riferimento per l’integrazione a livello applicativo.  
 
 
-### Web of Things (WoT)
+**Web of Things (WoT)**
 - **Definizione e Obiettivi**  
   - Il **Web of Things (WoT)** integra i dispositivi IoT nel Web, fornendo API RESTful.  
     - Abilita l'interoperabilità a livello applicativo.  
@@ -2145,7 +2159,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
   - Integrazione rapida di dati e servizi.  
   - Soluzioni ottimizzate per dispositivi embedded con basso consumo energetico.  
 
-### Mobile e Wearable Computing nell'IoT  
+**Mobile e Wearable Computing nell'IoT** 
 
 - **Mobile Computing**  
   - **Dispositivi mobili**: Smartphone e tablet.  
@@ -2157,8 +2171,9 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
     - Tipicamente connessi a dispositivi mobili tramite Bluetooth.  
     - Estensione dell’interazione con ambienti fisici tramite realtà aumentata (AR) o mista (XR).  
 
-## Comunicazione nei Sistemi M2M e IoT
+## Tecnologie e Protocolli di Comunicazione Wirless
 
+**Comunicazione nei Sistemi M2M e IoT**
 - **Ruolo della comunicazione**:
   - Fondamentale per consentire lo scambio di dati tra dispositivi e sottosistemi.
 - **Tipologie di connessione**:
@@ -2167,7 +2182,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
 - **Interfaccia microcontrollore-modulo**:
   - Avviene tramite **porta seriale**.
 
-### Connessione Internet nei Dispositivi Embedded
+**Connessione Internet nei Dispositivi Embedded**
 - **Modalità principali**:
   1. **Connessione indiretta**:
      - Comunicazione tramite un nodo intermediario che funge da gateway.
@@ -2178,11 +2193,11 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
 - **Protocolli di riferimento**:
   - **IP**, **TCP/IP**, **UDP/IP**.
 
-### Architettura ISO-OSI e Internet Stack
+**Architettura ISO-OSI e Internet Stack**
 - Struttura a strati per standardizzare la comunicazione.
 - Nello stack Internet, IP funge da "collo di bottiglia" permettendo l'interoperabilità tra protocolli superiori e inferiori.
 
-### Comunicazioni Wireless
+**Comunicazioni Wireless**
 - **Principi di base**:
   - Utilizzano segnali elettromagnetici in frequenza radio (RF).
   - Classificazione:
@@ -2193,15 +2208,15 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
   - **Medium Range**: centinaia di metri (Wi-Fi, WPAN).
   - **Long Range**: distanze superiori a 1 miglio (reti cellulari, LPWA).
 
-### Topologie di Rete Wireless
+**Topologie di Rete Wireless**
 - **Tipologie utilizzate**:
   - **Punto a Punto (P2P)**.
   - **Stella**.
   - **Albero (Tree)**.
   - **Mesh**: comunicazione ridondante e resiliente.
 
-### Tecnologie Wireless
-#### Wi-Fi
+**Tecnologie Wireless**
+**Wi-Fi**
 - Standard: **IEEE 802.11x**.
 - Caratteristiche principali:
   - Velocità: fino a 54 Mbps.
@@ -2210,7 +2225,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
 - Limiti:
   - Elevato consumo energetico, non ideale per sistemi embedded.
 
-#### Reti Cellulari (pre-5G)
+**Reti Cellulari (pre-5G)**
 - Tecnologie: GPRS, 3G, WiMax, LTE (4G).
 - Caratteristiche:
   - Velocità: da 80 Kbps (GPRS) a vari Mbps (3G/4G).
@@ -2218,14 +2233,15 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
   - Frequenze: 800-1900 MHz.
 - Consumo elevato e latenza incompatibile alle necessità, poco adatte per IoT.
 
-#### 5G
+**5G**
 - Progettato per IoT:
   - Velocità: fino a 10 Gbps.
   - Bassa latenza: 1-10 ms.
   - Affidabilità e flessibilità elevate.
   - Ideale per sensori, wearable e applicazioni IoT.
 
-#### Bluetooth (BT)
+**Bluetooth (BT)**
+
 Bluetooth è uno standard largamente adottato per la trasmissione di dati in reti personali wireless (WPAN). La sua flessibilità e basso consumo energetico lo rendono ideale per applicazioni su dispositivi di consumo e IoT.  
 
 - **Caratteristiche Generali**
@@ -2318,7 +2334,7 @@ Bluetooth è uno standard largamente adottato per la trasmissione di dati in ret
 
 ![](img\IOT\bt.PNG)
 
-### Standard IEEE 802.15.4
+**Standard IEEE 802.15.4**
 - Standard per WPAN a basso costo e bassa velocità.
 - Caratteristiche:
   - Frequenza: 2.4 GHz, 900 MHz, 868 MHz.
@@ -2331,7 +2347,7 @@ Bluetooth è uno standard largamente adottato per la trasmissione di dati in ret
   - **ZigBee**: basso consumo, ideale per IoT.
   - **6LoWPAN**: ottimizzazione IPv6 per reti a bassa potenza.
 
-### ZigBee
+**ZigBee**
 - Basato su IEEE 802.15.4.
 - Dispositivi:
   - **Coordinator**: unico per rete, gestisce sicurezza e configurazione.
@@ -2340,21 +2356,133 @@ Bluetooth è uno standard largamente adottato per la trasmissione di dati in ret
 - Topologie:
   - **Stella**, **Albero**, **Mesh**.
 
-### Thread Protocol
+**Thread Protocol**
 - Protocollo IPv6 per WPAN in **mesh network**.
 - Progettato per:
   - Automazione domestica e connettività cloud.
   - Sicurezza, affidabilità e basso consumo.
 
-### Matter
+**Matter**
 - Standard aperto per la connettività smart home e IoT (dal 2022).
 - Supporto da giganti come Amazon, Apple e Google.
 - Obiettivo: interoperabilità tra dispositivi smart, sostituendo protocolli proprietari.
 
-### Protocolli di Livello Applicativo
+**Protocolli di Livello Applicativo**
 - **Tipologie**:
   - **Generici**: SCADA, UDP/TCP.
   - **Specifici per IoT**:
     - **MQTT**: leggero, basato su pubblicazione/sottoscrizione.
     - **CoAP**: ottimizzato per reti a bassa potenza e perdita.
+  
+## Protocolli IoT – CoAP e MQTT  
 
+## **Introduzione ai protocolli IoT: CoAP e MQTT**  
+CoAP (**Constrained Application Protocol**) e MQTT (**Message Queue Telemetry Transport**) sono due protocolli chiave per la comunicazione in ambienti IoT, progettati per dispositivi con risorse limitate.  
+
+- **CoAP** è basato sul modello *request-response* (simile a HTTP) ed è ottimizzato per reti a bassa potenza (*LLN – Low-power and Lossy Networks*).  
+- **MQTT** è basato sul modello *publish-subscribe* ed è progettato per comunicazioni efficienti e affidabili tra dispositivi tramite un broker.  
+
+### **Differenze principali tra CoAP e MQTT**  
+| **Caratteristica**   | **CoAP**  | **MQTT**  |
+|---------------------------|-------------------------------------|---------------------------------------|
+| Modello di comunicazione | *Request/Response* (simile a HTTP) | *Publish/Subscribe* (basato su broker) |
+| Tipo di trasporto | UDP | TCP |
+| Efficienza in reti a bassa potenza | Alta | Media |
+| Supporto al multicast | ✔ | ✘ |
+| Sicurezza | DTLS (UDP) | SSL/TLS (TCP) |
+| Complessità | Bassa | Media |
+| Applicazioni tipiche | Sensori, attuatori | Messaggistica, telemetria |
+
+**CoAP (Constrained Application Protocol)**  
+ 
+- Protocollo **ottimizzato per dispositivi vincolati** (low-power e low-bandwidth).  
+- Basato su **architettura REST**, simile a HTTP ma più leggero.  
+- Funziona su **UDP** (può operare anche su 6LoWPAN, IPv4, IPv6).  
+- Supporta **multicast**, utile per individuare dispositivi e comunicare attraverso firewall.  
+- Definito dalla **RFC 7252** ([link RFC 7252](https://tools.ietf.org/html/rfc7252)).  
+
+**Stack protocollare di CoAP**  
+Lo stack protocollare di CoAP si divide in quattro livelli:  
+
+1. **Link Layer**: Ethernet, Wi-Fi (IEEE 802.3, 802.11), WPAN (IEEE 802.15.4).  
+2. **Network Layer**: IPv4, IPv6, 6LoWPAN.  
+3. **Transport Layer**: UDP, DTLS (per sicurezza).  
+4. **Application Layer**: CoAP Messaging, Request/Response.  
+
+**Formato dei messaggi CoAP**  
+- Messaggi **compatti** (minimo 4 byte).  
+- Struttura binaria ottimizzata per essere inclusa in pacchetti UDP.  
+- Metodi supportati: **GET, POST, PUT, DELETE** (simili a HTTP).  
+- Due tipi di messaggi:  
+  - **Confirmable (CON)**: richiede un *ACK* dal destinatario.  
+  - **Non-Confirmable (NON)**: non richiede conferma.  
+
+**Estensioni e nuove funzionalità di CoAP**  
+- **Multicast**: per scoprire dispositivi o comunicare attraverso firewall.  
+- **Block Transfer**: per trasferire grandi quantità di dati.  
+- **Event Subscription & Notification**: le risorse possono inviare notifiche agli osservatori (*observe*).  
+- **Sicurezza**: supporto per **DTLS (Datagram Transport Layer Security)** per crittografia e autenticazione.  
+
+**Tecnologie e strumenti per CoAP**  
+- **Californium**: implementazione CoAP per Java ([GitHub](https://github.com/eclipse/californium)).  
+- **Copper (Cu)**: Add-on per Firefox per testare risorse CoAP ([Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/copper-270430)).  
+- **CoAP.me**: Strumento web per test CoAP ([CoAP.me](http://coap.me/)).  
+
+**MQTT (Message Queue Telemetry Transport)**  
+  
+- Protocollo basato su **publish-subscribe**.  
+- Richiede un **broker centrale** per smistare i messaggi tra dispositivi.  
+- Funziona su **TCP**, con supporto opzionale per **SSL/TLS**.  
+- Ottimizzato per **ambienti a bassa larghezza di banda e alta latenza**.  
+- Standardizzato da **OASIS MQTT 5.0** ([MQTT 5.0](https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html)).  
+
+**Architettura MQTT (Publish-Subscribe)**  
+MQTT utilizza tre attori principali:  
+
+1. **Publisher**: invia messaggi su un *topic* al broker.  
+2. **Broker**: riceve e distribuisce i messaggi ai sottoscrittori.  
+3. **Subscriber**: si iscrive a uno o più *topic* e riceve i messaggi.  
+
+**Topic e struttura ad albero**  
+- I messaggi sono organizzati in **topic**, simili a percorsi di un filesystem (`/sensori/temperatura`).  
+- Il simbolo `/` separa i livelli della gerarchia.  
+- **Wildcard (`#`)** permette di iscriversi a più topic contemporaneamente.  
+
+**Livelli di Qualità del Servizio (QoS)**  
+MQTT offre tre livelli di **QoS (Quality of Service)** per il recapito dei messaggi:  
+
+1. **QoS 0 – At most once** (*fire and forget*): il messaggio viene inviato senza conferma.  
+2. **QoS 1 – At least once**: il messaggio viene confermato dal ricevitore (può essere ricevuto più volte).  
+3. **QoS 2 – Exactly once**: il messaggio viene consegnato **una sola volta**, con meccanismo di doppia conferma.  
+
+**Sicurezza in MQTT**  
+- **Autenticazione debole**: supporta username e password in chiaro (rischioso in reti non protette).  
+- **Crittografia**: può essere utilizzato **SSL/TLS** per proteggere le comunicazioni.  
+- **Altre soluzioni** (non standard nel protocollo):  
+  - Certificati client-side.  
+  - Chiavi precondivise (PSK).  
+  - Crittografia dei messaggi lato applicazione.  
+
+**Tecnologie e strumenti per MQTT**  
+- **Eclipse Mosquitto**: popolare broker MQTT ([Mosquitto](https://www.mosquitto.org/)).  
+- **Librerie client**:  
+  - Arduino MQTT ([GitHub](https://github.com/knolleary/pubsubclient)).  
+  - Altre librerie disponibili su [MQTT Software](https://mqtt.org/software/).  
+
+**Confronto tra CoAP, MQTT e altri protocolli**  
+
+| **Feature**            | **HTTP** | **CoAP** | **MQTT** | **XMPP** |
+|------------------------|----------|----------|----------|---------|
+| Request/Response       | ✔       | ✔       | ✘       | ✔       |
+| Publish/Subscribe     | ✘       | ✘       | ✔       | ✔       |
+| Multicast             | ✘       | ✔       | ✘       | ✔       |
+| Event/Push            | ✔       | ✔       | ✔       | ✔       |
+| Firewall-friendly     | ✘       | (✔)     | ✔       | ✔       |
+| Encryption            | ✔       | ✔       | ✔       | ✔       |
+| Compression           | ✔       | ✘       | ✘       | ✔       |
+| Reliable messaging    | ✘       | ✘       | ✔       | ✘       |
+
+**Conclusioni**  
+- **CoAP** è ideale per **sensori e attuatori** con risorse limitate, utilizzando un modello *request-response*.  
+- **MQTT** è ottimale per **telemetria e messaggistica**, grazie al modello *publish-subscribe* con broker.  
+- Entrambi i protocolli offrono vantaggi distinti e possono essere **combinati** in architetture IoT complesse. 🚀
