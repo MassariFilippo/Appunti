@@ -106,7 +106,7 @@ I microcontrollori si differenziano dai microprocessori perché integrano su un 
 
 **Microcontrollori vs. Microprocessori**
 | Caratteristica       | Microcontrollore | Microprocessore |
-|--------------------|--------------------|------------------!
+|--------------------|--------------------|------------------|
 | Max clock speed    | 200 MHz        | 4 GHz          |
 | Max MegaFLOPS     | 200            | 5000           |
 | Consumo energetico | 1 W            | 50 W           |
