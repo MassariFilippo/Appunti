@@ -1569,18 +1569,14 @@ void loop() {
 
 ## Architetture Task-Based e la Modellazione dei Sistemi Embedded
 
-Nell'ambito della progettazione di sistemi embedded complessi, uno dei problemi principali è la modellazione e il design del software. La sfida consiste nel trovare metodi appropriati per decomporre e modularizzare il comportamento e le funzionalità del sistema, in modo da gestire la complessità crescente.
-
-### Approccio delle Architetture Task-Based
-
-Un'architettura task-based scompone il comportamento del software embedded in una serie di task concorrenti, dove ogni task rappresenta una specifica unità di lavoro ben definita. Ogni task può essere descritto mediante una Macchina a Stati Finita (FSM) e il comportamento complessivo del sistema è dato dall'interazione e dall'esecuzione parallela di queste FSM. Un esempio è il "LED-Show", dove più LED operano con logiche differenti:
+Nell'ambito della progettazione di sistemi embedded complessi, uno dei problemi principali è la modellazione e il design del software. La sfida consiste nel trovare metodi appropriati per decomporre e modularizzare il comportamento e le funzionalità del sistema, in modo da gestire la complessità crescente. Un'architettura task-based scompone il comportamento del software embedded in una serie di task concorrenti, dove ogni task rappresenta una specifica unità di lavoro ben definita. Ogni task può essere descritto mediante una Macchina a Stati Finita (FSM) e il comportamento complessivo del sistema è dato dall'interazione e dall'esecuzione parallela di queste FSM. Un esempio è il "LED-Show", dove più LED operano con logiche differenti:
 
 1. **Un LED singolo** lampeggia con un periodo di 500 ms.
 2. **Altri tre LED** si accendono e spengono in sequenza, con intervalli di 500 ms.
 
 Questa configurazione può essere rappresentata come un unico task/FSM, ma il modello diventa più semplice se si dividono i comportamenti in due task distinti, riducendo il numero di stati e transizioni.
 
-### Diagramma a Blocchi e Vantaggi della Decomposizione in Task
+**Diagramma a Blocchi e Vantaggi della Decomposizione in Task**
 
 Ogni task può essere rappresentato come un blocco rettangolare che mostra le variabili di input e output, facilitando così la modularità. Grazie a questa decomposizione, si ottengono i seguenti vantaggi:
 
@@ -1588,13 +1584,13 @@ Ogni task può essere rappresentato come un blocco rettangolare che mostra le va
 - **Riduzione della complessità**: il task singolo è meno complesso rispetto al comportamento globale.
 - **Facilità di debugging** e **riutilizzabilità** del codice.
 
-### Sfide della Concorrenza tra Task
+**Sfide della Concorrenza tra Task**
 
 Dato che i task operano in parallelo, il loro flusso di controllo logico può sovrapporsi nel tempo. Per gestire questa concorrenza, è necessario implementare meccanismi di coordinamento e interazione basati su variabili e oggetti condivisi.
 
-### Implementazione delle Architetture Task-Based
+**Implementazione delle Architetture Task-Based**
 
-#### Classe Base Astratta Task
+**Classe Base Astratta Task**
 
 Per rappresentare i task in maniera modulare, si utilizza una classe astratta `Task`, con due metodi principali:
 
@@ -1603,7 +1599,7 @@ Per rappresentare i task in maniera modulare, si utilizza una classe astratta `T
 
 Ogni task concreto estende questa classe e implementa il proprio comportamento all’interno di `tick()`. In questo modo, i task possono essere gestiti da un loop principale che periodicamente invoca `tick()`.
 
-### Esempio Implementativo: LED-Show su Arduino
+**Esempio Implementativo: LED-Show su Arduino**
 Di seguito, una versione implementativa del "LED-Show" su Arduino:
 
 1. **BlinkTask**: rappresenta un LED che lampeggia.
@@ -1651,11 +1647,11 @@ Di seguito, una versione implementativa del "LED-Show" su Arduino:
    }
    ```
 
-### Scheduler Cooperativo e Gestione di Periodi Diversi
+**Scheduler Cooperativo e Gestione di Periodi Diversi**
 
 Quando si ha la necessità di gestire task con periodi differenti, è utile implementare uno scheduler cooperativo che tenga traccia dei task da eseguire e li chiami al proprio periodo specifico. Lo scheduler utilizza una strategia **round-robin cooperativa**, con un periodo base pari al massimo comun divisore dei periodi dei task. Ad ogni periodo base, lo scheduler richiama `tick()` per ciascun task.
 
-### Implementazione del Scheduler
+**Implementazione del Scheduler**
 Lo scheduler è definito dalla classe `Scheduler`:
    ```cpp
    class Scheduler {
@@ -1673,7 +1669,7 @@ Lo scheduler è definito dalla classe `Scheduler`:
    };
    ```
 
-### Esempio di Sistema Motion-Triggered Lamp
+**Esempio di Sistema Motion-Triggered Lamp**
 
 Consideriamo un sistema embedded che accende un LED al rilevamento di un movimento. È progettato come segue:
 
@@ -1686,23 +1682,24 @@ I task necessari sono:
 2. `IlluminateLamp`
 3. `BlinkLed`
 
-### Variabili Condivise, Azioni Atomiche e Condizioni di Gara
+**Variabili Condivise, Azioni Atomiche e Condizioni di Gara**
 
 Quando più task utilizzano variabili condivise, si rischiano condizioni di gara nelle letture/scritture concorrenti. Nella nostra architettura cooperativa, ogni esecuzione di `tick()` è **atomica** per l’intero sistema, ma l’interleaving delle chiamate tra task può introdurre condizioni di gara a livello logico.
 
-### Modalità Sleep per Risparmio Energetico
+**Modalità Sleep per Risparmio Energetico**
 
 Con un periodo abbastanza ampio, lo scheduler può sfruttare la modalità sleep per risparmiare energia. Dopo l’esecuzione dei task, il sistema va in sleep fino al prossimo tick del timer.
 
-### Analisi dell’Esecuzione: Utilizzo della CPU e WCET
+**Analisi dell’Esecuzione: Utilizzo della CPU e WCET**
 
 Nei sistemi FSM sincroni, si suppone che le azioni siano istantanee. Tuttavia, in un sistema reale, bisogna considerare la durata reale delle azioni per evitare eccezioni di overrun. Il parametro di **utilizzo della CPU (U)** è la percentuale di tempo in cui la CPU è utilizzata per eseguire un task, calcolata come:
 
-   $$
-   U = \left(\frac{\text{tempo utilizzato dal task}}{\text{tempo totale}}\right) * 100\%
-   $$
+$$
+U = \left(\frac{\text{tempo utilizzato dal task}}{\text{tempo totale}}\right) * 100\%
+$$
 
-### Esempio di Calcolo di U con più Task
+**Esempio di Calcolo di U con più Task**
+
 Per il caso di più task con lo stesso periodo, il WCET totale è la somma dei WCET di ciascun task. Ad esempio, nel caso del LED-Show con `BlinkLed` e `ThreeLeds`, entrambi con periodo 500 ms:
 
 - **WCET** per `BlinkLed` = 3 istruzioni → 0.03 s.
@@ -1711,16 +1708,128 @@ Per il caso di più task con lo stesso periodo, il WCET totale è la somma dei W
 
 Se il WCET totale superasse il 100%, si verificherebbe un **overrun**, che può essere risolto aumentando il periodo della FSM, ottimizzando il codice, utilizzando un MCU più veloce, o rimuovendo funzionalità.
 
-### Gestione di Task con Periodi Diversi
+**Gestione di Task con Periodi Diversi**
+
 Per task con periodi diversi, si calcola il WCET sull’**iperperiodo** (minimo comune multiplo dei periodi). Ad esempio, per `BlinkLed` con periodo 300 ms e `ThreeLeds` con periodo 200 ms, l'iperperiodo è 600 ms, in cui `BlinkLed` viene eseguito 2 volte e `ThreeLeds` 3 volte. Il parametro U diventa:
 
-   $$
-   U = \frac{(2 \times 20 \text{ms} + 3 \times 90 \text{ms})}{600 \text{ms}} = 55\%
-   $$
-
-### Conclusione
+$$
+U = \frac{(2 \times 20 \text{ms} + 3 \times 90 \text{ms})}{600 \text{ms}} = 55\%
+$$
 
 L'approccio task-based semplifica la gestione di sistemi embedded complessi grazie a modularità, facilità di debugging e possibilità di riutilizzo. Tuttavia, richiede una gestione attenta delle variabili condivise, del consumo energetico e dell’utilizzo della CPU per evitare overrun e garantire l’affidabilità del sistema.
+
+## event-based architetture
+
+**Dalgli interrupt alle Architetture Basate su Eventi**  
+
+**Concetti chiave:**  
+
+- Il **meccanismo di interrupt** può essere sfruttato per progettare architetture basate su eventi.  
+- Gli **interrupt** possono essere visti come eventi di basso livello che interrompono il flusso di controllo di un **super-loop** per eseguire il relativo gestore di eventi.  
+- L'uso degli interrupt permette di **evitare il polling** nella gestione dei sensori e degli input, migliorando l'efficienza:  
+  - Non è il processore a controllare continuamente lo stato del sensore, ma è il sensore stesso a **notificare** il cambiamento quando avviene.  
+- **Architetture basate su eventi di alto livello** includono:  
+  - **Observer pattern**  
+  - **FSM asincrone (Finite State Machines asincrone)**  
+
+**Observer Pattern**  
+
+**Elementi principali:**  
+
+1. **Sorgente o generatore di eventi**  
+   - Fornisce un’interfaccia/API per permettere agli osservatori (listener) di registrarsi e ricevere notifiche sugli eventi.  
+   - Esempio: un **tasto tattile** come sorgente di eventi.  
+
+2. **Eventi generati**  
+   - Esempio: un evento di pressione del tasto (**button pressed event**).  
+
+3. **Osservatore (listener)**  
+   - Si registra sulla sorgente degli eventi per ricevere notifiche.  
+   - Esempio: un metodo `buttonPressed()` che risponde alla pressione del tasto.  
+
+**Implementazione con Interrupt**  
+
+- Gli interrupt vengono utilizzati all’interno delle **sorgenti di eventi** per segnalare eventi che si verificano.  
+- Il **gestore dell’interrupt** chiama i listener registrati sulla sorgente degli eventi.  
+
+**Esempio di Implementazione - Observer Pattern**  
+
+- Esempio disponibile nel repository:  
+  - **module-lab-2.4/pattern-observer-example**  
+  - Basato su un **tasto tattile** come sorgente.  
+
+**Componenti principali:**  
+1. **Libreria Observer Pattern**  
+   - **Classe astratta `EventSource`**  
+     - Modella una sorgente generica di eventi che genera eventi utilizzando interrupt.  
+   - **Classe `InterruptDispatcher`**  
+     - Funziona come **ponte tra gli interrupt handler e la sorgente degli eventi**.  
+
+2. **Componente del Tasto Tattile basato su Eventi**  
+   - **Interfaccia `Button`**  
+   - **Classe astratta `AbstractButton`**  
+     - Classe base per bottoni basati su eventi.  
+   - **Classe `ButtonImpl`**  
+     - Implementazione specifica del bottone.  
+
+**Osservazioni sull’Observer Pattern**  
+- Il codice dei listener viene eseguito nel **contesto dell’interrupt handler**.  
+- Questo introduce alcune limitazioni:  
+  - I listener **non possono eseguire operazioni lunghe** o chiamare funzioni che richiedano **interrupt abilitati**.  
+  - È necessario **rendere atomico l’accesso alle variabili condivise** tra il super-loop e i listener per evitare **race condition**:  
+    - Questo si ottiene **disabilitando e riabilitando gli interrupt** durante l’accesso a tali variabili.  
+
+## **FSM Asincrone (Asynchronous Finite State Machines - Async FSMs)**  
+
+**Concetti chiave:**  
+- Le FSM asincrone sfruttano gli **interrupt** per progettare e implementare sistemi **basati su eventi**.  
+- Differenze rispetto alle FSM **sincrone**:  
+  - Nelle **FSM sincrone**, la valutazione delle reazioni avviene **a intervalli regolari** (es. cicli di clock).  
+  - Nelle **FSM asincrone**, la valutazione delle reazioni avviene solo **quando si verifica un evento** generato da un interrupt.  
+  - Non esiste un **periodo fisso**, ma è possibile modellare un comportamento periodico usando **timer che generano eventi temporali**.  
+
+**Esempio di Implementazione - FSM Asincrone**  
+- Esempio disponibile nel repository:  
+  - **module-lab-2.4/button-led-async-fsm**  
+  - Implementazione di un sistema **tasto-LED** basato su FSM asincrone.  
+
+**Componenti principali:**  
+1. **Framework `async-fsm`**  
+   - API e architettura per implementare **finite state machines asincrone**.  
+2. **Tasto Tattile**  
+   - Funziona come **sorgente di eventi**.  
+
+**Framework per FSM Asincrone**  
+
+**Struttura del framework `async-fsm`**  
+- Classi principali:  
+  - **`Event`**, **`EventSource`**, **`Observer`**  
+    - Rappresentano gli eventi generati dagli interrupt, le sorgenti di eventi e gli osservatori degli eventi.  
+  - **Classe `InterruptDispatcher`**  
+    - Funziona come ponte tra gli **interrupt handler** e le **sorgenti degli eventi**.  
+  - **Classe astratta `AsyncFSM`**  
+    - Classe base per l’implementazione di FSM asincrone specifiche.  
+    - Funziona come **osservatore di eventi** generati dai componenti della sorgente di eventi.  
+    - Utilizza una **event queue** per tenere traccia degli eventi in sospeso.  
+
+**Osservazioni sulle FSM Asincrone**  
+
+- L’**intera esecuzione è disaccoppiata** tra:  
+  1. **Generazione degli eventi** (tramite interrupt).  
+  2. **Reazioni e azioni** (eseguite dal super-loop).  
+- **Vantaggi:**  
+  - Non ci sono limitazioni dovute all'esecuzione dei listener all’interno degli interrupt handler.  
+  - Il sistema **mantiene un’elevata reattività** e **risposta immediata** agli eventi.  
+  - Si evitano le **race condition** perché gli interrupt handler **non accedono direttamente alle variabili**.  
+- L’implementazione segue il **Reactor Pattern** (noto anche come **Event-Loop Architecture**).  
+
+**Conclusione** 
+
+L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre diversi vantaggi rispetto ai modelli tradizionali basati su polling o FSM sincrone. Le tecniche chiave presentate in questo modulo comprendono:  
+- **Uso degli interrupt** per evitare il polling e migliorare l'efficienza.  
+- **Pattern Observer** per strutturare il codice in modo modulare e reattivo.  
+- **FSM asincrone** per una gestione flessibile e reattiva degli eventi.  
+- **Uso del Reactor Pattern** per separare la generazione di eventi dalla loro elaborazione.  
 
 ## Embedded basati su SoC e RTOS
 
