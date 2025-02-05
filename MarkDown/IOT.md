@@ -1175,6 +1175,176 @@ Dove:
 - Tuttavia, i valori assoluti delle resistenze influenzano la corrente che attraversa il circuito, quindi devono essere scelti in modo appropriato per non sovraccaricare il circuito.
 - Utilizzando i partitori di tensione, possiamo connettere dispositivi a 5V (come Arduino) con dispositivi a 3,3V (come l'ESP32), evitando danni ai componenti elettronici a causa di livelli di tensione incompatibili.
 
+## **Modellazione e Programmazione OO per Sistemi Embedded**
+
+Esistono due principali approcci alla modellazione:
+
+1. **Approccio Top-Down**  
+   - Parte dalla modellazione del dominio utilizzando paradigmi ad alto livello, come la programmazione orientata agli oggetti (OO).  
+   - Permette di astrarre dalle caratteristiche specifiche dell’hardware e concentrarsi su concetti generali e riutilizzabili.  
+   
+2. **Approccio Bottom-Up**  
+   - Parte dalle caratteristiche hardware e dai concetti legati al loro funzionamento.  
+   - Si focalizza sulla gestione diretta delle risorse hardware, spesso con un impatto sulla portabilità e sulla manutenibilità del codice.  
+
+In questo modulo viene adottato l’approccio **Top-Down**, che consente di sviluppare sistemi in modo più strutturato e scalabile.
+
+**Paradigmi di Programmazione e Modellazione**
+- I paradigmi di programmazione, come l'OO, sono prima di tutto **paradigmi di modellazione**.  
+- Definiscono come **concettualizzare, rappresentare e modellare un sistema**.  
+- Consentono di **analizzare un problema** e di definire una soluzione all’interno di un determinato dominio applicativo.  
+
+**Il Concetto di Modello**
+- Un **modello** è una rappresentazione delle caratteristiche rilevanti di un sistema, astratta dagli aspetti non essenziali.  
+- Un modello considera tre dimensioni fondamentali:  
+  1. **Struttura** → quali sono le parti che compongono il sistema.  
+  2. **Comportamento** → come si comportano le singole componenti.  
+  3. **Interazione** → come le parti interagiscono tra loro.  
+
+C'è una forte relazione tra modellazione e programmazione, come evidenziato dagli studi della scuola scandinava, in particolare quelli di **Ole Lehrmann Madsen**.
+
+**Importanza della Modellazione**
+L’uso della modellazione prima dell’implementazione presenta diversi vantaggi:
+- **Comprensione più chiara del sistema** e gestione della complessità.  
+- **Riutilizzabilità** e **portabilità** del codice.  
+- **Estensibilità**, ovvero la possibilità di aggiungere nuove funzionalità senza modificare l’intero sistema.  
+- **Maggiore rigore** nella verifica della correttezza del sistema.  
+
+**Paradigmi di Modellazione**
+- Definiscono concetti e principi per creare modelli strutturati.  
+- Esempio: **Paradigma a Oggetti (OO)** → basato su classi, oggetti, incapsulamento, ereditarietà e polimorfismo.  
+
+**Linguaggi di Modellazione**
+- Permettono di rappresentare i modelli in modo rigoroso e non ambiguo.  
+- Esempio: **UML (Unified Modeling Language)**, fortemente ispirato al paradigma OO, in particolare per la modellazione della **struttura** e delle **interazioni** tra componenti.  
+
+**Paradigma Object-Oriented (OO)**
+- È il principale paradigma utilizzato nella modellazione e programmazione software.  
+- Fornisce un elevato livello di astrazione per rappresentare gli aspetti essenziali del problema.  
+- Favorisce proprietà fondamentali come:
+  - **Modularità** → divisione del codice in parti indipendenti e riutilizzabili.  
+  - **Incapsulamento** → nasconde i dettagli interni degli oggetti.  
+  - **Meccanismi di riuso ed estensibilità**.  
+
+**Aspetti non direttamente coperti dal paradigma OO**  
+- **Concorrente e interazioni asincrone** tra componenti.  
+- **Sistemi distribuiti**, dove diversi elementi collaborano in ambienti differenti.  
+
+**Modellazione del Software Embedded**
+1. **Controller**  
+   - Contiene la logica di controllo e applicativa.  
+   - Accede e utilizza le risorse del sistema (sensori, attuatori, ecc.).  
+   - È un **componente attivo**, basato su un'architettura di controllo.  
+
+2. **Elementi controllati**  
+   - Sono le risorse e i dispositivi gestiti dal controller (es. **I/O, sensori, attuatori**).  
+   - Hanno interfacce ben definite e possono essere osservati o controllati.  
+   - Sono **componenti passivi** che forniscono funzionalità al controller.  
+
+**Esempio: Sistema Button-Led**
+
+- **Button (Interfaccia)**  
+  ```cpp
+  class Button {
+  public:
+    virtual bool isPressed() = 0;
+  };
+  ```
+
+- **Led (Interfaccia e Implementazione)**  
+  ```cpp
+  class Light {
+  public:
+    virtual void switchOn() = 0;
+    virtual void switchOff() = 0;
+  };
+
+  class Led: public Light {
+  public:
+    Led(int pin);
+    void switchOn();
+    void switchOff();
+  private:
+    int pin;
+  };
+  ```
+
+**Ciclo di Controllo**
+
+Il **controller** utilizza un **super-loop** per verificare continuamente lo stato del pulsante:
+
+```cpp
+bool lightOn = false;
+
+void loop() {
+  bool isPressed = button->isPressed();
+
+  if (!lightOn && isPressed) {
+    light->switchOn();
+    lightOn = true;
+  } else if (lightOn && !isPressed) {
+    light->switchOff();
+    lightOn = false;
+  }
+}
+```
+
+**Smart Light System**
+
+Un'evoluzione del sistema Button-Led prevede:
+- **Sensore di movimento** per rilevare la presenza di persone.  
+- **Sensore di luce** per verificare l'intensità luminosa dell’ambiente.  
+- **Controller intelligente** per gestire la logica di accensione e spegnimento automatico.  
+
+**Modello a Oggetti**
+
+- **MovementDetector (Interfaccia)**
+  ```cpp
+  class MovementDetector {
+  public:
+    virtual bool detected() = 0;
+  };
+  ```
+
+- **LightDetector (Interfaccia)**
+  ```cpp
+  class LightDetector {
+  public:
+    virtual double getIntensity() = 0;
+  };
+  ```
+
+- **SmartLightController (Ciclo di Controllo)**
+  ```cpp
+  bool lightOn = false;
+
+  void loop() {
+    bool detected = movementDetector->detected();
+    double intensity = lightSensor->getIntensity();
+    bool isLowIntensity = intensity < LIGHT_THRESHOLD;
+
+    if (!lightOn && detected && isLowIntensity) {
+      light->switchOn();
+      lightOn = true;
+    } else if (lightOn && (!isLowIntensity || !detected)) {
+      light->switchOff();
+      lightOn = false;
+    }
+  }
+  ```
+
+**Approccio Agenti per il Controllo**
+- Il **controller** è un'entità **attiva**, con un proprio flusso di controllo.  
+- Gli **agenti** sono concetti chiave nella modellazione OO dei sistemi embedded.  
+- Un **agente**:
+  - È autonomo e reattivo.  
+  - Incapsula un comportamento proattivo.  
+  - Percepisce l’ambiente attraverso sensori e agisce tramite attuatori.  
+
+**Dai Sistemi Individuali ai Sistemi Multi-Agente**
+- Nei sistemi **distribuiti** (es. **IoT, smart home, smart city**), più agenti collaborano.  
+- I **Multi-Agent Systems (MAS)** permettono di modellare interazioni e cooperazioni complesse.  
+
 ## Architetture Task-Based e la Modellazione dei Sistemi Embedded
 
 Nell'ambito della progettazione di sistemi embedded complessi, uno dei problemi principali è la modellazione e il design del software. La sfida consiste nel trovare metodi appropriati per decomporre e modularizzare il comportamento e le funzionalità del sistema, in modo da gestire la complessità crescente.
