@@ -21,8 +21,8 @@
   - [Internet of Things (IoT)](#internet-of-things-iot)
   - [Tecnologie e Protocolli di Comunicazione Wirless](#tecnologie-e-protocolli-di-comunicazione-wirless)
   - [Protocolli IoT – CoAP e MQTT](#protocolli-iot--coap-e-mqtt)
-  - [**Introduzione ai protocolli IoT: CoAP e MQTT**](#introduzione-ai-protocolli-iot-coap-e-mqtt)
-    - [**Differenze principali tra CoAP e MQTT**](#differenze-principali-tra-coap-e-mqtt)
+
+<div style="page-break-after: always;"></div>
 
 
 ## Sistemi Embedded
@@ -106,7 +106,7 @@ I microcontrollori si differenziano dai microprocessori perché integrano su un 
 
 **Microcontrollori vs. Microprocessori**
 | Caratteristica       | Microcontrollore | Microprocessore |
---|
+|--------------------|--------------------|------------------!
 | Max clock speed    | 200 MHz        | 4 GHz          |
 | Max MegaFLOPS     | 200            | 5000           |
 | Consumo energetico | 1 W            | 50 W           |
@@ -2375,14 +2375,13 @@ Bluetooth è uno standard largamente adottato per la trasmissione di dati in ret
     - **CoAP**: ottimizzato per reti a bassa potenza e perdita.
   
 ## Protocolli IoT – CoAP e MQTT  
-
-## **Introduzione ai protocolli IoT: CoAP e MQTT**  
+  
 CoAP (**Constrained Application Protocol**) e MQTT (**Message Queue Telemetry Transport**) sono due protocolli chiave per la comunicazione in ambienti IoT, progettati per dispositivi con risorse limitate.  
 
 - **CoAP** è basato sul modello *request-response* (simile a HTTP) ed è ottimizzato per reti a bassa potenza (*LLN – Low-power and Lossy Networks*).  
 - **MQTT** è basato sul modello *publish-subscribe* ed è progettato per comunicazioni efficienti e affidabili tra dispositivi tramite un broker.  
 
-### **Differenze principali tra CoAP e MQTT**  
+**Differenze principali tra CoAP e MQTT**  
 | **Caratteristica**   | **CoAP**  | **MQTT**  |
 |---------------------------|-------------------------------------|---------------------------------------|
 | Modello di comunicazione | *Request/Response* (simile a HTTP) | *Publish/Subscribe* (basato su broker) |
@@ -2485,4 +2484,4 @@ MQTT offre tre livelli di **QoS (Quality of Service)** per il recapito dei messa
 **Conclusioni**  
 - **CoAP** è ideale per **sensori e attuatori** con risorse limitate, utilizzando un modello *request-response*.  
 - **MQTT** è ottimale per **telemetria e messaggistica**, grazie al modello *publish-subscribe* con broker.  
-- Entrambi i protocolli offrono vantaggi distinti e possono essere **combinati** in architetture IoT complesse. 🚀
+- Entrambi i protocolli offrono vantaggi distinti e possono essere **combinati** in architetture IoT complesse.
