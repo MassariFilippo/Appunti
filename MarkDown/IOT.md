@@ -1,4 +1,12 @@
-# Appunti IOT
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });</script>
+
+# **IOT**
+
+<div style="page-break-after: always;"></div>
 
 ## Sistemi Embedded
 
@@ -1344,6 +1352,220 @@ Un'evoluzione del sistema Button-Led prevede:
 **Dai Sistemi Individuali ai Sistemi Multi-Agente**
 - Nei sistemi **distribuiti** (es. **IoT, smart home, smart city**), più agenti collaborano.  
 - I **Multi-Agent Systems (MAS)** permettono di modellare interazioni e cooperazioni complesse.  
+
+
+## OOP
+I modelli per i sistemi embedded comprendono sia **componenti discreti** che **continui**:
+- I **componenti continui** evolvono in modo fluido nel tempo.
+- I **componenti discreti** cambiano stato in maniera brusca, con transizioni **atomiche**.
+
+Le dinamiche fisiche del sistema possono essere modellate con:
+- **Equazioni differenziali** o **integrali** (per i componenti continui).
+- **Macchine a stati finiti (FSM)** (per i componenti discreti).
+
+In questo corso, ci focalizziamo sui **sistemi embedded composti principalmente da componenti discreti**, modellandoli con le **Finite State Machines (FSM)**.
+
+**Esempio: Contatore di un parcheggio**
+
+Un sistema che conta il numero di auto presenti in un parcheggio può essere modellato con tre sottosistemi principali:
+
+1. **ArrivalDetector**: genera un evento quando arriva un'auto.
+2. **DepartureDetector**: genera un evento quando un'auto esce.
+3. **Counter**: mantiene il conteggio aggiornato e produce un evento di output ogni volta che il conteggio cambia.
+
+Ogni ingresso o uscita è modellata come un **evento discreto**.
+
+**Modello della FSM per il Contatore**
+
+```mermaid
+stateDiagram
+    [*] --> Attesa
+    Attesa --> ContaIncrementata : up / c = c + 1
+    Attesa --> ContaDecrementata : down / c = c - 1
+    ContaIncrementata --> Attesa
+    ContaDecrementata --> Attesa
+```
+
+- Lo stato **Attesa** rappresenta il sistema in attesa di eventi.
+- Se arriva un'auto (**up**), il conteggio viene incrementato.
+- Se un'auto esce (**down**), il conteggio viene decrementato.
+- Dopo ogni aggiornamento del conteggio, il sistema ritorna allo stato di attesa.
+
+**Segnali di Input e Output**
+
+I segnali di input **u** (arrivo auto) e **d** (partenza auto) possono essere modellati come funzioni:
+
+$$
+u: \mathbb{R} \rightarrow \{ assente, presente \}
+$$
+
+- Se $u(t) = presente$, significa che si è verificato un evento in quell'istante.
+- Se $u(t) = assente$, non ci sono eventi.
+
+Il segnale di output **c** (conteggio) è invece rappresentato come:
+
+$$
+c: \mathbb{R} \rightarrow \{ assente \} \cup \mathbb{N}
+$$
+
+- Quando un evento di input è presente, **c** assume un valore numerico.
+- Altrimenti, **c** è assente.
+
+**Dinamica del Sistema: Reazioni**
+
+Le **reazioni** descrivono l'evoluzione del sistema in base agli eventi:
+- Ogni reazione è **istantanea** (tempo di durata pari a zero).
+- Una reazione può essere **event-triggered** o **time-triggered**.
+
+Nel caso del contatore del parcheggio:
+- Il sistema reagisce quando si verifica un evento **up** o **down**.
+- Se entrambi gli input sono assenti, il sistema **non cambia stato**.
+
+**Definizione di Stato**
+
+Lo **stato** di un sistema è la sua condizione in un dato istante e determina la sua reazione agli input.
+
+$$
+state: \mathbb{R} \rightarrow \{ 0, 1, 2, ... M \}
+$$
+
+- Nel nostro caso, lo stato è il numero di auto nel parcheggio (tra **0 e M** posti disponibili).
+
+**Transizioni e Azioni nelle FSM**
+
+Le **transizioni** determinano la dinamica della FSM e dipendono da:
+- **Guardie** (condizioni di attivazione).
+- **Azioni** (output generato dalla transizione).
+
+Esempio di FSM per il contatore del parcheggio:
+
+```mermaid
+stateDiagram
+    [*] --> S0
+    S0 --> S1 : up / c = 1
+    S1 --> S2 : up / c = 2
+    S2 --> S1 : down / c = 1
+    S1 --> S0 : down / c = 0
+```
+
+**FSM Sincrone e Asincrone**
+
+Le FSM possono essere classificate in:
+1. **FSM Asincrone (Event-Triggered)**
+   - La reazione avviene **quando si verifica un evento di input**.
+   - Il sistema reagisce in momenti **non predeterminati**.
+  
+2. **FSM Sincrone (Time-Triggered)**
+   - Le reazioni avvengono **a intervalli di tempo regolari** (periodo fisso).
+   - Il periodo determina la **frequenza di esecuzione** della macchina.
+
+Esempio di FSM per un semaforo pedonale sincrono (**periodo = 1s**):
+
+```mermaid
+stateDiagram
+    [*] --> Verde
+    Verde --> Giallo : after 10s
+    Giallo --> Rosso : after 3s
+    Rosso --> Verde : after 7s
+```
+
+**Esempio di Implementazione di una FSM in C**
+
+Ecco un esempio di codice per implementare una FSM in un **microcontrollore**:
+
+```c
+enum States { OFF, ON } state;
+
+void setup() {
+    state = OFF;
+}
+
+void step() {
+    switch (state) {
+        case OFF:
+            if (button.isPressed()) {
+                light.switchOn();
+                state = ON;
+            }
+            break;
+        case ON:
+            if (!button.isPressed()) {
+                light.switchOff();
+                state = OFF;
+            }
+            break;
+    }
+}
+
+void loop() {
+    step();
+}
+```
+
+**Macchine di Mealy e Moore**
+
+Esistono due principali modelli di FSM:
+- **Macchina di Mealy**: le uscite dipendono sia dallo stato attuale che dagli input.
+- **Macchina di Moore**: le uscite dipendono solo dallo stato attuale.
+
+Esempio di **Moore Machine** per il contatore del parcheggio:
+
+```mermaid
+stateDiagram
+    state "Vuoto (0 auto)" as S0
+    state "1 Auto" as S1
+    state "2 Auto" as S2
+
+    S0 --> S1 : up
+    S1 --> S2 : up
+    S2 --> S1 : down
+    S1 --> S0 : down
+```
+
+In questo caso, il valore di output è determinato solo dallo **stato corrente**.
+
+**FSM Temporizzate: Gestione del Tempo**
+
+Le FSM temporizzate gestiscono eventi **periodici**. Un esempio è il **blinking LED** su un microcontrollore Arduino:
+
+```c
+#include "Led.h"
+#include "Timer.h"
+#define LED_PIN 13
+
+Light* led;
+Timer timer;
+enum { ON, OFF } state;
+
+void step() {
+    switch (state) {
+        case OFF:
+            led->switchOn();
+            state = ON;
+            break;
+        case ON:
+            led->switchOff();
+            state = OFF;
+            break;
+    }
+}
+
+void setup() {
+    led = new Led(LED_PIN);
+    state = OFF;
+    timer.setupPeriod(500); // 500 ms
+}
+
+void loop() {
+    timer.waitForNextTick();
+    step();
+}
+```
+
+**Conclusioni**
+- Le **Finite State Machines (FSM)** sono uno strumento potente per modellare sistemi embedded.
+- Le **FSM sincrone** sono utili per sistemi con vincoli temporali.
+- Le **FSM estese (EFSM)** permettono di gestire stati complessi con variabili.
 
 ## Architetture Task-Based e la Modellazione dei Sistemi Embedded
 
