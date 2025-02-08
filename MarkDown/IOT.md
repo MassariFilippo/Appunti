@@ -4,11 +4,11 @@
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });</script>
 
-# IOT
+# Embedded Systems and Internet of Things
 
 <div style="page-break-after: always;"></div>
 
-- [IOT](#iot)
+- [Embedded Systems and Internet of Things](#embedded-systems-and-internet-of-things)
   - [Sistemi Embedded](#sistemi-embedded)
   - [Microcontrollori](#microcontrollori)
   - [Setting, Writing, Reading a Pin in Wiring](#setting-writing-reading-a-pin-in-wiring)
@@ -94,6 +94,60 @@ Diversi livelli di implementazione:
 - **FPGA (Field Programmable Gate Array)**: circuiti integrati programmabili via software, utilizzabili per logiche complesse.
   - Linguaggi di programmazione: Verilog, VHDL, LabView.
 
+**SoC, Microcontrollori, SBC e SBM nell’IoT**  
+
+**Microcontrollore**  
+- Un microcontrollore è un piccolo computer su un chip con CPU, RAM, memoria flash e I/O integrati.  
+- Non esegue sistemi operativi complessi, ma codice specifico (bare-metal o RTOS).  
+- **Esempi**: ATmega328 (Arduino Uno), ESP8266, STM32.  
+
+**SoC (System on Chip)**  
+- Un **SoC** è un chip che integra CPU, RAM, storage, connettività e periferiche su un unico circuito integrato.  
+- Usato in dispositivi embedded, smartphone, e hardware IoT.  
+- **Esempi**: ESP32, ESP8266, Broadcom BCM2837 (Raspberry Pi).
+
+**Single-Board Microcontroller (SBM)**  
+- Un **SBM** è una scheda che integra un microcontrollore con circuiti di supporto per alimentazione, GPIO e I/O.  
+- Non esegue un sistema operativo completo, ma codice specifico.  
+- **Esempi**: ESP32 DevKit, Arduino Uno. 
+
+**Single-Board CPU (SBC)**  
+- Una **SBC** è un computer su un’unica scheda con CPU, RAM, storage e interfacce di comunicazione.  
+- Supporta sistemi operativi come Linux o Windows IoT.  
+- Ha più potenza e memoria rispetto a un microcontrollore.  
+- **Esempi**: Raspberry Pi, NVIDIA Jetson Nano.  
+
+**ESP32: SoC vs. SBM**  
+- Il **chip ESP32** standalone è un **SoC** perché integra CPU, RAM, Wi-Fi/Bluetooth e I/O.  
+- Quando montato su una **scheda di sviluppo** (ESP32 DevKit), diventa un **Single-Board Microcontroller (SBM)**.  
+- Non è una **SBC** perché non ha le risorse per eseguire un OS come Linux.  
+ 
+
+ **Microcontrollore vs. SoC**  
+| **Caratteristica** | **Microcontrollore (MCU)** | **SoC (System on Chip)** |
+|--------------------|------------------------|-----------------------|
+| **Definizione** | Un chip con CPU, RAM, memoria flash e I/O, progettato per compiti specifici. | Un chip che integra CPU, GPU (se presente), RAM, storage e periferiche su un unico circuito. |
+| **Esempi** | ATmega328 (Arduino Uno), STM32, PIC | ESP32, ESP8266, Broadcom BCM2837 (Raspberry Pi 3) |
+| **Sistema Operativo** | Nessuno o RTOS | Può supportare un OS (es. Linux) se ha abbastanza risorse |
+| **Memoria RAM** | Centinaia di bytes o KB | Da pochi MB a diversi GB |
+| **Storage** | Memoria flash interna (pochi KB o MB) | Memoria flash interna o supporto microSD/eMMC |
+| **Connettività** | Limitata (es. UART, I2C, SPI) | Può includere Wi-Fi, Bluetooth, Ethernet, USB |
+| **Consumo energetico** | Molto basso, ideale per sistemi a batteria | Più elevato rispetto a un microcontrollore |
+| **Esecuzione del codice** | Esegue un singolo programma specifico | Può eseguire più processi contemporaneamente |
+| **Uso tipico** | Automazione, sensori, controllo motori | Smartphone, SBC, dispositivi IoT avanzati |
+
+**SBM vs. SBC**  
+| **Caratteristica** | **SBM (Single-Board Microcontroller)** | **SBC (Single-Board CPU)** |
+|--------------------|---------------------------------|---------------------------|
+| **Definizione** | Una scheda con un microcontrollore e circuiti di supporto per GPIO, alimentazione e I/O. | Un computer completo su una scheda, con CPU, RAM, storage e interfacce di comunicazione. |
+| **Esempi** | ESP32 DevKit, Arduino Uno | Raspberry Pi, Jetson Nano |
+| **Sistema Operativo** | Nessuno o RTOS | Linux, Windows IoT |
+| **CPU** | Microcontrollore (Xtensa, AVR, ARM Cortex-M) | Processore ARM/x86 più potente |
+| **RAM** | Centinaia di KB | 512MB o più |
+| **Storage** | Flash interna (pochi MB) | microSD, eMMC, SSD |
+| **Periferiche** | GPIO, UART, I2C, SPI | USB, HDMI, Ethernet, Wi-Fi |
+| **Uso tipico** | Sensori, automazione, IoT a basso consumo | Edge computing, AI, server leggeri |
+
 **Microcontroller Unit (MCU)**
 I microcontrollori si differenziano dai microprocessori perché integrano su un unico chip tutti i componenti necessari:
 - CPU, memoria persistente e volatile, canali di I/O, unità di gestione delle interruzioni e altri componenti specializzati.
@@ -154,9 +208,6 @@ Integra CPU, memoria, controller I/O e di rete. Esempi: Broadcom BCM2837 (Raspbe
 - **UART**: Protocollo seriale asincrono per la conversione di flussi di bit paralleli in sequenziali.
 - **Wireless**: Bluetooth, ZigBee, Z-Wave, LoRaWAN, Wi-Fi.
 
-Ecco degli appunti dettagliati e ben organizzati sugli elementi dei microcontrollori, basati sul materiale che hai fornito.
-
-
 ## Microcontrollori
 
 **Componenti Principali**
@@ -210,8 +261,9 @@ L'architettura **Von Neumann** segue un ciclo **fetch-decode-execute**:
 - **EEPROM** per dati persistenti
 
 
-**4. Memoria nei Microcontrollori**
+**Memoria nei Microcontrollori**
 | **Tipo di Memoria** | **Caratteristiche** |
+|----------------------|---------------------|
 | **Flash** | Non volatile, lettura veloce, scrittura lenta, ~100.000 cicli di scrittura |
 | **SRAM** | Veloce, volatile, consuma più energia |
 | **EEPROM** | Non volatile, lenta, utilizzabile con la libreria Arduino EEPROM |
