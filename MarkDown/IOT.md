@@ -1919,14 +1919,14 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
     - **Connettività**: interfacce radio (Wi-Fi, Bluetooth).
     - **Componenti aggiuntivi**: DAC, ADC, timer, GPIO.
 
-![](img\IOT\architettura_SoC.PNG)
+![](img/IOT/architettura_SoC.PNG)
 
 - **SoC per IoT**
     - **ESP8266**: processore RISC 32-bit a 80 MHz, 64 KiB RAM istruzioni, Wi-Fi integrato IEEE 802.11 b/g/n.
     - **ESP32**: evoluzione dell’ESP8266, dual-core a 240 MHz, RAM 320 KiB, con Wi-Fi e Bluetooth v4.2, fino a 34 GPIO, ADC e DAC avanzati.
 
-![](img\IOT\architettura_ESP32.PNG)
-![](img\IOT\architettura_raspberry.PNG)
+![](img/IOT/architettura_ESP32.PNG)
+![](img/IOT/architettura_raspberry.PNG)
 
 **Sistemi Operativi Embedded e RTOS**
 - I SoC forniscono le risorse necessarie per ospitare sistemi operativi completi, come RTOS, progettati per sistemi embedded.
@@ -1951,7 +1951,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
 
 (NON SICURO DELLA POSIZIONE DI QUESTA FORO SULLE SLIDEI CE NE SONO ALTRE DA VALUTARE)
 
-![](img\IOT\overall.PNG)
+![](img/IOT/overall.PNG)
 
 - **Livelli e Interfacce Principali**
     1. **ISA (Instruction Set Architecture)**:
@@ -2181,7 +2181,7 @@ L'uso delle **architetture basate su eventi** in sistemi embedded e IoT offre di
   3. **SaaS** (Software as a Service):  
     - Applicazioni come CRM, suite per ufficio, email.
 
-![](img\IOT\livelli_cloud.PNG)  
+![](img/IOT/livelli_cloud.PNG)  
 
 **Domini Applicativi e Sfide dell'IoT**
 - **Applicazioni e Smart City**  
@@ -2384,7 +2384,7 @@ Bluetooth è uno standard largamente adottato per la trasmissione di dati in ret
     - Area di trasmissione quadruplicata con lo stesso consumo.
     - Velocità raddoppiata fino a 2 Mbps.
 
-![](img\IOT\bt.PNG)
+![](img/IOT/bt.PNG)
 
 **Standard IEEE 802.15.4**
 - Standard per WPAN a basso costo e bassa velocità.
