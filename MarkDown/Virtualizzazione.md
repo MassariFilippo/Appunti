@@ -22,11 +22,25 @@
       - [Problema di Comunicazione](#problema-di-comunicazione)
       - [Soluzione di Integrazione](#soluzione-di-integrazione)
       - [Bus di Messaggi (o Message Broker)](#bus-di-messaggi-o-message-broker)
-    - [Sistemi a Micro-Servizi Dispiegati anche in Cloud](#sistemi-a-micro-servizi-dispiegati-anche-in-cloud)
     - [Sistema a Micro-Servizi Principalmente in Cloud](#sistema-a-micro-servizi-principalmente-in-cloud)
       - [Sicurezza nei Sistemi Informatici](#sicurezza-nei-sistemi-informatici)
     - [Directory Service](#directory-service)
-      - [Scenario di Integrazione con Autenticazione e Autorizzazione Centralizzate](#scenario-di-integrazione-con-autenticazione-e-autorizzazione-centralizzate)
+      - [Autenticazione in Canali Wireless](#autenticazione-in-canali-wireless)
+      - [Autorizzazione all'Uso di Applicazioni (Single Sign-On)](#autorizzazione-alluso-di-applicazioni-single-sign-on)
+    - [Dispiegamento di Servizi Scalabili e Isolati mediante Virtualizzazione e Containerizzazione](#dispiegamento-di-servizi-scalabili-e-isolati-mediante-virtualizzazione-e-containerizzazione)
+      - [Virtualizzazione](#virtualizzazione)
+      - [Containerizzazione](#containerizzazione)
+      - [Container vs. Virtual Machine](#container-vs-virtual-machine)
+      - [Cloud e Categorie di Servizi Cloud](#cloud-e-categorie-di-servizi-cloud)
+      - [PaaS vs. IaaS](#paas-vs-iaas)
+      - [Piattaforme di Gestione di Cloud Privati](#piattaforme-di-gestione-di-cloud-privati)
+      - [Multitenancy](#multitenancy)
+    - [Progettazione delle Comunicazioni in Reti Protette da NAT e Firewall](#progettazione-delle-comunicazioni-in-reti-protette-da-nat-e-firewall)
+      - [Virtual Private Network (VPN)](#virtual-private-network-vpn)
+      - [Esposizione di Porte Remote mediante SSH Remote Port Forwarding](#esposizione-di-porte-remote-mediante-ssh-remote-port-forwarding)
+      - [Scenario di Integrazione: Video Controllo da Remoto con Superamento Firewall](#scenario-di-integrazione-video-controllo-da-remoto-con-superamento-firewall)
+      - [Superamento del NAT](#superamento-del-nat)
+      - [Analisi Costi del Servizio Live Streaming di Azure](#analisi-costi-del-servizio-live-streaming-di-azure)
 
 
 <div style="page-break-after: always;"></div>
@@ -153,21 +167,19 @@ Va considerato che questi strumenti ovviamenete introducono un ritardo di comuni
 
 ![](img/Virtualizzazione/SolCom2.png)
 
-### Sistemi a Micro-Servizi Dispiegati anche in Cloud
-
-I sistemi a micro-servizi possono essere implementati in modo parziale o completo su infrastrutture cloud. Tuttavia, è raro che un sistema operi esclusivamente in cloud. Infatti, i dati grezzi su cui si basa il sistema sono spesso generati da una varietà di sorgenti distribuite geograficamente, come utenti, dispositivi indossabili, sensori, macchinari e automobili. Questi dati vengono poi raccolti e inviati al cloud per ulteriori elaborazioni.
-
-Di conseguenza, la fase di acquisizione dei dati di solito richiede l'esecuzione di procedure su dispositivi esterni al cloud. I sistemi cloud più avanzati facilitano questa fase di acquisizione, offrendo API e librerie che possono essere eseguite su questi dispositivi esterni. Le fasi successive di elaborazione dei dati, invece, vengono tipicamente gestite nel cloud.
-
-Prendiamo ad esempio un macchinario che produce pezzi in uno stabilimento. Questo macchinario invia statistiche a un server che, in questo caso, non si trova nello stabilimento stesso, ma in un datacenter cloud. Immaginiamo che ci siano molte macchine automatiche in stabilimenti diversi, tutte inviate a questo server cloud. Gli stabilimenti e le macchine potrebbero appartenere a proprietari diversi, mentre il servizio cloud potrebbe essere gestito dal produttore delle macchine. In questo scenario, è fondamentale distinguere i permessi di accesso degli utenti alle informazioni collocate nel cloud, in base alle diverse macchine e alle loro anagrafiche.
-
 ### Sistema a Micro-Servizi Principalmente in Cloud
 
-Parliamo di sistemi che controllano dispositivi sparsi per il mondo con numero di client numerosi e risosrse centrali limitate, è inoltre da considerare plausibile che queste macchine comunichino con protocolli diversi e sono gestite da utenti con dipositivi eterogenei, se a questo introduciamo anche propietari diversi la comolessità del sistema risente anche di problemi di tutela dei dati che vanno a rendere il sistema ancor più complesso. 
+Parliamo di sistemi che controllano dispositivi distribuiti a livello globale, caratterizzati da un elevato numero di client e risorse centrali limitate. È plausibile che queste macchine comunichino utilizzando protocolli diversi e siano gestite da utenti con dispositivi eterogenei. Inoltre, la presenza di proprietari diversi aumenta la complessità del sistema, rendendo necessaria una particolare attenzione alla tutela dei dati.
 
-Per integrare con questi sistemi, possiamo utilizzare una soluzione basata su container Docker, che consente di gestire i micro-servizi in modo efficiente senza dover necessariamente incrementare le risorse hardware a nostra disposizione. I componenti del sistema possono comunicare tra loro attraverso un bus di messaggi, utilizzando protocolli come MQTT. Il server web gestisce le richieste degli utenti, mentre i dati vengono archiviati in database come MySQL e Azure Cosmos DB, che supportano API MongoDB. Inoltre, Azure File Storage e IoT Hub possono essere utilizzati per gestire i dati provenienti dai dispositivi.
+Per integrare questi sistemi, possiamo adottare una soluzione basata su container Docker, che consente di gestire i micro-servizi in modo efficiente senza dover necessariamente aumentare le risorse hardware disponibili. I componenti del sistema possono comunicare tra loro attraverso un bus di messaggi, utilizzando protocolli come MQTT. Il server web gestisce le richieste degli utenti, mentre i dati vengono archiviati in database come MySQL e Azure Cosmos DB, che supportano API MongoDB. Azure File Storage e IoT Hub possono essere utilizzati per gestire i dati provenienti dai dispositivi.
 
-In questo contesto, i PLC (Programmable Logic Controllers) delle macchine automatiche inviano dati al server, e gli utenti possono accedere a queste informazioni tramite un'interfaccia web. Un bilanciatore di carico (Load Balancer) e Kubernetes possono essere utilizzati per gestire i container e garantire che il sistema rimanga scalabile e reattivo.
+In questo contesto, i PLC (Programmable Logic Controllers) delle macchine automatiche inviano dati al server, e gli utenti possono accedere a queste informazioni tramite un'interfaccia web. Un bilanciatore di carico (Load Balancer) e Kubernetes possono essere impiegati per gestire i container, garantendo che il sistema rimanga scalabile e reattivo.
+
+È necessario introdurre nuove componenti per offrire servizi a interfacce e gestire i componenti cloud dinamici. L'IoT Hub funge da interfaccia di comunicazione con le macchine automatiche, che operano con logiche implementative e protocolli di comunicazione eterogenei. Questo componente si interfaccia con un host del sito produttivo, evitando di esporre le macchine al pubblico e gestendo la loro comunicazione interna, che spesso non è complessa.
+
+Il Load Balancer, responsabile dell'interfaccia con gli utenti, smista il traffico e tiene traccia delle richieste per istanziare o eliminare i container Docker quando necessario. È fondamentale garantire la sicurezza delle comunicazioni, spesso realizzata tramite certificati predefiniti con scadenze stabilite.
+
+![](img/Virtualizzazione/ArchitetturaIotCloud.png)
 
 #### Sicurezza nei Sistemi Informatici
 
@@ -175,19 +187,159 @@ La sicurezza è un criterio fondamentale nella progettazione di qualsiasi sistem
 
 I servizi di directory sono responsabili dell'autenticazione e dell'autorizzazione, e ci sono innumerevoli scenari in cui la sicurezza influisce sulla progettazione dei sistemi. Alcuni aspetti chiave della sicurezza includono:
 
-- **Sicurezza nei mezzi trasmissivi:** Utilizzo di canali wireless, comunicazioni applicative sicure (HTTPS, SSL/TLS) e reti private virtuali (VPN).
+- **Sicurezza nei mezzi trasmissivi:** Utilizzo di canali wireless (server Radius), comunicazioni applicative sicure (HTTPS, SSL/TLS) e reti private virtuali (VPN).
 - **Autenticazione delle entità:** Utilizzo di certificati X.509.
 - **Autenticazione degli utenti:** Implementazione di sistemi di autenticazione multi-fattore.
 - **Autorizzazione all'accesso alle risorse:** Gestione delle infrastrutture, dei servizi di directory, dei domini e del DNS.
 
 ### Directory Service
 
-Un Directory Service è un sistema centralizzato per la gestione e la fruizione delle informazioni relative a utenti, reti, servizi e applicazioni all'interno di un dominio. In uno scenario di integrazione con autenticazione e autorizzazione centralizzate, il processo di autenticazione avviene attraverso un access token, che fornisce l'identità dell'utente e le impostazioni di sicurezza necessarie per accedere alle risorse e svolgere compiti nel sistema.
+Un Directory Service è un sistema centralizzato progettato per la gestione e la fruizione delle informazioni relative a utenti, reti, servizi e applicazioni all'interno di un dominio. In uno scenario di integrazione con autenticazione e autorizzazione centralizzate, il processo di autenticazione avviene tramite un access token, che fornisce l'identità dell'utente e le impostazioni di sicurezza necessarie per accedere alle risorse e svolgere compiti nel sistema.
 
-Il processo di autenticazione prevede che l'utente fornisca un nome utente e una password. Il sistema operativo confronta queste informazioni con quelle memorizzate nel database appropriato. Se le informazioni corrispondono e l'account utente è abilitato, viene creato un access token per l'utente. In caso contrario, l'accesso al dominio o al computer locale viene negato.
+Il processo di autenticazione inizia quando l'utente fornisce un nome utente e una password. Il sistema confronta queste informazioni con quelle memorizzate nel database appropriato. Se le informazioni corrispondono e l'account utente è abilitato, viene creato un access token per l'utente, che include i diritti di utilizzo. In caso contrario, l'accesso al dominio o al computer locale viene negato. 
 
-#### Scenario di Integrazione con Autenticazione e Autorizzazione Centralizzate
+Questo servizio prevede dunque che si salvino i dati di configurazione delle macchine della rete, questo sistema permentte di asseganre routine di gestione ed esecuzione legate a specifiche situazioni con il grande vantaggio di poter apportare modifiche per macro gruppi in maniera centralizzata per tutte la macchine che fanno parte del dominio attraverso un certificato datogli durante il join fatto tra macchian e dominio.
 
-Un esempio pratico di Directory Service è rappresentato dai laboratori e dai computer del personale amministrativo dell'Università di Bologna (Unibo). Qui, è stato implementato un sistema centralizzato di autenticazione e autorizzazione che utilizza Microsoft Active Directory, distribuito su sistemi Windows Server 2008. Questo sistema gestisce le responsabilità e le funzionalità su cinque campus, distinguendo tra i domini interni unibo.it e studio.unibo.it.
+Un esempio pratico di Directory Service è rappresentato dai laboratori e dai computer del personale amministrativo dell'Università di Bologna (Unibo). Qui è stato implementato un sistema centralizzato di autenticazione e autorizzazione che utilizza Microsoft Active Directory, distribuito su sistemi Windows Server 2008. Questo sistema gestisce le responsabilità e le funzionalità su cinque campus, distinguendo tra i domini interni unibo.it e studio.unibo.it.
 
-I PC degli studenti appartengono al dominio "studio.unibo.it" e gli studenti si autenticano presso server localizzati nei campus. Possono accedere a servizi condivisi, come file system remoti, forniti da sistemi Windows o Linux attraverso protocolli standard come SMB, CIFS e Samba. Le politiche di sicurezza sono centralizzate, consentendo un join immediato per i PC Windows, mentre i PC Linux utilizzano applicativi e protocolli come LDAP e Samba per accedere alle risorse. È anche possibile avere server basati su Linux (utilizzando applicativi della suite Samba, informalmente noti come Linux Active Directory) e client Windows.
+I PC degli studenti appartengono al dominio "studio.unibo.it" e gli studenti si autenticano presso server localizzati nei campus. Possono accedere a servizi condivisi, come file system remoti, forniti da sistemi Windows o Linux attraverso protocolli standard come SMB, CIFS e Samba. Le politiche di sicurezza sono centralizzate, consentendo un join immediato per i PC Windows, mentre i PC Linux utilizzano applicativi e protocolli come LDAP e Samba per accedere alle risorse. È anche possibile avere server basati su Linux, utilizzando applicativi della suite Samba, informalmente noti come Linux Active Directory, e client Windows.
+
+#### Autenticazione in Canali Wireless
+
+Per l'autenticazione nell'accesso a punti di accesso WiFi e alle reti retrostanti, si utilizza un server RADIUS data la sua capacità di interfacciarsi con una grande varietà di protocolli anche molto datati, in conformità con gli standard WPA2 e 802.1x. Lo standard WPA2 per la sicurezza nelle reti wireless prevede l'uso di 802.1x per gestire l'autenticazione, offrendo ottima sicurezza e grande flessibilità, poiché consente di gestire vari metodi di autenticazione.
+
+IEEE 802.1x è uno standard per l'autenticazione e l'autorizzazione in rete, sviluppato inizialmente per reti cablate, e si basa sul protocollo EAP (Extensible Authentication Protocol) per l'autenticazione. Questo standard prevede tre entità principali:
+- **Authenticator:** richiede l'autenticazione prima di offrire il servizio (è l'access point).
+- **Supplicant:** desidera accedere al servizio e deve essere autenticato (è il terminale wireless).
+- **Authentication Server:** verifica le credenziali del supplicant a nome dell'authenticator (nel nostro caso, il server RADIUS).
+
+L'autenticazione avviene tramite il protocollo EAP, che consente di negoziare diversi metodi di autenticazione, tra cui EAP-MD5, EAP-TLS, EAP-TTLS e PEAP. Durante il processo di autenticazione, l'authenticator ha un ruolo passivo, occupandosi solo di ricevere i messaggi dal supplicant, contenuti nel protocollo EAP, e di inoltrarli al server RADIUS, e viceversa.
+
+![](img/Virtualizzazione/AutenticazioneRadius.png)
+
+#### Autorizzazione all'Uso di Applicazioni (Single Sign-On)
+
+Il Single Sign-On (SSO) è un meccanismo che consente a un utente di accedere a più applicazioni con una sola richiesta di credenziali. L'implementazione del SSO può variare a seconda di diversi fattori, tra cui la posizione del computer dell'utente (se si trova nello stesso dominio dei server delle applicazioni o meno), il sistema operativo in uso (Microsoft o altro) e se le applicazioni sono basate su web.
+
+Tra i sistemi di SSO per servizi web, uno dei più utilizzati è Shibboleth. Il SSO consente l'autorizzazione all'uso di più applicazioni con una sola richiesta di credenziali utente, basandosi su protocolli come Kerberos e marche temporali.
+
+Per le applicazioni web, il Single Sign-On può essere implementato anche all'esterno di un dominio, utilizzando Shibboleth, che si basa su HTTP POST e su SAML v2.0 (Security Assertion Markup Language). Questo sistema consente di gestire l'autenticazione degli utenti attraverso diversi web server e applicazioni, semplificando l'accesso e migliorando l'esperienza utente.
+
+### Dispiegamento di Servizi Scalabili e Isolati mediante Virtualizzazione e Containerizzazione
+
+#### Virtualizzazione
+
+La virtualizzazione è il processo di creazione di una rappresentazione virtuale, basata su software, di risorse fisiche. Questa tecnologia consente di virtualizzare applicazioni, server, storage e reti. In particolare, la virtualizzazione del server permette di eseguire un sistema operativo isolato all'interno di una macchina virtuale, che non è fisica ma è ottenuta tramite uno strato software chiamato Virtual Machine Monitor o Hypervisor.
+
+Esistono diversi modi per realizzare la virtualizzazione del server, distinti per vari fattori:
+- Il livello hardware o software su cui gli hypervisor si appoggiano, e quindi l'utilizzo delle funzionalità offerte da un eventuale sistema operativo sottostante.
+- La capacità degli hypervisor di fornire le stesse funzionalità dell'hardware o funzionalità diverse, nel qual caso è necessario modificare il sistema operativo ospitato.
+- Le modalità con cui vengono eseguite le istruzioni del sistema operativo ospitato.
+
+La virtualizzazione ha il vantaggio di isolare un'applicazione all'interno del sistema operativo installato sulla macchina virtuale. Tuttavia, presenta anche alcuni difetti, come la necessità di eseguire un intero sistema operativo nella macchina virtuale per isolare ed eseguire una specifica applicazione. Inoltre, l'applicazione da eseguire dipende dalla versione, configurazione e presenza di software installato nel sistema operativo della macchina virtuale.
+
+#### Containerizzazione
+
+La tecnologia dei container sposta l'attenzione dalla virtualizzazione del server alla virtualizzazione dell'applicazione. I container creano un contesto di esecuzione virtualizzato per le applicazioni, senza dover virtualizzare l'intero server (hardware e sistema operativo). I container realizzano un sottoinsieme delle risorse offerte da un sistema operativo e mettono a disposizione queste risorse alle applicazioni eseguite al loro interno.
+
+I container isolano ulteriormente le applicazioni all'interno del sistema operativo ospitato, astrando in parte dal sistema operativo e dalla macchina virtuale in cui gira. Questo approccio rende l'applicazione dipendente dal container, ma non dalla versione e configurazione del sistema operativo ospitato nella macchina virtuale. È importante notare che i container sfruttano pesantemente il sistema operativo sottostante, riutilizzando la maggior parte delle sue funzionalità per minimizzare il peso del container e rendere più agile la sua esecuzione.
+
+#### Container vs. Virtual Machine
+
+Un'applicazione può essere inserita in un container all'interno di un sistema operativo oppure sopra un sistema operativo all'interno di una macchina virtuale. Alcuni hypervisor possono sostituirsi al sistema operativo, quindi in questi casi l'host OS potrebbe non essere presente.
+
+#### Cloud e Categorie di Servizi Cloud
+
+Il cloud di un provider è essenzialmente un insieme di datacenter, ognuno dei quali fornisce micro-servizi. I micro-servizi più essenziali consistono in macchine virtuali, per le quali è possibile richiedere specifiche tipologie di CPU, caratteristiche hardware, quantità di memoria e spazio su disco. Su queste basi vengono poi costruiti micro-servizi più complessi, alcuni dei quali consentono di gestire la ridondanza dei dati e il recupero da guasti verso altri datacenter.
+
+I servizi cloud si distinguono per il livello di componibilità e per la capacità di scalare in modo trasparente per l'utente. Possiamo classificare i servizi cloud in tre categorie principali:
+
+- **SaaS (Software as a Service):** Un servizio applicativo che non richiede all'utente di conoscere né il sistema operativo né l'host su cui opera. Un esempio è Google Documents, dove gli utenti possono modificare documenti senza preoccuparsi dell'infrastruttura sottostante.
+  
+- **PaaS (Platform as a Service):** Fornisce API di sviluppo per comporre servizi più complessi, senza che l'utente debba preoccuparsi del sistema operativo o dell'host. Un esempio è CosmosDB, un database scalabile in modo trasparente.
+
+- **IaaS (Infrastructure as a Service):** Fornisce un'infrastruttura su cui installare servizi, come macchine virtuali e connessioni di rete. In questo caso, la scalabilità deve essere gestita aumentando la potenza o il numero delle istanze.
+
+#### PaaS vs. IaaS
+
+Per chiarire la differenza tra PaaS e IaaS, consideriamo un esempio pratico. Supponiamo di dover costruire un servizio web. Abbiamo due opzioni:
+
+- **PaaS:** Affidarci a un servizio PaaS fornito da un provider, che garantisce di servire fino a 1000 utenti contemporaneamente, con un costo base e un costo aggiuntivo per ogni richiesta utente che supera le 2000 richieste al giorno. In questo caso, dobbiamo scrivere le funzioni del server utilizzando le API di Nginx, senza preoccuparci della scalabilità.
+
+- **IaaS:** Costruire il servizio web partendo da componenti IaaS, istanziando le macchine virtuali, collocando i container contenenti Nginx su di esse e istanziando un bilanciatore di carico Kubernetes che, all'occorrenza, avvia nuove macchine virtuali e container con Nginx.
+
+#### Piattaforme di Gestione di Cloud Privati
+
+Un privato che desidera costruire un proprio datacenter per realizzare un sistema cloud può farlo grazie a specifiche architetture software che consentono di utilizzare le risorse di più macchine fisiche, rendendole disponibili parzialmente su richiesta. Queste architetture sono conosciute come Piattaforme di Gestione del Cloud (Cloud Management Platform). Tra le principali architetture troviamo OpenStack e OpenNebula.
+
+In un datacenter gestito tramite OpenStack, ad esempio, si possono avere diversi componenti come il Cloud Controller (CLC), il Walrus (storage controller), il Cluster Controller (CC) e il Node Controller (NC). Questi componenti lavorano insieme per fornire un'infrastruttura cloud efficiente e scalabile.
+
+#### Multitenancy
+
+La multitenancy consente di condividere dinamicamente le risorse hardware tra diversi clienti. Ogni applicazione cliente opera in una propria macchina virtuale, garantendo isolamento per motivi di sicurezza e privacy. Questo approccio permette di pianificare l'uso delle risorse condivise, consentendo a un'applicazione di essere multithreaded in una macchina virtuale, mentre i dati e i profili degli utenti possono risiedere in altre macchine virtuali.
+
+### Progettazione delle Comunicazioni in Reti Protette da NAT e Firewall
+
+#### Virtual Private Network (VPN)
+
+Le Virtual Private Network (VPN) consentono di creare una rete privata, simile a una LAN, tra host che possono trovarsi anche a grande distanza geografica. Esistono due principali tipologie di VPN:
+
+- **Site-to-Site VPN:** Queste VPN vengono instaurate tra due reti, ad esempio tra due sedi distaccate di una stessa azienda, per utilizzare una rete privata unica.
+- **Remote Access VPN:** Questa tipologia consente il collegamento di un singolo computer a una rete privata tramite VPN.
+
+Tuttavia, l'uso delle VPN presenta un problema di sicurezza: se un computer esterno, collegato a una rete di un dominio tramite VPN, viene compromesso, c'è il rischio che l'intera rete del dominio venga messa in pericolo.
+
+#### Esposizione di Porte Remote mediante SSH Remote Port Forwarding
+
+Immaginiamo un server 0 che si trova dietro un NAT e espone un servizio sulla sua porta locale 44444, ma nessuno riesce a raggiungerlo. Un altro server, chiamato server 1, ha un indirizzo IP pubblico e un demone SSH attivo, fungendo da relay. In questo scenario, l'utente Joe è un utente del server 1.
+
+Il server 0 espone la sua porta locale 44444 come porta 55555 del server 1 utilizzando il comando SSH. Con iptables, il server 1 ridirige le connessioni in arrivo sulla porta webport verso la sua porta 55555. In questo modo, viene instaurata una connessione tra il client e il server 0 passando attraverso il server 1.
+
+Ecco un esempio di comando SSH per realizzare questa configurazione:
+
+```
+ssh -R public_IPaddr:55555:localhost:44444 joe@public_IPaddr
+```
+
+#### Scenario di Integrazione: Video Controllo da Remoto con Superamento Firewall
+
+Consideriamo un sistema in cui diverse macchine automatiche, dotate di videocamera, si trovano in stabilimenti diversi. Gli utenti, sparsi nel mondo e con dispositivi vari, desiderano visualizzare le immagini delle macchine. Non ci sono vincoli sui dispositivi, quindi si utilizza video streaming basato su HTTP. Tuttavia, è necessario controllare l'identità dell'utente tramite un server centrale, e potrebbero esserci NAT e firewall davanti ai plant e agli utenti (reti private).
+
+Il sistema di live streaming crea video in tempo reale e consente la visualizzazione da remoto. Sono coinvolti quattro attori software:
+- **Media Server:** Acquisisce flussi audio e video dalle videocamere e li codifica. In alcuni casi, la videocamera stessa può avere funzionalità avanzate per questa operazione.
+- **Utenti:** Possono accedere al flusso video tramite un browser, sia all'interno che all'esterno del plant.
+- **Servizio di Signalling:** Gestisce la comunicazione tra i vari componenti del sistema.
+- **Servizio di Distribuzione dei Contenuti:** Può essere centralizzato in cloud, fungendo da relay per i flussi video del media server, oppure decentralizzato, attivando una connessione diretta tra l'utente e il media server.
+
+Tuttavia, la presenza di NAT, in particolare di tipo simmetrico, può rendere impossibile il collegamento diretto tra i due end-system, richiedendo un intermediario.
+
+#### Superamento del NAT
+
+Per superare le limitazioni imposte dal NAT, si possono adottare diverse strategie:
+
+1. **Collegamento mediante Intermediario in Cloud:** Un servizio con indirizzo IP pubblico opera come relay per i flussi video, duplicando i flussi e rimanendo sempre nel percorso dei dati. Questo approccio, sebbene efficace, utilizza una notevole quantità di banda.
+
+2. **Collegamento mediante Server TURN:** In questo caso, il canale di signalling serve a concordare tra browser e media server le credenziali temporanee di accesso al server TURN e a stabilire le porte da utilizzare per i flussi video. Browser e media server tentano di stabilire un canale diretto tra loro; se non ci riescono, stabiliscono un canale indiretto che passa costantemente dal server TURN.
+
+La probabilità di instaurare una connessione diretta tra due end-system è ridotta quando entrambi sono protetti da NAT simmetrici. Studi stimano che gli end-system protetti da NAT simmetrici rappresentino tra il 16% e il 23% del totale, a seconda che si tratti di sistemi desktop o mobile. È importante considerare che alcuni firewall bloccano il traffico UDP, quindi è consigliabile utilizzare protocolli di trasporto basati su HTTP, se possibile.
+
+#### Analisi Costi del Servizio Live Streaming di Azure
+
+Il costo del servizio di live streaming di Azure è composto da cinque componenti principali:
+1. Costo di instaurazione del channel (1 per ciascuna videocamera): gratuito.
+2. Costo del servizio di streaming dal channel, basico, senza codifica: 0.835 €/ora, con un massimo di 600 Mbps, tariffa a consumo.
+3. Costo della codifica in cloud: non utilizzato, poiché la codifica avviene in locale.
+4. Costo della banda entrante in Azure: gratuito.
+5. Costo della banda uscente da Azure verso gli utenti: 0.074 € per GB per consumi entro i 10 TB/mese.
+
+Considerando il costo mensile per lo streaming di una videocamera, ipotizzando che da Azure esca un flusso di 1.6 Mbps verso ciascun utente e che lo streaming venga utilizzato ogni giorno da un solo utente per un totale di X ore giornaliere, il costo mensile può essere calcolato come segue:
+
+$$
+COSTO\_MENSILE(X) = X \times \left[30 \, \text{gg} \times 0.835 \, \text{€/h} + \left(\frac{1.6 \, \text{Mbps}}{8 \times 1000} \times 3600 \, \text{s} \times 30 \, \text{gg} \times 0.074 \, \text{€/GB}\right)\right]
+$$
+
+Per un'ora giornaliera di video inspection su una videocamera, il costo sarà:
+
+$$
+COSTO\_MENSILE(1 \, \text{ora al giorno}) = 26.6484 \, €
+$$
