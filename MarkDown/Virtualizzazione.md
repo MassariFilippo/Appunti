@@ -38,9 +38,6 @@
     - [Progettazione delle Comunicazioni in Reti Protette da NAT e Firewall](#progettazione-delle-comunicazioni-in-reti-protette-da-nat-e-firewall)
       - [Virtual Private Network (VPN)](#virtual-private-network-vpn)
       - [Esposizione di Porte Remote mediante SSH Remote Port Forwarding](#esposizione-di-porte-remote-mediante-ssh-remote-port-forwarding)
-      - [Scenario di Integrazione: Video Controllo da Remoto con Superamento Firewall](#scenario-di-integrazione-video-controllo-da-remoto-con-superamento-firewall)
-      - [Superamento del NAT](#superamento-del-nat)
-      - [Analisi Costi del Servizio Live Streaming di Azure](#analisi-costi-del-servizio-live-streaming-di-azure)
 
 
 <div style="page-break-after: always;"></div>
@@ -322,7 +319,7 @@ ssh -R public_IPaddr:55555:localhost:44444 joe@public_IPaddr
 
 ![](img/Virtualizzazione/ssh.png)
 
-#### Scenario di Integrazione: Video Controllo da Remoto con Superamento Firewall
+- **Es: Video Controllo da Remoto con Superamento Firewall** (LEZIONE NON SEGIUTA!!!!!)
 
 Consideriamo un sistema in cui diverse macchine automatiche, dotate di videocamera, si trovano in stabilimenti diversi. Gli utenti, sparsi nel mondo e con dispositivi vari, desiderano visualizzare le immagini delle macchine. Non ci sono vincoli sui dispositivi, quindi si utilizza video streaming basato su HTTP. Tuttavia, è necessario controllare l'identità dell'utente tramite un server centrale, e potrebbero esserci NAT e firewall davanti ai plant e agli utenti (reti private).
 
@@ -332,19 +329,27 @@ Il sistema di live streaming crea video in tempo reale e consente la visualizzaz
 - **Servizio di Signalling:** Gestisce la comunicazione tra i vari componenti del sistema.
 - **Servizio di Distribuzione dei Contenuti:** Può essere centralizzato in cloud, fungendo da relay per i flussi video del media server, oppure decentralizzato, attivando una connessione diretta tra l'utente e il media server.
 
-Tuttavia, la presenza di NAT, in particolare di tipo simmetrico, può rendere impossibile il collegamento diretto tra i due end-system, richiedendo un intermediario.
+![](img/Virtualizzazione/videoRemoto.png)
 
-#### Superamento del NAT
+Tuttavia, la presenza di NAT, in particolare di tipo simmetrico, può rendere impossibile il collegamento diretto tra i due end-system, richiedendo un intermediario. 
+
+![](img/Virtualizzazione/Nat.png)
 
 Per superare le limitazioni imposte dal NAT, si possono adottare diverse strategie:
 
 1. **Collegamento mediante Intermediario in Cloud:** Un servizio con indirizzo IP pubblico opera come relay per i flussi video, duplicando i flussi e rimanendo sempre nel percorso dei dati. Questo approccio, sebbene efficace, utilizza una notevole quantità di banda.
 
-2. **Collegamento mediante Server TURN:** In questo caso, il canale di signalling serve a concordare tra browser e media server le credenziali temporanee di accesso al server TURN e a stabilire le porte da utilizzare per i flussi video. Browser e media server tentano di stabilire un canale diretto tra loro; se non ci riescono, stabiliscono un canale indiretto che passa costantemente dal server TURN.
+![](img/Virtualizzazione/intermediarioCloud.png)
+
+2. **Collegamento mediante Server TURN:** In questo caso, il canale di signalling (del quale non esistono standar dùe dunque è implemetato in maniera eterogenea) serve a concordare tra browser e media server le credenziali temporanee di accesso al server TURN e a stabilire le porte da utilizzare per i flussi video. Browser e media server tentano di stabilire un canale diretto tra loro; se non ci riescono, stabiliscono un canale indiretto che passa costantemente dal server TURN.
+
+![](img/Virtualizzazione/turn1.png)
+
+![](img/Virtualizzazione/turn2.png)
 
 La probabilità di instaurare una connessione diretta tra due end-system è ridotta quando entrambi sono protetti da NAT simmetrici. Studi stimano che gli end-system protetti da NAT simmetrici rappresentino tra il 16% e il 23% del totale, a seconda che si tratti di sistemi desktop o mobile. È importante considerare che alcuni firewall bloccano il traffico UDP, quindi è consigliabile utilizzare protocolli di trasporto basati su HTTP, se possibile.
 
-#### Analisi Costi del Servizio Live Streaming di Azure
+![](img/Virtualizzazione/liveEvent.png)
 
 Il costo del servizio di live streaming di Azure è composto da cinque componenti principali:
 1. Costo di instaurazione del channel (1 per ciascuna videocamera): gratuito.
