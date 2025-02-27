@@ -37,6 +37,22 @@
       - [Dimostrazione della Perfezione del One-Time Pad](#dimostrazione-della-perfezione-del-one-time-pad)
       - [Minimalità dell’insieme delle chiavi](#minimalità-dellinsieme-delle-chiavi)
       - [Limiti del One-Time Pad](#limiti-del-one-time-pad)
+  - [Bit Casuali e Sequenze di Bit](#bit-casuali-e-sequenze-di-bit)
+    - [Definizioni di Casualità](#definizioni-di-casualità)
+      - [Concetti Storici e Teorici](#concetti-storici-e-teorici)
+      - [Casualità in Crittografia](#casualità-in-crittografia)
+    - [Generatori di Numeri Pseudo-Casuali](#generatori-di-numeri-pseudo-casuali)
+    - [Generatori Deterministici](#generatori-deterministici)
+      - [Generatore Lineare](#generatore-lineare)
+      - [Generatore Polinomiale](#generatore-polinomiale)
+      - [Generatori Basati su Funzioni One-Way](#generatori-basati-su-funzioni-one-way)
+      - [Predicati Hard-Core](#predicati-hard-core)
+      - [Generatore Blum, Blum e Shub (BBS)](#generatore-blum-blum-e-shub-bbs)
+    - [Sicurezza e Prestazioni](#sicurezza-e-prestazioni)
+  - [Generatori Basati su Crittografia Simmetrica](#generatori-basati-su-crittografia-simmetrica)
+    - [Descrizione](#descrizione)
+    - [Procedura del Generatore](#procedura-del-generatore)
+    - [Vantaggi](#vantaggi)
 
 
 <div style="page-break-after: always;"></div>
@@ -317,3 +333,147 @@ Poiché il numero di chiavi non può essere inferiore al numero di messaggi per 
 - Le chiavi devono essere lunghe quanto il messaggio.
 - Una chiave può essere usata **una sola volta** per mantenere la sicurezza.
 
+## Bit Casuali e Sequenze di Bit
+
+Un bit casuale è una cifra binaria che può assumere il valore 0 o 1 con probabilità equiprobabile, ossia:
+  $$Pr(bit = 0) = Pr(bit = 1) = \frac{1}{2}.$$
+Il concetto sembra semplice, ma la sfida sta nel generare intere sequenze in cui ogni bit sia casuale e, soprattutto, indipendente dagli altri.
+
+Si considerino, ad esempio, le sequenze:  
+  • 1111111111  
+  • 1010011010  
+Anche se entrambe hanno la stessa probabilità di verificarsi (se i bit sono indipendenti, la probabilità di ottenere una specifica sequenza di 10 bit è $\frac{1}{2^{10}}$), la percezione di casualità può variare.  
+Un'altra sequenza, ad esempio:  
+$$
+s = 1100100100001111110110101010001000\ldots
+$$  
+potrebbe essere riconosciuta come casuale se si osserva che corrisponde alle prime cifre binarie di una costante nota.  
+La sfida è definire in modo univoco cosa significhi che una sequenza sia "casuale".
+
+### Definizioni di Casualità
+
+#### Concetti Storici e Teorici
+- **Laplace (1819):**  
+  Nei lanci consecutivi di una moneta, anche se ogni singolo lancio è equiprobabile, sequenze regolari (come cento volte "testa") sono considerate eventi straordinari poiché tra tutte le possibili combinazioni le sequenze irregolari sono molto più numerose.
+
+- **Kolmogorov:**  
+  Una sequenza binaria $h$ si definisce casuale se non esiste alcun algoritmo $A$ in grado di generarla la cui rappresentazione binaria sia più corta della sequenza stessa. In altre parole, il modo più "economico" per definire una sequenza casuale è proprio assegnare la sequenza, il che implica che le sequenze prodotte da una procedura fissa non possono essere casuali in senso Kolmogorov se sono di lunghezza superiore alla descrizione della procedura stessa.
+
+#### Casualità in Crittografia
+In crittografia, “casuale” equivale a "non facilmente prevedibile". Per questo motivo non esistono generatori di bit perfettamente casuali; in pratica si ricorre a generatori di bit pseudo‐casuali, i quali devono superare specifici test statistici per essere ritenuti adeguati.
+
+### Generatori di Numeri Pseudo-Casuali
+
+Un generatore di numeri pseudo-casuali (PRNG) è un algoritmo deterministico che, partendo da un valore iniziale (il seme), produce una sequenza di bit che appare casuale. Esso avendo numero di stati possibili finito arriverà prima o poi a ripetersi, la qualità di questi algoritmi è proprio quella di ripetersi dopo tantissimo ovvero ci mettono molto ad **andare in ciclo**.  
+- Stesso seme → Stessa sequenza.
+- Lo scopo è infatti "amplificare" la casualità: un seme di lunghezza $m$ viene espanso in una sequenza di lunghezza $n$ con $n \gg m$.  
+  Tuttavia, il numero di possibili sequenze è al massimo $2^m$, molto inferiore al numero totale di sequenze possibili di lunghezza $n$, cioè $2^n$.
+
+Per valutare se una sequenza ha proprietà di casualità, vengono utilizzati vari test:
+- **Test di frequenza:** Verifica che 0 e 1 compaiano, in media, lo stesso numero di volte.
+- **Poker Test:** Controlla l’equidistribuzione di sottosequenze di lunghezza prefissata.
+- **Test di autocorrelazione:** Valuta se esistono correlazioni a distanze prefissate.
+- **Run Test:** Esamina la distribuzione delle lunghezze delle sottosequenze omogenee (run) e verifica se seguono una distribuzione esponenziale negativa.
+- **Test del prossimo Bit:** Un generatore pseudo-casuale è considerato crittograficamente sicuro e supera dunque il **Test del Prossimo Bit** se non esiste un algoritmo polinomiale in grado di predire il bit successivo conoscendo la sequenza dei bit precedenti con probabilità maggiore di $\frac{1}{2}$. Superando il test del prossimo bit sei crittograficamente sicuro e superi automaticamentea cje i precedenti.
+
+### Generatori Deterministici
+
+#### Generatore Lineare
+Uno dei PRNG più semplici si basa sulla formula:
+  $$x_i = (a \, x_{i-1} + b) \mod m.$$  
+Per ottenere un periodo lungo (idealmente pari a $m$) i parametri devono essere scelti con cura infatti avendo un mod m i valori possibili andranno al massimo da 0 a m-1 per poin ripetersi ed entrare in ciclo se sbaglio i parametri di partenza richio di gererare anche fino a solo un elemento per poi entrare in ciclo andando dunque a generrare un solo numero all'infinito.
+- Esempio:
+  - $gcd(b, m) = 1$
+  - $(a-1)$ deve essere divisibile per ogni fattore primo di $m$
+  - Se $m$ è multiplo di 4, $(a-1)$ deve essere un multiplo di 4.  
+  - *Esempio:* $a = 14$, $b = 7$, $m = 13$.
+
+#### Generatore Polinomiale
+In generale, si può considerare una relazione che impiega termini polinomiali:
+  $$x_i = (a_1 x_{i-1}^t + a_2 x_{i-2}^t + \ldots + a_t x_{i-t}^t + a_{t+1}) \mod m.$$  
+Nel caso binario, si calcola un valore $r$ e il bit generato viene assegnato in base alla parità della prima cifra decimale di $r$.
+
+**Difetto comune:**  
+Anche se efficienti, questi generatori permettono, in molti casi, di ricostruire i parametri (e dunque prevedere la sequenza) osservando un numero sufficiente di bit di output, compromettendo l'imprevedibilità.
+
+#### Generatori Basati su Funzioni One-Way
+
+Una funzione $f(x)$ si definisce one-way se:
+- È computazionalmente facile calcolare $y = f(x)$.
+- È estremamente difficile, in termini computazionali, invertire la funzione (trovare $x$ conoscendo $y$), a meno di avere un'informazione segreta (il "trap-door").
+
+Si consideri la sequenza:
+  $$S = \{ x, f(x), f(f(x)), \ldots \}.$$  
+Calcolando iterativamente la funzione $f$ e comunicando i bit derivati da un predicato hard-core in ordine inverso, è possibile costruire una sequenza pseudo‑casuale che soddisfi il test del “prossimo bit”.
+
+#### Predicati Hard-Core
+
+Un predicato (ovvero una funzione che restituisce o 0 o 1) $b(x)$ è chiamato hard-core rispetto a una funzione one-way $f(x)$ se:
+- È facile calcolarlo conoscendo $x$.
+- È computazionalmente difficile, conoscendo solo $f(x)$, predirne il valore con probabilità superiore a $\frac{1}{2}$.
+
+*Esempio:*
+
+Consideriamo la funzione:  
+  $$f(x) = x^2 \mod n,$$  
+dove $n$ non è primo. Per $x = 10$, si calcola agevolmente $y = f(10)$.  
+Il predicato $b(x)$ potrebbe essere “$x$ è dispari”.  
+- Conoscendo $x$ risulta immediato determinare $b(x)$.
+- Conoscendo solo $y$, risalire a $b(x)$ risulta computazionalmente difficile.
+
+![](img/Critto/oneWay.png)
+
+#### Generatore Blum, Blum e Shub (BBS)
+
+Il generatore BBS sfrutta funzioni quadratica one-way ed è costruito come segue:  
+- Si scelgono due numeri primi grandi $p$ e $q$ tali che:  
+  $$p \mod 4 = 3 \quad \text{e} \quad q \mod 4 = 3.$$
+- Si calcola $n = p \cdot q$.
+- Si seleziona un seme $x_0$ tale che $x_0 = y^2 \mod n$ per qualche $y$.
+
+La successione è definita da:
+  $$x_i = (x_{i-1})^2 \mod n.$$
+
+$$
+b_i = \begin{cases}
+1, & \text{se } x_{m-i} \text{ è dispari} \\
+0, & \text{altrimenti}
+\end{cases}
+$$
+
+Per ogni iterazione si estrae un bit $b_i$ basandosi, per esempio, sulla parità di $x_i$.  
+I bit vengono poi comunicati in ordine inverso rispetto al calcolo.
+
+![](img/Critto/es1.png)
+![](img/Critto/es2.png)
+
+### Sicurezza e Prestazioni
+- **Sicurezza:**  
+  Grazie all’utilizzo di una funzione one-way e di un predicato hard-core, il generatore BBS supera il test del "prossimo bit", garantendo elevata sicurezza.
+- **Prestazioni:**  
+  Il calcolo di ogni bit richiede operazioni modulari complesse (elevamenti al quadrato), rendendo BBS relativamente lento in applicazioni pratiche.
+
+## Generatori Basati su Crittografia Simmetrica
+
+### Descrizione
+Un approccio alternativo sfrutta gli algoritmi di cifratura simmetrica (ad es. una versione del DES) per generare numeri pseudo-casuali.  
+Il procedimento è il seguente:
+- Viene utilizzata una chiave segreta $k$.
+- Si parte da un seme $s$ di $r$ bit (ad esempio, $r = 64$ per il DES).
+- Si generano parole binarie applicando ripetutamente la funzione di cifratura $C(m; k)$ a combinazioni del seme, dati correnti (ad esempio, prelevati dalla data/ora) ed output del cifrario stesso.
+
+### Procedura del Generatore
+Il generatore può essere così schematizzato:
+
+1. Si preleva un valore $d$ di $r$ bit (ad es. utilizzando la data e l’ora attuale).
+2. Si calcola $y = C(d; k)$.
+3. Si pone $z = s$ (il seme iniziale).
+4. Per $i = 1$ a $m$:
+  - $x_i = C(y \, \oplus \, z; k)$.
+  - Si aggiorna $z = C(y \, \oplus \, x_i; k)$.
+5. Il valore $x_i$ viene comunicato come output pseudo‐casuale.
+
+### Vantaggi
+• Elevata velocità di esecuzione.  
+• Le proprietà di imprevedibilità sono garantite dalla robustezza dei cifrari simmetrici.  
+Sono standardizzati e approvati (ad esempio, dal Federal Information Processing Standard, FIPS).
