@@ -38,6 +38,26 @@
     - [Progettazione delle Comunicazioni in Reti Protette da NAT e Firewall](#progettazione-delle-comunicazioni-in-reti-protette-da-nat-e-firewall)
       - [Virtual Private Network (VPN)](#virtual-private-network-vpn)
       - [Esposizione di Porte Remote mediante SSH Remote Port Forwarding](#esposizione-di-porte-remote-mediante-ssh-remote-port-forwarding)
+  - [Sincronizzazione degli Orologi](#sincronizzazione-degli-orologi)
+    - [Importanza della Sincronizzazione nella Sicurezza](#importanza-della-sincronizzazione-nella-sicurezza)
+    - [Tipi di Clock](#tipi-di-clock)
+    - [Meccanismi di Sincronizzazione](#meccanismi-di-sincronizzazione)
+    - [Meccanismo Three-Way di Sincronizzazione](#meccanismo-three-way-di-sincronizzazione)
+    - [Problemi e Limitazioni](#problemi-e-limitazioni)
+    - [Sincronizzazione dei Clock Fisici](#sincronizzazione-dei-clock-fisici)
+    - [Sincronizzazione Esterna dei Clock Fisici](#sincronizzazione-esterna-dei-clock-fisici)
+    - [NTP (Network Time Protocol)](#ntp-network-time-protocol)
+  - [Crittografia](#crittografia)
+    - [Crittografia a Chiave Segreta (Simmetrica)](#crittografia-a-chiave-segreta-simmetrica)
+    - [Crittografia a Chiave Pubblica (Asimmetrica)](#crittografia-a-chiave-pubblica-asimmetrica)
+    - [Funzioni Hash Crittografiche](#funzioni-hash-crittografiche)
+    - [Integrità di Messaggi e Firma Digitale](#integrità-di-messaggi-e-firma-digitale)
+    - [Ricezione del Messaggio con MAC](#ricezione-del-messaggio-con-mac)
+    - [Crittografia a Chiave Segreta vs. Crittografia a Chiave Pubblica](#crittografia-a-chiave-segreta-vs-crittografia-a-chiave-pubblica)
+  - [Kerberos](#kerberos)
+    - [Strategie di Kerberos](#strategie-di-kerberos)
+    - [Requisiti di Tempo in Kerberos](#requisiti-di-tempo-in-kerberos)
+    - [Applicabilità di Kerberos](#applicabilità-di-kerberos)
 
 
 <div style="page-break-after: always;"></div>
@@ -369,3 +389,353 @@ Per un'ora giornaliera di video inspection su una videocamera, il costo sarà:
 $$
 COSTO\_MENSILE(1 \, \text{ora al giorno}) = 26.6484 \, €
 $$
+
+## Sincronizzazione degli Orologi 
+Nei sistemi distribuiti, molti processi operano su computer differenti e comunicano scambiandosi messaggi. Di norma, ogni computer utilizza il proprio orologio locale, il che significa che non esiste una “visione temporale” condivisa. La sincronizzazione degli orologi ha l’obiettivo di garantire che, pur operando in ambienti fisicamente separati, tutti i processi abbiano la medesima nozione del tempo. Questa sincronizzazione è fondamentale per diverse ragioni: ad esempio, può servire a determinare l’istante esatto in cui si verifica un evento, misurare l’intervallo di tempo tra due eventi o stabilire l’ordine relativo degli eventi, come avviene con l’utilizzo dei clock logici (ad esempio, quelli proposti da Lamport).
+
+### Importanza della Sincronizzazione nella Sicurezza
+In molti sistemi distribuiti, specialmente in quelli in cui la sicurezza è essenziale, i protocolli fanno uso di marcature temporali (timestamp) per concedere l’accesso a risorse in maniera limitata nel tempo. Ad esempio, protocolli come SSL/TLS e Kerberos utilizzano i timestamp per assicurare che le credenziali o i ticket abbiano una validità breve, limitando così la finestra di attacco in caso di compromissione. Nel caso di Kerberos, è cruciale che gli orologi dei server siano sincronizzati accuratamente; altrimenti, se vi sono differenze troppo marcate, i client non potranno autenticarsi correttamente e il sistema rischia di non funzionare.
+
+### Tipi di Clock  
+Ogni computer è dotato di due tipi principali di orologi, che svolgono funzioni complementari:
+
+- **Clock Hardware (o CMOS/ Digital Clock):** Questo orologio è realizzato attraverso un contatore digitale alimentato da una batteria e continua a contare il tempo anche se il computer è spento. All’accensione, il sistema operativo legge il valore del clock hardware per inizializzare il clock software. Sebbene il clock hardware sia generalmente affidabile, può essere influenzato da variazioni nella tensione o nella temperatura – per questo, è basato su un oscillatore al quarzo che garantisce una frequenza relativamente stabile. In molti sistemi, è possibile visualizzare o modificare il clock hardware (ad esempio, utilizzando il comando “hwclock” su Linux).
+
+- **Clock Software (o System Clock):** 
+  Il clock software è gestito dal sistema operativo ed è in funzione solo quando il computer è acceso. Durante il processo di avvio, il sistema operativo imposta il clock software utilizzando il valore del clock hardware. Successivamente, il sistema operativo aggiorna il clock software tramite incrementi periodici, generalmente noti come tick. Durante tali aggiornamenti, è possibile applicare un offset per correggere eventuali deviazioni, in modo da mantenere il sistema sincronizzato rispetto a fonti esterne, come i server NTP.
+
+### Meccanismi di Sincronizzazione
+
+- **Meccanismo di Sincronizzazione Semplice:** Una strategia basilare per sincronizzare gli orologi prevede che un dispositivo, indicato come “master”, invii periodicamente un messaggio che contiene il proprio timestamp attuale. Il dispositivo “slave”, ricevendo questo messaggio, aggiorna il proprio orologio con il valore indicato. Tuttavia, poiché il messaggio impiega un certo tempo per raggiungere il destinatario, il valore ricevuto corrisponde a un istante passato. Ciò introduce un piccolo errore, noto come errore di fase, dovuto al ritardo di trasmissione.
+
+- **Meccanismo Round-Trip Time (RTT) di Sincrinizzazione:** Per ridurre l’errore di sincronizzazione dovuto al ritardo di rete, si possono adottare algoritmi che misurano il round-trip time (RTT). In pratica, il master invia un messaggio e attende una risposta dal slave, così da misurare il tempo totale impiegato per l’invio e il ritorno del messaggio. Supponendo che il ritardo sia simmetrico, il ritardo effettivo per un solo verso può essere approssimato come la metà dell’RTT.  
+Ad esempio, in alcuni algoritmi (come l’algoritmo di Berkeley) il dispositivo slave invia il proprio timestamp (T₁) in una richiesta; il master riceve tale messaggio, registra il proprio orario di ricezione (T₂) e spedisce una risposta, includendo sia T₂ che l’istante di spedizione (T₃). Quando il slave riceve la risposta (all’istante T₄), può calcolare il delay come:  
+
+  D = ((T₄ – T₁) – (T₃ – T₂)) / 2
+
+Successivamente, il dispositivo slave aggiorna il proprio orologio applicando tale delay, riducendo l’errore introdotto dal ritardo di rete. Un’altra formula utile è quella per calcolare l’offset, cioè la differenza tra il tempo del master e quello dello slave, che può essere approssimato come:  
+
+  Offset ≈ ((T₂ – T₁) + (T₃ – T₄)) / 2
+
+![](img/Virtualizzazione/sincroClock.png)
+
+Attraverso questi calcoli, è possibile regolare il clock dello slave per avvicinarlo il più possibile a quello del master.
+
+### Meccanismo Three-Way di Sincronizzazione
+
+Nel meccanismo three-way di sincronizzazione, il processo inizia con il **master** che invia una richiesta contenente il proprio timestamp, indicato come **T₁**. Questo messaggio viene inviato allo **slave**, il quale, al momento della ricezione, registra il proprio timestamp come **T₂**. Successivamente, lo slave prepara una risposta includendo il valore ricevuto, ovvero **T₁**, insieme al suo timestamp di ricezione (**T₂**) e al timestamp al momento dell'invio della risposta (**T₃**).
+
+Una volta che il master riceve la risposta dallo slave (al tempo **T₄**), egli stima il ritardo di trasmissione (**Delay D**) approssimandolo come metà del **round-trip time (RTT)**. La formula utilizzata per calcolare il ritardo è la seguente:
+
+  D = RTT/2 = ((T₄ – T₁) – (T₃ – T₂)) / 2
+
+Successivamente, il master stima l’**offset** (O), cioè la differenza temporale tra il suo orologio e quello dello slave, con la formula:
+
+  O = ((T₂ – T₁) + (T₃ – T₄)) / 2
+
+Questo offset indica di quanti secondi bisogna rallentare il clock dello slave. Una volta calcolati delay e offset, il master invia al slave un messaggio contenente questi dati, che funge da ordine per aggiornare il proprio orologio. Ricevuto il messaggio, lo slave modifica il proprio orologio, applicando la correzione, cioè impostando il nuovo valore del clock secondo:
+
+  T_slave' = T_slave – O
+
+![](img/Virtualizzazione/3way1.png)
+
+- **Esempio**
+
+- Supponiamo che:
+  - Il clock del **master** sia indietro di 1 secondo rispetto a quello dello **slave**.
+  - Il tempo di trasmissione per ogni messaggio sia costante, pari a circa 0.5 secondi.
+  - Il tempo impiegato (T₃ – T₂) per elaborare e rispondere al messaggio sia di 1 secondo.
+
+In questo caso, possiamo calcolare il **round-trip time (RTT)** come segue:
+
+  RTT = ((T₄ – T₁) – (T₃ – T₂))  
+  Supponendo T₁ = 1.0, T₄ = 3.0, T₂ = 2.5, T₃ = 3.5,  
+  RTT = (3.0 – 1.0) – (3.5 – 2.5) = 2.0 – 1.0 = 1.0 secondo.
+
+Da qui, il **Delay D** risulta:
+
+  D = RTT/2 = 1.0 / 2 = 0.5 secondi.
+
+Successivamente, l'**offset O** si calcola come:
+
+  O = ((T₂ – T₁) + (T₃ – T₄)) / 2  
+  O = ((2.5 – 1.0) + (3.5 – 3.0)) / 2  
+  O = (1.5 + 0.5) / 2 = 1.0 secondo.
+
+Questo significa che, per allinearsi al clock del master, lo slave deve rallentare il proprio orologio di 1 secondo.
+
+Nel seguito del processo, al momento T₅ il master invia il messaggio di aggiornamento, contenente il valore dell’offset (O = 1.0, insieme al delay D = 0.5). Successivamente, quando lo slave riceve questo messaggio all’istante T₆ (ad esempio T₆ = 6.5), esso aggiorna il proprio clock:
+
+  T_slave' = T₆ – O = 6.5 – 1.0 = 5.5
+
+Così, lo slave corregge il proprio orologio per sincronizzarlo con quello del master.
+
+### Problemi e Limitazioni
+Nonostante le tecniche avanzate, la sincronizzazione degli orologi nei sistemi distribuiti presenta alcune problematiche. In primo luogo, i ritardi di trasmissione tra i dispositivi possono variare notevolmente, impedendo di avere una vista istantanea e globale dei tempi. Inoltre, anche se tutti i clock fossero inizializzati allo stesso istante, il fenomeno del drift – ovvero la differenza nel ritmo di avanzamento di ciascun orologio – richiede correzioni continue per mantenere la precisione. Infine, la presenza di componenti malfunzionanti o “faulty” può rendere ancora più difficile ottenere una sincronia perfetta.
+
+### Sincronizzazione dei Clock Fisici
+
+Nei sistemi distribuiti non basta avere un ordinamento temporale privo di ambiguità; in molte applicazioni è fondamentale conoscere il tempo reale in cui avvengono gli eventi. Per questo motivo, oltre ai cosiddetti clock logici – che garantiscono solo un ordinamento degli eventi – è necessario fare riferimento ai **clock fisici**, che siano essi hardware o software, in quanto essi forniscono un’**approssimazione del tempo reale**. Nei sistemi complessi è auspicabile disporre di più clock fisici, ma questo porta a dover affrontare tre problematiche principali:
+
+1. **Definire un tempo ufficiale e i mezzi per ottenerlo:**  
+   L’obiettivo è stabilire una base comune, come rappresentata dal **UTC (Universal Coordinated Time)**.
+
+2. **Sincronizzazione diretta con la fonte ufficiale:**  
+   È necessario stabilire metodi per sincronizzare direttamente gli orologi con i detentori del tempo ufficiale, ad esempio tramite **WWV**, una stazione radio a onde corte che trasmette segnali temporali.
+
+3. **Sincronizzazione degli orologi tra loro:**  
+   I sistemi devono essere in grado di coordinarsi internamente, utilizzando ad esempio il **Network Time Protocol (NTP)** per mantenere gli orologi in linea tra di loro. 
+
+Spesso in certi sistemi non basta disporre di un ordinamento temporale per determinare l’ebrezza degli eventi; ciò che conta è il tempo effettivo in cui si verificano. I clock fisici – che siano realizzati in hardware o gestiti via software – forniscono una stima del tempo reale, mentre i clock logici si limitano a ordinare gli eventi. Per una gestione efficiente e ridondante dei sistemi distribuiti è preferibile che siano presenti diversi clock fisici. Tuttavia ciò introduce tre sfide:
+ 
+- Stabilire un tempo ufficiale (es. **UTC**) e definire i mezzi fisici per ottenerlo.
+- Determinare come sincronizzare direttamente gli orologi con i detentori del tempo ufficiale (ad esempio tramite **WWV**).
+- Coordinare e sincronizzare gli orologi tra loro, per cui si utilizza solitamente il **NTP (Network Time Protocol)**.
+
+La base di riferimento per il tempo ufficiale a livello globale è il **UTC**.  
+- Numerosi laboratori in tutto il mondo dispongono di orologi atomici, molti dei quali basati sul cesio 133, e comunicano periodicamente al **Bureau International de l’Heure (BIH)** di Parigi il loro numero di tick.  
+- Il BIH esegue una media di tali valori per produrre il **Tempo Atomico Universale (TAI)**. Il giorno del TAI risulta leggermente più corto, di circa 3 microsecondi, rispetto al giorno solare; per compensare questa differenza viene applicato un tempo di compensazione, dando origine all’UTC – il riferimento internazionale che coincide, a piccole approssimazioni, con il tempo medio di Greenwich (**GMT**).
+
+Per mettere a disposizione l'UTC agli utenti che richiedono un tempo preciso, esiste una stazione radio a onde corte, nota come **WWV**, che trasmette un segnale (un beep) ogni secondo UTC.  
+- Naturalmente, il segnale viaggia attraverso l’atmosfera e introduce dei ritardi; per compensare ciò è necessario conoscere con precisione la distanza tra il trasmettitore e il ricevitore, in modo da calcolare il ritardo di propagazione. 
+
+Quando due processi, ad esempio c e c′, sono considerati sincronizzati al tempo T se la differenza tra i loro clock è inferiore a un delta stabilito (|c(T) – c′(T)| < δ), si affrontano due sistemi:
+ 
+- **Sincronizzazione interna:**  
+  In assenza di una fonte esterna, più clock fisici paritetici si sincronizzano tra di loro per minimizzare la massima differenza interna, creando così quasi un clock comune.
+
+- **Sincronizzazione esterna:**  
+  Quando esiste una sorgente di tempo reale, l’obiettivo è che i clock degli host siano quanto più vicino possibile a questa fonte.
+
+Nei casi di sincronizzazione esterna, ci si focalizza sull’allineare il clock di uno o più host con il tempo ufficiale fornito, ad esempio, da una sorgente NTP.
+
+### Sincronizzazione Esterna dei Clock Fisici
+
+Un **time server process** è il componente responsabile della sincronizzazione degli orologi. Esso può leggere il **clock hardware (HC)** dell’host al tempo t, mentre il **clock software (SC)** viene infatti definito via software come: 
+
+  SC(t) = HC(t) + A(t)
+
+dove A(t) è la funzione di correzione che dipende dal tempo. La sfida consiste nel determinare A(t) in maniera adeguata, anche in presenza di malfunzionamenti nei sistemi, che possono riguardare processori, clock o link di comunicazione. Questo problema è affrontato dal protocollo **NTP**, che garantisce che anche se alcuni sistemi responsabili del tempo risultano difettosi, l’algoritmo continui a funzionare.
+
+### NTP (Network Time Protocol)
+
+Per sincronizzare l’orario tra i server e i client esiste il **Network Time Protocol (NTP)**.  
+- Numerosi server NTP pubblici permettono di sincronizzare gli orologi: in una LAN, NTP può raggiungere la precisione al millisecondo, mentre in una WAN la precisione tipica è entro decine di millisecondi.
+- I server NTP sono organizzati in livelli detti **stratum**:  
+  - I server primari, classificati come **stratum 1**, si sincronizzano direttamente con fonti esterne (GPS, orologi atomici, WWV).  
+  - I server pubblici di **stratum 2** si sincronizzano con quelli di stratum 1 e forniscono il tempo ai client.
+  
+Ad oggi è possibile trovare liste di server NTP dello stratum 2, da utilizzare per una sincronizzazione efficace. Nel contesto di sistemi più complessi, ad esempio quando si configura un servizio di directory, è comune impostare i server Kerberos per interrogare più server NTP di stratum 2.
+
+**Architettura e Formato dei Dati NTP** 
+ 
+Ogni computer possiede un orologio hardware che, sebbene scarsamente preciso, fornisce un tick a intervalli variabili.  
+- Speciali ricevitori permettono di ottenere il segnale orario da fonti esterne come WWV o il GPS.  
+- Non è economico equipaggiare ogni sistema con tali ricevitori; invece, alcuni computer, agendo come **server primari**, si sincronizzano direttamente con queste fonti e propagano il tempo agli altri sistemi, organizzando così una gerarchia (o albero) di sincronizzazione suddivisa in strati (stratum).
+
+I messaggi NTP utilizzano formati di dati appositamente progettati per rappresentare il tempo. Esistono vari formati:
+  
+- **NTP Date Format:**  
+  Un formato a 128 bit, diviso in due parti da 64 bit ciascuna, in cui i 64 bit iniziali rappresentano i secondi e i successivi 64 bit rappresentano la frazione di secondo. Questo formato include anche la suddivisione in “Ere” per coprire lunghe scale temporali.
+
+- **NTP Timestamp Format:**  
+  Un formato più compatto a 64 bit, in cui 32 bit memorizzano i secondi e 32 bit la frazione di secondo. È utilizzato nei pacchetti NTP per trasmettere i timestamp.
+
+- **NTP Short Format:**  
+  Un formato a 32 bit, utilizzabile quando sono necessari minori dettagli temporali.
+
+L’obiettivo primario di NTP non è “settare” il clock di un client a un valore fisso, ma **aggiustarlo** (con il termine inglese “adjust”) applicando periodicamente una correzione alla funzione di aggiustamento A(t) del clock software. Questo processo richiede che, inizialmente, il clock del client non sia disallineato di oltre 68 anni rispetto al server, affinché la correzione sia possibile e significativa.
+
+**Flusso dei Messaggi NTP**
+
+Un client NTP mantiene una lista di server da cui richiedere il tempo. A intervalli regolari:
+  
+- Il client invia una richiesta a ciascun server, includendo il proprio timestamp di origine (T₁).  
+- Il server risponde includendo i timestamp relativi alla ricezione (T₂) e alla trasmissione (T₃) del messaggio.  
+- Il client, al ricevere la risposta, annota il proprio istante di ricezione (T₄) e calcola, per ciascun server, l’**offset** e il **delay** tramite i meccanismi di round-trip già descritti.  
+- Dopo aver raccolto più campioni, il client scarta quelli con dati devianti e usa una media pesata degli offset per determinare la correzione da applicare al proprio clock.
+
+I pacchetti NTP sono incapsulati in UDP e sono strutturati secondo la RFC 5905 (NTP versione 4). Essi contengono informazioni quali:
+  
+- **Leap Indicator (LI):** Avvisa di un imminente leap second.  
+- **Version Number (VN):** Indica la versione del protocollo.  
+- **Mode e Stratum:** Specificano il ruolo del mittente (client, server, broadcast, ecc.) e il livello gerarchico.  
+- Altri campi contengono i vari timestamp (Reference, Origin, Receive e Transmit) e informazioni sui ritardi e dispersioni.
+
+## Crittografia
+
+La **crittografia** è una scienza antichissima che si occupa di codificare e decodificare informazioni. Le sue origini risalgono a epoche storiche come quella di Sparta. Il processo di crittografia implica due fasi fondamentali: 
+
+- **Codificare:** trasformare un testo in chiaro in un testo codificato.
+- **Decodificare:** riportare il testo codificato al suo stato originale, ovvero il testo in chiaro.
+
+Entrambi i processi si basano su un **algoritmo** e una **chiave**. Ad esempio, un semplice metodo di codifica potrebbe essere quello di "shiftare" una stringa di un certo numero di posizioni. È importante notare che l'algoritmo utilizzato è pubblico, mentre la sicurezza del sistema dipende da due fattori principali:
+
+1. **Segretezza della chiave:** Solo le parti autorizzate devono conoscere la chiave utilizzata per la codifica e la decodifica.
+2. **Robustezza dell’algoritmo:** Un algoritmo forte rende più difficile per un attaccante decifrare il messaggio senza la chiave.
+
+### Crittografia a Chiave Segreta (Simmetrica)
+
+Nella crittografia a chiave segreta, la stessa chiave viene utilizzata sia per la codifica che per la decodifica. Questo richiede che solo il mittente e il destinatario conoscano la chiave segreta. I vantaggi di questo approccio includono:
+
+- **Segretezza, autenticazione e integrità:** La chiave condivisa garantisce che solo le parti autorizzate possano accedere alle informazioni.
+- **Velocità:** Gli algoritmi come **DES (Data Encryption Standard)**, **Triple-DES** e **AES (Advanced Encryption Standard)** sono generalmente veloci e possono essere implementati in modo efficiente.
+
+Tuttavia, ci sono anche svantaggi significativi:
+
+- **Distribuzione della chiave:** È necessario scambiare la chiave segreta in modo sicuro tra le parti, il che rappresenta un punto critico, poiché non esistono soluzioni generali affidabili per questo scambio.
+- **Scalabilità:** Per n utenti, sono necessarie n*(n-1)/2 chiavi diverse, il che può diventare ingombrante in sistemi con molti utenti.
+
+### Crittografia a Chiave Pubblica (Asimmetrica)
+
+La crittografia a chiave pubblica utilizza due chiavi distinte: una per la codifica e una per la decodifica. In questo modello, il mittente e il destinatario non condividono una chiave segreta. Ogni utente possiede una coppia di chiavi:
+
+- **Chiave privata:** Un segreto personale che deve essere custodito.
+- **Chiave pubblica:** Un'informazione che può essere diffusa a chiunque.
+
+Queste chiavi possono essere utilizzate per codificare o decodificare i messaggi. In particolare, un messaggio codificato con una chiave può essere decodificato solo con l'altra chiave. Un esempio comune di algoritmo di crittografia asimmetrica è **RSA**, che utilizza chiavi di dimensioni comprese tra 1024 e 2048 bit. È importante notare che chiavi inferiori a 2048 bit non sono più considerate sicure.
+
+I vantaggi della crittografia a chiave pubblica includono:
+
+- **Nessuna necessità di scambiare chiavi segrete:** Solo le chiavi pubbliche devono essere comunicate, il che semplifica il processo.
+- **Segretezza, autenticazione, integrità e non ripudiabilità:** Queste proprietà sono garantite dalla struttura stessa del sistema.
+
+Tuttavia, ci sono anche svantaggi:
+
+- **Lentezza:** Gli algoritmi di crittografia asimmetrica sono generalmente più lenti rispetto a quelli simmetrici.
+- **Verifica dell'identità:** È necessario garantire che la chiave pubblica di un utente sia effettivamente quella dell'utente stesso, per evitare attacchi di impersonificazione.
+
+### Funzioni Hash Crittografiche
+
+Le funzioni hash crittografiche, note anche come **one-way hash** o **funzioni digest**, sono progettate per prendere in input una stringa (messaggio) di lunghezza variabile e produrre una stringa (digest) di lunghezza fissa. Queste funzioni soddisfano la proprietà di non reversibilità, il che significa che deve essere computazionalmente impossibile trovare due messaggi distinti che producano lo stesso hash.
+
+In sintesi, una funzione hash crittografica MD(m) produce un riassunto digitale del messaggio m. Le proprietà fondamentali di queste funzioni includono:
+
+1. **Unicità:** Ogni messaggio deve generare un hash unico.
+2. **Non reversibilità:** Dato un hash, non deve essere possibile risalire al messaggio originale.
+3. **Resistenza alle collisioni:** È impossibile trovare due messaggi distinti che producano lo stesso hash.
+
+Queste caratteristiche rendono le funzioni hash crittografiche strumenti essenziali per garantire la sicurezza e l'integrità dei dati in vari contesti, come la firma digitale e la verifica dell'integrità dei messaggi.
+
+La **Message Authentication Code (MAC)** è una tecnica che consente di autenticare parzialmente l'origine di un messaggio, riconoscendo il mittente e garantendo l'integrità del messaggio stesso. Questa tecnica combina l'uso della crittografia, sia a chiave pubblica che a chiave segreta, con le funzioni hash crittografiche. 
+
+Quando tra mittente e destinatario esiste una chiave segreta per la crittografia simmetrica, si utilizza la funzione hash insieme alla crittografia simmetrica. Questa rappresenta la vera tecnica MAC. Al contrario, se il mittente dispone di una chiave pubblica (parte di una coppia di chiavi pubblica e privata), si può utilizzare la funzione hash insieme alla crittografia asimmetrica, dando vita alla **firma digitale**.
+
+### Integrità di Messaggi e Firma Digitale
+
+Quando si desidera spedire un messaggio **m**, la tecnica della firma digitale mediante MAC prevede le seguenti operazioni:
+
+1. **Applicazione della Funzione Hash:**  
+   Prima di inviare il messaggio, si applica una funzione hash crittografica per creare un riassunto (digest) del messaggio stesso, ottenendo **MD(m)**.
+
+2. **Codifica del Riassunto:**  
+   Il digest del messaggio viene quindi codificato:
+   - Utilizzando la chiave segreta **K** condivisa tra mittente e destinatario, si ottiene **MAC = E_K(MD(m))**.
+   - Oppure, utilizzando la chiave privata del mittente, si ottiene **MAC = K^-(MD(m))**.
+
+3. **Creazione del Messaggio Finale:**  
+   Il codice di autenticazione del messaggio (MAC) viene concatenato al messaggio originale. Il messaggio spedito sarà quindi formato da **(m, MAC)**, ovvero **(m, K^-(MD(m)))** o **(m, E_K(MD(m)))**.
+
+### Ricezione del Messaggio con MAC
+
+Alla ricezione del messaggio con il formato **(m', MAC)**, il destinatario deve seguire questi passaggi:
+
+1. **Separazione del Messaggio e del MAC:**  
+   Il destinatario separa il messaggio **m'** dal MAC.
+
+2. **Decodifica del MAC:**  
+   Il MAC viene decodificato:
+   - Utilizzando la chiave pubblica del mittente, si ottiene **K^+(K^-(MD(m))) = MD(m)**.
+   - Oppure, utilizzando la chiave segreta condivisa, si ottiene **D_K(E_K(MD(m))) = MD(m)**.
+
+3. **Verifica dell'Integrità:**  
+   Se la decodifica produce errori, significa che il mittente non è quello dichiarato nel messaggio. Se la decodifica va a buon fine, il digest ottenuto è il digest del messaggio originale **MD(m)**. A questo punto, il destinatario calcola il digest del messaggio ricevuto **MD(m')** e confronta i due valori. Se **MD(m) == MD(m')**, il messaggio ricevuto è autentico e proviene dal mittente dichiarato.
+
+### Crittografia a Chiave Segreta vs. Crittografia a Chiave Pubblica
+
+La tecnica MAC è applicabile solo se mittente e destinatario conoscono una chiave segreta. In questo caso, il destinatario può verificare che, se riesce a decodificare il messaggio, questo proviene dall'altro (o da sé stesso). Tuttavia, non può dimostrare a osservatori esterni che l'altro ha realmente spedito il messaggio, il che implica che mancano segretezza e non ripudiabilità. Pertanto, le proprietà garantite sono:
+
+- **Integrità**
+- **Autenticazione**
+
+D'altra parte, la firma digitale è applicabile solo se il mittente possiede una chiave pubblica/privata. In questo caso, chiunque può leggere il messaggio e riconoscere chi lo ha spedito, verificandone l'integrità. Le proprietà garantite dalla firma digitale includono:
+
+- **Integrità**
+- **Autenticazione**
+- **Non ripudiabilità**
+
+Tuttavia, manca la segretezza, poiché il messaggio è accessibile a chiunque. 
+
+In generale, sia la MAC che la firma digitale sono più rapide rispetto alla codifica dell'intero documento, poiché non è necessario codificare tutto il messaggio, ma solo il digest.
+
+## Kerberos
+
+Kerberos è un sistema di autenticazione sviluppato nel 1983 grazie alla collaborazione tra il **Massachusetts Institute of Technology (MIT)**, **IBM** e **DEC**. Il nome "Kerberos" deriva dalla mitologia greca, dove era il nome del cane a tre teste che custodiva le porte dell'inferno. Questo simbolismo è significativo, poiché le tre teste rappresentano i tre obiettivi principali di Kerberos:
+
+- **Autenticazione:** Verificare l'identità di un client o di un servizio.
+- **Autorizzazione:** Consentire a un client autenticato di utilizzare un particolare servizio.
+- **Cifratura:** Garantire che terze parti non possano ascoltare i contenuti delle comunicazioni.
+
+Attualmente, esistono due versioni di Kerberos, che utilizzano protocolli diversi e non sono compatibili tra loro: la **versione 4**, sviluppata alla fine degli anni '80, e la **versione 5**, emanata nella RFC 1510 nel 1993 e stabilizzata nella RFC 4120 nel 2005, che offre maggiore sicurezza e supporto per ambienti multidominio.
+
+La necessità di controllare l'accesso degli utenti che richiedono servizi da reti diverse ha portato allo sviluppo di Kerberos. I requisiti di autenticazione in una rete aperta devono essere:
+
+- **Sicuri:** Proteggere le informazioni sensibili.
+- **Affidabili:** Garantire che le identità siano verificate correttamente.
+- **Scalabili:** Supportare un numero crescente di utenti e servizi.
+- **Trasparenti:** Non richiedere complicate configurazioni da parte degli utenti.
+
+Kerberos funge da **server fidato di gestione delle chiavi** (Trusted Key Server System), fornendo un servizio di autenticazione centralizzato basato su chiavi private (simmetriche). Questo sistema è separato dal servizio stesso, consentendo agli utenti di accedere a servizi distribuiti senza dover riporre fiducia nei server fornitori di servizio. Idealmente, gli utenti non devono fidarsi delle workstation nella rete in cui opera Kerberos, ma devono fidarsi del server di autenticazione centralizzato.
+
+L'autenticazione nel sistema Kerberos si basa su un nuovo modello di fiducia, che differisce dal tradizionale modello a due parti. In quest'ultimo, le due entità devono avere fiducia reciproca. In Kerberos, invece, le due parti si fidano solo di una terza parte, il **KDC (Key Distribution Center)**, che funge da garante dell'identità di ciascuna parte.
+
+All'interno di un **realm** (dominio di sicurezza), i "principal" sono sia utenti che servizi che possono autenticarsi tramite Kerberos. La struttura del nome di un principal è: **Primary/instance@NOMEREALM**, dove "Primary" rappresenta il nome dell'utente o del servizio e "instance" rappresenta la qualifica dell'utente. Ogni client e server condivide con il KDC una chiave (o password) crittografica, e il KDC si occupa di presentare un principal a un altro principal mantenendo la segretezza reciproca.
+
+Kerberos si basa su alcune assunzioni fondamentali:
+
+- Le password non devono essere "facili" da indovinare.
+- Le workstation devono essere sicure, senza keylogger o software simili.
+- La rete è considerata insicura, il che implica che Kerberos deve essere in grado di resistere a vari tipi di attacchi. Tuttavia, è preferibile utilizzare Kerberos all'interno di un dominio controllato.
+
+### Strategie di Kerberos
+
+Kerberos implementa diverse strategie per garantire la sicurezza:
+
+- **Single Sign-On (SSO):** La password è richiesta e utilizzata solo una volta durante la sequenza di login.
+- **Sicurezza delle Password:** Le password non vengono mai trasmesse in chiaro, rendendo il sistema resistente agli attacchi di sniffing.
+- **Uso di Chiavi Private:** La comunicazione avviene esclusivamente tramite chiavi private, senza l'uso di crittografia a chiave pubblica.
+- **Ambiente Sicuro per il KDC:** Ogni dominio di sicurezza di Kerberos deve operare in un ambiente fisico sicuro che ospiti il KDC.
+- **Protocollo di Autenticazione:** Kerberos estende il protocollo di Needham-Schroeder per la distribuzione delle chiavi.
+
+### Requisiti di Tempo in Kerberos
+
+La sicurezza di Kerberos è anche legata all'uso di **timestamp** (marche temporali) nei ticket. È cruciale che gli orologi dei server Kerberos siano regolati con precisione. I ticket hanno una scadenza breve per prevenire attacchi di forza bruta e di replica. Se gli orologi non sono sincronizzati entro un intervallo ragionevole, Kerberos può presentare errori fatali e smettere di funzionare. I client che tentano di autenticarsi da una macchina con un orologio non accurato falliranno il tentativo di autenticazione presso il KDC a causa della differenza di ora.
+
+### Applicabilità di Kerberos
+
+Kerberos non è facilmente applicabile in tutti i contesti, poiché utilizza un protocollo di comunicazione specifico tra l'entità che richiede un servizio e quella che lo fornisce. Le applicazioni devono essere modificate per supportare Kerberos, un processo noto come "kerberizzazione". Alcune applicazioni che già supportano Kerberos includono:
+
+- AFS, NFS, Coda File System
+- Apache (mod_auth_kerb) e Apache 2 (libapache-mod-auth-kerb)
+- Cisco routers e switches
+- Client di posta elettronica come Eudora e Mulberry
+- Sistemi operativi come Mac OS X e Microsoft Windows
+- OpenSSH e moduli di autenticazione pluggable (PAM)
+- Samba e Netatalk
+- Qualsiasi software che utilizzi il framework SASL
+
+
+**Perché Usare Kerberos e LDAP Insieme?**
+
+Kerberos è progettato per l'autenticazione e fornisce un sistema di **Single Sign-On (SSO)**. D'altra parte, **LDAP** (Lightweight Directory Access Protocol) può essere utilizzato per l'autenticazione, l'autorizzazione e i servizi di nomi, ma non offre SSO. L'**Active Directory** è un servizio di directory kerberizzato con un'interfaccia LDAP, quindi è vantaggioso utilizzare Kerberos per l'autenticazione e LDAP per l'autorizzazione e i servizi di nomi.
+
+
+**Panoramica di Kerberos e Realms**
+
+Un ambiente Kerberos è composto da:
+
+- Un server Kerberos (KDC)
+- Un numero di client, tutti registrati con il server e che condividono chiavi con esso.
+- Server applicativi che condividono chiavi con il server.
+
+Questo insieme di componenti è definito un **realm**, che tipicamente rappresenta un singolo dominio amministrativo.
