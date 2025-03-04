@@ -52,7 +52,13 @@
   - [Generatori Basati su Crittografia Simmetrica](#generatori-basati-su-crittografia-simmetrica)
     - [Descrizione](#descrizione)
     - [Procedura del Generatore](#procedura-del-generatore)
-    - [Vantaggi](#vantaggi)
+  - [Confusione e Diffusione](#confusione-e-diffusione)
+  - [DES: Un Esempio di Cifrario Simmetrico](#des-un-esempio-di-cifrario-simmetrico)
+    - [Origini e Sviluppo](#origini-e-sviluppo)
+    - [Struttura](#struttura)
+    - [Le S-box del DES](#le-s-box-del-des)
+      - [Linearità e Non Linearità](#linearità-e-non-linearità)
+      - [Attacchi al DES](#attacchi-al-des)
 
 
 <div style="page-break-after: always;"></div>
@@ -473,7 +479,97 @@ Il generatore può essere così schematizzato:
   - Si aggiorna $z = C(y \, \oplus \, x_i; k)$.
 5. Il valore $x_i$ viene comunicato come output pseudo‐casuale.
 
-### Vantaggi
-• Elevata velocità di esecuzione.  
-• Le proprietà di imprevedibilità sono garantite dalla robustezza dei cifrari simmetrici.  
-Sono standardizzati e approvati (ad esempio, dal Federal Information Processing Standard, FIPS).
+- **Vantaggi**
+  - Elevata velocità di esecuzione.  
+  - Le proprietà di imprevedibilità sono garantite dalla robustezza dei cifrari simmetrici.  
+  Sono standardizzati e approvati (ad esempio, dal Federal Information Processing Standard, FIPS).
+
+- **Svantaggi**
+  - Al contrario delle funzioni one-way la loro sicurezza non si basa su teoremi che li rendono problemi più che polinomiali.
+
+## Confusione e Diffusione
+
+Claude Shannon, nel suo lavoro "La teoria della comunicazione nei sistemi crittografici" (1949), identificò due proprietà fondamentali che ogni algoritmo di cifratura sicuro deve possedere: **Confusione** e **Diffusione**.
+Questi criteri sono alla base dei cifrari a chiave segreta o simmetrici, e sono pienamente soddisfatti nel DES.
+
+- **Confusione**
+  - **Definizione:** La confusione ha come obiettivo quello di rendere difficile la relazione tra il testo cifrato e la chiave. Ogni bit del testo cifrato deve dipendere da "tutta" la chiave.  
+  - **Effetto:** Modificare un solo bit della chiave porta a cambiamenti significativi (idealmente in molti o in tutti i bit) del testo cifrato.  
+  - **Implementazione:** Nei sistemi come il DES, la confusione è ottenuta tramite l'uso di **substitution blocks** (blocchi di sostituzione).
+
+- **Diffusione**
+  - **Definizione:** La diffusione serve a nascondere ogni eventuale relazione sistematica tra il testo in chiaro e il testo cifrato.  
+  - **Effetto:** Una piccola modifica (ad esempio, un singolo bit) nel testo in chiaro deve comportare cambiamenti in circa la metà dei bit del testo cifrato e viceversa.  
+  - **Implementazione:** Questa proprietà è realizzata tramite **permutation blocks** (blocchi di permutazione).
+
+## DES: Un Esempio di Cifrario Simmetrico
+
+Il DES è il classico esempio di cifrario simmetrico che sfrutta i principi di confusione e diffusione.  
+- **Origine:** Introdotto dalla IBM nel 1977, il DES è stato per oltre vent’anni lo standard delle comunicazioni commerciali riservate (anche se non classificate).  
+- **Funzionamento:** Nel DES la sicurezza si ottiene mediante una serie di permutazioni, espansioni, sostituzioni (mediante S-box) e compressioni. In particolare:
+  - La **diffusione** si ottiene distribuendo i bit del messaggio attraverso permutazioni ed espansioni.
+  - La **confusione** si raggiunge combinando e comprimendo i bit del messaggio e della chiave, processo nel quale le S-box giocano un ruolo cruciale.
+
+### Origini e Sviluppo
+
+- **Inizio 1972:** Il National Bureau of Standards (NBS, oggi NIST) avvia un programma volto a proteggere le comunicazioni non classificate, come quelle commerciali o private.  
+- **1973:** L'NBS pubblica un bando in cui si richiede che:
+  - La sicurezza dell'algoritmo derivi dalla segretezza della chiave e non dal metodo di cifratura/decifratura.
+  - L'algoritmo debba essere implementabile in hardware in modo efficiente.
+- **Proposta della IBM:** Nessuna proposta significativa venne presentata fino a quando l'IBM propose il DES, derivato da un software noto come "Lucifer".  
+- **Intervento NSA:** La National Security Agency (NSA) certificò il DES, suggerendo alcune modifiche:  
+  - Riduzione della lunghezza della chiave da 128 a 56 bit.
+  - Modifica delle funzioni contenute nelle S-box.  
+  Le modifiche furono accettate solo dopo severi test e, sebbene controverso, il DES venne reso pubblico nel 1977 come standard ufficiale.
+- **Certificazione e rinnovamento:** Il DES era soggetto a certificazione periodica; nel 1987 si cominciò a dubitare della sicurezza del sistema a causa delle nuove tecniche crittoanalitiche e dell'aumento della potenza di calcolo.
+- **Proposte successive:** L'NSA propose nuovi algoritmi (non resi pubblici) ma, a causa di problematiche di compatibilità con sistemi già basati sul DES, il cifrario fu rinnovato più volte.
+- **3DES:** Nel 1999 fu dichiarato accettabile solo per usi limitati, portando allo sviluppo della versione estesa nota come 3DES.
+- **AES:** Nel 2001, il NIST scelse l'Advanced Encryption Standard (AES) come successore del DES.
+
+### Struttura
+
+- **Blocco di Dati:** Il messaggio viene suddiviso in blocchi da 64 bit.
+- **Round di Cifratura:** Il DES avvia 16 fasi (round) successive in cui si eseguono operazioni di permutazione, espansione e funzioni combinatorie.
+- **Chiave Segreta:**  
+  - La chiave è composta da 64 bit, di cui 56 sono scelti arbitrariamente ed 8 bit sono utilizzati per il controllo di parità.
+  - Da questa chiave vengono derivate 16 sottochiavi, una per ogni fase.
+
+- **Procedura di Cifratura**
+  1. **Divisione del blocco:** Il blocco da cifrare viene diviso in due metà: una sinistra (S) e una destra (D).
+  2. **Fasi di trasformazione:** In ogni round si eseguono operazioni nel seguente schema:
+     - Un processo di permutazione e espansione, seguito dall'applicazione di una funzione non lineare (realizzata principalmente tramite le S-box).
+     - Lo scambio dei ruoli tra le due metà (operazione in cui D diventa la nuova S, e il risultato della funzione combinata con la vecchia S diventa la nuova D).
+  3. **Decifrazione:** Per decifrare il messaggio, il processo viene eseguito in senso inverso, utilizzando le sottochiavi in ordine inverso.
+
+![](img/Critto/DES.png)
+
+- **Operazioni Fondamentali**
+  - **Permutazione PI e PF:** La permutazione PI riorganizza i bit dell'input; ad esempio, il bit 58 dell'input viene spostato in posizione 1 dell'output, è statica e la permutazione PF è l'inversa di PI.
+  - **Trasposizione T:** Utilizzata per scartare i bit di parità dalla chiave originale, producendo una chiave di 56 bit. Presupponendo che il controllo di parità sia avvenuto.
+  - **Shift Ciclici:** Ogni sottochiave subisce shift ciclici a sinistra secondo una regola predeterminata (per i round 1, 2, 9, 16 si esegue uno shift; negli altri round si eseguono due posizioni). In questa fase trovimo le **S-box** (S) che introducono la conponente non lineare.
+  
+  ![](img/Critto/fasiDes.png)
+
+  - **Permutazione con Selezione CT:** La combinazione delle funzioni SC[i] e CT garantisce che in ogni fase venga estratto dalla sottochiave un diverso sottoinsieme di bit per la cifratura. Si calcola che nella cifratura ogni bit della chiave originale k partecipi in media a 14 fasi.
+  - **Espansione e Permutazione EP:** Espande una parte di 32 bit a 48 bit duplicando alcuni bit (ad esempio, il bit 32 dell'input viene copiato alle posizioni 1 e 47 dell'output).
+  
+
+### Le S-box del DES
+
+Le S-box rappresentano il "cuore" non lineare del cifrario e sono fondamentali per realizzare la confusione.  
+- **Funzionamento:**  
+  - L'input alla S-box è un blocco di 6 bit, diviso in due gruppi: i bit esterni (primo e sesto) definiscono una riga, mentre i bit centrali (secondo, terzo, quarto e quinto) definiscono una colonna.
+  - L'output è un numero compreso tra 0 e 15, rappresentato su 4 bit, che rappresenta una compressione da 6 a 4 bit.
+- **Complessità:** Ci sono 8 S-box (S1, S2, ..., S8) che, complessivamente, trasformano 48 bit in 32 bit.
+- **Sicurezza:** La progettazione delle S-box, realizzata dalla IBM e poi modificata dalla NSA, è cruciale per impedire previsioni sugli output, contribuendo in modo determinante alla sicurezza del DES.
+
+#### Linearità e Non Linearità
+
+- **Operazioni lineari:** Molte operazioni (permutazioni, espansioni, compressioni) sono lineari rispetto all'operazione XOR.
+- **Non linearità delle S-box:** Le S-box, invece, sono funzioni non lineari, ed è proprio questa caratteristica che impedisce attacchi crittoanalitici semplici e aiuta a garantire la sicurezza del cifrario.
+
+#### Attacchi al DES
+
+- **Spazio delle chiavi:** La chiave del DES contiene effettivamente 56 bit, il che implica che in linea teorica si dovrebbero testare \(2^{56}\) chiavi.  
+- **Riduzione pratica:** Alcune osservazioni sulla struttura del cifrario permettono di ridurre leggermente lo spazio delle chiavi da esplorare. Ad esempio, esiste una relazione fra il messaggio cifrato e la sua complementazione:  
+  se \( C(m, k) = c \) allora vale anche \( C(m, k') = c' \), dove \( k' \) è legata a \( k \) tramite la complementazione bit a bit.
