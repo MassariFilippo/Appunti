@@ -58,6 +58,13 @@
     - [Strategie di Kerberos](#strategie-di-kerberos)
     - [Requisiti di Tempo in Kerberos](#requisiti-di-tempo-in-kerberos)
     - [Applicabilità di Kerberos](#applicabilità-di-kerberos)
+    - [Archittettura Kerberos](#archittettura-kerberos)
+    - [Chiavi Statiche e Dinamiche in Kerberos](#chiavi-statiche-e-dinamiche-in-kerberos)
+    - [Fasi del Protocollo Kerberos](#fasi-del-protocollo-kerberos)
+      - [1. Ottenimento del Ticket Granting Ticket (TGT)](#1-ottenimento-del-ticket-granting-ticket-tgt)
+      - [2. Ottenimento del Ticket di Servizio](#2-ottenimento-del-ticket-di-servizio)
+      - [3. Accesso al Servizio](#3-accesso-al-servizio)
+    - [Meccanismo di Autenticazione e Verifica](#meccanismo-di-autenticazione-e-verifica)
 
 
 <div style="page-break-after: always;"></div>
@@ -709,7 +716,7 @@ Kerberos implementa diverse strategie per garantire la sicurezza:
 
 ### Requisiti di Tempo in Kerberos
 
-La sicurezza di Kerberos è anche legata all'uso di **timestamp** (marche temporali) nei ticket. È cruciale che gli orologi dei server Kerberos siano regolati con precisione. I ticket hanno una scadenza breve per prevenire attacchi di forza bruta e di replica. Se gli orologi non sono sincronizzati entro un intervallo ragionevole, Kerberos può presentare errori fatali e smettere di funzionare. I client che tentano di autenticarsi da una macchina con un orologio non accurato falliranno il tentativo di autenticazione presso il KDC a causa della differenza di ora.
+La sicurezza di Kerberos è anche legata all'uso di **timestamp** (marche temporali) nei ticket ovvero token a scadenza temporale per la gestione della comunicazione client-server. È cruciale che gli orologi dei server Kerberos siano regolati con precisione. I ticket hanno una scadenza breve per prevenire attacchi di forza bruta e di replica ma comunque adette a gestire ritardi legati alle comunicazioni attraverso la rete. Se gli orologi non sono sincronizzati entro un intervallo ragionevole, Kerberos può presentare errori fatali e smettere di funzionare. I client che tentano di autenticarsi da una macchina con un orologio non accurato falliranno il tentativo di autenticazione presso il KDC a causa della differenza di ora.
 
 ### Applicabilità di Kerberos
 
@@ -739,3 +746,52 @@ Un ambiente Kerberos è composto da:
 - Server applicativi che condividono chiavi con il server.
 
 Questo insieme di componenti è definito un **realm**, che tipicamente rappresenta un singolo dominio amministrativo.
+
+
+### Archittettura Kerberos 
+
+Kerberos è un sistema di autenticazione che si basa su un modello di terza parte fidata. La sua architettura è composta principalmente da un **Key Distribution Center (KDC)**, che si suddivide in due parti fondamentali:
+
+1. **Authentication Server (AS):**  
+   In questa fase iniziale, l'applicazione dell'utente negozia con l'AS per identificare l'utente stesso. L'AS fornisce quindi un **ticket granting ticket (TGT)**, che è una credenziale di autenticazione non alterabile.
+
+2. **Ticket Granting Server (TGS):**  
+   Nella fase successiva, l'utente richiede accesso a servizi specifici utilizzando il TGT ottenuto dall'AS.
+
+![](img/Virtualizzazione/strKerberos.png)
+
+### Chiavi Statiche e Dinamiche in Kerberos
+
+**Chiavi Statiche:** Le chiavi private condivise sono memorizzate nel database del KDC e vengono definite durante la configurazione del sistema. Ad esempio, quando si inserisce un nuovo utente, viene generata una chiave **Kc** per l'utente, mentre per i servizi viene generata una chiave **Ks**. Queste chiavi sono essenziali per garantire la sicurezza delle comunicazioni tra client e server. La chiave **Kc** utilizzata da un utente per criptare le comunicazioni con l'Authentication Server è derivata dalla password dell'utente per il realm dell'AS, applicando una funzione hash. La funzione di libreria **string2key** trasforma la password in una chiave di cifratura simmetrica. La trasformazione varia a seconda dell'algoritmo di crittografia utilizzato, come **DES**, **Triple-DES** o **AES**.
+
+### Fasi del Protocollo Kerberos
+
+Il protocollo Kerberos si articola in tre fasi principali, ognuna delle quali è fondamentale per garantire un'autenticazione sicura e affidabile in un ambiente distribuito.
+
+#### 1. Ottenimento del Ticket Granting Ticket (TGT)
+
+Nella prima fase, il client invia una richiesta al **server di autenticazione (AS)**. Questa richiesta contiene informazioni cruciali, come l'identificativo dell'utente e il realm di appartenenza. Il server AS, dopo aver verificato l'identità del client, risponde fornendo un **Ticket Granting Ticket (TGT)**. Questo ticket è una credenziale di autenticazione non alterabile, che consente all'utente di richiedere ulteriori ticket per accedere a servizi specifici all'interno della rete.
+
+#### 2. Ottenimento del Ticket di Servizio
+
+Nella seconda fase, il client utilizza il TGT ottenuto per inviare una richiesta al **Ticket Granting Server (TGS)**. In questa richiesta, il client presenta il TGT e richiede un ticket di servizio per accedere a un servizio specifico. Il TGS, dopo aver verificato il TGT, risponde con un ticket di servizio che consente l'accesso al servizio desiderato, insieme a una chiave di sessione. Questo ticket di servizio è essenziale per garantire che solo gli utenti autorizzati possano accedere a risorse specifiche.
+
+#### 3. Accesso al Servizio
+
+Nella terza fase, il client utilizza il ticket di servizio per autenticarsi presso il server del servizio richiesto. Il server verifica la validità del ticket e, se tutto è in ordine, consente l'accesso al servizio. Questo passaggio è cruciale, poiché garantisce che solo gli utenti che possiedono un ticket valido possano interagire con il servizio, mantenendo così la sicurezza dell'intero sistema.
+
+### Meccanismo di Autenticazione e Verifica
+
+Durante il processo di autenticazione, il client utilizza un **authenticator** per dimostrare la propria identità al TGS. L'authenticator include informazioni come l'identificativo dell'utente e un timestamp, garantendo che il ticket sia utilizzato solo una volta e limitando il rischio di attacchi di replay.
+
+**Esempio di Flusso di Messaggi**
+
+1. **Richiesta di TGT:** Il client invia una richiesta al server di autenticazione con il proprio identificativo e il realm.
+
+2. **Risposta del Server:** Il server di autenticazione invia il TGT al client, che include la chiave di sessione e altre informazioni necessarie.
+
+3. **Richiesta di Ticket di Servizio:** Il client invia il TGT al TGS per ottenere un ticket di servizio.
+
+4. **Risposta del TGS:** Il TGS fornisce un ticket di servizio e una chiave di sessione per l'accesso al servizio richiesto.
+
+5. **Accesso al Servizio:** Il client presenta il ticket di servizio al server del servizio, che verifica la validità del ticket e consente l'accesso.
