@@ -58,7 +58,30 @@
     - [Struttura](#struttura)
     - [Le S-box del DES](#le-s-box-del-des)
       - [Linearità e Non Linearità](#linearità-e-non-linearità)
-      - [Attacchi al DES](#attacchi-al-des)
+    - [Attacchi al DES](#attacchi-al-des)
+  - [Protocolli a Chiave Pubblica](#protocolli-a-chiave-pubblica)
+    - [Le Chiavi nei Cifrari](#le-chiavi-nei-cifrari)
+      - [Cifrari Simmetrici vs Asimmetrici](#cifrari-simmetrici-vs-asimmetrici)
+      - [Asimmetria](#asimmetria)
+    - [Proprietà dei Cifrari a Chiave Pubblica](#proprietà-dei-cifrari-a-chiave-pubblica)
+    - [Funzioni One-Way e Trap-Door](#funzioni-one-way-e-trap-door)
+      - [Funzione di Eulero](#funzione-di-eulero)
+      - [Funzioni One-Way con Trap-Door in Matematica](#funzioni-one-way-con-trap-door-in-matematica)
+    - [Vantaggi dei Protocolli a Chiave Pubblica](#vantaggi-dei-protocolli-a-chiave-pubblica)
+    - [Difetti dei Protocolli a Chiave Pubblica](#difetti-dei-protocolli-a-chiave-pubblica)
+    - [Cifrario Proposto da Merkle](#cifrario-proposto-da-merkle)
+    - [Cifrario RSA](#cifrario-rsa)
+      - [Cifrario RSA: Creazione delle Chiavi](#cifrario-rsa-creazione-delle-chiavi)
+      - [Cifrario RSA: Messaggio, Codifica e Decodifica](#cifrario-rsa-messaggio-codifica-e-decodifica)
+      - [Cifrario RSA: Correttezza](#cifrario-rsa-correttezza)
+    - [Generazione di un Primo Grande](#generazione-di-un-primo-grande)
+      - [Test di Primalità](#test-di-primalità)
+    - [Come Generare e e d](#come-generare-e-e-d)
+  - [Operazioni di Codifica e Decodifica](#operazioni-di-codifica-e-decodifica)
+    - [Algoritmi di Euclide](#algoritmi-di-euclide)
+    - [Algoritmo di Euclide per il Massimo Comune Divisore (MCD)](#algoritmo-di-euclide-per-il-massimo-comune-divisore-mcd)
+      - [Algoritmo di Euclide Esteso](#algoritmo-di-euclide-esteso)
+    - [Cifrari Ibridi](#cifrari-ibridi)
 
 
 <div style="page-break-after: always;"></div>
@@ -568,8 +591,273 @@ Le S-box rappresentano il "cuore" non lineare del cifrario e sono fondamentali p
 - **Operazioni lineari:** Molte operazioni (permutazioni, espansioni, compressioni) sono lineari rispetto all'operazione XOR.
 - **Non linearità delle S-box:** Le S-box, invece, sono funzioni non lineari, ed è proprio questa caratteristica che impedisce attacchi crittoanalitici semplici e aiuta a garantire la sicurezza del cifrario.
 
-#### Attacchi al DES
+### Attacchi al DES
 
-- **Spazio delle chiavi:** La chiave del DES contiene effettivamente 56 bit, il che implica che in linea teorica si dovrebbero testare \(2^{56}\) chiavi.  
+- **Spazio delle chiavi:** La chiave del DES contiene effettivamente 56 bit, il che implica che in linea teorica si dovrebbero testare $2^{56}$ chiavi.  
 - **Riduzione pratica:** Alcune osservazioni sulla struttura del cifrario permettono di ridurre leggermente lo spazio delle chiavi da esplorare. Ad esempio, esiste una relazione fra il messaggio cifrato e la sua complementazione:  
-  se \( C(m, k) = c \) allora vale anche \( C(m, k') = c' \), dove \( k' \) è legata a \( k \) tramite la complementazione bit a bit.
+  se $C(m, k) = c$ allora vale anche $C(m, k') = c'$, dove $k'$ è legata a $k$ tramite la complementazione bit a bit.
+- **Confuzione e diffusione:** Il DES a lato pratico introduce ottime prestazioni di confusione e diffusione arrivando molto vicino alla variazione di 1/2 dei bit ideale per la cifratura.
+
+![](img/Critto/implDES.png)
+
+![](img/Critto/stetsDES.png)
+
+## Protocolli a Chiave Pubblica  
+
+Nel 1976 Diffie e Hellman, e indipendentemente Merkle, introdussero un nuovo concetto che avrebbe rivoluzionato il modo di concepire le comunicazioni segrete: i cifrari a chiave pubblica. Questo approccio ha cambiato radicalmente la gestione della segretezza delle comunicazioni, eliminando la necessità che mittente e destinatario condividano in anticipo la stessa chiave segreta.
+
+### Le Chiavi nei Cifrari
+
+#### Cifrari Simmetrici vs Asimmetrici
+
+- **Cifrari Simmetrici:**  
+  Nei cifrari simmetrici la chiave di cifratura è uguale a quella di decifrazione (o comunque ciascuna può essere facilmente derivata dall’altra) ed è nota solamente ai due partner che la condividono.
+  
+- **Cifrari Asimmetrici:**  
+  Nei cifrari a chiave pubblica (o asimmetrici) le chiavi di cifratura e di decifrazione sono completamente diverse.  
+  - Il destinatario sceglie una coppia di chiavi, composta da:
+    - **$k[pub]$:** La chiave di cifratura, resa pubblica e nota a tutti.
+    - **$k[prv]$:** La chiave di decifrazione, mantenuta segreta e conosciuta solo dal destinatario.
+    
+  Ogni utente del sistema genera così una propria coppia di chiavi. Il messaggio $m$ viene cifrato da chiunque usando la chiave pubblica del destinatario:
+  $c = C(m; \, k[pub])$ e il destinatario decifra il messaggio con la sua chiave privata: $m = D(c; \, k[prv])$
+
+#### Asimmetria
+
+Il termine "asimmetrico" evidenzia come i ruoli di mittente e destinatario siano distinti: mentre nel cifrario simmetrico entrambi condividono la stessa informazione segreta (la chiave), nel sistema asimmetrico ogni partecipante possiede una coppia di chiavi con funzioni differenti. In particolare, la proprietà fondamentale che deve essere soddisfatta è: $D(C(m; \, k[pub]); \, k[prv]) = m$
+Ciò garantisce che il destinatario possa sempre decifrare il messaggio cifrato con la sua chiave privata.
+
+### Proprietà dei Cifrari a Chiave Pubblica
+
+Le funzioni di cifratura $C$ e decifratura $D$ e la relazione tra le chiavi $k[pub]$ e $k[prv]$ devono garantire:
+
+- **Facilità di Cifratura:**  
+  Dato un messaggio $m$ e la chiave pubblica $k[pub]$, è semplice calcolare il crittogramma $c = C(m; k[pub])$.
+
+- **Facilità di Decifratura:**  
+  Il destinatario, possedendo $k[prv]$, calcola efficientemente $m = D(c; k[prv])$.
+
+- **Difficoltà per il Criptoanalista:**  
+  Pur conoscendo $c$, la chiave pubblica $k[pub]$ e le funzioni $C$ e $D$, è computazionalmente difficile risalire al messaggio $m$ senza la chiave privata $k[prv]$.
+
+I termini "facile" e "difficile" vanno intesi in senso computazionale, ovvero si riferiscono all’efficienza degli algoritmi impiegati (polinomiale vs. esponenziale).
+
+### Funzioni One-Way e Trap-Door
+
+Per garantire la sicurezza, la funzione di cifratura $C$ deve essere una funzione **one-way**:
+- **One-way:**  
+  È facile calcolare $C(m; k[pub])$, ma è difficile invertire la funzione (cioè, trovare $m$ conoscendo solo $c$).
+
+- **Trap-Door:**  
+  Tuttavia, deve esistere un meccanismo segreto (la "trap-door") che renda l’inversione facile per chi conosce l’informazione segreta, ossia la chiave privata $k[prv]$.  
+  La chiave pubblica $k[pub]$ non fornisce alcuna informazione su questo meccanismo.
+
+**Richiami di Algebra Moduliare**
+
+La sicurezza di molti protocolli a chiave pubblica si basa su problemi matematici complessi, spesso legati all’algebra modulare.
+
+**Insiemi e Operazioni Modulo n**
+
+- Sia $n$ un intero positivo.  
+  L’insieme:
+  $Z_n = \{0,\, 1,\, 2,\, \dots,\, n-1\}$
+  rappresenta tutti gli interi non negativi minori di $n$.
+
+- L’insieme dei numeri relativamente primi a $n$, indicato come:
+  $Z_n^* = \{ x \in Z_n \mid \gcd(x, n) = 1 \}$
+  ad esempio:
+  - $Z_6^* = \{1, 5\}$
+  - $Z_9^* = \{1, 2, 4, 5, 7, 8\}$
+  - $Z_{11}^* = \{1, 2, 3, \dots, 10\}$
+
+**Proprietà delle Operazioni modulo n**
+
+Alcune formule utili sono:
+- Somma:  
+  $$
+  (a + b) \mod n = ((a \mod n) + (b \mod n)) \mod n
+  $$
+- Prodotto:  
+  $$
+  (a \cdot b) \mod n = ((a \mod n)\cdot(b \mod n)) \mod n
+  $$
+- Potenza:  
+  $$
+  a^r \mod n = ((a \mod n)^r) \mod n
+  $$
+
+#### Funzione di Eulero
+
+La funzione di Eulero $\varphi(n)$ conta il numero di interi in $Z_n^*$.
+
+- Per un numero primo $p$:  
+  $$\varphi(p) = p - 1$$
+
+- Se $n = p \cdot q$ con $p$ e $q$ primi, allora:  
+  $$\varphi(n) = (p - 1)(q - 1)$$
+
+La funzione $\varphi(n)$ è fondamentale nei protocolli a chiave pubblica e per dimostrare teoremi come quello di Eulero e il piccolo teorema di Fermat.
+
+**Teorema di Eulero (uno dei tanti):**  
+Sia $n > 1$ e sia $a$ coprimo con $n$, allora:  
+$$a^{\varphi(n)} \equiv 1 \pmod{n}$$
+
+**Piccolo teorema di Fermat:**  
+Sia $p$ un numero primo e $a$ tale che $0 < a < p$, allora:  
+$$a^{p-1} \equiv 1 \pmod{p}$$
+
+#### Funzioni One-Way con Trap-Door in Matematica
+
+Molti protocolli a chiave pubblica basano la loro sicurezza su problemi matematici ritenuti difficili da risolvere senza informazioni aggiuntive.
+  
+- **Fattorizzazione:**  
+  Calcolare $n = p \cdot q$ dato $p$ e $q$ è facile; tuttavia, risalire ai fattori primi $p$ e $q$ conoscendo solo $n$ è difficile.
+  
+- **Calcolo della Radice in Modulo:** Calcolare l’espressione $y = x^z \mod s$, con $x$, $z$ e $s$ interi, è computazionalmente efficiente se si procede mediante successive esponenziazioni ridotte modulo $s$. Tuttavia, se $s$ non è primo e non si conosce la sua fattorizzazione, invertire questa funzione – cioè calcolare $x$ a partire da $y$, conoscendo $z$ e $s$ – risulta un problema di complessità esponenziale, simile in difficoltà al problema della fattorizzazione Se invece $x$ è coprimo con $s$ e si dispone di un intero $v$ tale che $z \cdot v \equiv 1 \pmod{\varphi(s)}$, allora possiamo procedere come segue:  
+  - Calcolando  
+    $$
+    y^v \mod s,
+    $$  
+    otteniamo  
+    $$
+    y^v \mod s = x^{zv} \mod s.
+    $$  
+  - Poiché, per il teorema di Eulero,  
+    $$
+    x^{\varphi(s)} \equiv 1 \pmod{s},
+    $$  
+    possiamo scrivere  
+    $$
+    x^{zv} \equiv x^{1+k\,\varphi(s)} \equiv x \cdot \left(x^{\varphi(s)}\right)^k \equiv x \pmod{s},
+    $$  
+    dove $k$ è un opportuno intero.
+
+  In questo modo, calcolando $y^v \mod s$ in tempo polinomiale, è possibile ricostruire il valore di $x$. In altre parole, in questa situazione, il valore $v$ funge da chiave segreta per invertire la funzione. v funge da trapdoor perché ci permette di "aggiustare" l'esponente in modo da raggiungere un multiplo dell'ordine dell'elemento (secondo il teorema di Eulero) che restituisce lo stesso resto modulo s. In altre parole, conoscendo v possiamo calcolare un'esponente modificato tale che, elevando x a questa potenza, il risultato sia congruente a x modulo s. Grazie a questa proprietà, risalire all'incognita diventa estremamente semplice, a differenza dell'inversione della funzione one-way senza la trapdoor, che richiede un notevole sforzo computazionale.
+
+- **Logaritmo Discreto:**  
+  Calcolare l’esponente $z$ dato $y = x^z \mod s$ è comunemente considerato un problema difficile, ed è alla base della sicurezza di molti protocolli a chiave pubblica.
+
+Tali problemi non ammettono algoritmi polinomiali noti e la loro difficoltà viene sfruttata per garantire la sicurezza delle comunicazioni.
+
+
+### Vantaggi dei Protocolli a Chiave Pubblica
+
+Se gli utenti di un sistema sono n, il numero complessivo di chiavi (pubbliche e private) è 2n, anziché [n(n - 1)]/2. Inoltre, non è richiesto alcuno scambio segreto di chiavi tra gli utenti, poiché la chiave pubblica viene resa disponibile a tutti.
+
+### Difetti dei Protocolli a Chiave Pubblica
+
+**Attacchi Chosen Plain-Text:**  
+Il sistema è vulnerabile ad attacchi in cui un crittoanalista sceglie uno o più messaggi in chiaro, ad esempio m₁, m₂, ..., mₕ, e li cifra usando la funzione pubblica C e la chiave pubblica k[pub] di un destinatario (Dest). Ciò produce crittogrammi c₁, c₂, ..., cₕ. Successivamente, spiando il canale di comunicazione, il crittoanalista può confrontare ogni messaggio cifrato c in transito con i crittogrammi precedentemente ottenuti. Se c coincide con uno dei crittogrammi di mᵢ, il messaggio è automaticamente decifrato; se c non coincide con nessuno, il crittoanalista acquisisce comunque l’informazione che il messaggio in c è diverso da quelli scelti.
+
+**Prestazioni:**  
+I sistemi a chiave pubblica sono significativamente più lenti rispetto ai cifrari simmetrici, con stime che indicano una differenza di due o tre ordini di grandezza. Sebbene la crescente potenza dei calcolatori possa mitigare il problema, il rallentamento rimane rilevante in contesti dove la velocità di comunicazione sicura è fondamentale.
+
+### Cifrario Proposto da Merkle
+
+Il primo cifra asimmetrico proposto da Merkle basava la difficoltà di inversione della funzione C sulla risoluzione del problema dello zaino. Sebbene tale problema sia NP-Hard, il cifrario fu violato con metodi alternativi, sottolineando la necessità di trattare il problema della sicurezza con estrema cautela. Successivi cifrari basati su questo problema sono invece rimasti inviolati.
+
+### Cifrario RSA
+
+Il secondo cifrario asimmetrico, proposto da Rivest, Shamir e Adleman (1978) e noto come RSA, fonda la sua sicurezza sulla difficoltà di fattorizzare grandi numeri interi. Sebbene la fattorizzazione non sia dimostrabilmente NP-Hard (e quindi, in teoria, potrebbe essere "più semplice" rispetto al problema dello zaino), RSA risulta sostanzialmente inviolabile se usato con chiavi sufficientemente lunghe ed è il cifrario asimmetrico di più largo impiego.
+
+#### Cifrario RSA: Creazione delle Chiavi
+
+Come destinatario, un utente (Dest) esegue i seguenti passaggi:
+1. Sceglie due numeri primi molto grandi, p e q.
+2. Calcola:
+   - n = p · q
+   - φ(n) = (p - 1)(q - 1)
+3. Sceglie un intero e, minore di φ(n) e tale che gcd(e, φ(n)) = 1.
+4. Calcola l’intero d, che è l’inverso moltiplicativo di e modulo φ(n).
+5. Rende pubblica la chiave k[pub] = (e, n) e mantiene segreta la chiave k[prv] = d.
+
+#### Cifrario RSA: Messaggio, Codifica e Decodifica
+
+- **Codifica:**  
+  Ogni messaggio viene convertito in una sequenza binaria e interpretato come un numero intero m, con m < n (eventualmente dividendo il messaggio in blocchi). La codifica avviene con la formula:
+  
+  c = mᵉ mod n
+  
+- **Decodifica:**  
+  Il destinatario usa il proprio d per decifrare il messaggio:
+  
+  m = cᵈ mod n
+
+**Cifrario RSA: Esempio**
+
+Supponiamo che:
+- p = 5, q = 11  
+  Quindi, n = 55 e φ(n) = 40.
+- Scegliamo e = 7, che è coprimo con 40.
+- Calcoliamo d = 23, poiché 23 · 7 ≡ 1 mod 40.
+
+Le chiavi risultano:
+- k[pub] = (7, 55)
+- k[prv] = 23
+
+La codifica del messaggio è data da: c = m⁷ mod 55  
+La decodifica dal crittogramma è: m = c²³ mod 55
+
+#### Cifrario RSA: Correttezza
+
+Per qualunque intero m < n, vale la proprietà:
+  
+(mᵉ mod n)ᵈ mod n = m
+
+La dimostrazione si basa sul teorema di Eulero e sulla gestione dei casi in cui p e q non dividono m oppure uno solo di essi divide m. In ogni caso, si dimostra che m, elevato adeguatamente, restituisce nuovamente m modulo n.
+
+### Generazione di un Primo Grande
+
+**Distribuzione dei Numeri Primi:**  
+La probabilità che un numero casuale n sia primo è approssimativamente 1 / log(n).
+
+**Idea di Base:**  
+Si genera un numero n a caso e lo si testa per verificare se è primo; se risultasse primo, il processo termina, altrimenti si ripete.
+
+#### Test di Primalità
+
+Fino a qualche tempo fa, non esistevano algoritmi efficienti, ma attualmente esistono algoritmi in tempo polinomiale (anche se poco efficienti nella pratica) basati, ad esempio, sul seguente principio: se n è primo, allora per ogni intero a tale che 0 < a < n, vale che  
+a^(n-1) mod n = 1.  
+Si utilizza anche un test di primalità probabilistico che consiste in:
+1. Generare un intero a casuale tra 1 e n-1.
+2. Calcolare x = a^(n-1) mod n.
+3. Se x = 1, dichiarare n primo; altrimenti, n è composto.
+4. Ripetere il test k volte per ridurre la probabilità di errore.
+
+### Come Generare e e d
+
+**Scelta di e:**  
+Il numero e viene scelto casualmente in modo che sia coprimo con φ(n) (verificato mediante l'algoritmo di Euclide).
+
+**Calcolo di d:**  
+Utilizzando l'algoritmo di Euclide Esteso, si trova l'inverso moltiplicativo di e modulo φ(n).
+
+## Operazioni di Codifica e Decodifica
+
+Le operazioni RSA richiedono il calcolo di potenze modulari, ossia il calcolo di espressioni del tipo: a^b mod c
+dove a, b e c sono numeri molto grandi.  
+L'approccio diretto (moltiplicare a per se stesso b volte) è inaccettabile, quindi si utilizza l'espansione binaria dell'esponente e la tecnica di esponenziazione rapida, che riduce il numero di operazioni a una quantità lineare rispetto alla lunghezza binaria dell'esponente.
+
+### Algoritmi di Euclide
+
+### Algoritmo di Euclide per il Massimo Comune Divisore (MCD)
+L'algoritmo di Euclide per calcolare il MCD di a e b è definito ricorsivamente:
+1. Se b è 0, il MCD è a.
+2. Altrimenti, il MCD è Euclide-gcd(b, a mod b).
+
+Questo algoritmo ha un costo di O(log b).
+
+#### Algoritmo di Euclide Esteso
+L'algoritmo di Euclide Esteso, oltre a calcolare il MCD, fornisce anche i coefficienti dell'identità di Bézout, utili per trovare l'inverso moltiplicativo. In maniera riassuntiva:
+1. Se b è 0, si restituisce (a, 1, 0).
+2. Altrimenti, si calcola ricorsivamente Euclide-esteso(b, a mod b) e si aggiorna la soluzione.
+Questo algoritmo ha anch'esso un costo di O(log b).
+
+### Cifrari Ibridi
+
+I cifrari asimmetrici sono, in generale, lenti, mentre i cifrari simmetrici richiedono che gli utenti possiedano una chiave segreta condivisa.  
+Per questo motivo, nelle applicazioni pratiche si utilizzano sistemi ibridi in cui:
+- La crittografia asimmetrica viene impiegata per lo scambio sicuro della chiave segreta.
+- La crittografia simmetrica, più veloce, viene utilizzata per cifrare effettivamente i dati.
+
+Questo approccio consente di sfruttare i vantaggi di entrambi i sistemi, garantendo comunicazioni sicure ed efficienti.
