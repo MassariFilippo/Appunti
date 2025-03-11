@@ -73,13 +73,13 @@
     - [Cifrario RSA](#cifrario-rsa)
       - [Cifrario RSA: Creazione delle Chiavi](#cifrario-rsa-creazione-delle-chiavi)
       - [Cifrario RSA: Messaggio, Codifica e Decodifica](#cifrario-rsa-messaggio-codifica-e-decodifica)
-      - [Cifrario RSA: Correttezza](#cifrario-rsa-correttezza)
+      - [Correttezza](#correttezza)
     - [Generazione di un Primo Grande](#generazione-di-un-primo-grande)
       - [Test di Primalità](#test-di-primalità)
-    - [Come Generare e e d](#come-generare-e-e-d)
+    - [Come Generare $e$ e $d$](#come-generare-e-e-d)
   - [Operazioni di Codifica e Decodifica](#operazioni-di-codifica-e-decodifica)
     - [Algoritmi di Euclide](#algoritmi-di-euclide)
-    - [Algoritmo di Euclide per il Massimo Comune Divisore (MCD)](#algoritmo-di-euclide-per-il-massimo-comune-divisore-mcd)
+      - [Algoritmo di Euclide per il Massimo Comune Divisore (MCD)](#algoritmo-di-euclide-per-il-massimo-comune-divisore-mcd)
       - [Algoritmo di Euclide Esteso](#algoritmo-di-euclide-esteso)
     - [Cifrari Ibridi](#cifrari-ibridi)
 
@@ -746,11 +746,9 @@ Se gli utenti di un sistema sono n, il numero complessivo di chiavi (pubbliche e
 
 ### Difetti dei Protocolli a Chiave Pubblica
 
-**Attacchi Chosen Plain-Text:**  
-Il sistema è vulnerabile ad attacchi in cui un crittoanalista sceglie uno o più messaggi in chiaro, ad esempio m₁, m₂, ..., mₕ, e li cifra usando la funzione pubblica C e la chiave pubblica k[pub] di un destinatario (Dest). Ciò produce crittogrammi c₁, c₂, ..., cₕ. Successivamente, spiando il canale di comunicazione, il crittoanalista può confrontare ogni messaggio cifrato c in transito con i crittogrammi precedentemente ottenuti. Se c coincide con uno dei crittogrammi di mᵢ, il messaggio è automaticamente decifrato; se c non coincide con nessuno, il crittoanalista acquisisce comunque l’informazione che il messaggio in c è diverso da quelli scelti.
+**Attacchi Chosen Plain-Text:** Il sistema è vulnerabile ad attacchi in cui un crittoanalista sceglie uno o più messaggi in chiaro, ad esempio m₁, m₂, ..., mₕ, e li cifra usando la funzione pubblica C e la chiave pubblica k[pub] di un destinatario (Dest). Ciò produce crittogrammi c₁, c₂, ..., cₕ. Successivamente, spiando il canale di comunicazione, il crittoanalista può confrontare ogni messaggio cifrato c in transito con i crittogrammi precedentemente ottenuti. Se c coincide con uno dei crittogrammi di mᵢ, il messaggio è automaticamente decifrato; se c non coincide con nessuno, il crittoanalista acquisisce comunque l’informazione che il messaggio in c è diverso da quelli scelti.
 
-**Prestazioni:**  
-I sistemi a chiave pubblica sono significativamente più lenti rispetto ai cifrari simmetrici, con stime che indicano una differenza di due o tre ordini di grandezza. Sebbene la crescente potenza dei calcolatori possa mitigare il problema, il rallentamento rimane rilevante in contesti dove la velocità di comunicazione sicura è fondamentale.
+**Prestazioni:** I sistemi a chiave pubblica sono significativamente più lenti rispetto ai cifrari simmetrici, con stime che indicano una differenza di due o tre ordini di grandezza. Sebbene la crescente potenza dei calcolatori possa mitigare il problema, il rallentamento rimane rilevante in contesti dove la velocità di comunicazione sicura è fondamentale.
 
 ### Cifrario Proposto da Merkle
 
@@ -767,7 +765,7 @@ Come destinatario, un utente (Dest) esegue i seguenti passaggi:
 2. Calcola:
    - n = p · q
    - φ(n) = (p - 1)(q - 1)
-3. Sceglie un intero e, minore di φ(n) e tale che gcd(e, φ(n)) = 1.
+3. Sceglie un intero e (encription), minore di φ(n) e tale che gcd(e, φ(n)) = 1 (ovvero co-primo).
 4. Calcola l’intero d, che è l’inverso moltiplicativo di e modulo φ(n).
 5. Rende pubblica la chiave k[pub] = (e, n) e mantiene segreta la chiave k[prv] = d.
 
@@ -783,7 +781,7 @@ Come destinatario, un utente (Dest) esegue i seguenti passaggi:
   
   m = cᵈ mod n
 
-**Cifrario RSA: Esempio**
+**Esempio**
 
 Supponiamo che:
 - p = 5, q = 11  
@@ -798,60 +796,118 @@ Le chiavi risultano:
 La codifica del messaggio è data da: c = m⁷ mod 55  
 La decodifica dal crittogramma è: m = c²³ mod 55
 
-#### Cifrario RSA: Correttezza
+#### Correttezza
 
-Per qualunque intero m < n, vale la proprietà:
-  
-(mᵉ mod n)ᵈ mod n = m
+Nel cifrario RSA, per qualsiasi intero $m$ tale che $m < n$, dove $n = p \cdot q$, la proprietà fondamentale che garantisce la correttezza del sistema è:
 
-La dimostrazione si basa sul teorema di Eulero e sulla gestione dei casi in cui p e q non dividono m oppure uno solo di essi divide m. In ogni caso, si dimostra che m, elevato adeguatamente, restituisce nuovamente m modulo n.
+$$
+\left(m^e \mod n\right)^d \mod n = m
+$$
+
+Qui, $n$, $e$, e $d$ sono i parametri del cifrario RSA, con $e$ ed $d$ rispettivamente la chiave pubblica e quella privata. La dimostrazione di questa proprietà si basa sul teorema di Eulero e considera due casi distinti:
+
+**Caso 1: Né $p$ né $q$ dividono $m$.**  
+In questo scenario, poiché $m$ non è divisibile né per $p$ né per $q$, abbiamo che il massimo comune divisore $\gcd(m, n) = 1$. Secondo il teorema di Eulero, ciò implica che:
+
+$$
+m^{\varphi(n)} \equiv 1 \pmod{n}
+$$
+
+dove $\varphi(n) = (p-1)(q-1)$. Poiché $d$ è scelto come l'inverso moltiplicativo di $e$ modulo $\varphi(n)$, esiste un intero $r$ tale che:
+
+$$
+e \cdot d = 1 + r\varphi(n)
+$$
+
+Quindi, elevando $m$ alla potenza $ed$, otteniamo:
+
+$$
+m^{ed} = m^{1 + r\varphi(n)} = m \cdot \left(m^{\varphi(n)}\right)^r \equiv m \cdot 1^r \equiv m \pmod{n}
+$$
+
+**Caso 2: Uno tra $p$ o $q$ divide $m$, ma non entrambi.**  
+Supponiamo, ad esempio, che $p$ divida $m$ mentre $q$ no. In questo caso, poiché $p$ divide $m$, abbiamo:
+
+$$
+m \equiv 0 \pmod{p}
+$$
+
+Quindi, qualsiasi potenza di $m$ sarà congrua a 0 modulo $p$. Pertanto:
+
+$$
+m^{ed} \equiv 0 \equiv m \pmod{p}
+$$
+
+Per quanto riguarda il modulo $q$, poiché $q$ non divide $m$, possiamo applicare il teorema di Eulero come nel Caso 1, ottenendo:
+
+$$
+m^{\varphi(n)} \equiv 1 \pmod{q}
+$$
+
+e quindi:
+
+$$
+m^{ed} \equiv m^{1 + r\varphi(n)} \equiv m \pmod{q}
+$$
+
+Dato che $m^{ed}$ è congruente a $m$ sia modulo $p$ che modulo $q$, e poiché $n = p \cdot q$, per il Teorema Cinese del Resto si conclude che:
+
+$$
+m^{ed} \equiv m \pmod{n}
+$$
+
+Infine, è importante notare che non è possibile che sia $p$ che $q$ dividano $m$ contemporaneamente, poiché ciò implicherebbe che $m$ è divisibile per $n$, il che contraddice l'ipotesi che $m < n$.
+
+Questa dimostrazione, che considera entrambi i casi, mostra come il prodotto degli esponenti $e$ e $d$ annulli l'effetto della cifratura e consenta al destinatario di recuperare il messaggio originale, garantendo la correttezza del cifrario RSA.
 
 ### Generazione di un Primo Grande
 
 **Distribuzione dei Numeri Primi:**  
-La probabilità che un numero casuale n sia primo è approssimativamente 1 / log(n).
+La probabilità che un numero casuale $n$ sia primo è approssimativamente $\frac{1}{\log(n)}$.
 
 **Idea di Base:**  
-Si genera un numero n a caso e lo si testa per verificare se è primo; se risultasse primo, il processo termina, altrimenti si ripete.
+Si genera un numero $n$ a caso e lo si testa per verificare se è primo; se risultasse primo, il processo termina, altrimenti si ripete.
 
 #### Test di Primalità
 
-Fino a qualche tempo fa, non esistevano algoritmi efficienti, ma attualmente esistono algoritmi in tempo polinomiale (anche se poco efficienti nella pratica) basati, ad esempio, sul seguente principio: se n è primo, allora per ogni intero a tale che 0 < a < n, vale che  
-a^(n-1) mod n = 1.  
+Fino a qualche tempo fa, non esistevano algoritmi efficienti, ma attualmente esistono algoritmi in tempo polinomiale (anche se poco efficienti nella pratica) basati, ad esempio, sul seguente principio: se $n$ è primo, allora per ogni intero $a$ tale che $0 < a < n$, vale che  
+$a^{n-1} \equiv 1 \pmod{n}$.  
 Si utilizza anche un test di primalità probabilistico che consiste in:
-1. Generare un intero a casuale tra 1 e n-1.
-2. Calcolare x = a^(n-1) mod n.
-3. Se x = 1, dichiarare n primo; altrimenti, n è composto.
-4. Ripetere il test k volte per ridurre la probabilità di errore.
+1. Generare un intero $a$ casuale tra 1 e $n-1$.
+2. Calcolare $x = a^{n-1} \mod n$.
+3. Se $x = 1$, dichiarare $n$ primo; altrimenti, $n$ è composto.
+4. Ripetere il test $k$ volte per ridurre la probabilità di errore.
 
-### Come Generare e e d
+### Come Generare $e$ e $d$
 
-**Scelta di e:**  
-Il numero e viene scelto casualmente in modo che sia coprimo con φ(n) (verificato mediante l'algoritmo di Euclide).
+**Scelta di $e$:**  
+Il numero $e$ viene scelto casualmente in modo che sia coprimo con $\varphi(n)$ (verificato mediante l'algoritmo di Euclide).
 
-**Calcolo di d:**  
-Utilizzando l'algoritmo di Euclide Esteso, si trova l'inverso moltiplicativo di e modulo φ(n).
+**Calcolo di $d$:**  
+Utilizzando l'algoritmo di Euclide Esteso, si trova l'inverso moltiplicativo di $e$ modulo $\varphi(n)$.
 
 ## Operazioni di Codifica e Decodifica
 
-Le operazioni RSA richiedono il calcolo di potenze modulari, ossia il calcolo di espressioni del tipo: a^b mod c
-dove a, b e c sono numeri molto grandi.  
-L'approccio diretto (moltiplicare a per se stesso b volte) è inaccettabile, quindi si utilizza l'espansione binaria dell'esponente e la tecnica di esponenziazione rapida, che riduce il numero di operazioni a una quantità lineare rispetto alla lunghezza binaria dell'esponente.
+Le operazioni RSA richiedono il calcolo di potenze modulari, ossia il calcolo di espressioni del tipo: $a^b \mod c$, dove $a$, $b$ e $c$ sono numeri molto grandi.  
+L'approccio diretto (moltiplicare $a$ per se stesso $b$ volte) è inaccettabile, quindi si utilizza l'espansione binaria dell'esponente e la tecnica di esponenziazione rapida, che riduce il numero di operazioni a una quantità lineare rispetto alla lunghezza binaria dell'esponente.
 
 ### Algoritmi di Euclide
 
-### Algoritmo di Euclide per il Massimo Comune Divisore (MCD)
-L'algoritmo di Euclide per calcolare il MCD di a e b è definito ricorsivamente:
-1. Se b è 0, il MCD è a.
-2. Altrimenti, il MCD è Euclide-gcd(b, a mod b).
+#### Algoritmo di Euclide per il Massimo Comune Divisore (MCD)
 
-Questo algoritmo ha un costo di O(log b).
+L'algoritmo di Euclide per calcolare il MCD di $a$ e $b$ è definito ricorsivamente:
+1. Se $b$ è 0, il MCD è $a$.
+2. Altrimenti, il MCD è $\text{Euclide-gcd}(b, a \mod b)$.
+
+Questo algoritmo ha un costo di $O(\log b)$.
 
 #### Algoritmo di Euclide Esteso
+
 L'algoritmo di Euclide Esteso, oltre a calcolare il MCD, fornisce anche i coefficienti dell'identità di Bézout, utili per trovare l'inverso moltiplicativo. In maniera riassuntiva:
-1. Se b è 0, si restituisce (a, 1, 0).
-2. Altrimenti, si calcola ricorsivamente Euclide-esteso(b, a mod b) e si aggiorna la soluzione.
-Questo algoritmo ha anch'esso un costo di O(log b).
+1. Se $b$ è 0, si restituisce $(a, 1, 0)$.
+2. Altrimenti, si calcola ricorsivamente $\text{Euclide-esteso}(b, a \mod b)$ e si aggiorna la soluzione.
+
+Questo algoritmo ha anch'esso un costo di $O(\log b)$.
 
 ### Cifrari Ibridi
 
