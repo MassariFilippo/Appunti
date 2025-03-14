@@ -70,14 +70,14 @@
     - [Vantaggi dei Protocolli a Chiave Pubblica](#vantaggi-dei-protocolli-a-chiave-pubblica)
     - [Difetti dei Protocolli a Chiave Pubblica](#difetti-dei-protocolli-a-chiave-pubblica)
     - [Cifrario Proposto da Merkle](#cifrario-proposto-da-merkle)
-    - [Cifrario RSA](#cifrario-rsa)
-      - [Cifrario RSA: Creazione delle Chiavi](#cifrario-rsa-creazione-delle-chiavi)
-      - [Cifrario RSA: Messaggio, Codifica e Decodifica](#cifrario-rsa-messaggio-codifica-e-decodifica)
-      - [Correttezza](#correttezza)
+  - [Cifrario RSA](#cifrario-rsa)
+    - [Creazione delle Chiavi](#creazione-delle-chiavi)
+    - [Messaggio, Codifica e Decodifica](#messaggio-codifica-e-decodifica)
+    - [Correttezza](#correttezza)
     - [Generazione di un Primo Grande](#generazione-di-un-primo-grande)
       - [Test di Primalità](#test-di-primalità)
     - [Come Generare $e$ e $d$](#come-generare-e-e-d)
-  - [Operazioni di Codifica e Decodifica](#operazioni-di-codifica-e-decodifica)
+    - [Operazioni di Codifica e Decodifica](#operazioni-di-codifica-e-decodifica)
     - [Algoritmi di Euclide](#algoritmi-di-euclide)
       - [Algoritmo di Euclide per il Massimo Comune Divisore (MCD)](#algoritmo-di-euclide-per-il-massimo-comune-divisore-mcd)
       - [Algoritmo di Euclide Esteso](#algoritmo-di-euclide-esteso)
@@ -754,11 +754,11 @@ Se gli utenti di un sistema sono n, il numero complessivo di chiavi (pubbliche e
 
 Il primo cifra asimmetrico proposto da Merkle basava la difficoltà di inversione della funzione C sulla risoluzione del problema dello zaino. Sebbene tale problema sia NP-Hard, il cifrario fu violato con metodi alternativi, sottolineando la necessità di trattare il problema della sicurezza con estrema cautela. Successivi cifrari basati su questo problema sono invece rimasti inviolati.
 
-### Cifrario RSA
+## Cifrario RSA
 
 Il secondo cifrario asimmetrico, proposto da Rivest, Shamir e Adleman (1978) e noto come RSA, fonda la sua sicurezza sulla difficoltà di fattorizzare grandi numeri interi. Sebbene la fattorizzazione non sia dimostrabilmente NP-Hard (e quindi, in teoria, potrebbe essere "più semplice" rispetto al problema dello zaino), RSA risulta sostanzialmente inviolabile se usato con chiavi sufficientemente lunghe ed è il cifrario asimmetrico di più largo impiego.
 
-#### Cifrario RSA: Creazione delle Chiavi
+### Creazione delle Chiavi
 
 Come destinatario, un utente (Dest) esegue i seguenti passaggi:
 1. Sceglie due numeri primi molto grandi, p e q.
@@ -769,7 +769,7 @@ Come destinatario, un utente (Dest) esegue i seguenti passaggi:
 4. Calcola l’intero d, che è l’inverso moltiplicativo di e modulo φ(n).
 5. Rende pubblica la chiave k[pub] = (e, n) e mantiene segreta la chiave k[prv] = d.
 
-#### Cifrario RSA: Messaggio, Codifica e Decodifica
+### Messaggio, Codifica e Decodifica
 
 - **Codifica:**  
   Ogni messaggio viene convertito in una sequenza binaria e interpretato come un numero intero m, con m < n (eventualmente dividendo il messaggio in blocchi). La codifica avviene con la formula:
@@ -796,7 +796,7 @@ Le chiavi risultano:
 La codifica del messaggio è data da: c = m⁷ mod 55  
 La decodifica dal crittogramma è: m = c²³ mod 55
 
-#### Correttezza
+### Correttezza
 
 Nel cifrario RSA, per qualsiasi intero $m$ tale che $m < n$, dove $n = p \cdot q$, la proprietà fondamentale che garantisce la correttezza del sistema è:
 
@@ -878,15 +878,15 @@ Si utilizza anche un test di primalità probabilistico che consiste in:
 3. Se $x = 1$, dichiarare $n$ primo; altrimenti, $n$ è composto.
 4. Ripetere il test $k$ volte per ridurre la probabilità di errore.
 
+Dato che la problablità che estraendo $a$ casuale tra 1 e $n-1$ ed avendo $x = 1$ nonostante $n$ non sia primo è $\frac{1}{10^{13}}$ avendo $k$ iterazioni avremo un falso positivo ogni $(10^{13})^k$, sui calcolatori l'utilizzo di $10^{13}$ come denominatore darebbe già uno 0 ma elevando alla $k$ si eleva esponenzialmente.
+
 ### Come Generare $e$ e $d$
 
-**Scelta di $e$:**  
-Il numero $e$ viene scelto casualmente in modo che sia coprimo con $\varphi(n)$ (verificato mediante l'algoritmo di Euclide).
+**Scelta di $e$:** Il numero $e$ viene scelto casualmente in modo che sia coprimo con $\varphi(n)$ (verificato mediante l'algoritmo di Euclide).
 
-**Calcolo di $d$:**  
-Utilizzando l'algoritmo di Euclide Esteso, si trova l'inverso moltiplicativo di $e$ modulo $\varphi(n)$.
+**Calcolo di $d$:** Utilizzando l'algoritmo di Euclide Esteso, si trova l'inverso moltiplicativo di $e$ modulo $\varphi(n)$.
 
-## Operazioni di Codifica e Decodifica
+### Operazioni di Codifica e Decodifica
 
 Le operazioni RSA richiedono il calcolo di potenze modulari, ossia il calcolo di espressioni del tipo: $a^b \mod c$, dove $a$, $b$ e $c$ sono numeri molto grandi.  
 L'approccio diretto (moltiplicare $a$ per se stesso $b$ volte) è inaccettabile, quindi si utilizza l'espansione binaria dell'esponente e la tecnica di esponenziazione rapida, che riduce il numero di operazioni a una quantità lineare rispetto alla lunghezza binaria dell'esponente.
