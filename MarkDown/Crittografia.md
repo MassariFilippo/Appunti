@@ -82,6 +82,22 @@
       - [Algoritmo di Euclide per il Massimo Comune Divisore (MCD)](#algoritmo-di-euclide-per-il-massimo-comune-divisore-mcd)
       - [Algoritmo di Euclide Esteso](#algoritmo-di-euclide-esteso)
     - [Cifrari Ibridi](#cifrari-ibridi)
+  - [Diffie-Hellman](#diffie-hellman)
+    - [Generazione di una Chiave Segreta Condivisa](#generazione-di-una-chiave-segreta-condivisa)
+    - [Sicurezza del Protocollo](#sicurezza-del-protocollo)
+    - [Logaritmo Discreto](#logaritmo-discreto)
+    - [Attacco Man-in-the-Middle](#attacco-man-in-the-middle)
+  - [Taher ElGamal](#taher-elgamal)
+    - [Campo Finito](#campo-finito)
+      - [Esempio di Campo Finito](#esempio-di-campo-finito)
+    - [Generatore di un Campo Finito](#generatore-di-un-campo-finito)
+      - [Esempio di Generatore](#esempio-di-generatore)
+    - [Campo da Gioco](#campo-da-gioco)
+    - [Generazione delle Chiavi](#generazione-delle-chiavi)
+    - [Codifica](#codifica)
+    - [Decodifica](#decodifica)
+    - [Correttezza](#correttezza-1)
+    - [Sicurezza](#sicurezza)
 
 
 <div style="page-break-after: always;"></div>
@@ -917,3 +933,174 @@ Per questo motivo, nelle applicazioni pratiche si utilizzano sistemi ibridi in c
 - La crittografia simmetrica, più veloce, viene utilizzata per cifrare effettivamente i dati.
 
 Questo approccio consente di sfruttare i vantaggi di entrambi i sistemi, garantendo comunicazioni sicure ed efficienti.
+
+## Diffie-Hellman
+
+Un gruppo è una struttura algebrica costituita da un insieme non vuoto e un'operazione binaria interna (come la somma o il prodotto) che soddisfa gli assiomi di associatività, esistenza dell'elemento neutro e esistenza dell'inverso per ogni elemento. Se l'operazione è anche commutativa, il gruppo è detto Abeliano. Un esempio di gruppo abeliano è $(\mathbb{Z}_n, +)$, dove l'operazione è la somma modulo $n$.
+
+- **Proprietà di un Gruppo $(G, \cdot)$:**
+  - **Associatività:** Per ogni $a, b, c \in G$, $(a \cdot b) \cdot c = a \cdot (b \cdot c)$.
+  - **Elemento Neutro:** Esiste un elemento $e \in G$ tale che per ogni $a \in G$, $a \cdot e = e \cdot a = a$.
+  - **Inverso:** Per ogni $a \in G$, esiste un elemento $a^{-1} \in G$ tale che $a \cdot a^{-1} = a^{-1} \cdot a = e$.
+
+- **Proprietà di un Gruppo Abeliano $(G, \cdot)$:**
+  - **Commutatività:** Per ogni $a, b \in G$, $a \cdot b = b \cdot a$.
+
+Consideriamo $(\mathbb{Z}_n, +)$ con l'operazione di somma modulo $n$. Questo è un gruppo abeliano. L'elemento 1 è un generatore del gruppo perché ogni elemento $x$ può essere scritto come una somma di 1, rendendo $(\mathbb{Z}_n, +)$ un gruppo ciclico.
+
+In un gruppo moltiplicativo $G$, un generatore $g \in G$ è un elemento tale che ogni elemento del gruppo può essere espresso come una potenza di $g$.
+
+$\mathbb{Z}_p^*$ è il gruppo moltiplicativo degli interi modulo $ p $ che sono coprimi con $ p $ (quindi lo zero è escluso). Questo gruppo è definito come:
+
+$$
+\mathbb{Z}_p^* = \{1, 2, \ldots, p - 1\}
+$$
+
+Per ogni valore primo $ p $, esiste sempre un elemento $ g \in \mathbb{Z}_p^* $ tale che $ g $ è un generatore moltiplicativo di $\mathbb{Z}_p^*$.
+
+![](img/Critto/Z13.png)
+
+Prendendo un numero $p$ di 1000 e più cifre non potremmo contenere in relatico gruppo in nessun calcolatore, conoscendo un generatore potremmo scorrere i numeri in esso contenuti con un criterio ciclico che garantisce data la grandezza del gruppo che non sia gestibile in memorie terze.
+
+### Generazione di una Chiave Segreta Condivisa
+
+Alice e Bob vogliono generare una chiave segreta condivisa senza scambiarsi direttamente la chiave. Utilizzano il protocollo Diffie-Hellman per cooperare nella generazione della chiave.
+
+1. Alice sceglie un numero primo $p$, un generatore $g$ del gruppo moltiplicativo $\mathbb{Z}_p^*$, e un intero $a > 0$.
+2. Alice calcola $A = g^a \mod p$ e invia a Bob i valori $(g, p, A)$, per estrarre $a$ da $A$ dovremmo fare il logaritmo discreto su un gruppo eneorme quimdi mettiamo in cassaforte $a$. 
+3. Bob sceglie un intero $b$ e calcola $B = g^b \mod p$.
+4. Bob invia $B$ ad Alice.
+5. Bob calcola la chiave segreta $K = A^b \mod p$.
+6. Alice calcola la chiave segreta $K = B^a \mod p$.
+
+Entrambi ottengono la stessa chiave segreta $K$ grazie alla proprietà commutativa delle potenze:
+
+$$
+K = (g^b)^a \mod p = (g^a)^b \mod p
+$$
+
+![](img/Critto/diffleHellmanChiavi.png)
+
+Eve ha solo $g^a$ e $g^b$ e facendo $g^a*g^b$ è diveso sia a $(g^b)^a$ e $(g^a)^b$ dato che $a$ e $b$ somo protetti dal logaritmo discreto siamo tutelati ampiamente.
+
+### Sicurezza del Protocollo
+
+Alla fine del protocollo, Alice e Bob condividono la stessa chiave di sessione, che può essere utilizzata per cifrare le comunicazioni successive. Un crittoanalista passivo, che intercetta i valori $p, g, A, B$, deve risolvere il problema del logaritmo discreto per calcolare la chiave di sessione, un problema computazionalmente difficile per valori di $p$ molto grandi.
+
+### Logaritmo Discreto
+
+Il problema del logaritmo discreto consiste nel trovare $a$ tale che $A = g^a \mod p$. Questo problema è noto per essere difficile da risolvere, il che garantisce la sicurezza del protocollo Diffie-Hellman.
+
+### Attacco Man-in-the-Middle
+
+Nonostante la sicurezza contro crittoanalisti passivi, il protocollo è vulnerabile a un attacco man-in-the-middle. Un crittoanalista attivo, chiamato Eve, può intercettare e modificare le comunicazioni tra Alice e Bob. Eve sceglie un intero $z$, calcola $Z = g^z \mod p$, e si interpone tra Alice e Bob, sostituendo i messaggi con i propri. Alice e Bob finiscono per calcolare chiavi diverse, $K_A = Z^a \mod p$ e $K_B = Z^b \mod p$, e comunicano con Eve, che può decifrare e modificare i messaggi.
+
+![](img/Critto/manInTheMiddel.png)
+
+## Taher ElGamal
+
+ElGamal è un sistema di cifratura a chiave pubblica proposto dal ricercatore egiziano-americano Taher ElGamal nel 1985. Questo schema si basa sulla difficoltà del calcolo del logaritmo discreto, un problema matematico che rende sicuro il protocollo. In termini semplici, dato $x$, $y$, e $n$, il problema consiste nel trovare $z$ tale che:
+
+$$
+y = x^z \mod n
+$$
+
+### Campo Finito
+
+Un campo finito è una struttura algebrica $(F, +, \cdot)$ che soddisfa le seguenti proprietà:
+
+1. **Insieme Non Vuoto:** $F$ è un insieme non vuoto.
+2. **Operazioni:** Le operazioni di addizione ($+$) e moltiplicazione ($\cdot$) sono definite su $F$.
+3. **Proprietà delle Operazioni:**
+   - **Associatività e Commutatività dell’Addizione:** Per ogni $a, b, c \in F$, $a + (b + c) = (a + b) + c$ e $a + b = b + a$.
+   - **Elemento Neutro e Opposto dell’Addizione:** Esiste un elemento neutro $0$ tale che $a + 0 = a$ e per ogni $a$ esiste un opposto $-a$ tale che $a + (-a) = 0$.
+   - **Associatività e Commutatività della Moltiplicazione:** Per ogni $a, b, c \in F$, $a \cdot (b \cdot c) = (a \cdot b) \cdot c$ e $a \cdot b = b \cdot a$.
+   - **Elemento Neutro e Inverso della Moltiplicazione:** Esiste un elemento neutro $1$ tale che $a \cdot 1 = a$ e per ogni $a \neq 0$ esiste un inverso $a^{-1}$ tale che $a \cdot a^{-1} = 1$.
+   - **Distributività:** Per ogni $a, b, c \in F$, $a \cdot (b + c) = (a \cdot b) + (a \cdot c)$.
+
+4. **Ordine del Campo:** Il campo ha un numero finito di elementi, denotato come $|F|$, che corrisponde al suo ordine.
+
+#### Esempio di Campo Finito
+
+Un esempio di campo finito è il campo $\mathbb{F}_p$, dove $p$ è un numero primo. Ad esempio, se $p = 5$, allora il campo finito $\mathbb{F}_5$ consiste nei numeri $\{0, 1, 2, 3, 4\}$ con le operazioni di addizione e moltiplicazione eseguite modulo 5. Questo campo finito è denotato come $\mathbb{F}_5$ e rappresenta un esempio semplice ma significativo di un campo finito.
+
+### Generatore di un Campo Finito
+
+Un elemento $g$ di un campo finito $F$ è detto generatore se ogni elemento non nullo di $F$ può essere espresso come potenza di $g$. Formalmente, $g$ è un generatore se:
+
+$$
+F \setminus \{0\} = \{g^0, g^1, g^2, \ldots, g^{|F|-2}\}
+$$
+
+Ad esempio, in $\mathbb{F}_p$, gli elementi $2, \ldots, p-1$ possono essere generatori.
+
+#### Esempio di Generatore
+
+Consideriamo $\mathbb{F}_7$. L’elemento 3 è un generatore perché:
+
+- $3^0 = 1$
+- $3^1 = 3$
+- $3^2 = 2$
+- $3^3 = 6$
+- $3^4 = 4$
+- $3^5 = 5$
+
+### Campo da Gioco
+
+Sia $F$ un campo finito con $q$ elementi e sia $g \in F$ un generatore di $F$.
+
+### Generazione delle Chiavi
+
+Alice e Bob generano ciascuno una coppia di chiavi:
+
+- **Alice:**
+  - Chiave privata: $\text{PrvA}$ (numero scelto a caso nell’insieme $\{1, \ldots, q-1\}$)
+  - Chiave pubblica: $\text{PubA} = g^{\text{PrvA}} \mod q$
+
+- **Bob:**
+  - Chiave privata: $\text{PrvB}$ (numero scelto a caso nell’insieme $\{1, \ldots, q-1\}$)
+  - Chiave pubblica: $\text{PubB} = g^{\text{PrvB}} \mod q$
+
+### Codifica
+
+Alice codifica e invia un messaggio $m < q$ a Bob:
+
+1. Alice genera un numero casuale $k \in \{1, \ldots, q-1\}$.
+2. Calcola:
+   - $K_A = \text{PubB}^k \mod q$
+   - $C_1 = g^k \mod q$
+   - $C_2 = K_A \cdot m \mod q$
+3. Invia a Bob la coppia $(C_1, C_2)$.
+
+### Decodifica
+
+Bob decodifica il messaggio ricevuto:
+
+1. Riceve $(C_1, C_2)$.
+2. Calcola:
+   - $K_B = C_1^{\text{PrvB}} \mod q$
+   - $m = C_2 \cdot K_B^{-1} \mod q$
+
+![](img/Critto/elgamal.png)
+
+### Correttezza
+
+Dimostriamo che $K_A = K_B$:
+
+- $K_A = \text{PubB}^k \mod q = (g^{\text{PrvB}} \mod q)^k \mod q = g^{k \cdot \text{PrvB}} \mod q$
+- $K_B = C_1^{\text{PrvB}} \mod q = (g^k \mod q)^{\text{PrvB}} \mod q = g^{k \cdot \text{PrvB}} \mod q$
+
+Poiché $K_A = K_B$, si ha:
+
+$$
+C_2 \cdot K_B^{-1} \mod q = (K_A \cdot m \mod q) \cdot K_B^{-1} \mod q = m \mod q
+$$
+
+### Sicurezza
+
+Un intruso conosce $q$, $g$, e $\text{PubB} = g^{\text{PrvB}} \mod q$, e vede passare sul canale:
+
+- $C_1 = g^k \mod q$
+- $C_2 = \text{PubB}^k \cdot m \mod q$
+
+Per calcolare $m$ o, ancora meglio, $\text{PrvB}$, l'intruso dovrebbe risolvere il problema del logaritmo discreto, che è computazionalmente difficile.
