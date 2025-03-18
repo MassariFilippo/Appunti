@@ -61,9 +61,6 @@
     - [Archittettura Kerberos](#archittettura-kerberos)
     - [Chiavi Statiche e Dinamiche in Kerberos](#chiavi-statiche-e-dinamiche-in-kerberos)
     - [Fasi del Protocollo Kerberos](#fasi-del-protocollo-kerberos)
-      - [1. Ottenimento del Ticket Granting Ticket (TGT)](#1-ottenimento-del-ticket-granting-ticket-tgt)
-      - [2. Ottenimento del Ticket di Servizio](#2-ottenimento-del-ticket-di-servizio)
-      - [3. Accesso al Servizio](#3-accesso-al-servizio)
     - [Meccanismo di Autenticazione e Verifica](#meccanismo-di-autenticazione-e-verifica)
   - [Virtualizzazione e Container](#virtualizzazione-e-container)
     - [Virtualizzazione vs. Emulazione](#virtualizzazione-vs-emulazione)
@@ -73,6 +70,28 @@
     - [Full Virtualization vs. Para-Virtualization](#full-virtualization-vs-para-virtualization)
     - [Container](#container)
       - [Principali Tecnologie di Containerizzazione](#principali-tecnologie-di-containerizzazione)
+  - [Comandi Doker](#comandi-doker)
+    - [Installazione di Docker](#installazione-di-docker)
+      - [Installazione su Ubuntu](#installazione-su-ubuntu)
+      - [Installazione su Debian](#installazione-su-debian)
+    - [Esecuzione di Docker senza sudo](#esecuzione-di-docker-senza-sudo)
+    - [Utilizzo del Comando Docker](#utilizzo-del-comando-docker)
+    - [Lavorare con le Immagini Docker](#lavorare-con-le-immagini-docker)
+      - [Esecuzione di un Container di Test](#esecuzione-di-un-container-di-test)
+      - [Ricerca e Download di Immagini](#ricerca-e-download-di-immagini)
+      - [Rimozione di Immagini Locali](#rimozione-di-immagini-locali)
+    - [Esecuzione di un Container Docker](#esecuzione-di-un-container-docker)
+    - [Gestione dei Container Docker](#gestione-dei-container-docker)
+      - [Stop \& Start dei Container](#stop--start-dei-container)
+      - [Rimozione dei Container](#rimozione-dei-container)
+    - [Committing delle Modifiche in un Container](#committing-delle-modifiche-in-un-container)
+    - [Cambiare Nome a un'Immagine Docker](#cambiare-nome-a-unimmagine-docker)
+    - [Pubblicare un'Immagine Docker su un Registro](#pubblicare-unimmagine-docker-su-un-registro)
+    - [Selezione dei Container](#selezione-dei-container)
+    - [Parametri del Comando `docker run`](#parametri-del-comando-docker-run)
+    - [Reti](#reti)
+    - [Immagini Docker e Filesystem](#immagini-docker-e-filesystem)
+      - [Volumi, Bind Mounts, Tmpfs Mounts](#volumi-bind-mounts-tmpfs-mounts)
 
 
 <div style="page-break-after: always;"></div>
@@ -776,15 +795,15 @@ Kerberos è un sistema di autenticazione che si basa su un modello di terza part
 
 Il protocollo Kerberos si articola in tre fasi principali, ognuna delle quali è fondamentale per garantire un'autenticazione sicura e affidabile in un ambiente distribuito.
 
-#### 1. Ottenimento del Ticket Granting Ticket (TGT)
+**1. Ottenimento del Ticket Granting Ticket (TGT)**
 
 Nella prima fase, il client invia una richiesta al **server di autenticazione (AS)**. Questa richiesta contiene informazioni cruciali, come l'identificativo dell'utente e il realm di appartenenza. Il server AS, dopo aver verificato l'identità del client, risponde fornendo un **Ticket Granting Ticket (TGT)**. Questo ticket è una credenziale di autenticazione non alterabile, che consente all'utente di richiedere ulteriori ticket per accedere a servizi specifici all'interno della rete.
 
-#### 2. Ottenimento del Ticket di Servizio
+**2. Ottenimento del Ticket di Servizio**
 
 Nella seconda fase, il client utilizza il TGT ottenuto per inviare una richiesta al **Ticket Granting Server (TGS)**. In questa richiesta, il client presenta il TGT e richiede un ticket di servizio per accedere a un servizio specifico. Il TGS, dopo aver verificato il TGT, risponde con un ticket di servizio che consente l'accesso al servizio desiderato, insieme a una chiave di sessione. Questo ticket di servizio è essenziale per garantire che solo gli utenti autorizzati possano accedere a risorse specifiche.
 
-#### 3. Accesso al Servizio
+**3. Accesso al Servizio**
 
 Nella terza fase, il client utilizza il ticket di servizio per autenticarsi presso il server del servizio richiesto. Il server verifica la validità del ticket e, se tutto è in ordine, consente l'accesso al servizio. Questo passaggio è cruciale, poiché garantisce che solo gli utenti che possiedono un ticket valido possano interagire con il servizio, mantenendo così la sicurezza dell'intero sistema.
 
@@ -933,3 +952,465 @@ L'ecosistema dei container su Linux è supportato da strumenti come Docker, Kube
 ![](img/Virtualizzazione/contPre2018.png)
 
 ![](img/Virtualizzazione/contPost2018.png)
+
+## Comandi Doker
+
+### Installazione di Docker
+
+#### Installazione su Ubuntu
+
+Per installare Docker su Ubuntu, ci sono diversi metodi disponibili. Ecco una guida passo-passo per l'installazione tramite il repository **apt**:
+
+1. **Aggiornare i pacchetti:**  
+   ```bash
+   sudo apt update
+   ```
+
+2. **Installare i pacchetti necessari:**  
+   ```bash
+   sudo apt install ca-certificates curl gnupg lsb-release apt-transport-https software-properties-common
+   ```
+
+3. **Registrare il portachiavi GPG di Docker:**  
+   Questo passaggio permette a `apt` di convalidare i pacchetti Docker installati.
+   ```bash
+   sudo mkdir -p /etc/apt/keyrings
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+   sudo chmod a+r /etc/apt/keyrings/docker.gpg
+   ```
+
+4. **Aggiungere il repository Docker:**  
+   ```bash
+   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   ```
+
+5. **Installare Docker:**  
+   ```bash
+   sudo apt update
+   sudo apt install docker-ce docker-ce-cli containerd.io
+   ```
+
+6. **Verificare lo stato di Docker:**  
+   ```bash
+   sudo systemctl status docker
+   ```
+
+#### Installazione su Debian
+
+L'installazione su Debian è simile a quella su Ubuntu:
+
+1. **Aggiornare i pacchetti:**  
+   ```bash
+   sudo apt-get update
+   ```
+
+2. **Installare i pacchetti necessari:**  
+   ```bash
+   sudo apt install apt-transport-https ca-certificates curl software-properties-common
+   ```
+
+3. **Aggiungere la chiave GPG di Docker:**  
+   ```bash
+   curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+   ```
+
+4. **Aggiungere il repository Docker:**  
+   ```bash
+   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+   ```
+
+5. **Installare Docker:**  
+   ```bash
+   sudo apt-get update
+   sudo apt-get install docker-ce docker-ce-cli containerd.io
+   ```
+
+6. **Verificare lo stato di Docker:**  
+   ```bash
+   sudo systemctl status docker
+   ```
+
+### Esecuzione di Docker senza sudo
+
+Di default, il comando `docker` può essere eseguito solo dall'utente root o da un utente nel gruppo `docker`. Per evitare di dover digitare `sudo` ogni volta, è possibile aggiungere il proprio nome utente al gruppo `docker`:
+
+1. **Aggiungere l'utente al gruppo docker:**  
+   ```bash
+   sudo usermod -aG docker ${USER}
+   ```
+
+2. **Verificare l'aggiunta al gruppo:**  
+   ```bash
+   id -nG
+   ```
+
+3. **Ricaricare l'utente:**  
+   ```bash
+   su - ${USER}
+   ```
+
+### Utilizzo del Comando Docker
+
+La sintassi generale del comando Docker è:  
+```bash
+docker [option] [command] [arguments]
+```
+
+Per visualizzare tutti i sottocomandi disponibili, digitare:  
+```bash
+docker
+```
+
+**Comandi comuni:**
+
+- **attach:** Collega input, output e errori standard locali a un container in esecuzione.
+- **commit:** Crea una nuova immagine dalle modifiche di un container.
+- **exec:** Esegue un comando in un container in esecuzione.
+- **images:** Elenca le immagini.
+- **ps:** Elenca i container.
+- **run:** Esegue un comando in un nuovo container.
+- **start/stop:** Avvia o ferma uno o più container.
+
+### Lavorare con le Immagini Docker
+
+Le immagini Docker sono la base per i container. Docker scarica queste immagini da Docker Hub, un registro gestito da Docker.
+
+#### Esecuzione di un Container di Test
+
+Per verificare che Docker funzioni correttamente, eseguire:  
+```bash
+docker run hello-world
+```
+
+#### Ricerca e Download di Immagini
+
+Per cercare immagini su Docker Hub:  
+```bash
+docker search ubuntu
+```
+
+Per scaricare un'immagine:  
+```bash
+docker pull ubuntu
+```
+
+Per vedere le immagini scaricate:  
+```bash
+docker images
+```
+
+#### Rimozione di Immagini Locali
+
+Per rimuovere immagini:  
+```bash
+docker rmi ubuntu httpd
+```
+
+### Esecuzione di un Container Docker
+
+I container possono essere interattivi. Per esempio, per eseguire un container usando l'ultima immagine di Ubuntu:  
+```bash
+docker run -it ubuntu
+```
+
+Per assegnare un nome al container:  
+```bash
+docker run -it --name myubuntu ubuntu
+```
+
+### Gestione dei Container Docker
+
+Per visualizzare i container attivi:  
+```bash
+docker ps
+```
+
+Per visualizzare tutti i container, inclusi quelli inattivi:  
+```bash
+docker ps -a
+```
+
+#### Stop & Start dei Container
+
+Per fermare un container:  
+```bash
+docker stop myubuntu
+```
+
+Per avviare un container fermo:  
+```bash
+docker start d9b100f2f636
+```
+
+#### Rimozione dei Container
+
+Per rimuovere un container:  
+```bash
+docker rm festive_williams
+```
+
+### Committing delle Modifiche in un Container
+
+Dopo aver modificato un container, è possibile salvare lo stato come una nuova immagine Docker:  
+```bash
+docker commit -m "added node.js" -a "Vic" e602dd6d84c4 vic/ubuntu_with_node.js
+```
+
+### Cambiare Nome a un'Immagine Docker
+
+Per rinominare un'immagine Docker, creare una copia e poi eliminare l'originale:  
+```bash
+docker tag mymongodb mymongodb_1
+docker rmi mymongodb
+```
+
+### Pubblicare un'Immagine Docker su un Registro
+
+Per condividere un'immagine su Docker Hub:
+
+1. **Accedere a Docker Hub:**  
+   ```bash
+   docker login -u docker-registry-username
+   ```
+
+2. **Pubblicare l'immagine:**  
+   ```bash
+   docker push vittorioghini/ubuntu_with_node.js
+   ```
+
+Dopo aver pubblicato un'immagine, può essere scaricata su un'altra macchina con:  
+```bash
+docker pull vittorioghini/ubuntu_with_node.js
+```
+
+### Selezione dei Container
+
+Il comando `docker ps` consente di filtrare e selezionare i container in base a diversi criteri. Ecco alcuni esempi di utilizzo:
+
+- **Filtrare i container terminati:**  
+  Per visualizzare solo i container che sono terminati, si può usare il filtro `status=exited`:
+  ```bash
+  docker ps -a -f status=exited
+  ```
+
+- **Rimuovere i container terminati:**  
+  Per rimuovere tutti i container che sono terminati, si può combinare il comando `docker ps` con `docker rm`:
+  ```bash
+  docker rm $(docker ps -a -f status=exited -q)
+  ```
+
+- **Visualizzare solo gli ID dei container:**  
+  Il flag `-q` mostra solo gli ID dei container:
+  ```bash
+  docker ps -a -q
+  ```
+
+- **Fermare e rimuovere tutti i container:**  
+  Per fermare e rimuovere tutti i container, si possono usare i seguenti comandi:
+  ```bash
+  docker stop $(docker ps -a -q)
+  docker rm $(docker ps -a -q)
+  ```
+
+**Nota:** `$()` è una sostituzione di comando in bash, che consente di eseguire un comando e utilizzare il suo output come argomento per un altro comando.
+
+
+**Esercizio - Creare un'Immagine Docker da Ubuntu con Netcat e Netstat**
+
+Per creare un'immagine Docker personalizzata basata su Ubuntu con i pacchetti `netcat` e `netstat`, segui questi passaggi:
+
+1. **Cercare i pacchetti necessari:**  
+   ```bash
+   apt-cache search netcat
+   apt-cache search netstat
+   ```
+
+2. **Eseguire un container Ubuntu interattivo:**  
+   ```bash
+   docker run -it --name ubuntu ubuntu
+   ```
+
+3. **Aggiornare i pacchetti e installare i necessari:**  
+   ```bash
+   apt update
+   apt install netcat net-tools iputils-ping wget curl iproute2
+   ```
+
+4. **Uscire dal container:**  
+   ```bash
+   exit
+   ```
+
+5. **Commettere le modifiche in una nuova immagine Docker:**  
+   ```bash
+   docker commit -m "added_nc_netstat" -a "Vic" $(docker ps -a -q -f status=exited -f "name=ubuntu") vic/ubuntu_with_nc_netstat
+   ```
+
+6. **Rimuovere il container originale:**  
+   ```bash
+   docker rm ubuntu
+   ```
+
+
+### Parametri del Comando `docker run`
+
+Il comando `docker run` supporta una vasta gamma di opzioni per configurare l'esecuzione di un container. Ecco alcuni parametri comuni:
+
+- **-e:** Imposta variabili d'ambiente.
+- **-d:** Esegue il container in background e stampa l'ID del container.
+- **-i:** Mantiene aperto lo STDIN anche se non è collegato.
+- **--name:** Assegna un nome al container.
+- **--network:** Collega un container a una rete specifica.
+- **-p:** Pubblica le porte del container sull'host.
+- **-v:** Monta un volume.
+- **--rm:** Rimuove automaticamente il container quando esce.
+
+**Esecuzione Interattiva di un Container Docker**
+
+I container possono essere eseguiti in modalità interattiva. Ad esempio, per eseguire un container Ubuntu interattivo:
+
+```bash
+docker run -it ubuntu
+```
+
+Oppure, per assegnare un nome al container:
+
+```bash
+docker run -it --name myubuntu ubuntu
+```
+
+All'interno del container, il prompt dei comandi cambierà per riflettere che stai lavorando all'interno del container.
+
+**Esecuzione di Comandi Bash Interattivi all'interno di un Container**
+
+All'interno del container, puoi eseguire qualsiasi comando. Ad esempio, per installare Node.js:
+
+```bash
+apt update
+apt install nodejs
+node -v
+```
+
+Per uscire dal container, digita `exit`. Questo fermerà il container.
+
+**Esecuzione di un Container con un Comando Specifico**
+
+Puoi eseguire un container e specificare un comando da eseguire:
+
+```bash
+docker run -it --name myubuntu ubuntu /usr/bin/find / -iname '*.sh'
+```
+
+Quando il comando `find` termina, il container si ferma.
+
+**Variabili d'Ambiente**
+
+Puoi impostare variabili d'ambiente quando esegui un container:
+
+```bash
+docker run -it -e "PIPPO=PIPPOEPLUTO" --name myubuntu ubuntu
+```
+
+All'interno del container, puoi verificare la variabile d'ambiente:
+
+```bash
+echo $PIPPO
+```
+
+**Esecuzione in Background**
+
+Per eseguire un container in background:
+
+```bash
+docker run -d --name myubuntu ubuntu
+```
+
+Puoi controllare lo stato del container con `docker ps -a`.
+
+**Esecuzione Interattiva di un Comando in un Container in Background**
+
+Puoi eseguire comandi interattivi in un container in background usando `docker exec`:
+
+```bash
+docker exec -it -u root:root -w /usr/local/ myubuntu find ./ -iname '*ma*'
+```
+
+**Esecuzione di un Comando in Background in un Container in Background**
+
+Per eseguire un comando in background in un container in background:
+
+```bash
+docker exec -d -u root:root -w /usr/local/ myubuntu find ./ -iname '*ma*'
+```
+
+**Collegare una Shell Interattiva a un Container in Background**
+
+Puoi collegare una shell interattiva a un container in background:
+
+```bash
+docker attach myubuntu
+```
+
+**Scollegare un Container in Primo Piano**
+
+Per scollegare un container in primo piano senza fermarlo, usa `CTRL+p` e `CTRL+q`.
+
+
+### Reti
+
+Il sottosistema di rete di Docker è modulare e utilizza driver per fornire funzionalità di rete. I driver di rete predefiniti includono:
+
+- **bridge:** Consente ai container di comunicare tra loro e con servizi esterni.
+- **host:** Rimuove l'isolamento di rete tra il container e l'host Docker.
+- **overlay:** Connette più demoni Docker e abilita la comunicazione tra servizi swarm.
+- **macvlan:** Assegna un indirizzo MAC a un container, facendolo apparire come un dispositivo fisico sulla rete.
+- **none:** Disabilita tutte le funzionalità di rete per il container.
+
+**Rete Bridge Predefinita**
+
+La rete bridge predefinita consente ai container di connettersi al mondo esterno. Per abilitare il forwarding, è necessario configurare il kernel Linux:
+
+```bash
+sysctl net.ipv4.conf.all.forwarding=1
+sudo iptables -P FORWARD ACCEPT
+```
+
+**Reti dal Punto di Vista del Container**
+
+Dal punto di vista del container, la rete è trasparente. Ogni container ha un'interfaccia di rete con un indirizzo IP, un gateway, una tabella di routing e servizi DNS.
+
+**Porte Pubblicate**
+
+Per rendere una porta del container disponibile all'esterno, usa il flag `--publish` o `-p`:
+
+```bash
+docker run -p 8080:80 myimage
+```
+
+**Indirizzi IP e Nome Host del Container**
+
+Per impostazione predefinita, a un container viene assegnato un indirizzo IP per ogni rete Docker a cui si connette. Puoi specificare l'indirizzo IP e il nome host usando i flag `--ip` e `--hostname`.
+
+**Servizi DNS del Container**
+
+Un container eredita le impostazioni DNS del demone Docker, ma puoi sovrascriverle per container.
+
+
+### Immagini Docker e Filesystem
+
+Le immagini dei container sono salvate nel registro del demone Docker, nel filesystem dell'host. Quando un container viene creato, ha un filesystem iniziale basato sull'immagine. Le modifiche apportate durante l'esecuzione sono salvate temporaneamente nel filesystem dell'host.
+
+#### Volumi, Bind Mounts, Tmpfs Mounts
+
+- **Tmpfs Mounts:** Partizioni temporanee in memoria.
+- **Bind Mounts:** Partizioni collegate a directory dell'host.
+- **Managed Volumes:** Volumi gestiti da Docker, persistenti.
+
+**Bind Mounts**
+
+I bind mounts consentono di collegare directory dell'host al filesystem del container. Questo è utile per rendere persistenti i dati oltre la vita del container.
+
+**Rimozione Automatica del Container all'Uscita**
+
+Il flag `--rm` rimuove automaticamente il container quando esce, insieme ai volumi unnamed.
+
