@@ -98,6 +98,20 @@
     - [Decodifica](#decodifica)
     - [Correttezza](#correttezza-1)
     - [Sicurezza](#sicurezza)
+  - [Curve Ellittiche](#curve-ellittiche)
+    - [Campo](#campo)
+    - [Curva Ellittica](#curva-ellittica)
+    - [Intersezione tra Curve Ellittiche e Rette](#intersezione-tra-curve-ellittiche-e-rette)
+    - [Addizione su Curve Ellittiche](#addizione-su-curve-ellittiche)
+    - [Curve Ellittiche su un Campo Finito](#curve-ellittiche-su-un-campo-finito)
+      - [Curve Ellittiche su $\\mathbb{Z}\_p$](#curve-ellittiche-su-mathbbz_p)
+    - [Curve Ellittiche Binarie](#curve-ellittiche-binarie)
+    - [Logaritmo Discreto su Curve Ellittiche](#logaritmo-discreto-su-curve-ellittiche)
+    - [Scambio di Chiavi su Curve Ellittiche](#scambio-di-chiavi-su-curve-ellittiche)
+    - [Sicurezza del Protocollo](#sicurezza-del-protocollo-1)
+    - [Scambio di Messaggi su Curve Ellittiche](#scambio-di-messaggi-su-curve-ellittiche)
+    - [Algoritmo di Koblitz](#algoritmo-di-koblitz)
+    - [Sicurezza e Lunghezza delle Chiavi](#sicurezza-e-lunghezza-delle-chiavi)
 
 
 <div style="page-break-after: always;"></div>
@@ -1104,3 +1118,229 @@ Un intruso conosce $q$, $g$, e $\text{PubB} = g^{\text{PrvB}} \mod q$, e vede pa
 - $C_2 = \text{PubB}^k \cdot m \mod q$
 
 Per calcolare $m$ o, ancora meglio, $\text{PrvB}$, l'intruso dovrebbe risolvere il problema del logaritmo discreto, che è computazionalmente difficile.
+
+## Curve Ellittiche
+
+### Campo
+
+Un campo $K$ è un insieme non vuoto dotato di due operazioni, addizione e moltiplicazione, che soddisfano le seguenti proprietà:
+
+1. **Associatività e Commutatività:** Le operazioni di addizione e moltiplicazione sono associative e commutative.
+2. **Elemento Neutro:** Esiste un elemento neutro per l'addizione (0) e uno per la moltiplicazione (1).
+3. **Inverso:** Ogni elemento ha un inverso per l'addizione, e ogni elemento diverso da zero ha un inverso per la moltiplicazione.
+4. **Distributività:** La moltiplicazione è distributiva rispetto all'addizione: per ogni $a, b, c \in K$, si ha $a \cdot (b + c) = (a \cdot b) + (a \cdot c)$.
+
+Un campo $(K, +, \cdot)$ è tale che:
+
+- $(K, +)$ è un gruppo abeliano con elemento neutro 0.
+- $(K \setminus \{0\}, \cdot)$ è un gruppo abeliano con elemento neutro 1.
+
+Esempi di campi includono:
+
+- $(\mathbb{Q}, +, \cdot)$: il campo dei numeri razionali.
+- $(\mathbb{R}, +, \cdot)$: il campo dei numeri reali.
+- $(\mathbb{C}, +, \cdot)$: il campo dei numeri complessi.
+- $(\mathbb{Z}_p, +, \cdot)$: il campo dei numeri interi modulo un numero primo $p$.
+
+$(\mathbb{Z}, +, \cdot)$ non è un campo perché gli unici elementi invertibili per la moltiplicazione sono 1 e -1.
+
+La **caratteristica di un campo** è il più piccolo numero naturale $k$ tale che sommando $k$ volte l'elemento neutro moltiplicativo (1) si ottiene l'elemento neutro additivo (0). Se tale $k$ non esiste, la caratteristica è 0.
+
+- La caratteristica di $(\mathbb{Q}, +, \cdot)$ è 0.
+- La caratteristica di $(\mathbb{Z}_p, +, \cdot)$ è $p$, poiché $p \cdot 1 = 0$.
+
+### Curva Ellittica
+
+Una curva ellittica $E$ su un campo $K$ è definita come l'insieme dei punti $(x, y) \in K^2$ che soddisfano l'equazione:
+
+$$y^2 + axy + by = x^3 + cx^2 + dx + e$$
+
+dove $a, b, c, d, e \in K$.
+
+**Forma Normale di Weierstrass:** se la caratteristica del campo $K$ è diversa da 2 e 3, l'equazione di una curva ellittica può essere ridotta alla forma normale di Weierstrass:
+
+$$y^2 = x^3 + ax + b$$
+
+**Somma su Curve Ellittiche**
+
+Le curve ellittiche sono utilizzabili in crittografia perché l'insieme dei loro punti può essere dotato della struttura di un gruppo abeliano additivo. Questo significa che esiste una legge di composizione interna che associa a ogni coppia di punti sulla curva un terzo punto, anch'esso sulla curva. Risulta importante ricordarsi che lavorando in $\mathbb{Z}_p$ le possinili coppie $(x, y) \in K^2$ saranno $(p-1)^2$ con unsa frazione di esse che si troverà sulla curva. La somma su curve ellittiche è associativa, commutativa, ammette un elemento neutro (il punto all'infinito $O$), e ogni punto ha un inverso.
+
+**Curve Ellittiche sui Reali**
+
+Consideriamo una curva ellittica definita sul campo dei numeri reali $\mathbb{R}$. La curva è rappresentabile nel piano cartesiano e include il punto all'infinito $O$ sull'asse delle ordinate. L'insieme dei punti è dato da:
+
+$$E(a, b) = \{(x, y) \in \mathbb{R}^2 : y^2 = x^3 + ax + b\}$$
+
+![](img/Critto/curveEllitticheReali.png)
+
+$$y^2 = x^3 - 4x + e \quad \text{con} \quad e = -4, -3, \ldots, 6, 7$$
+
+![](img/Critto/variazioneEllittica.png)
+
+**Punto all’Infinito:** il punto all'infinito $O$ è il punto in cui rette parallele si incontrano all'infinito crescendo lungo $y$. Per $x \to \infty$, l'equazione della curva tende a $y^2 = x^3$, indicando che la curva contiene il punto $O$. Sia che si vado a numeri alti che a numeri bassi il punto è unico si crea dunque in proiezione un anello.
+
+Le curve ellittiche sui reali possono assumere due forme distinte: una con due componenti, che si verifica quando il polinomio in $x$ ha tre radici reali, e una con una sola componente, che si presenta quando il polinomio ha una sola radice reale. In entrambi i casi, le curve mostrano una simmetria orizzontale rispetto all'asse $x$.
+
+Inoltre, assumiamo che $4a^3 + 27b^2 \neq 0$. Questa condizione garantisce che il polinomio cubico $x^3 + ax + b$ non abbia radici multiple, assicurando così che la curva sia priva di punti singolari come cuspidi o nodi, dove la tangente non sarebbe definita in modo univoco, ovvero il puntp in cui la componente ad anello incotra la parabola e crea un punto di conginzione non derivabile.
+
+### Intersezione tra Curve Ellittiche e Rette
+
+Ogni retta interseca una curva ellittica in al massimo tre punti. Questo avviene perché l'intersezione di una curva di terzo grado con una retta (di primo grado) porta a un'equazione di terzo grado in $x$, che ha fino a tre soluzioni.
+
+**Soluzioni Reali e Complesse:** Possiamo avere una soluzione reale e due complesse coniugate, oppure tre soluzioni reali, passando dai complessi ai reali si penrdono fino a 2 radici sempre a coppie perche sono cippie di complessi cogniugati. Se una retta interseca la curva in due punti $P$ e $Q$, essa interseca anche in un terzo punto $R$. Se la retta è verticale, interseca la curva nei punti $P$, $Q$ (dove $Q = P$), e nel punto all'infinito $O$.
+
+Queste proprietà rendono le curve ellittiche particolarmente adatte per applicazioni crittografiche, grazie alla loro struttura algebrica e alla complessità computazionale associata al calcolo dei logaritmi discreti su di esse.
+
+### Addizione su Curve Ellittiche
+
+L'operazione di addizione su una curva ellittica si basa su alcune proprietà fondamentali. Dati tre punti $P$, $Q$, e $R$ su una curva ellittica $E(a, b)$, se questi punti sono allineati su una retta, allora la loro somma è definita come il punto all'infinito:
+
+$$P + Q + R = O$$
+
+Da questa definizione, possiamo derivare la regola per sommare due punti $P$ e $Q$.
+
+![](img/Critto/sommaEllittica.png)
+
+Nell'esempio (b) P ha mooteplicità algebrica 2 dunque è come se ci fossero 2 punti P sovrapposti da qui nell'esempio otteniamo 2P. Nel punto di intersezione unico con molteplicità $O$ ed in tutti gli altri punti con congiunzione paralleala alla tangente di questo punto vale la stessa cosa dove l'inverso di $O$ è sempre $O$.
+
+**Regola di Addizione**
+
+1. **Retta tra P e Q:**  
+   Se $P$ e $Q$ sono distinti, si considera la retta che passa per $P$ e $Q$. Se $P = Q$, si considera la tangente alla curva in $P$.
+
+2. **Intersezione con la Curva:**  
+   Si determina il punto di intersezione $R$ tra la curva e la retta (o la tangente) considerata.
+
+3. **Somma di P e Q:**  
+   La somma di $P$ e $Q$ è definita come il punto simmetrico a $R$ rispetto all'asse delle ascisse:
+
+   $$P + Q = R'$$
+
+   dove $R'$ è il riflesso di $R$.
+
+**Calcolo dell'Addizione**
+
+- **P e Q distinti ($P \neq Q$):**  
+  Se $P = (x_P, y_P)$ e $Q = (x_Q, y_Q)$, allora:
+
+ $$\lambda = \frac{y_Q - y_P}{x_Q - x_P}$$
+
+ $$x_S = \lambda^2 - x_P - x_Q$$
+
+ $$y_S = y_P + \lambda(x_S - x_P)$$
+
+  Il punto somma è $S = (x_S, -y_S)$.
+
+- **P = Q:**  
+  Se $P = (x_P, y_P)$, allora:
+
+ $$\lambda = \frac{3x_P^2 + a}{2y_P}$$
+
+ $$x_S = \lambda^2 - 2x_P$$
+
+ $$y_S = y_P + \lambda(x_S - x_P)$$
+
+  Se $y_P = 0$, la tangente è verticale e $2P = O$.
+
+**Proprietà dell'Addizione**
+
+- **Chiusura:**  
+  Per ogni $P, Q \in E(a, b)$, il punto $P + Q$ appartiene a $E(a, b)$.
+
+- **Elemento Neutro:**  
+  Per ogni $P \in E(a, b)$, si ha $P + O = O + P = P$.
+
+- **Associatività:**  
+  Per ogni $P, Q, R \in E(a, b)$, si ha $P + (Q + R) = (P + Q) + R$.
+
+- **Commutatività:**  
+  Per ogni $P, Q \in E(a, b)$, si ha $P + Q = Q + P$.
+
+### Curve Ellittiche su un Campo Finito
+
+Le curve ellittiche definite su campi finiti sono di particolare interesse per la crittografia. Gli algoritmi crittografici richiedono un'aritmetica veloce e precisa, che non può essere garantita dalle curve ellittiche sui numeri reali a causa degli errori di arrotondamento. L'aritmetica modulare, invece, rende alcuni problemi computazionalmente difficili, il che è vantaggioso per la sicurezza.
+
+#### Curve Ellittiche su $\mathbb{Z}_p$
+
+Utilizziamo l'insieme $\mathbb{Z}_p$ degli interi modulo un numero primo $p$. In questo campo, tutte le operazioni sono eseguite in algebra modulare, coinvolgendo interi compresi tra 0 e $p - 1$. La caratteristica del campo è $p$, e consideriamo solo campi con $p > 3$ per poter ridurre l'equazione generale di una curva ellittica alla forma normale di Weierstrass. Le curve ellittiche con variabili e coefficienti ristretti agli elementi del campo $\mathbb{Z}_p$ sono chiamate curve ellittiche prime.
+
+**Curve Ellittiche Prime:** presi $a, b \in \mathbb{Z}_p$, la curva ellittica prima $E_p(a, b)$ è definita come l'insieme dei punti che soddisfano l'equazione:
+
+$$y^2 \equiv x^3 + ax + b \pmod{p}$$
+
+insieme al punto all'infinito (elemento neutro).
+
+$$E_p(a, b) = \{(x, y) \in \mathbb{Z}_p^2 : y^2 \equiv x^3 + ax + b \pmod{p}\} \cup \{O\}$$
+
+**Proprietà delle Curve Ellittiche su $\mathbb{Z}_p$**
+
+Se il polinomio $x^3 + ax + b \mod p$ non ha radici multiple, ovvero se $4a^3 + 27b^2 \not\equiv 0 \pmod{p}$, i punti della curva $E_p(a, b)$ formano un gruppo abeliano finito rispetto all'operazione di addizione.
+
+**Esempi di Curve Ellittiche su $\mathbb{Z}_p$**
+
+Eseguendo i calcoli per i punti $P = (17, 41)$ e $Q = (27, 48)$, si ottengono i punti $P + Q = (59, 10)$ e $2P = (48, 14)$. Controlliamo che $(59, 10)$ appartenga alla curva:
+
+$$y^2 \equiv 10^2 \equiv 33 \pmod{67}$$
+
+$$x^3 - x + 1 \equiv 59^3 - 59 + 1 \equiv \ldots \pmod{67}$$
+
+**Ordine delle Curve Ellittiche su $\mathbb{Z}_p$**
+
+Un parametro importante per la sicurezza delle applicazioni crittografiche basate sulle curve ellittiche è l'ordine di una curva, ovvero il suo numero di punti. Una curva $E_p(a, b)$ può avere al massimo $2p + 1$ punti: il punto all'infinito e le $p$ coppie di punti $(x, y)$ e $(x, -y)$ che soddisfano l'equazione $y^2 = x^3 + ax + b$ in modulo, al variare di $x$ in $\mathbb{Z}_p$.
+
+### Curve Ellittiche Binarie
+
+Oltre alle curve prime, la crittografia su curve ellittiche utilizza anche le curve ellittiche binarie. Queste curve hanno coefficienti e variabili che assumono valori nel campo $GF(2^m)$, costituito da $2^m$ elementi, che possono essere pensati come tutti gli interi binari di $m$ cifre, su cui si opera mediante l'aritmetica polinomiale modulare.
+
+### Logaritmo Discreto su Curve Ellittiche
+
+Per definire un sistema crittografico a chiave pubblica utilizzando le curve ellittiche, è fondamentale individuare una funzione one-way con trap-door che garantisca la sicurezza del sistema. Mentre RSA e il protocollo di Diffie-Hellman per lo scambio delle chiavi si basano rispettivamente sul problema della fattorizzazione e sul problema del logaritmo discreto nell’algebra modulare, le curve ellittiche offrono un'alternativa sicura.
+Nelle curve ellittiche, si può definire una funzione one-way con trap-door analoga al logaritmo discreto nell’algebra modulare. L'operazione di addizione di punti su una curva ellittica in un campo finito presenta analogie con l'operazione di prodotto modulare.
+
+- **Moltiplicazione Scalare:**  
+  Fissato un intero positivo $k$, la moltiplicazione scalare di un punto $P$ su una curva ellittica consiste nel sommare $P$ con se stesso $k$ volte, analogamente all'elevamento alla potenza $k$ di un intero in modulo. Entrambe le operazioni possono essere eseguite in tempo polinomiale.
+
+- **Problema del Logaritmo Discreto:**  
+  L'operazione inversa della moltiplicazione scalare su una curva ellittica è il problema del logaritmo discreto: dati due punti $P$ e $Q$, trovare il più piccolo intero $k$ tale che $Q = kP$. Questo problema è analogo al logaritmo discreto su insiemi finiti e risulta computazionalmente difficile, poiché tutti gli algoritmi noti per risolverlo hanno complessità esponenziale.
+
+**Sicurezza del Logaritmo Discreto**
+
+Il problema del logaritmo discreto per le curve ellittiche è computazionalmente difficile, rendendo la funzione one-way con trap-door sicura per la crittografia. Calcolare $Q = kP$ dati $P$ e $k$ è trattabile, ma calcolare $k$ dati $P$ e $Q = kP$ è praticamente intrattabile, fornendo una base solida per la sicurezza della crittografia su curve ellittiche.
+
+### Scambio di Chiavi su Curve Ellittiche
+
+- **Accordo Iniziale:**  
+  Alice e Bob si accordano pubblicamente su un campo finito e su una curva ellittica definita su questo campo. Scelgono un punto $B$ di ordine $n$ molto grande, dove l'ordine $n$ è il più piccolo intero positivo tale che $nB = O$.
+
+- **Generazione delle Chiavi:**
+  - **Alice:** Sceglie un intero positivo casuale $n_A < n$ come chiave privata e genera una chiave pubblica $P_A = n_A B$, che invia a Bob.
+  - **Bob:** Sceglie un intero positivo casuale $n_B < n$ come chiave privata e genera una chiave pubblica $P_B = n_B B$, che invia ad Alice.
+
+- **Calcolo della Chiave Condivisa:**
+  - **Alice:** Riceve $P_B$ e calcola $n_A P_B = n_A n_B B = S$ usando la sua chiave privata $n_A$.
+  - **Bob:** Riceve $P_A$ e calcola $n_B P_A = n_B n_A B = S$ usando la sua chiave privata $n_B$.
+
+A questo punto, Alice e Bob condividono lo stesso punto $S$, che può essere trasformato in una chiave segreta $k$ per la cifratura simmetrica convenzionale, ad esempio ponendo $k = x_S \mod 2^{256}$, dove $x_S$ è l'ascissa di $S$.
+
+### Sicurezza del Protocollo
+
+Un crittoanalista che intercetta i messaggi $P_A$ e $P_B$ scambiati in chiaro e conosce i parametri della curva ellittica e il punto $B$ non è in grado di violare lo schema, poiché dovrebbe risolvere il problema del logaritmo discreto per le curve ellittiche, che è intrattabile con le dimensioni dei valori coinvolti. Tuttavia, il protocollo è vulnerabile agli attacchi attivi di tipo man-in-the-middle, simili a quelli del protocollo Diffie-Hellman sui campi finiti.
+
+### Scambio di Messaggi su Curve Ellittiche
+
+Per cifrare un messaggio $m$ codificato come numero intero utilizzando le curve ellittiche, è necessario trasformare $m$ in un punto di una curva ellittica, che sarà poi trasformato in un nuovo punto da usare come testo cifrato. Sebbene non esista un algoritmo deterministico polinomiale per questa trasformazione, esistono algoritmi randomizzati molto efficienti con una probabilità arbitrariamente bassa di fallire.
+
+### Algoritmo di Koblitz
+
+L'algoritmo di Koblitz è utilizzato per trasformare un numero intero positivo $m < p$ in un punto di una curva ellittica prima $E_p(a, b)$. Usando $m$ come ascissa, la probabilità di trovare un punto della curva è pari alla probabilità che $m^3 + am + b \mod p$ sia un residuo quadratico, che è circa $\frac{1}{2}$.
+
+- **Procedura:**
+  1. Fissare un intero positivo $h$ tale che $(m + 1)h < p$.
+  2. Considerare gli interi $x = mh + i$, variando $i$ da 0 a $h - 1$.
+  3. Per ciascun $x$, provare a estrarre la radice quadrata $y$ di $x^3 + ax + b \mod p$.
+  4. Se la radice esiste, restituire il punto $P_m = (x, y)$.
+  5. Iterare fino a trovare una radice o fino a che $i$ raggiunge $h$.
+
+### Sicurezza e Lunghezza delle Chiavi
+
+La sicurezza della crittografia su curve ellittiche è strettamente legata alla difficoltà di calcolare il logaritmo discreto di un punto. Non esiste attualmente alcun algoritmo efficiente per risolvere questo problema. La lunghezza delle chiavi è un parametro cruciale: ad esempio, forzare un sistema basato su curve ellittiche a 228 bit richiederebbe un'energia sufficiente a far bollire tutta l'acqua sulla Terra, a dimostrazione della robustezza di questo approccio crittografico.
