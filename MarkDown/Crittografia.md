@@ -104,7 +104,7 @@
     - [Intersezione tra Curve Ellittiche e Rette](#intersezione-tra-curve-ellittiche-e-rette)
     - [Addizione su Curve Ellittiche](#addizione-su-curve-ellittiche)
     - [Curve Ellittiche su un Campo Finito](#curve-ellittiche-su-un-campo-finito)
-      - [Curve Ellittiche su $\\mathbb{Z}\_p$](#curve-ellittiche-su-mathbbz_p)
+      - [Curve Ellittiche su Zp](#curve-ellittiche-su-zp)
     - [Curve Ellittiche Binarie](#curve-ellittiche-binarie)
     - [Logaritmo Discreto su Curve Ellittiche](#logaritmo-discreto-su-curve-ellittiche)
     - [Scambio di Chiavi su Curve Ellittiche](#scambio-di-chiavi-su-curve-ellittiche)
@@ -1260,7 +1260,9 @@ Nell'esempio (b) P ha mooteplicità algebrica 2 dunque è come se ci fossero 2 p
 
 Le curve ellittiche definite su campi finiti sono di particolare interesse per la crittografia. Gli algoritmi crittografici richiedono un'aritmetica veloce e precisa, che non può essere garantita dalle curve ellittiche sui numeri reali a causa degli errori di arrotondamento. L'aritmetica modulare, invece, rende alcuni problemi computazionalmente difficili, il che è vantaggioso per la sicurezza.
 
-#### Curve Ellittiche su $\mathbb{Z}_p$
+#### Curve Ellittiche su Zp
+
+(RECUPERARE COME FARE GLI INVERSI DEI NUMERI IN Zp)
 
 Utilizziamo l'insieme $\mathbb{Z}_p$ degli interi modulo un numero primo $p$. In questo campo, tutte le operazioni sono eseguite in algebra modulare, coinvolgendo interi compresi tra 0 e $p - 1$. La caratteristica del campo è $p$, e consideriamo solo campi con $p > 3$ per poter ridurre l'equazione generale di una curva ellittica alla forma normale di Weierstrass. Le curve ellittiche con variabili e coefficienti ristretti agli elementi del campo $\mathbb{Z}_p$ sono chiamate curve ellittiche prime.
 
@@ -1276,6 +1278,8 @@ $$E_p(a, b) = \{(x, y) \in \mathbb{Z}_p^2 : y^2 \equiv x^3 + ax + b \pmod{p}\} \
 
 Se il polinomio $x^3 + ax + b \mod p$ non ha radici multiple, ovvero se $4a^3 + 27b^2 \not\equiv 0 \pmod{p}$, i punti della curva $E_p(a, b)$ formano un gruppo abeliano finito rispetto all'operazione di addizione.
 
+Non tutti i gruppi generati da uno specifico elemento (punto appartenete alla curva) sono generatori e non tutti genereano un gruppo con molti numeri all'interno, il nostro obbiettivo in assenza di un generatore è trovare un gruppo più ampio posiibile.
+
 **Esempi di Curve Ellittiche su $\mathbb{Z}_p$**
 
 Eseguendo i calcoli per i punti $P = (17, 41)$ e $Q = (27, 48)$, si ottengono i punti $P + Q = (59, 10)$ e $2P = (48, 14)$. Controlliamo che $(59, 10)$ appartenga alla curva:
@@ -1284,9 +1288,11 @@ $$y^2 \equiv 10^2 \equiv 33 \pmod{67}$$
 
 $$x^3 - x + 1 \equiv 59^3 - 59 + 1 \equiv \ldots \pmod{67}$$
 
+![](img/Critto/CurEllisticaInZp.png)
+
 **Ordine delle Curve Ellittiche su $\mathbb{Z}_p$**
 
-Un parametro importante per la sicurezza delle applicazioni crittografiche basate sulle curve ellittiche è l'ordine di una curva, ovvero il suo numero di punti. Una curva $E_p(a, b)$ può avere al massimo $2p + 1$ punti: il punto all'infinito e le $p$ coppie di punti $(x, y)$ e $(x, -y)$ che soddisfano l'equazione $y^2 = x^3 + ax + b$ in modulo, al variare di $x$ in $\mathbb{Z}_p$.
+Un parametro importante per la sicurezza delle applicazioni crittografiche basate sulle curve ellittiche è l'ordine di una curva, ovvero il suo numero di punti. Una curva $E_p(a, b)$ può avere al massimo $2p + 1$ punti: il punto all'infinito e le $p$ coppie di punti $(x, y)$ e $(x, -y)$ che soddisfano l'equazione $y^2 = x^3 + ax + b$ in modulo, al variare di $x$ in $\mathbb{Z}_p$. Dato che alcuni quandrati non ci sono, visto che cadono su altri qudrati, non avremo $2p + 1$ punti, ma un numero decisamente inferiore e non abbiamo una funzione che ci dice il numero di punti anche se in media sono $p$.
 
 ### Curve Ellittiche Binarie
 
