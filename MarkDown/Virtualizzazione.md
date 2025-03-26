@@ -92,6 +92,19 @@
     - [Reti](#reti)
     - [Immagini Docker e Filesystem](#immagini-docker-e-filesystem)
       - [Volumi, Bind Mounts, Tmpfs Mounts](#volumi-bind-mounts-tmpfs-mounts)
+  - [Active Directory](#active-directory)
+    - [Dominio Windows](#dominio-windows)
+    - [Protocolli di Active Directory](#protocolli-di-active-directory)
+    - [Struttura di Active Directory](#struttura-di-active-directory)
+    - [Partizioni di Active Directory](#partizioni-di-active-directory)
+    - [Global Catalog](#global-catalog)
+    - [Ruoli FSMO (Operations Masters)](#ruoli-fsmo-operations-masters)
+    - [Livelli di Funzionalità](#livelli-di-funzionalità)
+    - [Relazioni di Trust](#relazioni-di-trust)
+    - [Replicazione all’interno del Dominio](#replicazione-allinterno-del-dominio)
+    - [Replicazione con DFS](#replicazione-con-dfs)
+    - [Deleghe](#deleghe)
+    - [Group Policy](#group-policy)
 
 
 <div style="page-break-after: always;"></div>
@@ -1414,3 +1427,176 @@ I bind mounts consentono di collegare directory dell'host al filesystem del cont
 
 Il flag `--rm` rimuove automaticamente il container quando esce, insieme ai volumi unnamed.
 
+## Active Directory
+
+Active Directory è un insieme di protocolli di rete che include servizi di directory, autenticazione e naming. I principali protocolli utilizzati sono LDAP, Kerberos, NTP e DNS.
+
+### Dominio Windows
+
+Un dominio Windows è un gruppo logico di computer che condividono un database di directory centralizzato, noto come Domain Controller. Questo database contiene gli account utente e le informazioni sulle risorse del dominio, come stampanti e condivisioni di file. All'interno di un dominio, un utente può accedere a risorse utilizzando un unico username e password.
+
+**Domain Controller:** Un **Domain Controller** è un server che risponde alle richieste di autenticazione all'interno del dominio. Nei sistemi Pre-Windows 2000, esisteva un **Primary Domain Controller (PDC)** che manteneva il database degli utenti del dominio, e uno o più **Backup Domain Controller (BDC)** che mantenevano una copia in sola lettura del database. In Active Directory (Post-Windows 2000), i DC sono paritari e ognuno ha una copia del database in lettura/scrittura, sincronizzata attraverso protocolli specifici i DC possono idfferenziasi sotto diversi ruoli FSMO (Flexible Single Master Operation).
+
+**Directory Service:** Un Directory Service è un programma o un insieme di programmi che organizzano, gestiscono e memorizzano informazioni e risorse centralizzate e condivise all'interno di reti di computer. Fornisce un controllo degli accessi e un'interfaccia di astrazione tra le risorse e gli utenti. La struttura dati di un Directory Service è simile a quella di un database, ma è organizzata in una **struttura gerarchica ad albero**, ottimizzata per la lettura e non gestisce le transazioni ovvero non potremmo compiere operazioni atomiche su di esso. Ogni entry ha un set di attributi definiti nello schema, e un identificativo unico chiamato **Distinguished Name (DN)** composto da due componenti **Relative Distinguished Name (RDN)**, cioè il nome vero e proprio della entry ed il **Parent DN** cioè il path per arrivare alla entry stessa.
+
+### Protocolli di Active Directory
+
+**LDAP:** LDAP (Lightweight Directory Access Protocol) è un protocollo per l'accesso a un servizio di directory. Definisce lo scambio di informazioni tra client e server e permette di navigare nei dati della directory tramite strumenti specifici.
+
+**Kerberos:** Kerberos è un protocollo di rete che permette l'autenticazione degli utenti tramite un sistema di ticket. Richiede che gli orologi dei computer siano sincronizzati, utilizzando NTP per garantire la precisione temporale, attraverso terze parti, permette il SSO (Single Sign-on).
+
+**NTP:** NTP (Network Time Protocol) è un protocollo che sincronizza gli orologi dei computer attraverso una rete. È essenziale per il funzionamento corretto di Kerberos e di altri servizi di rete ed è anche uno dei principali motivi per cui si interrompono le autenticazioni.
+
+**DNS:** Il **Domain Name System (DNS)** è un sistema fondamentale per la risoluzione dei nomi di dominio in indirizzi IP e viceversa. Questo sistema consente agli utenti di connettersi a qualsiasi computer in rete utilizzando un nome logico semplice, come ad esempio `www.unibo.it`, invece di dover ricordare il suo indirizzo IP numerico, come `137.204.24.35`.
+
+**Struttura del DNS:**
+- **Forward Zone:**  
+  Queste zone sono responsabili della trasformazione di un nome logico in un indirizzo IP. Sono essenziali per la navigazione web, poiché permettono di tradurre i nomi di dominio in indirizzi IP che i computer possono comprendere.
+
+- **Reverse Zone:**  
+  Al contrario, le reverse zone forniscono un nome logico dato un indirizzo IP. Questo è utile per la risoluzione inversa, dove si parte da un indirizzo IP per ottenere il nome di dominio associato.
+
+Una **zona DNS** è una parte dello spazio dei nomi, costituita da un dominio e dai suoi sottodomini che non sono ulteriormente delegati. Ogni zona è sotto una gestione amministrativa unificata e viene gestita da uno o più server DNS.
+
+**Server DNS:** 
+- **Server DNS Primari:**  
+  Questi server contengono la copia principale dei dati DNS per una zona. Sono responsabili della gestione e dell'aggiornamento delle informazioni DNS.
+
+- **Server DNS Secondari:**  
+  I server secondari mantengono copie automatiche dei dati presenti nei server primari. Entrano in gioco quando il server primario non è disponibile, garantendo la continuità del servizio DNS.
+
+**Resource Records:** All'interno delle zone DNS, esistono diversi tipi di record, noti come **Resource Records types**, che forniscono informazioni specifiche sui nomi di dominio. I principali tipi di record includono:
+
+- **A (Address Record):** Associa un nome di dominio a un indirizzo IPv4.
+
+- **PTR (Pointer Record):** Utilizzato per la risoluzione inversa, associa un indirizzo IP a un nome di dominio.
+
+- **CNAME (Canonical Name Record):** Definisce un alias per un nome di dominio, permettendo di associare più nomi a un singolo indirizzo IP.
+
+- **NS (Name Server Record):** Indica quali server DNS sono autorevoli per una zona specifica.
+
+- **MX (Mail Exchange Record):** Specifica i server di posta elettronica responsabili della ricezione delle email per un dominio.
+
+- **SRV (Service Record):** Utilizzato per individuare i servizi all'interno di un dominio, come server di messaggistica o di telefonia.
+
+### Struttura di Active Directory
+
+Active Directory è organizzato in domini, alberi e foreste. Ogni dominio è un gruppo logico di computer, mentre un albero è una struttura di domini che condividono uno spazio dei nomi contiguo. Una foresta è un insieme di alberi che condividono il global catalog, lo schema e la configurazione della directory.
+
+![](img/Virtualizzazione/forestaDiAlberi.png)
+
+microsoft.com è un dominio connesso ad un albero che è l'isieme di domini con stessa sia radice e l'intera immaginie è una foresta.
+
+**OU (Organizational Units):** Le OU sono contenitori che organizzano oggetti come computer, utenti e gruppi, rappresentando la struttura dell'organizzazione. Le policy di gruppo possono essere applicate alle OU per gestire le configurazioni e i sistemi di deleghe.
+
+**Siti:** I siti sono raggruppamenti fisici di computer, spesso legati da una stessa sottorete IP. Definiscono le connessioni e controllano il traffico di replicazione tra i domini.
+
+### Partizioni di Active Directory
+
+Le informazioni all’interno di AD sono logicamente suddivise in diverse partizioni, ognuna con uno scopo specifico:
+
+- **Schema Partition:** Esiste una sola **Schema Partition** per l'intera foresta. Contiene la definizione degli oggetti e le regole per la loro creazione e gestione. Viene replicata in **ogni Domain Controller (DC)** della foresta.
+
+- **Configuration Partition:** Anche questa è unica per l'intera foresta. Contiene la topologia della foresta, inclusi i DC e i siti. Viene replicata su **tutti i DC** della foresta.
+
+- **Domain Partition:** Esiste una **Domain Partition** per ogni dominio nella foresta. Contiene informazioni sugli utenti, i gruppi, i computer e le Organizational Units (OU) del dominio. Viene memorizzata e replicata su **tutti i DC** del dominio.
+
+- **Application Partition:** Memorizza informazioni relative alle applicazioni di Active Directory. Ad esempio, se viene utilizzato il DNS di Microsoft, le informazioni del DNS sono archiviate in questa partizione.
+
+### Global Catalog
+
+Un **Domain Controller** configurato come **Global Catalog (GC)** conserva tutte le informazioni relative al proprio dominio, oltre a una parte delle informazioni sugli altri domini della foresta. 
+
+**Caratteristiche del Global Catalog**
+- Un **Global Catalog** conserva:
+  - L'intera partizione del proprio dominio.
+  - Le partizioni **schema** e **configuration** della foresta.
+  - Una replica parziale e di sola lettura delle partizioni degli altri domini.
+- Gli oggetti replicati sui Global Catalog sono definiti a livello di **schema**.
+- Per ogni **sito** della foresta è preferibile avere almeno un **Global Catalog**. Questo approccio consente di effettuare richieste al GC senza dover interrogare Domain Controller al di fuori del proprio sito, riducendo l'uso di collegamenti WAN (costosi).
+
+**Principali Funzioni del Global Catalog**
+1. **Ricerche:** Contenendo tutte le informazioni sul proprio dominio e una parte delle informazioni sugli altri domini, il GC viene utilizzato dai client per effettuare ricerche in Active Directory.
+
+2. **Logon dell’utente e appartenenza ai Gruppi Universali:**  
+   - Quando un utente effettua il login su un Domain Controller, viene generato un **access token** per l’utente. Questo token contiene le **SID** dei gruppi a cui l’utente appartiene.  
+   - I **Gruppi Universali** vengono replicati tra i GC. Il Domain Controller che autentica l’utente si rivolge a un GC per ottenere le **SID** dei Gruppi Universali a cui l’utente appartiene.
+
+3. **UPN (User Principal Name):**  
+   - Quando un utente si autentica utilizzando l’**UPN**, il Global Catalog identifica il dominio di appartenenza dell’account.  
+   - Ad esempio, se l’account `mario.rossi@unibo.it` appartiene al dominio `personale.dir.unibo.it`, il GC comunica al client di contattare un Domain Controller di quel dominio.
+
+### Ruoli FSMO (Operations Masters)
+
+In Active Directory, i Domain Controller (DC) sono paritetici, il che significa che le modifiche agli oggetti possono essere effettuate su qualsiasi DC. Questa funzionalità è nota come **multimaster update**. Tuttavia, quando si verificano conflitti, viene utilizzato un processo di **conflict resolution** per risolverli, generalmente facendo prevalere l'ultima modifica effettuata.
+
+In alcuni casi, è preferibile prevenire i conflitti, ed è qui che entrano in gioco i **ruoli FSMO (Flexible Single Master Operation)**. Questi ruoli sono assegnati a un unico DC del dominio o della foresta, che ha l'autorità esclusiva per effettuare determinate modifiche. Poiché questi ruoli possono essere trasferiti da un DC all'altro, vengono definiti "flexible". I ruoli FSMO si suddividono in due categorie: **per-domains roles** e **per-forest roles**.
+
+**Per-domains roles:**
+- **PDC Emulator:**  
+  Importante per i PC pre-Windows 2000, è il master per la sincronizzazione degli orologi e gestisce i cambi di password degli utenti del dominio.
+
+- **RID Master:**  
+  Gestisce i Relative ID degli oggetti creati ed è responsabile dello spostamento di un oggetto da un dominio a un altro.
+
+- **Infrastructure Master:**  
+  Si assicura che i riferimenti agli oggetti tra domini siano consistenti.
+
+**Per-forest roles:**
+- **Schema Master:**  
+  Gestisce i cambiamenti allo schema della foresta e la propagazione delle modifiche agli altri DC.
+
+- **Domain Naming Master:**  
+  Si occupa dell’aggiunta o rimozione di domini da una foresta.
+
+### Livelli di Funzionalità
+
+I livelli di funzionalità in Active Directory variano in base alla versione del sistema operativo dei DC e possono essere definiti sia a livello di dominio che di foresta. È possibile innalzare il livello, ma non abbassarlo. 
+
+- **Domain Functional Level:**  
+  Mantenuto dal PDC Emulator. Può essere innalzato da qualsiasi DC, e i tool si collegano automaticamente al PDC. Tutti i DC devono supportare il nuovo livello.
+
+- **Forest Functional Level:**  
+  Mantenuto sullo Schema Operation Master. Può essere innalzato da qualsiasi DC, e i tool si collegano automaticamente allo schema master. Tutti i DC devono supportare il nuovo livello.
+
+Il livello di dominio può essere superiore al livello di foresta, ma non inferiore. Non esiste un forest/domain level specifico per Windows Server 2019.
+
+### Relazioni di Trust
+
+Una **relazione di trust** è un accordo tra due domini che permette agli utenti di un dominio di essere riconosciuti da un altro dominio. Questo consente agli utenti di accedere alle risorse di altri domini e agli amministratori di gestire i permessi di accesso. Le relazioni di trust possono essere:
+
+- **Unidirezionali**
+- **Bidirezionali**
+- **Transitive**
+- **Intransitive**
+
+In Active Directory, le relazioni di trust bidirezionali e transitive sono applicate di default sui domini di uno stesso albero. Una relazione di trust che unisce due alberi di AD forma una foresta e deve essere esplicita.
+
+### Replicazione all’interno del Dominio
+
+I DC in Active Directory sono paritetici, quindi le modifiche agli oggetti possono avvenire su qualsiasi DC. Se lo stesso oggetto viene modificato su due DC diversi contemporaneamente, Active Directory gestisce la concorrenza registrando un timestamp con ogni modifica. La modifica con il timestamp più alto prevale.
+
+### Replicazione con DFS
+
+Alcuni dati della directory sono replicati tramite il **DFS (Distributed File System)**, che presenta diverse condivisioni su diversi server come un'unica unità e le replica tra loro. Il DFS si compone di due servizi principali:
+
+1. **DFS Namespace:**  
+   Presenta le varie condivisioni come un'unica unità.
+
+2. **DFS Replication:**  
+   Mantiene sincronizzate le diverse unità distribuite.
+
+### Deleghe
+
+L'amministratore di dominio può concedere deleghe di amministrazione dei rami di Active Directory agli utenti ritenuti più opportuni. È possibile delegare tutti i diritti di amministrazione o solo alcuni. Le deleghe possono essere applicate a una OU, a tutto il sottoalbero di una OU, ai domini e ai siti.
+
+### Group Policy
+
+Le **group policy** sono configurazioni applicate ai computer e/o agli utenti di un dominio. Sono contenute in un **Group Policy Object (GPO)** e possono essere applicate all'intero dominio, ai siti o alle singole OU. L'ordine di applicazione delle policy è:
+
+- Locale
+- Sito
+- Dominio
+- OU
+
+In caso di conflitto, prevale la policy della OU, ma l'amministratore di dominio può far prevalere una policy di dominio. Da Windows Server 2008 esistono le **GPP (Group Policy Preferences)**.
