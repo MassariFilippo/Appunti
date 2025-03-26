@@ -91,7 +91,6 @@
     - [Parametri del Comando `docker run`](#parametri-del-comando-docker-run)
     - [Reti](#reti)
     - [Immagini Docker e Filesystem](#immagini-docker-e-filesystem)
-      - [Volumi, Bind Mounts, Tmpfs Mounts](#volumi-bind-mounts-tmpfs-mounts)
   - [Active Directory](#active-directory)
     - [Dominio Windows](#dominio-windows)
     - [Protocolli di Active Directory](#protocolli-di-active-directory)
@@ -1371,61 +1370,96 @@ Per scollegare un container in primo piano senza fermarlo, usa `CTRL+p` e `CTRL+
 
 ### Reti
 
-Il sottosistema di rete di Docker è modulare e utilizza driver per fornire funzionalità di rete. I driver di rete predefiniti includono:
+Il sottosistema di rete di Docker è altamente modulare e utilizza driver per fornire funzionalità di rete flessibili e scalabili. I driver di rete predefiniti includono:
 
-- **bridge:** Consente ai container di comunicare tra loro e con servizi esterni.
-- **host:** Rimuove l'isolamento di rete tra il container e l'host Docker.
-- **overlay:** Connette più demoni Docker e abilita la comunicazione tra servizi swarm.
-- **macvlan:** Assegna un indirizzo MAC a un container, facendolo apparire come un dispositivo fisico sulla rete.
-- **none:** Disabilita tutte le funzionalità di rete per il container.
+- **Bridge:**  
+  Questo driver consente ai container di comunicare tra loro e con servizi esterni. È il tipo di rete predefinito se non viene specificato un altro driver. Le reti bridge permettono ai container connessi di comunicare tra loro, fornendo isolamento dai container non connessi alla stessa rete. È possibile creare reti bridge personalizzate definite dall'utente per una maggiore flessibilità.
 
-**Rete Bridge Predefinita**
+- **Host:**  
+  Rimuove l'isolamento di rete tra il container e l'host Docker, permettendo al container di utilizzare direttamente la rete dell'host. Questo è utile per applicazioni che richiedono alte prestazioni di rete.
 
-La rete bridge predefinita consente ai container di connettersi al mondo esterno. Per abilitare il forwarding, è necessario configurare il kernel Linux:
+- **Overlay:**  
+  Connette più demoni Docker, consentendo ai servizi swarm di comunicare tra loro. Le reti overlay sono ideali per la comunicazione tra container su diversi host Docker.
+
+- **Macvlan:**  
+  Assegna un indirizzo MAC a un container, facendolo apparire come un dispositivo fisico sulla rete. Questo è utile per applicazioni legacy che richiedono una connessione diretta alla rete fisica.
+
+- **None:**  
+  Disabilita tutte le funzionalità di rete per il container, utile per applicazioni che non necessitano di connettività di rete.
+
+La **rete bridge predefinita** consente ai container di connettersi al mondo esterno. Tuttavia, per abilitare il forwarding del traffico dai container verso l'esterno, è necessario configurare il kernel Linux:
 
 ```bash
 sysctl net.ipv4.conf.all.forwarding=1
 sudo iptables -P FORWARD ACCEPT
 ```
 
-**Reti dal Punto di Vista del Container**
+Queste impostazioni non persistono dopo un riavvio, quindi potrebbero essere aggiunte a uno script di avvio.
 
-Dal punto di vista del container, la rete è trasparente. Ogni container ha un'interfaccia di rete con un indirizzo IP, un gateway, una tabella di routing e servizi DNS.
+**Dal punto di vista del container, la rete è trasparente**. Ogni container ha un'interfaccia di rete con un indirizzo IP, un gateway, una tabella di routing e servizi DNS. Quando un container viene avviato, può essere connesso a una singola rete utilizzando l'opzione `--network`. È possibile specificare l'indirizzo IP e il nome host del container usando i flag `--ip` e `--hostname`.
 
-**Porte Pubblicate**
-
-Per rendere una porta del container disponibile all'esterno, usa il flag `--publish` o `-p`:
+**Porte Pubblicate:** Per rendere una porta del container disponibile all'esterno, si utilizza il flag `--publish` o `-p`, che crea una regola firewall per mappare una porta del container a una porta sull'host Docker. Ad esempio:
 
 ```bash
 docker run -p 8080:80 myimage
 ```
 
-**Indirizzi IP e Nome Host del Container**
+Questo comando mappa la porta 80 del container alla porta 8080 dell'host.
 
-Per impostazione predefinita, a un container viene assegnato un indirizzo IP per ogni rete Docker a cui si connette. Puoi specificare l'indirizzo IP e il nome host usando i flag `--ip` e `--hostname`.
-
-**Servizi DNS del Container**
-
-Un container eredita le impostazioni DNS del demone Docker, ma puoi sovrascriverle per container.
-
+Un container **eredita le impostazioni DNS del demone Docker**, inclusi i file `/etc/hosts` e `/etc/resolv.conf`. Tuttavia, è possibile sovrascrivere queste impostazioni per ogni container, utilizzando i flag `--dns`, `--dns-search` e `--dns-opt`.
 
 ### Immagini Docker e Filesystem
 
-Le immagini dei container sono salvate nel registro del demone Docker, nel filesystem dell'host. Quando un container viene creato, ha un filesystem iniziale basato sull'immagine. Le modifiche apportate durante l'esecuzione sono salvate temporaneamente nel filesystem dell'host.
+Le immagini dei container sono salvate nel registro del demone Docker, nel filesystem dell'host, all'interno della directory `/var/lib/docker/`. Quando un container viene creato, ha un filesystem iniziale basato sull'immagine. Durante l'esecuzione, le modifiche apportate al filesystem del container sono salvate temporaneamente nel filesystem dell'host, utilizzando un modello di tipo Copy-on-Write (CoW).
 
-#### Volumi, Bind Mounts, Tmpfs Mounts
+**Volumi, Bind Mounts, Tmpfs Mounts**
 
-- **Tmpfs Mounts:** Partizioni temporanee in memoria.
-- **Bind Mounts:** Partizioni collegate a directory dell'host.
-- **Managed Volumes:** Volumi gestiti da Docker, persistenti.
+- **Tmpfs Mounts:** Ovvero tmp (temporanei) fs (file system) sono partizioni temporanee in memoria, utili per dati che non devono essere persistenti.
 
-**Bind Mounts**
+- **Bind Mounts:** Consentono di collegare directory dell'host al filesystem del container, rendendo i dati persistenti oltre la vita del container. Questo è utile per condividere dati tra host e container. Bind perchè di fatto collegati.
 
-I bind mounts consentono di collegare directory dell'host al filesystem del container. Questo è utile per rendere persistenti i dati oltre la vita del container.
+- **Managed Volumes:** Volumi gestiti da Docker, che possono essere persistenti e condivisi tra più container.
+
+![](img/Virtualizzazione/volumi.png)
+
+**Motivazioni per l'Aggiunta di Volumi al Filesystem dei Container**
+
+L'utilizzo dei volumi nei container Docker risponde a diverse esigenze fondamentali di gestione dei dati e delle risorse di storage. Ecco le principali motivazioni:
+
+1. Persistenza e Condivisione dei Dati
+
+I container, per loro natura, sono effimeri e le modifiche al filesystem vengono perse alla loro rimozione. L'aggiunta di volumi consente di:
+
+- **Salvare Modifiche Permanenti:** Memorizzare dati che devono sopravvivere alla rimozione del container.
+- **Condividere Spazi di Storage:** Permettere a più container di accedere contemporaneamente agli stessi dati.
+- **Superare Limiti di Storage:** Lo spazio occupato nei volumi esterni non concorre al limite di 10GB per ciascun container.
+
+2. Ottimizzazione delle Prestazioni di Scrittura
+
+Il modello di filesystem dei container si basa su un meccanismo **Copy-on-Write (CoW)**, che:
+- Condivide un'istanza di sola lettura dell'immagine originale
+- Crea copie con sole le differenze per ogni container
+- Risulta efficiente in termini di spazio su disco
+
+Tuttavia, questo approccio può rallentare le scritture, specialmente per applicazioni con frequenti modifiche ai file, come i database. In questi casi, l'utilizzo di volumi con filesystem che non utilizzano il modello Copy-on-Write diventa vantaggioso.
+
+3. Gestione Temporanea dei Dati
+
+Per dati temporanei che non devono essere salvati su disco, è possibile utilizzare **volumi Tmpfs**:
+- Memorizzazione in memoria
+- Eliminazione automatica alla chiusura del container
+- Risparmio di accessi su disco
+
+4. Condivisione tra Macchine Diverse
+
+Per garantire **fault tolerance** e **resilienza**, è possibile:
+- Configurare più repliche di un servizio
+- Creare volumi che consentono l'accesso a file comuni
+- Utilizzare driver di volume che astraggono la tecnologia di storage
 
 **Rimozione Automatica del Container all'Uscita**
 
-Il flag `--rm` rimuove automaticamente il container quando esce, insieme ai volumi unnamed.
+Il flag `--rm` rimuove automaticamente il container quando esce, insieme ai volumi unnamed, liberando risorse e spazio su disco.
 
 ## Active Directory
 
