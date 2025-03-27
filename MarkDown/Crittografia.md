@@ -111,7 +111,12 @@
     - [Sicurezza del Protocollo](#sicurezza-del-protocollo-1)
     - [Scambio di Messaggi su Curve Ellittiche](#scambio-di-messaggi-su-curve-ellittiche)
     - [Algoritmo di Koblitz](#algoritmo-di-koblitz)
+    - [Codifica e Decodifica](#codifica-e-decodifica)
     - [Sicurezza e Lunghezza delle Chiavi](#sicurezza-e-lunghezza-delle-chiavi)
+  - [Firma Digitale](#firma-digitale)
+    - [Funzioni Hash Classiche](#funzioni-hash-classiche)
+    - [Funzioni Hash One-Way o Crittografiche](#funzioni-hash-one-way-o-crittografiche)
+    - [Famiglie di Funzioni Hash](#famiglie-di-funzioni-hash)
 
 
 <div style="page-break-after: always;"></div>
@@ -1341,12 +1346,94 @@ Per cifrare un messaggio $m$ codificato come numero intero utilizzando le curve 
 L'algoritmo di Koblitz è utilizzato per trasformare un numero intero positivo $m < p$ in un punto di una curva ellittica prima $E_p(a, b)$. Usando $m$ come ascissa, la probabilità di trovare un punto della curva è pari alla probabilità che $m^3 + am + b \mod p$ sia un residuo quadratico, che è circa $\frac{1}{2}$.
 
 - **Procedura:**
-  1. Fissare un intero positivo $h$ tale che $(m + 1)h < p$.
-  2. Considerare gli interi $x = mh + i$, variando $i$ da 0 a $h - 1$.
-  3. Per ciascun $x$, provare a estrarre la radice quadrata $y$ di $x^3 + ax + b \mod p$.
-  4. Se la radice esiste, restituire il punto $P_m = (x, y)$.
-  5. Iterare fino a trovare una radice o fino a che $i$ raggiunge $h$.
+  1. **Fissare un Intero Positivo $h$:**  
+     Si sceglie un intero $h$ tale che $(m + 1)h < p$. Questo vincolo è importante per garantire che il messaggio non venga corrotto dalle operazioni in modulo. In RSA, il vincolo era $m < p$, ma qui, per facilitare la codifica, si riduce il dominio dei messaggi codificabili.
+  
+  2. **Considerare gli Interi $x = mh + i$:**  
+     Si varia $i$ da 0 a $h - 1$. Per ogni valore di $x$, si verifica se esiste una radice quadrata $y$ tale che $y^2 \equiv x^3 + ax + b \mod p$.
+
+  3. **Estrarre la Radice Quadrata $y$:**  
+     Se $y$ esiste, il calcolo è facilitato dal fatto che ci troviamo in $\mathbb{Z}_p$ con $p$ primo, dove l'estrazione della radice quadrata è computazionalmente semplice.
+
+  4. **Restituire il Punto $P_m = (x, y)$:**  
+     Se la radice esiste, si restituisce il punto $P_m = (x, y)$.
+
+  5. **Iterare la Procedura:**  
+     Si continua a iterare fino a trovare una radice o fino a che $i$ raggiunge $h$. Se non si trova una radice, si conclude che non è stato possibile trasformare il messaggio in un punto della curva.
+
+**Dal Messaggio al Punto**
+
+Per risalire al messaggio dal punto $P_m = (x, y)$ individuato, basta calcolare:
+
+$$m = \left\lfloor \frac{x}{h} \right\rfloor$$
+
+Questo calcolo è possibile perché si è scelto $(m + 1)h < p$ per evitare che il messaggio sia corrotto dalle operazioni in modulo.
+
+### Codifica e Decodifica
+
+**Accordo Pubblico:**  
+Mittente e destinatario si accordano su una specifica curva ellittica, su un punto $B$ della curva con ordine $n$ elevato, e su un intero $h$ per la trasformazione dei messaggi in punti della curva.
+
+**Generazione delle Chiavi:**
+- Ogni utente $D$ genera una coppia di chiavi scegliendo un intero casuale $n_D < n$ come chiave privata e pubblicando la chiave $P_D = n_D B$.
+
+**Codifica:**
+- **Mittente:**  
+  1. Trasforma il messaggio $m$ nel punto $P_m$ sulla curva.
+  2. Sceglie un intero casuale $r$ e calcola i punti $V = rB$ e $W = P_m + rP_D$, dove $P_D$ è la chiave pubblica del destinatario.
+  3. Invia al destinatario la coppia $\langle V, W \rangle$.
+
+**Decodifica:**
+- **Destinatario:**  
+  1. Conosce $n_D$, la sua chiave privata.
+  2. Riceve $V = rB$.
+  3. Calcola $n_D V = n_D rB = rn_D B$.
+  4. Calcola $W - n_D V = P_m + rP_D - n_D(rB) = P_m$.
+  5. Trasforma $P_m$ nel messaggio originale $m$.
+
+![](img/Critto/ECC.png)
 
 ### Sicurezza e Lunghezza delle Chiavi
 
 La sicurezza della crittografia su curve ellittiche è strettamente legata alla difficoltà di calcolare il logaritmo discreto di un punto. Non esiste attualmente alcun algoritmo efficiente per risolvere questo problema. La lunghezza delle chiavi è un parametro cruciale: ad esempio, forzare un sistema basato su curve ellittiche a 228 bit richiederebbe un'energia sufficiente a far bollire tutta l'acqua sulla Terra, a dimostrazione della robustezza di questo approccio crittografico.
+
+![](img/Critto/lenChiavi.png)
+
+## Firma Digitale
+
+Inizialmente, i metodi crittografici furono sviluppati per garantire la confidenzialità delle comunicazioni, specialmente tra coppie di persone in ambienti ristretti. Con l'espansione delle reti, e in particolare di Internet, il problema della sicurezza si è ampliato, assumendo nuove connotazioni. Di conseguenza, sono emerse tre funzionalità fondamentali richieste ai protocolli crittografici, a seconda dell'uso e del livello di protezione desiderato.
+
+L'**identificazione** è il processo attraverso il quale un sistema di elaborazione deve essere in grado di accertare l'identità di un utente che richiede di accedere ai suoi servizi. Questo è essenziale per garantire che solo gli utenti autorizzati possano accedere a determinate risorse o informazioni.
+
+L'**autenticazione** permette al destinatario di un messaggio di accertare l'identità del mittente e l'integrità del crittogramma ricevuto, assicurandosi che non sia stato modificato o sostituito durante la trasmissione. È fondamentale che sia difficile per un intruso spacciarsi per un altro utente o alterare i messaggi inviati.
+
+La firma digitale entra in gioco quando il **mittente e il destinatario non si fidano l'uno dell'altro**. Deve soddisfare i seguenti requisiti:
+
+1. **Non Ripudio:** Il mittente non deve poter negare di aver inviato un messaggio da lui firmato.
+2. **Autenticazione e Integrità:** Il destinatario deve poter accertare l'identità del mittente e l'integrità del messaggio ricevuto.
+3. **Non Alterazione:** Il destinatario non deve poter sostenere di aver ricevuto un messaggio diverso da quello inviatogli dal mittente.
+
+### Funzioni Hash Classiche
+
+Una funzione hash $f: X \rightarrow Y$ è definita per un dominio $X$ e un codominio $Y$ finiti, con $|X| \gg |Y|$. Queste funzioni sono utilizzate per operare su elementi $x \in X$ attraverso la loro immagine $y = f(x) \in Y$, principalmente per due scopi:
+
+- **Compressione:** La rappresentazione di $y$ richiede meno bit rispetto a $x$.
+- **Struttura:** $Y$ può avere una struttura assente in $X$, come posizioni in un vettore di celle per memorizzare informazioni.
+
+Una buona funzione hash classica deve garantire che i sottoinsiemi di $X$ abbiano circa la stessa cardinalità, riducendo la probabilità di collisioni.
+
+### Funzioni Hash One-Way o Crittografiche
+
+Le funzioni hash one-way devono soddisfare proprietà aggiuntive:
+
+1. **Facilità di Calcolo:** Per ogni $x \in X$, è facile calcolare $f(x)$.
+2. **Difficoltà di Inversione:** È difficile determinare un $x$ tale che $f(x) = y$ per la maggior parte degli $y \in Y$.
+3. **Resistenza alle Collisioni:** È difficile trovare una coppia di elementi $x'$ e $x''$ in $X$ tali che $f(x') = f(x'')$.
+
+### Famiglie di Funzioni Hash
+
+- **MD5:** Costruisce un'immagine di 128 bit per qualsiasi messaggio. Proposta da Rivest nel 1992, è stata usata a lungo, ma successivamente sono stati scoperti attacchi che ne sconsigliano l'uso in applicazioni crittografiche.
+  
+- **RIPEMD-160:** Nata nel 1995, produce immagini di 160 bit ed è esente dai difetti di MD5. È stata sviluppata nell'ambito di un progetto dell'Unione Europea.
+
+- **SHA (Secure Hash Algorithm):** La prima versione, SHA0, fu proposta dal NIST nel 1993 ma ritirata per debolezze. SHA1, che produce immagini di 160 bit, è stata largamente usata, ma non è più certificata come standard dal 2010. Sono seguite versioni come SHA256 e SHA512, progettate dalla NSA, che operano su blocchi di dimensioni diverse.
