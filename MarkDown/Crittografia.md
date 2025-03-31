@@ -117,6 +117,24 @@
     - [Funzioni Hash Classiche](#funzioni-hash-classiche)
     - [Funzioni Hash One-Way o Crittografiche](#funzioni-hash-one-way-o-crittografiche)
     - [Famiglie di Funzioni Hash](#famiglie-di-funzioni-hash)
+    - [Identificazione](#identificazione)
+    - [Canale Protetto](#canale-protetto)
+    - [Canale Non Protetto](#canale-non-protetto)
+    - [Autenticazione](#autenticazione)
+    - [MAC con Funzioni Hash One-Way](#mac-con-funzioni-hash-one-way)
+    - [Autenticazione con Chiave Segreta](#autenticazione-con-chiave-segreta)
+    - [Autenticazione con Chiave Segreta e Confidenzialità](#autenticazione-con-chiave-segreta-e-confidenzialità)
+    - [Proprietà della Firma](#proprietà-della-firma)
+    - [Messaggio in Chiaro e Firmato](#messaggio-in-chiaro-e-firmato)
+    - [Messaggio Cifrato e Firmato](#messaggio-cifrato-e-firmato)
+    - [Messaggio Cifrato e Firmato: RSA](#messaggio-cifrato-e-firmato-rsa)
+    - [Messaggio Cifrato e Firmato in Hash](#messaggio-cifrato-e-firmato-in-hash)
+    - [Attacco Man-in-the-Middle](#attacco-man-in-the-middle-1)
+    - [Certification Authority (CA)](#certification-authority-ca)
+    - [Certificato Digitale](#certificato-digitale)
+    - [Contenuto del Certificato Digitale](#contenuto-del-certificato-digitale)
+    - [Utilizzo del Certificato Digitale](#utilizzo-del-certificato-digitale)
+    - [Messaggio Cifrato e Firmato in Hash e Certificato](#messaggio-cifrato-e-firmato-in-hash-e-certificato)
 
 
 <div style="page-break-after: always;"></div>
@@ -1437,3 +1455,225 @@ Le funzioni hash one-way devono soddisfare proprietà aggiuntive:
 - **RIPEMD-160:** Nata nel 1995, produce immagini di 160 bit ed è esente dai difetti di MD5. È stata sviluppata nell'ambito di un progetto dell'Unione Europea.
 
 - **SHA (Secure Hash Algorithm):** La prima versione, SHA0, fu proposta dal NIST nel 1993 ma ritirata per debolezze. SHA1, che produce immagini di 160 bit, è stata largamente usata, ma non è più certificata come standard dal 2010. Sono seguite versioni come SHA256 e SHA512, progettate dalla NSA, che operano su blocchi di dimensioni diverse.
+
+### Identificazione
+
+L'identificazione è un processo fondamentale per garantire la sicurezza in ambienti digitali, come l'accesso a una casella di posta elettronica o a file personali su un sistema riservato. L'utente inizia il collegamento inserendo un codice di login (come nome, cognome o e-mail) e una password. Gli utenti meno esperti tendono a scegliere password banali per paura di dimenticarle, mentre quelli più attenti optano per password complesse per renderle difficili da indovinare. Mentre è difficile porre rimedio alla disattenzione dei primi, è importante fornire strumenti di protezione efficaci per gli utenti esperti contro attacchi interni o esterni al sistema.
+
+### Canale Protetto
+
+Assumiamo che il canale di comunicazione sia protetto in lettura e scrittura. Tuttavia, un attacco può essere sferrato da un utente locale, come un amministratore con accesso ai file delle password, o da un hacker che si è infiltrato nel sistema. Per proteggere le password, si utilizza la cifratura tramite funzioni hash one-way, come nei sistemi UNIX.
+
+- **Procedura di Cifratura delle Password:**
+  1. Quando un utente fornisce la password per la prima volta, il sistema associa due sequenze binarie $S$ e $Q$ all'utente, memorizzandole nel file delle password.
+  2. $S$ è un seme generato pseudo-casualmente.
+  3. $Q$ è l'immagine, secondo una funzione hash one-way, della concatenazione di $S$ e della password dell'utente.
+
+- **Verifica dell'Identificazione:**
+  1. Ad ogni connessione, il sistema recupera $S$ e lo concatena con la password fornita.
+  2. Calcola l'immagine della nuova sequenza e la confronta con $Q$. Se coincidono, l'identificazione ha successo.
+
+L'uso di un seme casuale diverso per ogni utente impedisce di scoprire se due utenti hanno password uguali e rende impossibile un attacco simultaneo su tutto il file delle password.
+
+### Canale Non Protetto
+
+In un contesto distribuito come Internet, la protezione del canale è difficile da garantire. Se il canale è insicuro, la password può essere intercettata. Pertanto, il sistema non deve mai maneggiare direttamente la password, ma solo una sua immagine sicura.
+
+**Identificazione con RSA**
+
+- **Procedura:**
+  1. L'utente $U$ richiede accesso al sistema $S$.
+  2. $S$ genera un numero casuale $r < n$ e lo invia a $U$.
+  3. $U$ calcola $f = r^d \mod n$ con la sua chiave privata $d$ e invia $f$ a $S$.
+  4. $S$ usa la chiave pubblica $(e, n)$ di $U$ per calcolare $r' = f^e \mod n$ e verifica che $r = r'$.
+
+Questa procedura garantisce che solo $U$, che possiede la chiave privata, possa generare $f$, confermando così la sua identità.
+
+**Vulnerabilità:** Un sistema disonesto potrebbe sfruttare la richiesta di applicare la chiave segreta a una sequenza $r$ scelta ad-hoc per ricavare informazioni sulla chiave privata di $U$, soprattutto se $U$ si identifica frequentemente.
+
+### Autenticazione
+
+L'identificazione stabilisce l'identità di un utente, ma non si occupa dei suoi messaggi. Consideriamo due partner, Mitt e Dest, che devono scambiarsi un messaggio $m$ in modo confidenziale. Dest deve autenticare il messaggio, accertando l'identità di Mitt e l'integrità di $m$.
+
+### MAC con Funzioni Hash One-Way
+
+Il MAC (Message Authentication Code) è un'immagine breve del messaggio generata solo da un mittente conosciuto dal destinatario, utilizzando una chiave segreta condivisa $k$. Il MAC è uno strumento potente, con diverse realizzazioni basate su cifrari simmetrici, asimmetrici e funzioni hash one-way.
+
+- **Definizione del MAC:**
+  $$
+  A(m, k) = h(m \parallel k)
+  $$
+  dove $h$ è una funzione hash e $m \parallel k$ è la concatenazione di $m$ e $k$.
+
+### Autenticazione con Chiave Segreta
+
+L'autenticazione con chiave segreta è un metodo per garantire che un messaggio provenga effettivamente dal mittente dichiarato e che non sia stato alterato durante la trasmissione. Questo processo si basa sull'uso di una chiave segreta condivisa tra il mittente (Mitt) e il destinatario (Dest).
+
+1. **Invio del Messaggio:** Mitt invia a Dest il messaggio $m$ insieme al MAC (Message Authentication Code) calcolato come $A(m, k)$, dove $k$ è la chiave segreta condivisa.
+
+2. **Ricalcolo del MAC:** Dest ricalcola il MAC a partire dal messaggio ricevuto e dalla chiave $k$.
+
+3. **Verifica del MAC:** Dest verifica se il MAC ricevuto è uguale al MAC ricalcolato. Se coincidono, l'autenticazione ha successo, confermando l'integrità e l'autenticità del messaggio.
+
+### Autenticazione con Chiave Segreta e Confidenzialità
+
+Per garantire sia l'autenticazione che la confidenzialità, il processo viene esteso:
+
+1. **Invio del Messaggio Cifrato:** Mitt invia a Dest il messaggio cifrato $C(m, k')$ insieme al MAC $A(m, k)$. Qui, $k'$ è una chiave utilizzata per cifrare il messaggio.
+
+2. **Decodifica del Messaggio:** Dest decodifica il messaggio cifrato usando la chiave appropriata (che può essere pubblica o segreta).
+
+3. **Ricalcolo del MAC:** Dest ricalcola il MAC a partire dal messaggio decodificato e dalla chiave $k$.
+
+4. **Verifica del MAC:** Dest verifica se il MAC ricevuto è uguale al MAC ricalcolato, garantendo così l'autenticità e l'integrità del messaggio.
+
+### Proprietà della Firma
+
+**Firma Manuale**
+
+La firma manuale è comunemente utilizzata per provare l'autenticità o la paternità di un documento, o per siglare un accordo. Si appone una firma quando i soggetti coinvolti non si fidano l'uno dell'altro.
+
+1. **Autenticità:** La firma è autentica e non falsificabile, costituendo prova che chi l’ha prodotta è effettivamente il sottoscrittore del documento.
+2. **Non Riutilizzabilità:** La firma è strettamente legata al documento su cui è stata apposta e non può essere riutilizzata altrove.
+3. **Integrità del Documento:** Il documento firmato non è alterabile, garantendo che la firma si riferisca solo al documento originale.
+4. **Non Ripudio:** La firma non può essere ripudiata da chi l’ha apposta, costituendo prova legale di un accordo o di una dichiarazione.
+
+**Firma Digitale**
+
+La firma digitale deve soddisfare le stesse proprietà della firma manuale e, possibilmente, godere di proprietà aggiuntive. Deve dipendere dal documento su cui viene posta, altrimenti potrebbe essere copiata e riutilizzata. La firma digitale può essere realizzata sia mediante protocolli crittografici simmetrici che asimmetrici. Tuttavia, i protocolli simmetrici tendono a essere più complessi e computazionalmente costosi, quindi si preferiscono i protocolli asimmetrici.
+
+### Messaggio in Chiaro e Firmato
+
+- **Firma:** L'utente $U$ genera la firma $f = D(m, k_U[\text{prv}])$ per il messaggio $m$. Il messaggio firmato viene inviato come tripla $(U, m, f)$.
+
+- **Verifica:** L'utente $V$ riceve $(U, m, f)$ e verifica l'autenticità della firma calcolando $C(f, k_U[\text{pub}])$ e controllando che questo valore sia uguale a $m$. L'indicazione del mittente consente al destinatario di recuperare la chiave pubblica.
+
+**Proprietà del Protocollo**
+
+Per garantire la sicurezza e l'integrità di un messaggio firmato, è necessario che il protocollo utilizzato sia commutativo, ovvero che valga la relazione:
+
+$$C(D(m)) = D(C(m)) = m$$
+
+- **Caratteristiche della Firma Digitale:**
+  
+  - **Autenticità e Non Falsificabilità:** La firma è autentica e non falsificabile perché la chiave privata $k_U[\text{prv}]$ utilizzata per generarla è conosciuta solo dall'utente $U$. Inoltre, la funzione di decifratura $D$ è one-way, rendendo difficile la falsificazione.
+
+  - **Integrità del Documento:** Il documento firmato $(U, m, f)$ non può essere alterato senza compromettere la consistenza tra $m$ e $f$. Solo $U$ può aver prodotto $f$ e non può ripudiare la firma.
+
+  - **Verificabilità:** Chiunque, incluso un giudice, può verificare la firma, garantendo la trasparenza e l'affidabilità del processo.
+
+  - **Non Riutilizzabilità:** La firma $f$ non può essere riutilizzata su un altro documento, assicurando che sia strettamente legata al documento originale.
+
+- **Difetti del Protocollo:**
+  
+  - **Lunghezza della Firma:** La firma è lunga quanto il documento firmato, il che può essere inefficiente in termini di spazio e tempo di trasmissione.
+
+  - **Messaggio in Chiaro:** Il messaggio viaggia in chiaro, il che può essere indesiderato in situazioni in cui è richiesta la confidenzialità.
+
+### Messaggio Cifrato e Firmato
+
+- **Firma:**  
+  L'utente $U$ genera la firma $f = D(m, k_U[\text{prv}])$ e calcola $c = C(f, k_V[\text{pub}])$. Invia $(U, c)$ a $V$.
+
+- **Verifica:**  
+  L'utente $V$ riceve $(U, c)$, decifra $c$ con la sua chiave privata, ottenendo $f$, e verifica la firma con la chiave pubblica di $U$.
+
+### Messaggio Cifrato e Firmato: RSA
+
+**Firma:**
+
+1. **Generazione della Firma:**  
+   L'utente $U$ genera la firma $f$ calcolando $f = m^{d_U} \mod n_U$, dove $m$ è il messaggio da firmare, $d_U$ è la chiave privata di $U$, e $n_U$ è il modulo RSA di $U$.
+
+2. **Cifratura della Firma:**  
+   $U$ cifra la firma calcolando $c = f^{e_V} \mod n_V$, dove $e_V$ è la chiave pubblica del destinatario $V$, e $n_V$ è il modulo RSA di $V$.
+
+3. **Invio del Messaggio:**  
+   $U$ invia a $V$ la coppia $(U, c)$.
+
+**Verifica:**
+
+1. **Decifratura della Firma:**  
+   Il destinatario $V$ riceve $(U, c)$ e decifra $c$ con la sua chiave privata, calcolando $f = c^{d_V} \mod n_V$.
+
+2. **Verifica della Firma:**  
+   $V$ cifra il valore ottenuto con la chiave pubblica di $U$, calcolando $m = f^{e_U} \mod n_U$. Se il valore ottenuto è significativo, $V$ conclude che il messaggio è autentico.
+
+La **correttezza del procedimento** dipende da una condizione derivante dalle proprietà algebriche del cifrario RSA. Deve valere la relazione $n_U < n_V$ affinché $f < n_V$ e la firma possa essere cifrata correttamente da $U$ e inviata a $V$. Tuttavia, poiché ciò impedirebbe a $V$ di inviare messaggi firmati e cifrati a $U$, ogni utente deve stabilire chiavi distinte per la firma e per la cifratura.
+
+### Messaggio Cifrato e Firmato in Hash
+
+**Firma:**
+
+1. **Calcolo dell'Hash:**  
+   Il mittente $U$ calcola l'hash del messaggio $h(m)$.
+
+2. **Generazione della Firma:**  
+   $U$ genera la firma $f = D(h(m), k_U[\text{prv}])$, dove $k_U[\text{prv}]$ è la chiave privata di $U$.
+
+3. **Cifratura del Messaggio:**  
+   $U$ calcola separatamente il crittogramma $c = C(m, k_V[\text{pub}])$, dove $k_V[\text{pub}]$ è la chiave pubblica di $V$.
+
+4. **Invio del Messaggio:**  
+   $U$ invia a $V$ la tripla $(U, c, f)$.
+
+**Verifica:**
+
+1. **Decifratura del Messaggio:**  
+   Il destinatario $V$ riceve la tripla $(U, c, f)$ e decifra $c$ con la sua chiave privata, ottenendo $m = D(c, k_V[\text{prv}])$.
+
+2. **Verifica della Firma:**  
+   $V$ calcola separatamente $h(m)$ e $C(f, k_U[\text{pub}])$. Se questi due valori sono uguali, $V$ conclude che il messaggio è autentico.
+
+### Attacco Man-in-the-Middle
+
+I protocolli di firma digitale sono vulnerabili agli attacchi man-in-the-middle, poiché le chiavi di cifratura sono pubbliche. Un crittoanalista attivo può intercettare e modificare le comunicazioni, compromettendo il protocollo. Ad esempio, un attaccante $X$ può sostituire la chiave pubblica di $V$ con la propria, intercettando e alterando i messaggi scambiati tra $U$ e $V$.
+
+### Certification Authority (CA)
+
+Per prevenire attacchi come il man-in-the-middle, sono state istituite le Certification Authority (CA), enti responsabili della certificazione della validità delle chiavi pubbliche. Una CA autentica l'associazione tra un utente e la sua chiave pubblica emettendo un certificato digitale, analogamente a come un comune autentica l'associazione tra dati personali e fotografia rilasciando una carta d'identità.
+
+### Certificato Digitale
+
+Un certificato digitale include la chiave pubblica e una serie di informazioni relative al suo proprietario, firmate dalla CA. La CA mantiene un archivio sicuro di chiavi pubbliche, accessibile a tutti e protetto da scritture non autorizzate. La chiave pubblica della CA è nota agli utenti, che la proteggono da attacchi esterni e la utilizzano per verificare la firma della CA sui certificati.
+
+### Contenuto del Certificato Digitale
+
+Un certificato digitale contiene:
+
+- **Formato:** Indicazione del numero di versione del certificato.
+- **Emittente:** Nome della CA che ha rilasciato il certificato.
+- **Numero Seriale:** Un numero univoco che identifica il certificato all'interno della CA emittente.
+- **Algoritmo di Firma:** Specifica dell'algoritmo utilizzato dalla CA per creare la firma elettronica, con una descrizione dei parametri necessari.
+- **Periodo di Validità:** Date di inizio e fine della validità del certificato.
+- **Informazioni sull'Utente:** Nome dell'utente a cui il certificato si riferisce e altre informazioni correlate.
+- **Protocollo a Chiave Pubblica:** Indicazione del protocollo adottato dall'utente per la cifratura e la firma, inclusi nome dell'algoritmo, parametri e chiave pubblica dell'utente.
+- **Firma della CA:** Firma eseguita su tutte le informazioni precedenti.
+
+### Utilizzo del Certificato Digitale
+
+Quando un utente $U$ desidera comunicare con un altro utente $V$, può richiedere la chiave pubblica di $V$ alla CA, che risponde inviando il certificato digitale di $V$. Poiché $U$ conosce la chiave pubblica della CA, può verificare l'autenticità del certificato controllando il periodo di validità e la firma della CA. Se i controlli sono positivi, la chiave pubblica di $V$ è considerata corretta e $U$ può utilizzarla per avviare una comunicazione cifrata con $V$. Un crittoanalista potrebbe intromettersi solo falsificando la certificazione, ma si assume che la CA sia fidata e il suo archivio delle chiavi sia sicuro.
+
+### Messaggio Cifrato e Firmato in Hash e Certificato
+
+**Firma, Cifratura e Certificazione:**
+
+- **Mittente $U$:**  
+  1. Calcola l'hash del messaggio $h(m)$.
+  2. Genera la firma $f = D(h(m), k_U[\text{prv}])$.
+  3. Calcola il crittogramma $c = C(m, k_V[\text{pub}])$.
+  4. Invia a $V$ la tripla $(\text{cert}_U, c, f)$, dove $\text{cert}_U$ contiene la chiave $k_U[\text{pub}]$ e la specificazione della funzione hash utilizzata.
+
+**Verifica del Certificato:**
+
+- **Destinatario $V$:**  
+  1. Riceve la tripla $(\text{cert}_U, c, f)$.
+  2. Verifica l'autenticità di $\text{cert}_U$ (e quindi della chiave $k_U[\text{pub}]$ contenuta) utilizzando la chiave pubblica della CA.
+
+**Decifrazione e Verifica della Firma:**
+
+- **Destinatario $V$:**  
+  1. Decifra il crittogramma $c$ con la sua chiave privata, ottenendo $m = D(c, k_V[\text{prv}])$.
+  2. Verifica l'autenticità della firma di $U$ su $m$ controllando che $C(f, k_U[\text{pub}]) = h(m)$.
+
+In questo modo, il certificato digitale garantisce l'autenticità e l'integrità delle comunicazioni, proteggendo da attacchi e assicurando che le chiavi pubbliche siano valide e affidabili.
