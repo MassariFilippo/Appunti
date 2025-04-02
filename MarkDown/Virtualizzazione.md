@@ -91,6 +91,18 @@
     - [Parametri del Comando `docker run`](#parametri-del-comando-docker-run)
     - [Reti](#reti)
     - [Immagini Docker e Filesystem](#immagini-docker-e-filesystem)
+    - [Utilizzo dei Bind Mounts in Docker](#utilizzo-dei-bind-mounts-in-docker)
+  - [Dockerfile](#dockerfile)
+    - [Comandi Dockerfile](#comandi-dockerfile)
+    - [Comandi Dockerfile](#comandi-dockerfile-1)
+    - [Nome di un'Immagine Docker](#nome-di-unimmagine-docker)
+    - [RUN Command Details](#run-command-details)
+    - [Esempio di Dockerfile Semplice](#esempio-di-dockerfile-semplice)
+    - [Ispezione di un'immagine Docker](#ispezione-di-unimmagine-docker)
+    - [Filesystem dei container in esecuzione](#filesystem-dei-container-in-esecuzione)
+    - [Struttura incrementale delle immagini](#struttura-incrementale-delle-immagini)
+    - [Condivisione e gestione dei layers](#condivisione-e-gestione-dei-layers)
+    - [Docker Area e Storage Driver](#docker-area-e-storage-driver)
   - [Active Directory](#active-directory)
     - [Dominio Windows](#dominio-windows)
     - [Protocolli di Active Directory](#protocolli-di-active-directory)
@@ -1446,9 +1458,9 @@ Tuttavia, questo approccio può rallentare le scritture, specialmente per applic
 3. Gestione Temporanea dei Dati
 
 Per dati temporanei che non devono essere salvati su disco, è possibile utilizzare **volumi Tmpfs**:
-- Memorizzazione in memoria
+- Memorizzazione in memoria RAM
 - Eliminazione automatica alla chiusura del container
-- Risparmio di accessi su disco
+- Risparmio di accessi su disco temporalmente più costose
 
 4. Condivisione tra Macchine Diverse
 
@@ -1460,6 +1472,321 @@ Per garantire **fault tolerance** e **resilienza**, è possibile:
 **Rimozione Automatica del Container all'Uscita**
 
 Il flag `--rm` rimuove automaticamente il container quando esce, insieme ai volumi unnamed, liberando risorse e spazio su disco.
+
+### Utilizzo dei Bind Mounts in Docker
+
+I bind mounts in Docker offrono un meccanismo per condividere directory del filesystem dell'host con i container, rendendo possibile la persistenza dei dati al di là del ciclo di vita del container stesso.  Questo esempio illustra l'utilizzo dei bind mounts per creare un semplice server web Apache, rendendo persistenti le pagine HTML in una directory dell'host.
+
+**Configurazione e Esecuzione del Container**
+
+1. **Creazione della Directory sull'Host:**  
+   Prima di tutto, creiamo una directory sull'host che fungerà da spazio di archiviazione condiviso:
+   ```bash
+   mkdir /home/vic/htdocs
+   ```
+
+2. **Esecuzione del Server Web Apache:**  
+   Eseguiamo il container Apache in background, utilizzando il flag `-d`, e mappiamo la porta 80 del container alla porta 8888 dell'host con `-p 8888:80`. L'opzione `-v /home/vic/htdocs:/usr/local/apache2/htdocs` crea il bind mount, collegando la directory `/home/vic/htdocs` dell'host alla directory `/usr/local/apache2/htdocs` all'interno del container.  Qualsiasi modifica apportata a questa directory sarà visibile sia sull'host che nel container.
+   ```bash
+   docker run -p 8888:80 --name web -d -v /home/vic/htdocs:/usr/local/apache2/htdocs httpd
+   ```
+
+3. **Accesso Interattivo al Container:**  
+   Per accedere alla directory `/usr/local/apache2/htdocs` all'interno del container, utilizziamo il comando `docker exec`:
+   ```bash
+   docker exec -it web /bin/bash
+   ```
+
+4. **Creazione di un File HTML:**  
+   Navighiamo nella directory `htdocs` e creiamo un semplice file HTML:
+   ```bash
+   cd /usr/local/apache2/htdocs
+   echo '<h1>Hello World from Container</h1>' > index.html
+   exit
+   ```
+
+**Verifica e Modifica dei Dati**
+
+1. **Accesso alla Pagina Web:**  
+   Possiamo ora accedere alla pagina web tramite il browser, utilizzando l'indirizzo `localhost:8888`.
+
+2. **Modifica dei File:**  
+   È possibile modificare i file sia dall'host che dal container. Tuttavia, poiché il file `index.html` è stato creato dall'utente root nel container, è necessario modificare i permessi per poterlo modificare dall'host:
+   ```bash
+   chmod 666 index.html
+   ```
+
+   Quindi, modifichiamo il file dall'host:
+   ```bash
+   echo '<h1>Hello Pippo from Pluto</h1>' > /home/vic/htdocs/index.html
+   ```
+
+   Riavviando il browser, si vedrà la modifica.
+
+3. **Rimozione del Container:**  
+   Per rimuovere il container, possiamo usare il flag `-f` per forzare la rimozione senza fermarlo prima:
+   ```bash
+   docker rm -f web
+   ```
+
+   Oppure, in alternativa:
+   ```bash
+   docker kill web
+   docker rm web
+   ```
+
+**Miglioramento della Configurazione**
+
+Per evitare problemi di permessi, è consigliabile creare il file `index.html` inizialmente sull'host e impostare i permessi corretti prima di avviare il container:
+
+```bash
+touch /home/vic/htdocs/index.html
+chmod 666 /home/vic/htdocs/index.html
+```
+
+Riavviando il container Apache, le modifiche saranno immediatamente visibili.
+
+**Sintassi Alternativa per Bind Mounts**
+
+Esiste una sintassi alternativa per creare un bind mount usando il comando `docker volume create`:
+
+```bash
+docker volume create --name my_test_volume --opt type=none --opt device=/home/jinna/Jinna_Balu/Test_volume --opt o=bind
+```
+
+**Rimozione Automatica del Container**
+
+Il flag `--rm` permette di rimuovere automaticamente il container alla sua terminazione, insieme a eventuali volumi unnamed:
+
+```bash
+docker run -it --rm --name nc1 vic/ubuntu_with_nc_netstat
+```
+
+## Dockerfile
+
+Un Dockerfile è uno script che contiene comandi e istruzioni che vengono eseguiti automaticamente in sequenza nell'ambiente Docker per costruire una nuova immagine. Questo file contiene sia comandi specifici di Docker che comandi del sistema operativo (ad esempio, comandi Linux).
+
+### Comandi Dockerfile
+
+### Comandi Dockerfile
+
+- **FROM:** Definisce l'immagine base per costruire una nuova immagine. Questo comando deve essere posizionato all'inizio del Dockerfile.
+
+- **RUN:** Utilizzato per eseguire un comando sul container durante il processo di build dell'immagine Docker.
+
+- **COPY:** Copia un file dalla macchina host alla nuova immagine Docker.
+
+- **ADD:** Simile a COPY, ma offre la possibilità di utilizzare un URL come sorgente per il file da copiare; Docker scaricherà automaticamente quel file nella directory di destinazione.
+
+- **ENV:** Definisce una variabile d'ambiente. Dopo che una variabile è stata definita, può essere utilizzata anche negli altri comandi.
+
+- **ENTRYPOINT:** Definisce il comando predefinito e non sostituibile che verrà eseguito quando il container è in esecuzione, indipendentemente dal comando specificato in `docker run`.
+
+- **CMD:** Utilizzato per eseguire un comando sostituibile quando si crea un nuovo container dall'immagine Docker. Se non c'è CMD, viene utilizzato quello dell'immagine di partenza. Questo comando sarà sostituito da quello specificato in `docker run`.
+
+- **WORKDIR:** Imposta la directory di lavoro per il comando CMD.
+
+- **USER:** Imposta l'utente o l'UID per il container creato con l'immagine.
+
+- **VOLUME:** Abilita l'accesso a directory condivise tra il container e la macchina host.
+
+- **ARG:** Utilizza variabili di build-time.
+
+- **EXPOSE:** Descrive su quali porte l'applicazione è in ascolto.
+
+- **HEALTHCHECK:** Controlla lo stato di salute di un container all'avvio.
+
+- **LABEL:** Aggiunge metadati a un'immagine.
+
+- **ONBUILD:** Specifica istruzioni da eseguire quando l'immagine viene utilizzata in una build.
+
+- **SHELL:** Imposta la shell predefinita di un'immagine (utilizzata nella forma bash di entrambi i comandi ENTRYPOINT e CMD).
+
+- **STOPSIGNAL:** Specifica il segnale di chiamata di sistema per uscire da un container.
+
+**ENTRYPOINT vs CMD**
+
+Sia ENTRYPOINT che CMD concorrono a definire il comando principale che viene eseguito quando il container è in esecuzione (Up).
+
+- Se ci sono sia ENTRYPOINT che CMD senza che "docker run" specifichi un comando, allora il comando eseguito è dato da ENTRYPOINT seguito da CMD.
+
+- La differenza tra CMD e ENTRYPOINT è che eventuali "comando e suoi argomenti" specificati dal comando "docker run":
+  - Sostituiscono il comando specificato da CMD nel Dockerfile
+  - Si aggiungono come ulteriori argomenti al comando specificato da ENTRYPOINT
+
+**Esempio:**
+
+```dockerfile
+ENTRYPOINT [ "/bin/bash", "-c" ]
+CMD [ "./hello.sh", "alfa", "beta", "gamma" ]
+```
+
+- Se eseguo 'docker run myimage' senza specificare un comando, verrà eseguito:
+  ```
+  /bin/bash -c ./hello.sh alfa beta gamma
+  ```
+
+- Se eseguo 'docker run myimage /home/vic/script.sh ciao come va', verrà eseguito:
+  ```
+  /bin/bash -c /home/vic/script.sh ciao come va
+  ```
+
+**Exec Form e Shell Form**
+
+I comandi in ENTRYPOINT e CMD possono essere specificati in due forme:
+
+- **Exec Form:**  
+  ```dockerfile
+  ENTRYPOINT [ "./program.exe", "uno", "due", "tre" ]
+  ```
+  Viene eseguito esattamente il comando: `./program.exe uno due tre`  
+  Richiede doppi apici attorno a ciascuna parte.
+
+- **Shell Form:**  
+  ```dockerfile
+  ENTRYPOINT ./hello.sh alfa beta gamma
+  ```
+  Viene lanciata una shell in cui viene eseguito il comando specificato.  
+  In sostanza, viene eseguito: `/bin/sh -c ./hello.sh alfa beta gamma`  
+  La shell predefinita è `/bin/sh`, ma può essere modificata con il comando SHELL.
+
+**Caso particolare:**  
+Se ENTRYPOINT è nella shell form e CMD è nella exec form, il comando specificato da CMD non viene considerato e non viene eseguito.
+
+### Nome di un'Immagine Docker
+
+Il nome completo di un'immagine Docker è composto da quattro parti, di cui solo una è obbligatoria:
+
+```
+[REGISTRY_HOST]/[NAMESPACE]/REPOSITORY:[TAG]
+```
+
+- **REGISTRY_HOST** (Facoltativo):  
+  Indica l'host del registry. Deve avere almeno un punto, come i nomi di dominio, e può specificare una porta preceduta da `:`.  
+  Esempi: `docker.io`, `ghcr.io`, `my-registry.com:5000`
+
+- **NAMESPACE** (Facoltativo):  
+  Indica l'utente o l'organizzazione proprietaria dell'immagine.
+
+- **REPOSITORY**:  
+  Nome logico dell'immagine (es. `ubuntu`, `nginx`).
+
+- **TAG** (Facoltativo):  
+  Specifica la versione dell'immagine (es. `:latest`, `:1.0`).
+
+Per le immagini sul registry Docker Hub, se nella richiesta si omette il namespace, viene utilizzato `library` come default; se si omette il tag, viene utilizzato `:latest` come default.
+
+Quindi, una richiesta `ubuntu` fatta a Docker Hub diventa `docker.io/library/ubuntu:latest`.
+
+### RUN Command Details
+
+Ogni comando RUN che modifica il filesystem crea un layer. Per evitare la sovrapposizione di numerosi layer, si possono concatenare i comandi in un singolo comando RUN utilizzando operatori bash di esecuzione condizionale (`&&`):
+
+```dockerfile
+RUN apt update && apt install wget gcc curl && apt autoclean
+```
+
+Oppure si può utilizzare l'operatore Here Document (`<<`):
+
+```dockerfile
+RUN <<EOF
+apt update
+apt install wget curl
+apt install gcc
+apt autoclean
+EOF
+```
+
+### Esempio di Dockerfile Semplice
+
+**File hello.sh**
+```bash
+#!/bin/bash
+echo inizio
+./hello1.sh
+```
+
+**File hello1.sh**
+```bash
+#!/bin/bash
+echo vaf | nc www.cs.unibo.it 80
+```
+
+**Dockerfile**
+```dockerfile
+FROM ubuntu:latest
+MAINTAINER vic ovvero io
+ENV MYHOME=/home/
+RUN apt-get update
+RUN apt-get -y install net-tools
+RUN apt-get -y install netcat
+ADD hello.sh /home/hello.sh
+ADD hello1.sh /home/hello1.sh
+RUN chmod 777 ${MYHOME}/hello.sh
+RUN chmod 777 ${MYHOME}/hello1.sh
+WORKDIR /home
+ENTRYPOINT [ "./hello.sh" ]
+```
+
+**Build e Verifica**
+```bash
+# Build
+docker build -t "simple_netcat:1.0" .
+
+# Verify
+docker images "simple_netcat:1.0"
+
+# Run
+docker run simple_netcat:1.0
+```
+
+**Output**
+```
+inizio
+HTTP/1.1 400 Bad Request
+Date: Wed, 27 Apr 2022 05:25:37 GMT
+Server: Apache/2.4.10 (Debian)
+Content-Length: 311
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>400 Bad Request</title>
+</head><body>
+<h1>Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.<br />
+</p>
+<hr>
+<address>Apache/2.4.10 (Debian) Server at serpina.cs.unibo.it Port 80</address>
+</body></html>
+```
+
+Ecco una versione ibrida degli appunti, che combina uno stile discorsivo con una suddivisione in punti per maggiore chiarezza:
+
+### Ispezione di un'immagine Docker
+
+- **Comando di ispezione**: Utilizzare `docker image inspect NOME_IMMAGINE` per ottenere dettagli completi su un'immagine Docker. Questo comando fornisce informazioni cruciali come l'Entrypoint, il comando di default (Cmd), l'utente (User), la directory di lavoro (WorkingDir), i volumi, l'architettura, il sistema operativo e l'Id dell'immagine.
+- **Formato e selezione dei dati**: L'output è in formato JSON, ma è possibile estrarre campi specifici usando l'opzione `--format`. Ad esempio, per ottenere l'Id dell'immagine, si può usare `docker image inspect --format='{{.Id}}' NOME_IMMAGINE`.
+
+### Filesystem dei container in esecuzione
+
+- **Condivisione del filesystem**: I container condividono in sola lettura il filesystem dell'immagine di base. Ogni container aggiunge un proprio layer in lettura e scrittura per registrare le modifiche effettuate durante l'esecuzione.
+- **Efficienza del Copy-on-Write**: Questo approccio consente di risparmiare spazio su disco, mantenendo un'unica copia dell'immagine di base e registrando solo le differenze nei container individuali. Le modifiche vengono eliminate quando il container viene rimosso.
+
+### Struttura incrementale delle immagini
+
+- **Creazione di immagini**: Le immagini Docker sono costruite in modo incrementale attraverso una serie di layers. Ogni comando nel Dockerfile che modifica il filesystem genera un nuovo layer che memorizza solo le differenze rispetto ai layers precedenti.
+- **Vantaggi del modello incrementale**: Questo metodo consente di riutilizzare i layers comuni tra diverse immagini, riducendo il tempo di build e l'utilizzo dello spazio su disco. Al contrario, `docker commit` crea un'immagine con un unico grande layer.
+
+### Condivisione e gestione dei layers
+
+- **Condivisione dei layers**: Se due immagini partono dalla stessa immagine base, non duplicano la base ma mantengono solo le differenze. Immagini con lo stesso digest condividono gli stessi layers.
+- **Immagini intermedie e dangling**: Durante il build, possono essere create immagini intermedie che fungono da cache. Queste immagini, quando non più referenziate, diventano "dangling" e possono essere eliminate per liberare spazio.
+
+### Docker Area e Storage Driver
+
+- **Memorizzazione delle immagini**: Le immagini e i layers sono memorizzati nel filesystem dell'host all'interno della Docker Area, situata tipicamente in `/var/lib/docker/`.
+- **Gestione efficiente con OverlayFS**: La Docker Area può essere una partizione separata con un filesystem specializzato, come OverlayFS, che ottimizza la memorizzazione e la gestione dei layers. Il driver di storage predefinito, `overlay2`, gestisce la creazione e il collegamento dei layers, garantendo un uso efficiente dello spazio e proteggendo l'integrità dei container in esecuzione.
 
 ## Active Directory
 
