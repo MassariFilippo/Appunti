@@ -129,11 +129,7 @@
     - [Messaggio Cifrato e Firmato](#messaggio-cifrato-e-firmato)
     - [Messaggio Cifrato e Firmato: RSA](#messaggio-cifrato-e-firmato-rsa)
     - [Messaggio Cifrato e Firmato in Hash](#messaggio-cifrato-e-firmato-in-hash)
-    - [Attacco Man-in-the-Middle](#attacco-man-in-the-middle-1)
-    - [Certification Authority (CA)](#certification-authority-ca)
-    - [Certificato Digitale](#certificato-digitale)
-    - [Contenuto del Certificato Digitale](#contenuto-del-certificato-digitale)
-    - [Utilizzo del Certificato Digitale](#utilizzo-del-certificato-digitale)
+    - [Certification Authority e Certificati Digitli](#certification-authority-e-certificati-digitli)
     - [Messaggio Cifrato e Firmato in Hash e Certificato](#messaggio-cifrato-e-firmato-in-hash-e-certificato)
 
 
@@ -1625,32 +1621,21 @@ La **correttezza del procedimento** dipende da una condizione derivante dalle pr
 2. **Verifica della Firma:**  
    $V$ calcola separatamente $h(m)$ e $C(f, k_U[\text{pub}])$. Se questi due valori sono uguali, $V$ conclude che il messaggio è autentico.
 
-### Attacco Man-in-the-Middle
 
-I protocolli di firma digitale sono vulnerabili agli attacchi man-in-the-middle, poiché le chiavi di cifratura sono pubbliche. Un crittoanalista attivo può intercettare e modificare le comunicazioni, compromettendo il protocollo. Ad esempio, un attaccante $X$ può sostituire la chiave pubblica di $V$ con la propria, intercettando e alterando i messaggi scambiati tra $U$ e $V$.
 
-### Certification Authority (CA)
+### Certification Authority e Certificati Digitli
 
-Per prevenire attacchi come il man-in-the-middle, sono state istituite le Certification Authority (CA), enti responsabili della certificazione della validità delle chiavi pubbliche. Una CA autentica l'associazione tra un utente e la sua chiave pubblica emettendo un certificato digitale, analogamente a come un comune autentica l'associazione tra dati personali e fotografia rilasciando una carta d'identità.
-
-### Certificato Digitale
-
-Un certificato digitale include la chiave pubblica e una serie di informazioni relative al suo proprietario, firmate dalla CA. La CA mantiene un archivio sicuro di chiavi pubbliche, accessibile a tutti e protetto da scritture non autorizzate. La chiave pubblica della CA è nota agli utenti, che la proteggono da attacchi esterni e la utilizzano per verificare la firma della CA sui certificati.
-
-### Contenuto del Certificato Digitale
+I protocolli di firma digitale sono vulnerabili agli **attacchi man-in-the-middle**, poiché le chiavi di cifratura sono pubbliche. Un crittoanalista attivo può intercettare e modificare le comunicazioni, compromettendo il protocollo. Ad esempio, un attaccante $X$ può sostituire la chiave pubblica di $V$ con la propria, intercettando e alterando i messaggi scambiati tra $U$ e $V$. Per prevenire attacchi come il man-in-the-middle, sono state istituite le **Certification Authority (CA)**, enti responsabili della certificazione della validità delle chiavi pubbliche. Una CA autentica l'associazione tra un utente e la sua chiave pubblica emettendo un certificato digitale, analogamente a come un comune autentica l'associazione tra dati personali e fotografia rilasciando una carta d'identità. Un **certificato digitale** include la chiave pubblica e una serie di informazioni relative al suo proprietario, firmate dalla CA. La CA mantiene un archivio sicuro di chiavi pubbliche, accessibile a tutti e protetto da scritture non autorizzate. La chiave pubblica della CA è nota agli utenti, che la proteggono da attacchi esterni e la utilizzano per verificare la firma della CA sui certificati. 
 
 Un certificato digitale contiene:
-
-- **Formato:** Indicazione del numero di versione del certificato.
-- **Emittente:** Nome della CA che ha rilasciato il certificato.
-- **Numero Seriale:** Un numero univoco che identifica il certificato all'interno della CA emittente.
-- **Algoritmo di Firma:** Specifica dell'algoritmo utilizzato dalla CA per creare la firma elettronica, con una descrizione dei parametri necessari.
-- **Periodo di Validità:** Date di inizio e fine della validità del certificato.
-- **Informazioni sull'Utente:** Nome dell'utente a cui il certificato si riferisce e altre informazioni correlate.
-- **Protocollo a Chiave Pubblica:** Indicazione del protocollo adottato dall'utente per la cifratura e la firma, inclusi nome dell'algoritmo, parametri e chiave pubblica dell'utente.
-- **Firma della CA:** Firma eseguita su tutte le informazioni precedenti.
-
-### Utilizzo del Certificato Digitale
+  - **Formato:** Indicazione del numero di versione del certificato.
+  - **Emittente:** Nome della CA che ha rilasciato il certificato.
+  - **Numero Seriale:** Un numero univoco che identifica il certificato all'interno della CA emittente.
+  - **Algoritmo di Firma:** Specifica dell'algoritmo utilizzato dalla CA per creare la firma elettronica, con una descrizione dei parametri necessari.
+  - **Periodo di Validità:** Date di inizio e fine della validità del certificato.
+  - **Informazioni sull'Utente:** Nome dell'utente a cui il certificato si riferisce e altre informazioni correlate.
+  - **Protocollo a Chiave Pubblica:** Indicazione del protocollo adottato dall'utente per la cifratura e la firma, inclusi nome dell'algoritmo, parametri e chiave pubblica dell'utente.
+  - **Firma della CA:** Firma eseguita su tutte le informazioni precedenti.
 
 Quando un utente $U$ desidera comunicare con un altro utente $V$, può richiedere la chiave pubblica di $V$ alla CA, che risponde inviando il certificato digitale di $V$. Poiché $U$ conosce la chiave pubblica della CA, può verificare l'autenticità del certificato controllando il periodo di validità e la firma della CA. Se i controlli sono positivi, la chiave pubblica di $V$ è considerata corretta e $U$ può utilizzarla per avviare una comunicazione cifrata con $V$. Un crittoanalista potrebbe intromettersi solo falsificando la certificazione, ma si assume che la CA sia fidata e il suo archivio delle chiavi sia sicuro.
 
