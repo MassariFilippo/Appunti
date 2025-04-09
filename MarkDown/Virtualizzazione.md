@@ -98,6 +98,8 @@
     - [Nome di un'Immagine Docker](#nome-di-unimmagine-docker)
     - [RUN Command Details](#run-command-details)
     - [Esempio di Dockerfile Semplice](#esempio-di-dockerfile-semplice)
+    - [Compiti di Init in Shell ed Exec mode](#compiti-di-init-in-shell-ed-exec-mode)
+    - [ENV e ARG - Confronto](#env-e-arg---confronto)
     - [Ispezione di un'immagine Docker](#ispezione-di-unimmagine-docker)
     - [Filesystem dei container in esecuzione](#filesystem-dei-container-in-esecuzione)
     - [Struttura incrementale delle immagini](#struttura-incrementale-delle-immagini)
@@ -981,9 +983,15 @@ L'ecosistema dei container su Linux è supportato da strumenti come Docker, Kube
 
 ### Installazione di Docker
 
+- **Differenze tra `apt` e `apt-get`**:
+
+  - **`apt`**: Introdotto come un'interfaccia più user-friendly per la gestione dei pacchetti su sistemi basati su Debian, `apt` combina le funzionalità più comuni di `apt-get` e `apt-cache`. È progettato per essere più intuitivo e fornisce messaggi di output più chiari e leggibili. `apt` è ideale per gli utenti che cercano un modo semplice e veloce per installare, aggiornare e rimuovere pacchetti.
+
+  - **`apt-get`**: È uno strumento più vecchio e più stabile per la gestione dei pacchetti, che offre un controllo più granulare e opzioni avanzate. `apt-get` è spesso preferito dagli utenti esperti e dagli amministratori di sistema che necessitano di funzionalità avanzate e scriptabili. Sebbene `apt-get` offra più opzioni, la sua interfaccia è meno intuitiva rispetto a `apt`. Spesso lo preferiremo ad `apt` perchè genera warning non qualitativamnte ottimali in utilizzo combinato con `apk`.
+
 #### Installazione su Ubuntu
 
-Per installare Docker su Ubuntu, ci sono diversi metodi disponibili. Ecco una guida passo-passo per l'installazione tramite il repository **apt**:
+Per installare Docker su Ubuntu, ci sono diversi metodi disponibili. Ecco una guida passo-passo per l'installazione tramite il repository **`apt`**:
 
 1. **Aggiornare i pacchetti:**  
    ```bash
@@ -1717,6 +1725,7 @@ echo vaf | nc www.cs.unibo.it 80
 FROM ubuntu:latest
 MAINTAINER vic ovvero io
 ENV MYHOME=/home/
+
 RUN apt-get update
 RUN apt-get -y install net-tools
 RUN apt-get -y install netcat
@@ -1724,6 +1733,7 @@ ADD hello.sh /home/hello.sh
 ADD hello1.sh /home/hello1.sh
 RUN chmod 777 ${MYHOME}/hello.sh
 RUN chmod 777 ${MYHOME}/hello1.sh
+
 WORKDIR /home
 ENTRYPOINT [ "./hello.sh" ]
 ```
@@ -1733,7 +1743,7 @@ ENTRYPOINT [ "./hello.sh" ]
 # Build
 docker build -t "simple_netcat:1.0" .
 
-# Verify
+# Verify -> voerifico se esiste
 docker images "simple_netcat:1.0"
 
 # Run
@@ -1761,7 +1771,122 @@ Content-Type: text/html; charset=iso-8859-1
 </body></html>
 ```
 
-Ecco una versione ibrida degli appunti, che combina uno stile discorsivo con una suddivisione in punti per maggiore chiarezza:
+### Compiti di Init in Shell ed Exec mode
+- **Shell Form**: Se un processo è eseguito con il formato shell, la shell stessa avrà il PID 1, dunque il processo principale, non gestirà i processi zombie, tali processi possono essere gestiti solola dal processo con PID 1, inoltre la shell di base non ha le capacità di gestire i processi zombi. Rimane necessaria quando si devono eseguire comandi compositi con espansioni bash o operatori condizionali. Si può includere uno script inline nel Dockerfile che viene eseguito nella exec form. Inoltre torna utile per un uso rapido o di debug.
+
+```dockerfile
+#---partiamo da un'immagine alpine e non ubuntu---#
+FROM alpine
+RUN apk add bash
+COPY --chmod=755 <<EOT
+/entrypoint.sh
+#---usaimo questo camand, che non è un commento, ma che serve a spechificare l'interprete da usare---#
+#!/usr/bin/env bash
+set -e
+my-background-process &
+my-program start
+EOT
+ENTRYPOINT ["/entrypoint.sh"]
+
+FROM alpine
+RUN apk add --no-cache bash tini
+COPY --chmod=755 <<EOT /entrypoint.sh
+#!/usr/bin/env bash
+set -e
+my-background-process &
+my-program start
+EOT
+ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh"]
+```
+
+La shell di default utilizzata per eseguire i comandi specificati con il formato shell in `ENTRYPOINT` e `CMD` è normalmente `["/bin/sh", "-c"]`. 
+
+- Se desideri modificarla, puoi utilizzare il comando `SHELL` in questo modo:
+  ```dockerfile
+  SHELL ["/bin/bash", "-c"]
+  ```
+
+- Ad esempio, se nel Dockerfile hai i seguenti comandi:
+  ```dockerfile
+  SHELL ["/bin/bash", "-c"]
+  ENTRYPOINT "echo ciao; cd /home/vic && echo ok"
+  ```
+
+  Dopo la creazione, il container eseguirà:
+  ```bash
+  "/bin/bash" "-c" "echo ciao; cd /home/vic && echo ok"
+  ```
+
+In questo modo, hai specificato che i comandi devono essere eseguiti utilizzando `bash` anziché la shell predefinita `sh`, torna utile dato che `sh` differisce per alcuni elmenti che potrebbero rendere il nostro script errato.
+
+- **Exec Form**: Quando un processo è eseguito con il formato exec (formato JSON), assume il PID 1 e deve svolgere i compiti del processo **Init**, come la gestione dei processi zombie e la reazione ai segnali SIGTERM e SIGKILL, ma non è detto che il mio processo "sappia" farlo, spesso modificarlo è complesso. Se il processo nel container deve gestire gli zombie e deve essere lanciato con il formato exec. Se non è capace, si può usare un sostituto del processo Init come `tini`. **Tini** è un processo init minimale per container Docker, leggero ed efficace nella gestione dei processi zombie. È spesso incluso nelle distribuzioni principali. Si può impostare `tini` come processo init nel Dockerfile usando `ENTRYPOINT ["/usr/bin/tini", "--"]` e specificare il comando principale con `CMD ["/path/to/processoPrincipale"]`.
+
+### ENV e ARG - Confronto
+
+- **ENV**
+  - **Definizione**: `ENV` imposta variabili di ambiente all'interno del container. Queste variabili possono essere utilizzate anche durante il build del Dockerfile.
+  - **Sovrascrittura**: Le variabili di ambiente definite con `ENV` nel Dockerfile possono essere sovrascritte a runtime utilizzando l'opzione `--env` con `docker run`.
+  - **Attenzione**: È importante considerare come le variabili `ENV` sono utilizzate nel Dockerfile, poiché potrebbero essere assegnate in modo definitivo.
+
+- **ARG**
+  - **Definizione**: `ARG` definisce variabili che possono essere passate a riga di comando e sono utilizzabili solo durante il build del Dockerfile.
+  - **Uso nel Container**: Se è necessario utilizzare un valore `ARG` anche all'interno del container, deve essere assegnato a una variabile `ENV`.
+  - **Sovrascrittura**: I valori `ARG` possono essere sovrascritti durante il build utilizzando l'opzione `--build-arg`.
+
+**Esempio di Dockerfile con ARG e ENV**
+
+```dockerfile
+FROM ubuntu
+ARG ARG1=arg1 ARG2=arg2 ARG3=arg3
+ENV ENV1=env1 ENV2=env2 ENV3=${ARG3}  # Assegna a ENV il valore di ARG
+
+# Crea uno script da eseguire come comando principale
+# Per sovrascrivere a runtime le variabili ENV nello script, devono essere quotate con \
+COPY --chmod=755 <<EOT /entrypoint.sh
+#!/usr/bin/env bash
+set -e
+echo ARG1 is $ARG1 ARG2 is $ARG2 ARG3 is $ARG3 | tee /mio.txt
+echo ENV1 is \$ENV1 ENV2 is \$ENV2 ENV3 is \$ENV3 | tee -a /mio.txt
+EOT
+
+# Nella forma EXEC non posso passare variabili, quindi le metto nello script
+ENTRYPOINT [ "/bin/bash", "-c", "/entrypoint.sh" ]
+```
+
+**Esempi di Costruzione e Esecuzione**
+
+1. **Build e Run senza modifiche**:
+```bash
+   docker build -t argenv .
+   docker run --rm -it --name ubu argenv
+   ```
+   **Output**:
+   ```
+   ARG1 is arg1 ARG2 is arg2 ARG3 is arg3
+   ENV1 is env1 ENV2 is env2 ENV3 is arg3
+   ```
+
+2. **Build con ARG modificati**:
+```bash
+   # sovrascittura di ARG
+   docker build --build-arg ARG3=nuovoarg3 --build-arg ARG2=nuovoarg2 -t argenv .
+   docker run --rm -it --name ubu argenv
+   ```
+   **Output**:
+```bash
+   ARG1 is arg1 ARG2 is nuovoarg2 ARG3 is nuovoarg3
+   ENV1 is env1 ENV2 is env2 ENV3 is nuovoarg3
+   ```
+
+3. **Run con ENV modificato a runtime**:
+```bash
+   docker run --rm -it --name ubu --env ENV3=runtimeenv3 argenv
+   ```
+   **Output**:
+```bash
+   ARG1 is arg1 ARG2 is nuovoarg2 ARG3 is nuovoarg3
+   ENV1 is env1 ENV2 is env2 ENV3 is runtimeenv3
+   ```
 
 ### Ispezione di un'immagine Docker
 
