@@ -131,6 +131,11 @@
     - [Messaggio Cifrato e Firmato in Hash](#messaggio-cifrato-e-firmato-in-hash)
     - [Certification Authority e Certificati Digitli](#certification-authority-e-certificati-digitli)
     - [Messaggio Cifrato e Firmato in Hash e Certificato](#messaggio-cifrato-e-firmato-in-hash-e-certificato)
+  - [Protocolli Zero-Knowledge](#protocolli-zero-knowledge)
+    - [Esempio di Protocollo Zero-Knowledge](#esempio-di-protocollo-zero-knowledge)
+      - [Proprietà Fondamentali dei Protocolli Zero-Knowledge](#proprietà-fondamentali-dei-protocolli-zero-knowledge)
+      - [Applicazioni nei Sistemi di Identificazione](#applicazioni-nei-sistemi-di-identificazione)
+      - [Sfide Computazionali](#sfide-computazionali)
 
 
 <div style="page-break-after: always;"></div>
@@ -206,8 +211,7 @@ La segretezza delle comunicazioni è fondamentale, ma non è l'unica caratterist
 ## Complessità computazionale
 
 ### Tabella delle cifre di alcune funzioni
-| n        | log2(n) | n  | n^2  | n^5  | 2^n       | n!          |
-|----------|---------|----|------|------|-----------|-------------|
+| n        | log2(n) | n  | n^2  | n^5  | 2^n       | n!          |--|
 | 1        | 1       | 1  | 1    | 1    | 1         | 1           |
 | 100,000  | 2       | 6  | 11   | 26   |  30 103   | 500 001     |
 | 500,000  | 2       | 6  | 12   | 29   |  150 515  | 2 849486    |
@@ -215,8 +219,7 @@ La segretezza delle comunicazioni è fondamentale, ma non è l'unica caratterist
 
 - Prima colonna valore dell'input altre colonne numero di cifre per rappresentare l'output.
 
-| n    | log2(n) | n   | n^2       | n^5          | 2^n       |
-|------|---------|-----|-----------|--------------|-----------|
+| n    | log2(n) | n   | n^2       | n^5          | 2^n       |-----|
 | 10   | 3       | 10  | 100       | 100,000      | 1,024     |
 | 100  | 6       | 100 | 10,000    | 10^10        | x         |
 | 1000 | 9       | 1000| 1,000,000 | 10^15        | y         |
@@ -323,7 +326,7 @@ Un cifrario perfetto ideato da Mauborgne e Vernam nel 1917, usato in comunicazio
 
 #### Esempio
 | msg  | 0 | 1 | 1 | 0 | 0 | 1 |
-|------|---|---|---|---|---|---|
+|
 | key  | 1 | 1 | 0 | 1 | 0 | 1 |
 | c    | 1 | 0 | 1 | 1 | 0 | 0 |
 | key  | 1 | 1 | 0 | 1 | 0 | 1 |
@@ -1662,3 +1665,37 @@ Quando un utente $U$ desidera comunicare con un altro utente $V$, può richieder
   2. Verifica l'autenticità della firma di $U$ su $m$ controllando che $C(f, k_U[\text{pub}]) = h(m)$.
 
 In questo modo, il certificato digitale garantisce l'autenticità e l'integrità delle comunicazioni, proteggendo da attacchi e assicurando che le chiavi pubbliche siano valide e affidabili.
+
+## Protocolli Zero-Knowledge
+
+I protocolli Zero-Knowledge rappresentano un'affascinante area della crittografia moderna, in cui due attori principali, il Prover (P) e il Verifier (V), interagiscono in modo tale che P possa dimostrare a V di possedere una certa conoscenza o abilità senza rivelare alcuna informazione aggiuntiva. Questo tipo di protocollo è particolarmente utile in contesti dove la privacy e la sicurezza delle informazioni sono cruciali.
+
+### Esempio di Protocollo Zero-Knowledge
+
+Immaginiamo uno scenario in cui P sostiene di poter contare i granelli di sabbia su una spiaggia con un solo sguardo. L'obiettivo di V è verificare questa affermazione con un alto grado di certezza, senza però apprendere il metodo utilizzato da P per contare i granelli. Questo esempio illustra perfettamente il concetto di zero-knowledge: V deve essere convinto della veridicità dell'affermazione di P senza ottenere alcuna informazione aggiuntiva.
+
+**Struttura del Protocollo Iterativo**
+
+Il protocollo si sviluppa attraverso una serie di iterazioni, precisamente $k + 1$, dove $k$ è un numero scelto da V. Durante queste iterazioni, P fornisce risposte sotto forma di un singolo bit: 0 se il numero di granelli è pari, 1 se è dispari. Questo processo iterativo permette a V di verificare la capacità di P di contare i granelli senza mai rivelare il metodo utilizzato.
+
+Durante ogni iterazione, V chiede a P di voltarsi per non osservare le sue azioni. V quindi lancia una moneta per decidere se rimuovere un granello di sabbia o meno. Successivamente, P osserva nuovamente la spiaggia e fornisce il nuovo valore del bit. V verifica la coerenza della risposta di P per decidere se continuare con l'iterazione successiva o fermarsi, dichiarando P un impostore se le risposte non sono coerenti.
+
+#### Proprietà Fondamentali dei Protocolli Zero-Knowledge
+
+I protocolli zero-knowledge possiedono tre proprietà fondamentali:
+
+1. **Completezza**: Se l'affermazione di P è vera, V accetterà sempre la dimostrazione. Questo garantisce che un prover onesto possa sempre convincere un verifier onesto.
+
+2. **Correttezza**: Se l'affermazione di P è falsa, V può essere ingannato solo con una probabilità di $\frac{1}{2^k}$, dove $k$ è il numero di iterazioni. Questo assicura che un prover disonesto abbia una probabilità estremamente bassa di ingannare V.
+
+3. **Conoscenza-Zero**: V non acquisisce alcuna informazione aggiuntiva oltre alla veridicità dell'affermazione di P. Anche un verifier disonesto non può ottenere informazioni sul metodo di P.
+
+#### Applicazioni nei Sistemi di Identificazione
+
+I protocolli zero-knowledge trovano applicazione anche nei sistemi di identificazione, dove P deve dimostrare la propria identità a V senza rivelare ulteriori informazioni. Ad esempio, P potrebbe dimostrare di conoscere una password o una chiave privata associata a una chiave pubblica, senza mai rivelare la password o la chiave stessa.
+
+Nel caso di identificazione tramite cifrari asimmetrici, il protocollo deve essere progettato con attenzione per evitare che un verifier disonesto possa ottenere informazioni sulla chiave privata di P. Questo è particolarmente importante quando l'identificazione avviene su canali insicuri.
+
+#### Sfide Computazionali
+
+Un esempio di sfida computazionale utilizzata nei protocolli zero-knowledge è il calcolo della radice quadrata modulare. Dato un numero non primo $n$, calcolare $t = s^2 \mod n$ è semplice, ma determinare $s$ (la radice quadrata di $t$) dati $t$ ed $n$ è computazionalmente difficile. Questa difficoltà è sfruttata per garantire la sicurezza del protocollo.
