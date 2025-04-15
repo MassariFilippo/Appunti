@@ -116,8 +116,23 @@
     - [Relazioni di Trust](#relazioni-di-trust)
     - [Replicazione all’interno del Dominio](#replicazione-allinterno-del-dominio)
     - [Replicazione con DFS](#replicazione-con-dfs)
-    - [Deleghe](#deleghe)
-    - [Group Policy](#group-policy)
+  - [Group Policy](#group-policy)
+    - [Gestione delle Group Policy](#gestione-delle-group-policy)
+    - [Tipi di Policy](#tipi-di-policy)
+    - [Applicazione delle Policy](#applicazione-delle-policy)
+    - [Preferenze delle Group Policy (GPP)](#preferenze-delle-group-policy-gpp)
+    - [Verifica delle Policy](#verifica-delle-policy)
+    - [Modalità di Elaborazione Loopback](#modalità-di-elaborazione-loopback)
+  - [Deleghe](#deleghe)
+    - [Gestione delle Deleghe](#gestione-delle-deleghe)
+  - [RADIUS (Remote Authentication Dial-In User Service)](#radius-remote-authentication-dial-in-user-service)
+    - [Funzionamento di RADIUS](#funzionamento-di-radius)
+    - [Esempio di RADIUS](#esempio-di-radius)
+    - [Installazione di RADIUS](#installazione-di-radius)
+  - [Virtuslizzazione sul Campus di Cesena](#virtuslizzazione-sul-campus-di-cesena)
+    - [Macchine Virtuali](#macchine-virtuali)
+    - [Campus \& Virtualizzazione Desktop](#campus--virtualizzazione-desktop)
+    - [Server Virtualization](#server-virtualization)
 
 
 <div style="page-break-after: always;"></div>
@@ -2072,11 +2087,7 @@ Alcuni dati della directory sono replicati tramite il **DFS (Distributed File Sy
 2. **DFS Replication:**  
    Mantiene sincronizzate le diverse unità distribuite.
 
-### Deleghe
-
-L'amministratore di dominio può concedere deleghe di amministrazione dei rami di Active Directory agli utenti ritenuti più opportuni. È possibile delegare tutti i diritti di amministrazione o solo alcuni. Le deleghe possono essere applicate a una OU, a tutto il sottoalbero di una OU, ai domini e ai siti.
-
-### Group Policy
+## Group Policy
 
 Le **group policy** sono configurazioni applicate ai computer e/o agli utenti di un dominio. Sono contenute in un **Group Policy Object (GPO)** e possono essere applicate all'intero dominio, ai siti o alle singole OU. L'ordine di applicazione delle policy è:
 
@@ -2086,3 +2097,142 @@ Le **group policy** sono configurazioni applicate ai computer e/o agli utenti di
 - OU
 
 In caso di conflitto, prevale la policy della OU, ma l'amministratore di dominio può far prevalere una policy di dominio. Da Windows Server 2008 esistono le **GPP (Group Policy Preferences)**.
+
+### Gestione delle Group Policy
+
+Le Group Policy permettono agli amministratori di dominio o ai loro delegati di modificare il comportamento dei sistemi operativi client. Gli oggetti di tipo **Group Policy (GPO)** sono memorizzati su tutti i controller di dominio (DC) di un dominio e vengono sincronizzati tra di essi. Le policy possono essere applicate a tutti i computer presenti in una specifica **Unità Organizzativa (OU)** e alle sue **sotto-OU**.
+
+### Tipi di Policy
+
+- **Policy del Computer**: Applicate al PC, influenzano il suo comportamento indipendentemente dall'utente collegato. Sono applicate all'avvio.
+- **Policy dell'Utente**: Applicate all'utente, influenzano il suo ambiente indipendentemente dal PC su cui si collega. Sono applicate al login.
+
+### Applicazione delle Policy
+
+Le policy vengono applicate dalla radice alla foglia, il che può portare a conflitti se una policy delegata in una OU è in contrasto con una policy impostata alla radice dall'amministratore del dominio. In questi casi, l'amministratore del dominio può imporre la sua policy tramite un apposito settaggio.
+
+### Preferenze delle Group Policy (GPP)
+
+Introdotte con Windows Server 2008, le GPP semplificano la personalizzazione degli ambienti operativi. Ad esempio, per mappare un'unità di rete, non è più necessario creare script potenzialmente pericolosi, poiché le GPP offrono un'alternativa più sicura.
+
+### Verifica delle Policy
+
+Per verificare le policy applicate a un determinato client per un utente specifico, si può utilizzare il comando `gpresult` sul computer client.
+
+### Modalità di Elaborazione Loopback
+
+Questa modalità è utile quando si hanno OUs separate per computer e utenti, ciascuna con policy diverse (es. ROSSA per i computer, BLU per gli utenti). Abilitando la Modalità di Elaborazione Loopback in `Configurazione Computer/Modelli Amministrativi/Sistema/Group Policy`, si può scegliere tra:
+
+- **Modalità Replace**: Applica solo le policy del computer e dell'utente della OU del computer, ignorando quelle dell'utente. Avendo la policy tutta in punto è ritenuta migliore.
+- **Modalità Merge**: Applica sia le policy del computer che quelle dell'utente, con priorità alle policy utente della OU del computer in caso di conflitti.
+
+## Deleghe
+
+L'amministratore di dominio può concedere deleghe di amministrazione dei rami di Active Directory agli utenti ritenuti più opportuni. È possibile delegare tutti i diritti di amministrazione o solo alcuni. Le deleghe possono essere applicate a una OU, a tutto il sottoalbero di una OU, ai domini e ai siti. Le deleghe permettono a un amministratore di dominio di assegnare la gestione di alcuni oggetti o intere OUs a persone fidate. Le deleghe possono essere specifiche (es. creazione o modifica di oggetti) o complete, permettendo una gestione totale degli oggetti contenuti nella OU. Questo è essenziale in ambienti grandi, come le università, dove l'amministratore del dominio non può gestire ogni ufficio.
+
+### Gestione delle Deleghe
+
+Un wizard guida l'applicazione delle deleghe, preferibile rispetto alla modifica manuale dei permessi sulle singole OUs.
+
+## RADIUS (Remote Authentication Dial-In User Service)
+
+RADIUS è un servizio AAA (Autenticazione, Autorizzazione, Accounting) che astrae il meccanismo di autenticazione utilizzando protocolli standard (EAP, CHAP, PAP, ecc.). Valida le credenziali di accesso e può restituire informazioni necessarie per il servizio richiesto.
+
+### Funzionamento di RADIUS
+
+- **Attori**: Client, Network Access Server (NAS) e server RADIUS.
+- **Processo**: Il client invia una richiesta di autenticazione al NAS, che la inoltra al server RADIUS. Il server verifica le credenziali e restituisce una conferma o un rifiuto di accesso, eventualmente con informazioni aggiuntive come l'assegnazione di VLAN.
+
+### Esempio di RADIUS
+
+In uno scenario in cui l'accesso web è controllato tramite credenziali Active Directory, il NAS (server web) si interfaccia con il server RADIUS, che si integra nativamente con Active Directory.
+
+### Installazione di RADIUS
+
+Per installare RADIUS su un DC, aggiungere il ruolo "Policy and Access Services", che include:
+
+1. **Network Policy Server**: Installa il server RADIUS, servizi VPN, server dial-up e servizi per il protocollo di autenticazione di rete 802.1x. Include anche NAP (Network Access Protection) per garantire la conformità alla sicurezza dei client.
+2. **Host Registration Authority**: Fornisce certificati ai client che superano i controlli NAP.
+3. **Host Credential Authorization Protocol**: Integra il NAP di Microsoft con la soluzione equivalente di Cisco.
+
+## Virtuslizzazione sul Campus di Cesena
+
+### Macchine Virtuali
+
+- **Virtualizzazione: Perché**
+  - **Potenza di calcolo**: Ottimizzazione delle risorse hardware.
+  - **TCO (Total Cost of Ownership)**: Riduzione dei costi di acquisto, operativi e di dismissione.
+  - **Server Consolidation**: Riduzione del numero di server fisici mantenendo i servizi.
+  - **Risparmio energetico**: Minore consumo di energia e riduzione dell'inquinamento.
+  - **Tempi di approvvigionamento server**: Maggiore efficienza nella gestione delle risorse.
+
+La virtualizzazione è un processo di astrazione delle risorse informatiche, che include:
+
+  - **Platform Virtualization**: Separazione di un sistema operativo dalle risorse fisiche sottostanti.
+  - **Application Virtualization**: Esecuzione di applicazioni su hardware/software diverso.
+  - **Desktop Virtualization**: Utilizzo remoto di un desktop.
+  - **Resource Virtualization**: Virtualizzazione di risorse specifiche, come i volumi logici di un disco.
+  - **Computer Clusters e Grid Computing**: Combinazione di più computer in un unico metacomputer.
+
+- **Forme di Virtualizzazione:**
+
+  - **Platform Virtualization**
+    - **Hardware**: Nasconde le caratteristiche fisiche del computer, mostrando una piattaforma astratta.
+      - **Full Virtualization**: Utilizzo di hypervisor (es. VMware).
+      - **Paravirtualization**: Utilizzo di Xen.
+    - **Software**: Virtualizzazione a livello di sistema operativo (es. Zones).
+
+  - **Application Virtualization**
+    - **Process Virtual Machine**: Esecuzione di codice in ambienti non nativi (es. Wine).
+
+  - **Virtualizzazione delle Workstation e dei Server**
+    - **Workstation**: VMware Workstation, VMware Player, Oracle VirtualBox.
+    - **Server**: VMware vSphere ESXi, Citrix XenServer, Microsoft Hyper-V.
+
+  - **Virtualizzazione delle Applicazioni**
+    - **Portable Application**: VMware ThinApp, Microsoft App-V.
+
+  - **Desktop Virtualization**
+    - Tecnologia che permette la distribuzione centralizzata dei desktop, ottimizzando le risorse e riducendo i costi.
+
+### Campus & Virtualizzazione Desktop
+
+- **Vantaggi**: Ottimizzazione delle risorse, semplificazione della gestione, riduzione dell'impatto ambientale, diminuzione dei costi.
+- **Svantaggi**: Criticità dei server e della rete, esperienza utente non sempre ottimale.
+
+![](img/Virtualizzazione/virtDesktop.png)
+
+### Server Virtualization
+
+- **Esigenze**: Consolidamento dei server, alta affidabilità, prestazioni elevate, gestione centralizzata.
+- **Scelte nel 2008**: Xen, VMware Server 1.0, VMware Infrastructure 3.5.
+
+  - **Xen**
+    - **Pro**: Open source, veloce.
+    - **Contro**: Assistenza limitata, paravirtualizzazione solo Linux su Linux, gestione complessa.
+
+  - **VMware Server 1.0**
+    - **Pro**: Gratuito, gestione semplice.
+    - **Contro**: Prestazioni limitate, alta affidabilità inesistente, dipendenza da un OS.
+
+  - **VMware Infrastructure**
+    - **Pro**: Alta affidabilità, gestione centralizzata, velocità, supporto per diversi OS guest.
+    - **Contro**: Costo elevato.
+
+- **Architettura del Campus**
+
+- **Configurazione**
+  - **2 siti**: Campus ex zuccherificio e Psico.
+  - **Sito primario**: 4 server in cluster (CEZ).
+  - **Sito di Disaster Recovery**: PSICO.
+
+- **Configurazione Hardware Campus**
+  - **Server Dell PowerEdge R940**: CPU Intel Xeon, 512 GB RAM, SSD e NIC ad alta velocità.
+  - **Server Inspur NF8480M5**: Configurazione simile con differenze minime.
+
+- **Storage System**
+  - **SAN HP MSA2040 e MSA2060**: Volumi RAID per grandi capacità di archiviazione.
+  - **NAS QNAP**: Utilizzato come SAN per ulteriore capacità.
+
+- **Configurazione Hardware Psico**
+  - **Server HP ProLiant DL580 Gen9**: CPU Intel Xeon, 384 GB RAM, configurazione di rete e storage simile al campus principale.
