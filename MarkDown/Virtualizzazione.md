@@ -105,6 +105,14 @@
     - [Struttura incrementale delle immagini](#struttura-incrementale-delle-immagini)
     - [Condivisione e gestione dei layers](#condivisione-e-gestione-dei-layers)
     - [Docker Area e Storage Driver](#docker-area-e-storage-driver)
+  - [Reti Docker Definite dall'Utente](#reti-docker-definite-dallutente)
+      - [Esempi di Utilizzo del Comando `docker inspect`](#esempi-di-utilizzo-del-comando-docker-inspect)
+    - [Creazione e Gestione delle Reti](#creazione-e-gestione-delle-reti)
+      - [Esempio di Creazione di una Rete:](#esempio-di-creazione-di-una-rete)
+    - [Collegamento dei Container alle Reti](#collegamento-dei-container-alle-reti)
+      - [Esempio di Collegamento dei Container:](#esempio-di-collegamento-dei-container)
+    - [Server DNS Embedded di Docker](#server-dns-embedded-di-docker)
+      - [Esempio di Utilizzo del Server DNS:](#esempio-di-utilizzo-del-server-dns)
   - [Active Directory](#active-directory)
     - [Dominio Windows](#dominio-windows)
     - [Protocolli di Active Directory](#protocolli-di-active-directory)
@@ -1840,7 +1848,7 @@ In questo modo, hai specificato che i comandi devono essere eseguiti utilizzando
 
 - **ENV**
   - **Definizione**: `ENV` imposta variabili di ambiente all'interno del container. Queste variabili possono essere utilizzate anche durante il build del Dockerfile.
-  - **Sovrascrittura**: Le variabili di ambiente definite con `ENV` nel Dockerfile possono essere sovrascritte a runtime utilizzando l'opzione `--env` con `docker run`.
+  - **Sovrascrittura**: Le variabili di ambiente definite con `ENV` nel Dockerfile possono essere sovrascritte a runtime utilizzando l'opzione `--env` con `docker run`, queste varaibili saranno presenti nel doker ma non nell'immagine che ormani è stata definita.
   - **Attenzione**: È importante considerare come le variabili `ENV` sono utilizzate nel Dockerfile, poiché potrebbero essere assegnate in modo definitivo.
 
 - **ARG**
@@ -1927,6 +1935,96 @@ ENTRYPOINT [ "/bin/bash", "-c", "/entrypoint.sh" ]
 
 - **Memorizzazione delle immagini**: Le immagini e i layers sono memorizzati nel filesystem dell'host all'interno della Docker Area, situata tipicamente in `/var/lib/docker/`.
 - **Gestione efficiente con OverlayFS**: La Docker Area può essere una partizione separata con un filesystem specializzato, come OverlayFS, che ottimizza la memorizzazione e la gestione dei layers. Il driver di storage predefinito, `overlay2`, gestisce la creazione e il collegamento dei layers, garantendo un uso efficiente dello spazio e proteggendo l'integrità dei container in esecuzione.
+
+## Reti Docker Definite dall'Utente
+
+Nel contesto della virtualizzazione e dell'integrazione di sistemi, le reti definite dall'utente in Docker offrono una flessibilità notevole per la gestione dei container e delle loro interazioni. Queste reti permettono di personalizzare la configurazione di rete e integrare facilmente i container su un host o su più host. Le reti definite dall'utente consentono agli sviluppatori di creare ambienti isolati per applicazioni, garantendo una migliore gestione della sicurezza e dell'accesso alle risorse. Grazie a Docker, è possibile creare diverse tipologie di reti, come le reti bridge e overlay, che soddisfano diverse esigenze di infrastruttura. Le reti bridge operano su singoli host, mentre le reti overlay si estendono su più host, consentendo comunicazione tra container distribuiti. Docker offre una serie di comandi utili per interagire con le reti e i container. Il comando `docker inspect` è particolarmente importante, poiché fornisce informazioni dettagliate sugli oggetti Docker. Utilizzando il formato JSON di default o personalizzato, si possono ottenere dettagli specifici delle configurazioni di rete e del sistema.
+
+#### Esempi di Utilizzo del Comando `docker inspect`
+
+1. **Avviare un container e ispezionarlo:**
+
+   ```bash
+   docker run --name=myubuntu ubuntu
+   docker inspect myubuntu
+   ```
+
+   Questo esempio mostra come ottenere informazioni dettagliate su un container, inclusi lo stato, la configurazione di rete, e altre caratteristiche.
+
+2. **Ottenere l'indirizzo IP del network bridge:**
+
+   ```bash
+   docker inspect --format='{{json .NetworkSettings.Networks.bridge.IPAddress}}' CONTAINER_ID
+   ```
+
+   Con questo comando, si può estrarre direttamente l'indirizzo IP del container collegato alla rete bridge.
+
+### Creazione e Gestione delle Reti
+
+La creazione di reti Docker è semplice grazie ai comandi dedicati come `docker network create`. È fortemente consigliato l'uso dell'opzione `--subnet` per evitare sovrapposizioni di indirizzi IP con altre reti dell'infrastruttura. Inoltre, le opzioni `--gateway` e `--aux-address` consentono di configurare ulteriormente la rete per esigenze specifiche.
+
+#### Esempio di Creazione di una Rete:
+
+1. **Creare una rete bridge:**
+
+   ```bash
+   docker network create simple-network
+   docker network create -d bridge simple-network
+   ```
+   Questo comando crea una rete bridge chiamata "simple-network". Con l'opzione -d vado a specifiare il tipo di rete, che è settato a defaulte bridge dunque i 2 comandi sono equivalenti.
+
+   ```bash
+   docker network inspect simple-network
+   ```
+   Con questo comando mi è permesso ipezionare i parametri della mia rete.
+
+   ```bash
+   docker network rm simple-network
+   ```
+   Con questo comando elimino la rete.
+
+2. **Creare una rete con subnet e gateway specifici:**
+
+   ```bash
+   docker network create --subnet=192.168.0.0/16 --gateway=192.168.0.100 my-network
+   ```
+
+   Utilizzando questo comando, si definisce una rete con subnet e gateway specifici, garantendo il controllo sulla configurazione IP.
+
+### Collegamento dei Container alle Reti
+
+I container possono essere collegati a più reti, consentendo comunicazioni incrociate e isolamento tra diverse applicazioni. È possibile collegare container esistenti o nuovi a reti specifiche, utilizzando il comando `docker network connect`.
+
+#### Esempio di Collegamento dei Container:
+
+1. **Collegare un container esistente a una rete isolata:**
+
+   ```bash
+   docker run -itd --name=container1 busybox
+   docker network create -d bridge --internal isolated_nw
+   docker network connect isolated_nw container1
+   ```
+
+   In questo esempio, si crea un container e lo si collega a una rete isolata, impedendo l'accesso da e verso host e internet, in particolare --internal mi permette di evitare che l'host possa interfaccairsi con la rete creata.
+
+### Server DNS Embedded di Docker
+
+Uno dei vantaggi delle reti Docker è il server DNS incorporato, che facilita la risoluzione dei nomi per i container collegati alla stessa rete. I container possono comunicare facilmente tra loro utilizzando i nomi, semplificando la gestione delle applicazioni distribuite.
+
+#### Esempio di Utilizzo del Server DNS:
+
+1. **Comunicare tra container tramite nomi:**
+
+   Dopo aver collegato i container alla stessa rete, si può usare il comando `ping` per comunicare tra loro tramite il nome del container:
+
+   ```bash
+   # All'interno del container collegato, prova a eseguire:
+   ping container2
+   ```
+
+   Questo esempio mostra come i container collegati alla stessa rete possano facilmente risolvere i nomi degli altri container, migliorando l'interazione tra applicazioni.
+
+
 
 ## Active Directory
 
