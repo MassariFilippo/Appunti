@@ -113,6 +113,24 @@
       - [Esempio di Collegamento dei Container:](#esempio-di-collegamento-dei-container)
     - [Server DNS Embedded di Docker](#server-dns-embedded-di-docker)
       - [Esempio di Utilizzo del Server DNS:](#esempio-di-utilizzo-del-server-dns)
+  - [DokerCompose e Formato di File YAML](#dokercompose-e-formato-di-file-yaml)
+    - [Struttura e Regole di YAML](#struttura-e-regole-di-yaml)
+      - [Alcuni Principi Fondamentali di YAML:](#alcuni-principi-fondamentali-di-yaml)
+      - [Esempi Separati](#esempi-separati)
+    - [Docker Compose e File YAML](#docker-compose-e-file-yaml)
+    - [Componenti Principali del Compose File](#componenti-principali-del-compose-file)
+      - [Esempi di Utilizzo](#esempi-di-utilizzo)
+    - [Comandi Utili di Docker Compose](#comandi-utili-di-docker-compose)
+  - [Gestione delle Applicazioni con Docker Compose](#gestione-delle-applicazioni-con-docker-compose)
+    - [Esempio Pratico di un'Applicazione Locale](#esempio-pratico-di-unapplicazione-locale)
+      - [L'Applicazione](#lapplicazione)
+      - [Files Necessari](#files-necessari)
+      - [Configurazione del Progetto](#configurazione-del-progetto)
+    - [Comprendere Docker Compose e Docker Swarm](#comprendere-docker-compose-e-docker-swarm)
+    - [Struttura del Compose File](#struttura-del-compose-file)
+    - [Comandi e Configurazioni di Docker Compose](#comandi-e-configurazioni-di-docker-compose)
+    - [Gestione delle Reti e dei Volumi](#gestione-delle-reti-e-dei-volumi)
+      - [Esempio di Configurazione di Rete:](#esempio-di-configurazione-di-rete)
   - [Active Directory](#active-directory)
     - [Dominio Windows](#dominio-windows)
     - [Protocolli di Active Directory](#protocolli-di-active-directory)
@@ -2024,7 +2042,304 @@ Uno dei vantaggi delle reti Docker è il server DNS incorporato, che facilita la
 
    Questo esempio mostra come i container collegati alla stessa rete possano facilmente risolvere i nomi degli altri container, migliorando l'interazione tra applicazioni.
 
+## DokerCompose e Formato di File YAML
 
+YAML, acronimo di "Yet Another Markup Language" o "YAML Ain't Markup Language", è un formato di serializzazione di dati estremamente leggibile e utilizzato ampiamente per le configurazioni. La sua struttura semplice e ordinata con indentazioni basate su spazi lo rende simile a JSON, ma spesso più intuitivo da leggere per gli esseri umani.
+
+### Struttura e Regole di YAML
+
+Alla base di YAML c'è un sistema di chiavi e valori organizzati gerarchicamente. Questa organizzazione è resa per mezzo di indentazioni fatte esclusivamente con spazi (mai tabulazioni). Le chiavi sono seguite da due punti (:) e dal loro valore, il quale può essere una stringa, numero, booleano, oggetto o lista. L'indentazione corretta è cruciale per la definizione degli oggetti, liste e mappe.
+
+#### Alcuni Principi Fondamentali di YAML:
+
+1. **Coppie Chiave-Valore**:
+   - Formato semplice che usa "chiave: valore".
+
+2. **Liste**:
+   - Gli elementi di una lista sono preceduti da un trattino (-) e devono essere indentati rispetto alla chiave.
+
+3. **Oggetti Annidati**:
+   - Gli oggetti possono essere annidati, e devono essere indentati rispetto alla chiave principale.
+
+4. **Multi-Line Stringhe**:
+   - YAML supporta stringhe multilinea che possono essere rappresentate in due modi, usando `>` per concatenare le righe senza newline e `|` per mantenere i newline.
+
+5. **Alias e Riferimenti**:
+   - Utilizzando le ancora (&) e i riferimenti (*), YAML permette di evitare ridondanze nella definizione dei dati.
+
+#### Esempi Separati
+
+1. **Coppie Chiave-Valore**:
+   ```yaml
+   chiave: valore
+   numero: 42
+   booleano: true
+   stringa: "Testo con spazi"
+   ```
+
+2. **Liste**:
+   ```yaml
+   ports:
+     - "5000:5000"
+     - "8888:80"
+     - "10022:22"
+   ```
+
+3. **Oggetti Annidati**:
+   ```yaml
+   services:
+     web:
+       image: nginx:latest
+       depends_on:
+         - app
+     app:
+       build: ./app
+       ports:
+   ```
+
+4. **Stringhe Multilinea**:
+   ```yaml
+   descrizione: >
+     Questa è una stringa
+     multilinea YAML che viene
+     trattata come una sola linea.
+   testo: |
+     Questa è una stringa multilinea
+     che mantiene i newline.
+   ```
+
+5. **Alias e Riferimenti**:
+   ```yaml
+   luogo_originale: &luogo Milano
+   ufficio: *luogo
+   residenza: *luogo
+   ```
+
+---
+
+### Docker Compose e File YAML
+
+Un "Compose file" è un file YAML utilizzato da Docker Compose per gestire applicazioni multi-container. La sua struttura include diversi blocchi chiave come `version`, `services`, `volumes`, `networks`, e `secrets`, ciascuno dei quali ha una funzione specifica nel definire il comportamento dei container.
+
+### Componenti Principali del Compose File
+
+1. **Version**: Specifica la versione del formato del file Compose.
+2. **Services**: Definisce i servizi che compongono l'applicazione.
+3. **Volumes**: Gestisce i volumi per la persistenza dei dati.
+4. **Networks**: Stabilisce le reti per la comunicazione tra servizi.
+5. **Secrets**: Gestisce le informazioni riservate ai container.
+
+#### Esempi di Utilizzo
+
+1. **Schema di Applicazione con Database**:
+   ```yaml
+   services:
+     web:
+       image: nginx:latest
+       ports:
+         - "80:80"
+       volumes:
+         - ./nginx.conf:/etc/nginx/nginx.conf
+       depends_on:
+         - app
+     app:
+       build: ./app
+       ports:
+         - "5000:5000"
+       environment:
+         MYSQL_HOST: db
+     db:
+       image: mysql:8.0
+       environment:
+         MYSQL_ROOT_PASSWORD: password
+       volumes:
+         - db_data:/var/lib/mysql
+   volumes:
+     db_data:
+   ```
+
+   **Spiegazione**:
+   - Il servizio `db` utilizza MySQL e definisce una password di root.
+   - `volumes` definisce un volume denominato "db_data" per la persistenza dei dati.
+
+2. **Schema di Utilizzo delle Reti**:
+   ```yaml
+   services:
+     web:
+       image: nginx:latest
+       ports:
+         - "80:80"
+       volumes:
+         - ./nginx.conf:/etc/nginx/nginx.conf
+       depends_on:
+         - app
+       networks:
+         - my_network
+     app:
+       build: ./app
+       ports:
+         - "5000:5000"
+       environment:
+         MYSQL_HOST: db
+       networks:
+         - my_network
+     db:
+       image: mysql:8.0
+       environment:
+         MYSQL_ROOT_PASSWORD: password
+       volumes:
+         - db_data:/var/lib/mysql
+       networks:
+         - my_network
+   volumes:
+     db_data:
+   networks:
+     my_network:
+   ```
+
+   **Spiegazione**:
+   - Definisce una rete `my_network` per consentire la comunicazione tra i servizi.
+
+### Comandi Utili di Docker Compose
+
+- **`docker compose build`**: Costruisce le immagini definite nel Compose file.
+- **`docker compose up`**: Avvia i servizi definiti nel Compose file.
+- **`docker compose down`**: Arresta e rimuove i servizi.
+- **`docker compose ps`**: Elenca i servizi in esecuzione.
+- **`docker compose logs`**: Visualizza i log dei servizi.
+
+
+## Gestione delle Applicazioni con Docker Compose
+
+Docker Compose è uno strumento potente che permette di definire e gestire applicazioni multi-container usando un singolo file YAML noto come "Compose file". Questo strumento è particolarmente utile per orchestrare vari servizi su un singolo host, consentendo agli sviluppatori di definire le interazioni tra i container e le configurazioni di rete in modo preciso e leggibile.
+
+### Esempio Pratico di un'Applicazione Locale
+
+#### L'Applicazione
+
+L'esempio che esploreremo coinvolge un'applicazione Python Flask che interagisce con un database in-memory Redis. Questa applicazione consente agli utenti di:
+
+- **Aggiungere un nome di studente** nel database tramite una richiesta HTTP POST.
+- **Visualizzare l'elenco degli studenti** nel database tramite una richiesta HTTP GET.
+
+L'applicazione è composta da due container:
+
+1. **Web Server Basato su Flask (app)**: Ascolta sulla porta TCP interna 5000.
+2. **Database Redis (redis)**: Memorizza i dati degli studenti.
+
+Entrambi i container condividono una rete, il che significa che possono comunicare usando il nome del servizio. Inoltre, il container dell'app espone la porta TCP 5000 alla porta TCP 8080 dell'host, consentendo agli utenti di interagire con l'applicazione tramite un browser.
+
+#### Files Necessari
+
+Per configurare l'applicazione, i seguenti file sono fondamentali:
+
+- **requirements.txt**: Specifica le dipendenze necessarie.
+- **app.py**: Contiene il codice dell'applicazione Flask.
+- **Dockerfile**: Definisce come costruire l'immagine Docker.
+- **docker-compose.yml**: Coordina i servizi in un unico ambiente.
+- **README.txt**: Descrizione del progetto.
+
+#### Configurazione del Progetto
+
+1. **Creazione della Struttura del Progetto**:
+
+   ```bash
+   cd ~
+   mkdir ComposeExample1
+   cd ComposeExample1
+   ```
+
+2. **Modifica del File `app.py`**:
+
+   ```python
+   from flask import Flask, request, jsonify
+   from redis import Redis
+   
+   app = Flask(__name__)
+   redis = Redis(host="redis", db=0, socket_timeout=5, charset="utf-8", decode_responses=True)
+   
+   @app.route('/', methods=['POST', 'GET'])
+   def index():
+       if request.method == 'POST':  # Aggiungi uno studente
+           name = request.json['name']
+           redis.rpush('students', {'name': name})
+           return jsonify({'name': name})
+       if request.method == 'GET':  # Elenca gli studenti
+           return jsonify(redis.lrange('students', 0, -1))
+   ```
+
+3. **Specificare le Dipendenze in `requirements.txt`**:
+
+   ```
+   flask
+   redis<3.0.0
+   ```
+
+### Comprendere Docker Compose e Docker Swarm
+
+Docker Compose gestisce applicazioni multi-container su una singola macchina. Al contrario, Docker Swarm estende questa funzionalità a cluster di computer, consentendo di distribuire stack di applicazioni su più macchine.
+
+### Struttura del Compose File
+
+Il `docker-compose.yml`, che definisce la configurazione dell'applicazione, include diverse sezioni:
+
+- **version**: Specifichiamo la versione del formato Compose.
+- **services**: Definiamo i servizi e i container associati.
+- **networks**: Configuriamo la rete per comunicazioni tra servizi.
+- **volumes**: Definiamo i volumi per la persistenza dei dati.
+
+### Comandi e Configurazioni di Docker Compose
+
+Con Docker Compose, è possibile avviare i servizi, costruire immagini e gestire container usando semplici comandi. È possibile eseguire questi comandi per creare l'applicazione e i relativi servizi:
+
+- **Costruisci l'Immagine**:
+  ```bash
+  docker-compose build
+  ```
+
+- **Avvia i Servizi**:
+  ```bash
+  docker-compose up -d
+  ```
+
+- **Comunicazione tra Utente e Applicazione**:
+  - Aggiungi uno studente: 
+    ```bash
+    curl --header "Content-Type: application/json" --request POST --data '{"name":"Rossi"}' localhost:8080
+    ```
+
+  - Elenca gli studenti: 
+    ```bash
+    curl localhost:8080
+    ```
+
+- **Arresta e Rimuovi i Servizi**:
+  ```bash
+  docker-compose down
+  ```
+
+### Gestione delle Reti e dei Volumi
+
+Docker Compose permette di definire reti personalizzate e usare volumi per mantenere i dati persistenti anche dopo la rimozione dei container. Nella sezione `networks` del `docker-compose.yml`, si può specificare una rete utente definita che isola l'accesso ai container.
+
+#### Esempio di Configurazione di Rete:
+
+```yaml
+version: '3'
+services:
+  app:
+    image: flask-app
+    networks:
+      - mynet
+  redis:
+    image: redis
+    networks:
+      - mynet
+networks:
+  mynet:
+```
+
+Questa configurazione consente ai servizi `app` e `redis` di comunicare tra loro attraverso la rete `mynet`.
 
 ## Active Directory
 
