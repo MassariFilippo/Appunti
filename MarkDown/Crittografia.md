@@ -136,6 +136,38 @@
       - [Proprietà Fondamentali dei Protocolli Zero-Knowledge](#proprietà-fondamentali-dei-protocolli-zero-knowledge)
       - [Applicazioni nei Sistemi di Identificazione](#applicazioni-nei-sistemi-di-identificazione)
       - [Sfide Computazionali](#sfide-computazionali)
+  - [Crittografia Post-Quantistica (PQC)](#crittografia-post-quantistica-pqc)
+    - [Premessa](#premessa)
+    - [Perché la crittografia deve evolversi?](#perché-la-crittografia-deve-evolversi)
+    - [L’Algoritmo di Shor e la minaccia ai cifrari classici](#lalgoritmo-di-shor-e-la-minaccia-ai-cifrari-classici)
+    - [Stato attuale dei computer quantistici](#stato-attuale-dei-computer-quantistici)
+    - [La minaccia: Harvest Now, Decrypt Later (HNDL)](#la-minaccia-harvest-now-decrypt-later-hndl)
+    - [Il processo di transizione](#il-processo-di-transizione)
+      - [Standardizzazione della crittografia post-quantistica](#standardizzazione-della-crittografia-post-quantistica)
+      - [CNSA 2.0](#cnsa-20)
+      - [Adozione Operativa della PQC](#adozione-operativa-della-pqc)
+    - [Prerequisiti Matematici](#prerequisiti-matematici)
+      - [Polinomi su campi finiti ($\\mathbb{Z}\_p\[x\]$)](#polinomi-su-campi-finiti-mathbbz_px)
+      - [Anelli quoziente $\\mathbb{Z}\_p\[x\]/(x^n + 1)$](#anelli-quoziente-mathbbz_pxxn--1)
+    - [Modulo $R^k\_p$](#modulo-rk_p)
+    - [Modulo Simmetrico](#modulo-simmetrico)
+    - [Arrotondamenti nei Moduli](#arrotondamenti-nei-moduli)
+    - [Size e Polinomi "small"](#size-e-polinomi-small)
+    - [Module Learning With Errors (MLWE)](#module-learning-with-errors-mlwe)
+    - [Versione decisionale di MLWE (D-MLWE)](#versione-decisionale-di-mlwe-d-mlwe)
+  - [Kyber-PKE](#kyber-pke)
+    - [1. Generazione della chiave (Alice)](#1-generazione-della-chiave-alice)
+    - [2. Cifratura di un messaggio (Bob)](#2-cifratura-di-un-messaggio-bob)
+    - [3. Decifratura del messaggio (Alice)](#3-decifratura-del-messaggio-alice)
+    - [Esempio numerico Kyber-PKE](#esempio-numerico-kyber-pke)
+    - [Confronto con ElGamal](#confronto-con-elgamal)
+    - [Sicurezza di Kyber-PKE](#sicurezza-di-kyber-pke)
+    - [Correttezza: la decodifica non sempre è perfetta](#correttezza-la-decodifica-non-sempre-è-perfetta)
+  - [Kyber-KEM: Un Key Encapsulation Mechanism Quantum-Safe](#kyber-kem-un-key-encapsulation-mechanism-quantum-safe)
+    - [PKE vs KEM: Differenze di uso e sicurezza](#pke-vs-kem-differenze-di-uso-e-sicurezza)
+    - [Sicurezza: IND-CPA vs IND-CCA](#sicurezza-ind-cpa-vs-ind-cca)
+    - [Kyber-KEM e sicurezza post-quantistica](#kyber-kem-e-sicurezza-post-quantistica)
+    - [Perché Kyber-KEM e la sicurezza CCA sono fondamentali?](#perché-kyber-kem-e-la-sicurezza-cca-sono-fondamentali)
 
 
 <div style="page-break-after: always;"></div>
@@ -1699,3 +1731,311 @@ Nel caso di identificazione tramite cifrari asimmetrici, il protocollo deve esse
 #### Sfide Computazionali
 
 Un esempio di sfida computazionale utilizzata nei protocolli zero-knowledge è il calcolo della radice quadrata modulare. Dato un numero non primo $n$, calcolare $t = s^2 \mod n$ è semplice, ma determinare $s$ (la radice quadrata di $t$) dati $t$ ed $n$ è computazionalmente difficile. Questa difficoltà è sfruttata per garantire la sicurezza del protocollo.
+
+## Crittografia Post-Quantistica (PQC)
+
+### Premessa
+Nel 2024, il NIST (National Institute of Standards and Technology) ha rilasciato una suite di standard post-quantistici per meccanismi di incapsulamento di chiavi (KEM) e per schemi di firma digitale. Questi nuovi algoritmi sono stati progettati per sostituire RSA e le curve ellittiche (ECC), che risulterebbero vulnerabili qualora si realizzassero computer quantistici su larga scala. Tra le soluzioni candidate si prevedono Kyber (come KEM) e Dilithium (come schema di firma digitale) come i più adottati nei prossimi anni.
+
+### Perché la crittografia deve evolversi?
+L'interesse verso la crittografia post-quantistica nasce dalla prospettiva dello sviluppo dei computer quantistici. Concetti come la sovrapposizione (superposition), l’interferenza (interference) e l’entanglement, propri della meccanica quantistica, consentono alle macchine quantistiche di elaborare informazioni in modo estremamente efficiente. Nei computer quantistici, il qubit è l'analogo quantistico del bit classico: può trovarsi contemporaneamente in più stati, e un registro di n qubit può rappresentare simultaneamente 2ⁿ stati diversi. Al momento della misurazione, però, il registro si "collassa" in uno solo di questi stati, secondo una certa probabilità.
+
+### L’Algoritmo di Shor e la minaccia ai cifrari classici
+I protocolli a chiave pubblica attuali, come RSA ed ECC, si basano su problemi matematici considerati “difficili” da risolvere con i computer classici (ad esempio, la fattorizzazione di interi molto grandi o il calcolo del logaritmo discreto). Nel 1994, Peter Shor propose un algoritmo quantistico in grado di risolvere questi problemi in tempo polinomiale, rendendo dunque vulnerabili questi sistemi se un computer quantistico abbastanza potente dovesse mai essere costruito.
+
+### Stato attuale dei computer quantistici
+Il percorso verso la “supremazia quantistica” è in rapido sviluppo:
+- Nel 1998 venne creato un primo computer quantistico a 2 qubit.
+- Dal 2017 sono stati annunciati nuovi record da parte di IBM e Google: 50, poi 53, 127, 433 e, a dicembre 2023, IBM ha raggiunto il traguardo di 1121 qubit.
+- Tuttavia, i dispositivi attuali NON sono ancora “fault tolerant”, ovvero non riescono a correggere efficacemente gli errori che si presentano durante il calcolo. Gli esperti stimano che per fattorizzare una chiave RSA-2048 servirebbero circa 6000 qubit logici stabili (cioè una combinazione di milioni di qubit fisici).
+
+Nonostante questi progressi, la realizzazione su larga scala di computer quantistici veramente affidabili è ancora una sfida, e non è prevedibile con certezza quando (o se) vedremo sul mercato dispositivi in grado di abbattere la crittografia classica.
+
+### La minaccia: Harvest Now, Decrypt Later (HNDL)
+Una delle principali preoccupazioni è rappresentata dagli attacchi HNDL: avversari oggi raccolgono grandi quantità di dati cifrati (ad esempio, comunicazioni governative o finanziarie, archivi protetti) e li conservano in attesa che, un domani, un computer quantistico permetta la loro decifrazione retroattiva. Il rischio è particolarmente acuto per gli algoritmi basati su RSA, Diffie-Hellman ed ECC.
+
+**Domande cruciali:**
+- Come possiamo proteggerci?
+- Quando è opportuno agire? Dobbiamo già passare ora a sistemi post-quantistici, o tra 5, 10 o 20 anni?
+
+### Il processo di transizione
+Già nel 2015 la NSA (Information Assurance Directorate) annunciava l’avvio della transizione verso algoritmi resistenti ai computer quantistici, pianificando un aggiornamento collaborativo e trasparente in sinergia con istituzioni, aziende e stakeholder internazionali.
+
+#### Standardizzazione della crittografia post-quantistica
+Il processo di selezione degli standard PQC è stato lungo e strutturato:
+- Novembre 2017: 69 proposte ricevute dal NIST (Round 1)
+- Gennaio 2019: 26 proposte selezionate per il Round 2
+- Luglio 2020: terzo round con 7+8 candidati
+- Luglio 2022: Kyber scelto come KEM; Dilithium, Falcon e SPHINCS+ come schemi di firma digitale.
+- Agosto 2024: pubblicazione dei FIPS (Federal Information Processing Standards) relativi:
+  - FIPS 203 – Kyber
+  - FIPS 204 – Dilithium
+  - FIPS 205 – SPHINCS+
+  - FIPS 206 (Falcon) previsto a breve
+
+#### CNSA 2.0
+La CNSA Suite 2.0 raccomanda gli algoritmi post-quantistici per la protezione sia di segreti commerciali sia di informazioni classificate:
+- **Kyber** (KEM, cioè incapsulamento chiave, basato su reticoli)
+- **Dilithium** (firma digitale, basata su reticoli)
+- **SPHINCS+** (firma digitale stateless, basata su funzioni hash)
+- **AES-256** e **SHA-384** restano ancora attuali per la crittografia simmetrica e le funzioni di hash.
+La CNSA 2.0 sancisce la transizione da RSA/ECC alla crittografia post-quantistica per almeno il prossimo decennio.
+
+#### Adozione Operativa della PQC
+Alcuni colossi tecnologici stanno già implementando PQC nei loro servizi:
+- **Apple** ha introdotto, nel 2024, lo schema “PQ3” per iMessage, combinando ECC e Kyber per proteggere le comunicazioni anche contro futuri attacchi HNDL.
+- **Signal** ha adottato “PQXDH”, una estensione post-quantistica del protocollo X3DH che usa Kyber per proteggere lo scambio di chiavi iniziale.
+- **Google, Amazon e altri** tech leaders stanno testando PQC nei propri ambienti, in attesa di un’adozione più ampia e di standard definitivi.
+
+### Prerequisiti Matematici
+
+Uno dei fondamenti degli algoritmi post-quantistici come Kyber e Dilithium è la matematica dei polinomi su campi finiti e degli “anelli” di polinomi, ad esempio $\mathbb{Z}_p[x]$ dove $p$ è un primo.
+
+#### Polinomi su campi finiti ($\mathbb{Z}_p[x]$)
+- **$\mathbb{Z}_p$** rappresenta i numeri da 0 a $p-1$, con tutte le operazioni fatte modulo $p$.
+- **$\mathbb{Z}_p[x]$** è l’insieme dei polinomi con coefficienti in $\mathbb{Z}_p$.
+
+**Esempio** (con $p=7$):
+- $f(x) = 5 + 4x^2 + 3x^3$
+- $g(x) = 6 + 3x + 2x^2$
+- Somma e prodotto si fanno termine a termine, sempre calcolando i risultati modulo $p$.
+
+#### Anelli quoziente $\mathbb{Z}_p[x]/(x^n + 1)$
+Molti algoritmi post-quantistici lavorano nell'anello dei polinomi modulo una certa riduzione, tipicamente $x^n + 1$:
+- Quindi si lavora con polinomi di grado massimo $n-1$.
+- La moltiplicazione di due polinomi viene fatta come al solito e poi ridotta usando la relazione $x^n = -1$.
+
+**Esempio** (con $p=41, n=4$):
+- $f(x) = 32 + 17x^2 + 22x^3$
+- $g(x) = 11 + 7x + 19x^2 + x^3$
+- Si calcola il prodotto, poi si “riscrive” tutto come polinomio di grado massimo 3 sfruttando la relazione $x^4 = -1$ (modulo 41).
+
+Oppure in forma vettoriale: si rappresentano i polinomi come sequenze di coefficienti e si eseguono le operazioni secondo le regole dell’anello.
+
+**Nota:** L’approccio matematico della crittografia post-quantistica si basa su problemi ad oggi ritenuti “hard” anche per i computer quantistici, come quelli legati ai reticoli (lattice), alla decodifica di codici random o alle funzioni hash. Gli standard proposti sono il risultato di anni di ricerca internazionale coordinata.
+
+
+### Modulo $R^k_p$
+Un concetto chiave nell’architettura algoritmica post-quantistica è il modulo $R^k_p$. Si tratta dell’insieme di tutti i vettori composti da $k$ elementi, ciascuno appartenente a $R_p$ (ossia l’anello dei polinomi $\mathbb{Z}_p[x]/(x^n+1)$ già visto). Ogni vettore in $R^k_p$ è quindi un vettore colonna formato da polinomi.  
+Le operazioni di somma e sottrazione si effettuano “componente per componente” – cioè si eseguono sulle corrispondenti posizioni di ciascun vettore.
+
+Un’operazione particolarmente importante è il prodotto interno tra due vettori di $R^k_p$: il risultato di tale prodotto è ancora un elemento di $R_p$. Questo formalismo è imprescindibile per la definizione degli algoritmi a sicurezza post-quantistica basati su reticoli e moduli.
+
+### Modulo Simmetrico
+
+Talvolta si esegue una “simmetrizzazione” dei polinomi nei moduli. In pratica, dato un elemento $r$ in $\mathbb{Z}_p$ (con $p$ dispari), si riporta il suo valore modulo p nel “range simmetrico” centrato attorno a zero, cioè nell’intervallo $[ -\frac{p-1}{2} , +\frac{p-1}{2} ]$.  
+Questa scelta facilita tutte le operazioni di arrotondamento e definizione di “smallness”, molto utili nelle costruzioni crittografiche.
+
+### Arrotondamenti nei Moduli
+
+Definiamo formalmente una funzione di arrotondamento modulo $p$. Indicando con $r_0$ il valore simmetrizzato come sopra, la funzione di arrotondamento $\text{Round}_p(r_0)$ restituisce:
+
+- 0 se $-p/4 < r_0 < p/4$
+- 1 altrimenti
+
+Questa funzione, generalizzata ai polinomi (cioè applicata a ciascun coefficiente), consente agli algoritmi post-quantistici di “quantizzare” il rumore o le differenze che si accumulano nei calcoli su reticoli, favorendo proprietà di sicurezza e decodifica controllata.
+
+**Esempio pratico:**  
+Per $p = 3329$, la soglia $p/4$ è circa 832.25. Dunque  
+\[\text{Round}_{3329}(3000 + 1500x + 2010x^2 + 37x^3) = x + \ldots\]
+
+Anche la rappresentazione della soglia può essere illustrata su un intervallo simmetrico: ad esempio, per $p = 17$, la funzione di arrotondamento restituisce 0 al centro e 1 agli estremi.
+
+### Size e Polinomi "small"
+
+Per misurare la “grandezza” di un valore modulo $p$, si usa la norma $kxk_1 = |x\,\text{mods}\,p|$. Nei polinomi $f = (a_0, a_1, ..., a_{n-1})$, la “size” è il massimo assoluto tra i coefficienti ridotti modulo $p$.
+
+Quando questo massimo è piccolo rispetto a $p/2$, si parla di polinomi “small” (piccoli). Ad esempio, per un fissato intero positivo $\eta$, si indica con $S_{\eta}$ l’insieme dei polinomi in $R_p$ i cui coefficienti sono sempre in modulo simmetrico minore o uguale a $\eta$.
+
+**Esempio:**  
+Se $p=31$, il polinomio $1 + 30x + 29x^2 + x^4 + 2x^5 \in S_2$.
+
+Una proprietà utile: il prodotto e la combinazione lineare di polinomi small “esplodono” alla peggio in maniera controllata:
+- Se $f \in S_{\eta_1}, g \in S_{\eta_2} \rightarrow fg \in S_{n \eta_1 \eta_2}$
+- Analogamente per vettori.
+
+### Module Learning With Errors (MLWE)
+
+Useremo la notazione $a ∈R A$ per indicare il processo di generazione casuale di un elemento $a$ appartenente all’insieme $A$.
+
+Il cuore matematico della crittografia post-quantistica su reticoli si basa su un problema chiamato Module Learning With Errors (MLWE).
+
+![](img/Critto/MLWE.png)
+
+Si formula così:
+
+Date le seguenti quantità:
+- Un primo $p$
+- Interi $n, k, l$ con $k \geq l$
+- Due piccoli interi $\eta_1, \eta_2 \ll p/2$
+- Una matrice $A$ casuale $\in R^{k\times l}_p$, e due vettori secret/errore "small": $s \in S^{l}_{\eta_1}$, $e \in S^{k}_{\eta_2}$
+
+Si definisce $t = A s + e$, con $t \in R^k_p$.
+
+Il problema computazionale è: dato $(A, t)$, trovare una coppia $(s, e)$ per cui $t = A s + e$, oppure distinguere questa distribuzione dal caso in cui $t$ sia campionato casualmente da $R^k_p$ (versione decisionale D-MLWE).
+
+**Esempio pratico:**  
+Siano $p=541, n=4, k=3, l=2, \eta_1=3, \eta_2=2$.  
+Si genera una matrice casuale $A$, un vettore “segret” $s$, ed un vettore “errore” $e$, e si calcola $t = A s + e$. Sarà lungo 3 dato che $k$ era lungo 3.
+
+Riuscire a recuperare $s$ conoscendo solo $(A,t)$ è computazionalmente proibitivo (ci sono immense quantità di possibili soluzioni, trovandola senza informazioni aggiuntive è praticamente impossibile).
+
+### Versione decisionale di MLWE (D-MLWE)
+
+**Definizione:**  
+La versione decisionale del problema MLWE (Deterministic Module Learning With Errors), chiamata **D-MLWE**, è una variante fondamentale utilizzata per dimostrare la sicurezza di molti schemi post-quantistici (come Kyber).
+
+**Parametri del problema**
+
+- **p**: numero primo (modulo dei coefficienti)
+- **n, k, l**: interi positivi, con $k \geq l$
+- **η₁, η₂**: interi molto più piccoli di $\frac{p}{2}$, controllano la “smallness” dei polinomi di errore e di segreto
+
+**Input**
+
+Viene fornita una coppia $(A, z)$ costruita come segue:
+- $A \in^{R} R^{k \times l}_p$ (matrice generata casualmente, dove $R_p = \mathbb{Z}_p[x]/(x^n+1)$)
+- $b \in^{R} \{0,1\}$ (bit casuale)
+
+Viene poi definito $z$ in due possibili modi, in base al valore di $b$:
+
+$$
+z = 
+\begin{cases}
+t = A s + e, \quad s \in^{R} S^{l}_{\eta_1},\; e \in^{R} S^{k}_{\eta_2} & \text{se } b = 0 \\
+t \in^{R} R^{k}_p & \text{se } b = 1 \\
+\end{cases}
+$$
+
+Cioè:
+- Se $b = 0$, $z$ è costruito come un'istanza "valida" (con errore e segreto "small", come nel MLWE)
+- Se $b = 1$, $z$ è un vettore casuale indipendente
+
+**Output**
+
+- **Obiettivo**: Determinare il valore di $b$ conoscendo solo $(A, z)$.
+- In altre parole, il problema D-MLWE richiede di distinguere tra una coppia $(A, z)$ costruita secondo MLWE (caso $b = 0$) e una coppia dove $z$ è del tutto casuale (caso $b = 1$).
+
+**Durezza computazionale del MLWE e D-MLWE**
+
+Ad oggi non sono noti algoritmi efficienti (né classici, né quantistici) che risolvano rapidamente MLWE o la sua versione decisionale. La sicurezza di MLWE è strettamente legata alla difficoltà di problemi su reticoli come:
+- SVP (Shortest Vector Problem)
+- CVP (Closest Vector Problem)
+
+Questi problemi restano computazionalmente difficili anche nell’era dei computer quantistici. Per questo, MLWE e i suoi “amici” sono ritenuti solidi fondamenti per la crittografia post-quantistica ad oggi.
+
+## Kyber-PKE
+
+Kyber è uno dei principali cifrari post-quantistici basati sul problema MLWE, standardizzato dal NIST come ML-KEM (Key Encapsulation Mechanism). Qui vediamo il funzionamento di Kyber nella variante a cifratura pubblica (PKE), suddivisa nei passaggi di generazione delle chiavi, cifratura, decifratura, seguito dall’analisi di sicurezza e delle proprietà di correttezza.
+
+### 1. Generazione della chiave (Alice)
+
+**Obiettivo**: Alice genera una coppia di chiavi (pubblica e privata).
+
+**Passaggi:**
+1. Alice sceglie casualmente una matrice quadrata $A \in R_{p}^{k \times k}$, il vettore segreto $s \in S_{k, \eta_1}$ e un vettore di errore $e \in S_{k, \eta_2}$.
+2. Calcola $t = As + e$.
+3. Pubblica $(A, t)$ come chiave pubblica, mentre $s$ è la chiave privata.
+
+**Nota importante**: Recuperare $s$ conoscendo solo $(A, t)$ è (per quanto ne sappiamo oggi) un problema MLWE difficile sia per computer classici che quantistici.
+
+### 2. Cifratura di un messaggio (Bob)
+
+Bob vuole inviare un messaggio segreto $m$ ad Alice usando la chiave pubblica di Alice.
+
+**Passaggi:**
+1. Ottiene la chiave pubblica di Alice $(A, t)$.
+2. Codifica il messaggio binario $m$ come polinomio $m(x)$ su $R_q$.
+3. Genera casualmente $r \in S_{k, \eta_1}$, $e_1 \in S_{k, \eta_2}$, $e_2 \in S_{\eta_2}$.
+4. Calcola
+   - $u = A^T r + e_1$
+   - $v = t^T r + e_2 + \left\lfloor \frac{q}{2} \right\rceil m(x)$
+  Con $u$ che è un vettore di polimomi random e non ha componente di messaggio al suo interno, $v$ che mantiene un acomponente random è un vettore e possiede una parte di chiave pubblica ed il messagio $m(x)$. Gli $e_n$ sono elementi random piccoli, dunque a piccolo impatto, facili da cancellare con la chiave privata. 
+5. Manda il ciphertext $c = (u, v)$ ad Alice.
+
+### 3. Decifratura del messaggio (Alice)
+
+Ricevuto il ciphertext $(u, v)$, Alice estrae il messaggio.
+
+**Passaggi:**
+1. Calcola $v - s^T u$ usando la propria chiave privata $s$.
+2. Applica la funzione di arrotondamento:  
+   $m = \text{Round}_p (v - s^T u)$.
+3. In questo modo recupera $m$.
+
+### Esempio numerico Kyber-PKE
+
+Per fissare le idee, ecco un esempio semplificato:
+
+**Parametri:**
+- $p = 137, n = 4, k = 2, \eta_1 = 2, \eta_2 = 2$
+
+**Alice genera:**
+- Matrice $A$ e vettori $s, e$ come sopra  
+- Calcola $t = As + e$
+- La chiave pubblica è $(A, t)$, la chiave privata $s$
+
+**Bob cifra il messaggio $m = 0111$ (codificato come $m(x) = x + x^2 + x^3$), produce i valori casuali richiesti, calcola $u$ e $v$, manda il ciphertext $(u, v)$.
+
+**Alice decifra** calcolando $v - s^T u$, poi applicando il round, ricava $0111$.
+
+### Confronto con ElGamal
+
+Kyber-PKE, anche se la struttura matematica è molto diversa, ricorda nella logica il cifrario ElGamal:  
+- In ElGamal Bob usa la chiave pubblica di Alice e dei valori casuali per calcolare una componente crittografata, dal quale solo Alice (con la chiave privata) può recuperare il messaggio.
+- In Kyber, l’encryption produce due valori $(u, v)$ mascherando il messaggio tramite la difficoltà di ricavare la chiave segreta per via delle perturbazioni (errori).
+
+![](img/Critto/confrontoElgamal-Kyber.png)
+
+### Sicurezza di Kyber-PKE
+
+Kyber-PKE gode della sicurezza IND-CPA (indistinguibilità sotto attacco a testo scelto):  
+- Sotto l’ipotesi che D-MLWE sia difficile, un avversario osservando $(u, v)$ non può distinguere un ciphertext di un messaggio valido da uno di un messaggio casuale.
+- In particolare entrambi i valori $u = A^T r + e_1$ e $v = t^T r + e_2$ sono indistinguibili da casuali.
+- L’unica informazione trasportata è il messaggio mascherato, che non può essere recuperato senza la chiave privata.
+
+### Correttezza: la decodifica non sempre è perfetta
+
+La decodifica, nel concreto, non è garantita al 100%, ma fallisce con una probabilità trascurabile.
+
+- Il ciphertext trasporta errori $E = e_1^T r + e_2 - s^T e_1$ che potrebbero portare, in casi eccezionali, ad una decodifica errata se uno qualsiasi dei coefficienti supera la soglia di arrotondamento ($p/4$) dato che se è inferiore alla soglia del $\text{Round}_p$ sparisce ma se ricado nel caso in cui superano la soglia introduco un errore a tutti gli effetti.
+- Nel Kyber standard (ML-KEM-768), questa probabilità è così bassa da risultare trascurabile rispetto alle esigenze pratiche di sicurezza.
+
+Ecco una conclusione discorsiva su Kyber-KEM, il confronto tra PKE e KEM, le motivazioni della sicurezza e i vantaggi della soluzione post-quantistica adottata.
+
+## Kyber-KEM: Un Key Encapsulation Mechanism Quantum-Safe
+
+### PKE vs KEM: Differenze di uso e sicurezza
+
+Nei protocolli crittografici, si distinguono due grandi famiglie di primitive:
+
+- **PKE (Public-Key Encryption):** serve per cifrare direttamente un messaggio, producendo un ciphertext che potrà essere decifrato solo dal destinatario. L’emblema di questa famiglia sono RSA, ElGamal e la versione PKE di Kyber. La sicurezza tipica è IND-CPA (indistinguibilità rispetto a plaintext scelto).
+
+- **KEM (Key Encapsulation Mechanism):** serve invece per negoziare una chiave segreta condivisa tra due parti, utilizzando la crittografia a chiave pubblica ma senza inviare direttamente il messaggio. Tipici esempi sono Kyber-KEM e NTRU-KEM. Qui la sicurezza richiesta è ancora più forte: IND-CCA (indistinguibilità rispetto a ciphertext scelto).
+
+Questo perché nei protocolli di comunicazione moderna (come TLS, Signal, WireGuard) è prassi negoziare una chiave segreta con KEM e, solo dopo, usarla per cifrare il traffico con algoritmi simmetrici veloci (come AES). Ciò migliora sia la sicurezza sia la praticità d’implementazione.
+
+### Sicurezza: IND-CPA vs IND-CCA
+
+- **IND-CPA:** protegge contro un avversario che può scegliere qualsiasi messaggio da cifrare e cerca di distinguere quale tra due messaggi scelti sia stato cifrato.
+- **IND-CCA:** amplia questo potere, concedendo all’avversario anche accesso a un oracolo di decifratura per tutti i ciphertext, tranne il challenge. Questo modello è molto più stringente e rispecchia meglio gli scenari reali con attacchi attivi.
+
+La sicurezza IND-CCA è garantita da tecniche moderne come la **trasformazione di Fujisaki-Okamoto (FO)** che “trasforma” uno schema PKE IND-CPA in uno schema KEM IND-CCA, incorporando verifiche di coerenza durante il decapsulamento e impiegando funzioni hash crittografiche robuste (come SHA-3).
+
+### Kyber-KEM e sicurezza post-quantistica
+
+**Kyber-KEM** nasce come variante KEM di Kyber-PKE, applicando scrupolosamente la trasformazione FO. Ecco i punti chiave del procedimento:
+- **La chiave pubblica e segreta** sono le stesse di Kyber-PKE, con in più un seme casuale.
+- **L’incapsulamento** (fatto tipicamente da Bob) genera un valore casuale m, lo cifra con parametri deterministici derivati via hash dalla pubblica e da m stesso, ed estrae una chiave segreta condivisa K.
+- **Il decapsulamento** (di Alice) ripete la codifica deterministica e confronta il ciphertext ricevuto con quello così rigenerato: solo se combaciano, K è accettata; altrimenti viene restituita una chiave casuale e indipendente, evitando leakage informativo anche sotto attacco attivo.
+- Le funzioni hash SHA-3 impiegate nelle funzioni G, H, J sono resistenti ad attacchi quantistici (entro i gradi di sicurezza noti oggi).
+
+Il tasso di fallimento del decapsulamento è praticamente nullo, e la sicurezza si basa, ancora una volta, sulla durezza del problema D-MLWE.
+
+### Perché Kyber-KEM e la sicurezza CCA sono fondamentali?
+
+1. **Resistenza inderogabile contro attacchi attivi (IND-CCA):** anche se l’avversario puó manipolare o inviare ciphertext alterati, non può estrarre nessuna informazione utile sulla chiave segreta condivisa.
+2. **Cifratura ibrida:** la chiave negoziata con Kyber-KEM viene usata per cifrare il traffico simmetricamente (AES, ChaCha20) — garantendo velocità e adattabilità.
+3. **Randomness robusta:** l’uso delle hash nella derandomizzazione neutralizza i pericoli storici della “randomness debole”, che in passato hanno prodotto vulnerabilità disastrose nei sistemi PKC.
+4. **Modularità per i protocolli:** la separazione tra scambio della chiave e cifratura dei dati rende Kyber-KEM facilmente integrabile nei principali protocolli di sicurezza.
+5. **Parametri pronti per ogni esigenza:** tre livelli di sicurezza (ML-KEM-512/768/1024) equivalenti a 128/192/256 bit contro attacchi quantistici brute-force, con dimensione delle chiavi e tassi di errore estremamente contenuti.
