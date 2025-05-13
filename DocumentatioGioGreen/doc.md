@@ -27,12 +27,21 @@
     - [Funzionalità Principali e Stima della Frequenza](#funzionalità-principali-e-stima-della-frequenza)
     - [Tabella Frequenza Operazioni Principali](#tabella-frequenza-operazioni-principali)
     - [Schemi di navigazione e tabelle degli accessi](#schemi-di-navigazione-e-tabelle-degli-accessi)
-      - [02) VISUALIZZAZIONE CATALOGO FILTRATO](#02-visualizzazione-catalogo-filtrato)
-      - [04) AGGIUNTA PRODOTTO AL CARRELLO](#04-aggiunta-prodotto-al-carrello)
-      - [05) EFFETTUARE UN ORDINE](#05-effettuare-un-ordine)
-      - [06) VALUTAZIONE PRODOTTO](#06-valutazione-prodotto)
-    - [08) CONSULTAZIONE STATISTICHE SULLE VENDITE (ADMIN)](#08-consultazione-statistiche-sulle-vendite-admin)
-    - [10) APPLICAZIONE DI UNO SCONTO SU PRODOTTI (ADMIN)](#10-applicazione-di-uno-sconto-su-prodotti-admin)
+      - [02 VISUALIZZAZIONE CATALOGO FILTRATO](#02-visualizzazione-catalogo-filtrato)
+      - [04 AGGIUNTA PRODOTTO AL CARRELLO](#04-aggiunta-prodotto-al-carrello)
+      - [05 EFFETTUARE UN ORDINE](#05-effettuare-un-ordine)
+      - [06 VALUTAZIONE PRODOTTO](#06-valutazione-prodotto)
+      - [08 CONSULTAZIONE STATISTICHE SULLE VENDITE (ADMIN)](#08-consultazione-statistiche-sulle-vendite-admin)
+      - [10 APPLICAZIONE DI UNO SCONTO SU PRODOTTI (ADMIN)](#10-applicazione-di-uno-sconto-su-prodotti-admin)
+    - [Analisi delle ridondanze](#analisi-delle-ridondanze)
+      - [Attributo Importo nell'entità ORDINE](#attributo-importo-nellentità-ordine)
+  - [Raffinamento dello schema](#raffinamento-dello-schema)
+    - [Eliminazione delle gerarchie](#eliminazione-delle-gerarchie)
+    - [Eliminazione degli attributi composti](#eliminazione-degli-attributi-composti)
+    - [Scelta delle chiavi primarie](#scelta-delle-chiavi-primarie)
+    - [Reificazione delle relazioni in entità](#reificazione-delle-relazioni-in-entità)
+      - [Caso: **COMPRENSIONE\_IN\_CARRELLO**](#caso-comprensione_in_carrello)
+      - [Caso: **COMPRENSIONE\_IN\_ORDINE**](#caso-comprensione_in_ordine)
 
 
 <div style="page-break-after: always;"></div>
@@ -217,7 +226,7 @@ Segue un elenco delle principali azioni richieste:
 
 Dopo aver determinato il volume dei dati e la frequenza delle operazioni, si dettagliano gli accessi di alcune operazioni chiave. Nel calcolo degli accessi si stima come doppio il peso degli accessi in scrittura rispetto ai lettura.
 
-#### 02) VISUALIZZAZIONE CATALOGO FILTRATO
+#### 02 VISUALIZZAZIONE CATALOGO FILTRATO
 
 **Obiettivo:** Visualizzare prodotti in base alla categoria. Assumiamo si ricerchi la categoria piante ovvero quella con più istanze e con più ricerche giornaliere (1000 delle 3000 totali).
 
@@ -237,11 +246,11 @@ PRODOTTO → appartenenza_p. → PIANTA → appartenenza → SPECIE → necessit
 | CURA               | E         | 300            | L    |
 
 
-Totale: 2.300 L  
+Totale: 2.300L = 2.300 accessi
 Frequenza: 1.000 al giorno  
-**Costo totale:** 1.000 x 2.300 = 2.300.000 al giorno
+**Costo totale:** 1.000 x 2.300 = 2.300.000 accessi al giorno
 
-#### 04) AGGIUNTA PRODOTTO AL CARRELLO
+#### 04 AGGIUNTA PRODOTTO AL CARRELLO
 
 **Obiettivo:** Un utente aggiunge un prodotto al proprio carrello.
 
@@ -257,11 +266,11 @@ PRODOTTO → comprensione_p. → COMPRENSIONE_IN_CARRELLO → comprensione_u.
 | COMPRENSIONE_IN_CARRELLO| E         | 1       | S    |
 | comprensione_u.         | R         | 1       | S    |
 
-Totale: 500L + 3S = 506  
+Totale: 500L + 3S = 506 accessi 
 Frequenza: 1.000 al giorno  
-**Costo:** 506 x 1.000 = 506.000 al giorno  
+**Costo:** 506 x 1.000 = 506.000 accessi al giorno  
 
-#### 05) EFFETTUARE UN ORDINE
+#### 05 EFFETTUARE UN ORDINE
 
 **Obiettivo:** Un utente procede all'acquisto del proprio carrello.
 
@@ -286,11 +295,11 @@ COMPRENSIONE_IN_CARRELLO → comprensione_p. → PRODOTTO → comprensione_o.p. 
 | COMPRENSIONE_IN_ORDINE   | E         | 4       | S    |
 | comprensione_o.          | R         | 4       | S    |
 
-Totale: 19S + 3L = 41 
+Totale: 19S + 3L = 41 accessi
 Frequenza: 120 al giorno  
-**Costo:** 41 x 120 = 4.920 al giorno  
+**Costo:** 41 x 120 = 4.920 accessi al giorno  
 
-#### 06) VALUTAZIONE PRODOTTO
+#### 06 VALUTAZIONE PRODOTTO
 
 **Obiettivo:** Utente recensisce un prodotto dopo averlo acquistato.
 
@@ -307,11 +316,11 @@ UTENTE → ORDINE → COMPRENSIONE_IN_ORDINE → PRODOTTO → RECENSIONE
 | RECENSIONE            | E         | 1                       | S    |
 | valutazione           | R         | 1                       | S    |
  
-Totale: 17.980L + 3S = 17.986  
+Totale: 17.980L + 3S = 17.986 accessi 
 Frequenza: 70 al giorno  
-**Costo:** 17.986 x 70 = 1.259.020 al giorno  
+**Costo:** 17.986 x 70 = 1.259.020 accessi al giorno  
 
-### 08) CONSULTAZIONE STATISTICHE SULLE VENDITE (ADMIN)
+#### 08 CONSULTAZIONE STATISTICHE SULLE VENDITE (ADMIN)
 
 **Obiettivo:** L’amministratore consulta statistiche aggregate su ordini, prodotti e recensioni, ad esempio i dieci prodotti più venduti con il relativo totale di recensioni e valutazione media.
 
@@ -328,11 +337,11 @@ ORDINE → comprensione_o.p. → PRODOTTO → valutazione → RECENSIONE
 | valutazione             | R         | 25.000 / 500 * 10 = 500        | L    |
 | RECENSIONE              | E         | 500                            | L    |
 
-**Totale:** 121.250L = 121.250
+**Totale:** 121.250L = 121.250 accessi
 **Frequenza:** 20 al giorno  
-**Costo totale:** 121.250 x 20 = 121.250 al giorno
+**Costo totale:** 121.250 x 20 = 121.250 accessi al giorno
 
-### 10) APPLICAZIONE DI UNO SCONTO SU PRODOTTI (ADMIN)
+#### 10 APPLICAZIONE DI UNO SCONTO SU PRODOTTI (ADMIN)
 
 **Obiettivo:** L’amministratore attiva uno sconto e lo associa a un prodotto.
 
@@ -347,6 +356,141 @@ SCONTO_PRODOTTO → applicazione → PRODOTTO
 | applicazione     | R         | 1           | S    |
 | PRODOTTO         | E         | 500         | L    |
   
-**Totale:** 500L + 2S = 504 
+**Totale:** 500L + 2S = 504 accessi
 **Frequenza:** 3 al giorno  
-**Costo totale:** 504 x 3 = 1012 al giorno
+**Costo totale:** 504 x 3 = 1012 accessi al giorno
+
+### Analisi delle ridondanze
+
+#### Attributo Importo nell'entità ORDINE
+
+Nel modello proposto, un possibile caso di **ridondanza controllata** riguarda l’attributo **`importo`** all’interno dell’entità **ORDINE**.
+
+**Descrizione della ridondanza**
+
+L’importo totale di un ordine può essere ottenuto come **somma dei (prezzo × quantità)** di ciascun prodotto incluso nell’ordine, più/minus eventuali sconti applicati. Non sarebbe quindi strettamente necessario memorizzare il campo importo nella tabella ORDINE, ma, come spesso accade negli applicativi gestionali, tale informazione viene comunque mantenuta per facilitare l’accesso rapido al dato totale senza dover ricalcolare ogni volta.
+
+**Confronto tra gestione con e senza ridondanza**
+
+- **Senza ridondanza**
+  
+  Ogni volta che si vuole restituire il totale di un ordine, si dovrà:
+  - Accedere a tutte le tuple della relazione **COMPRENSIONE_IN_ORDINE** per quell’ordine;
+  - Recuperare il **prezzo** corrente (eventualmente storico) di ciascun prodotto;
+  - Applicare eventuali sconti;
+  - Sommare il risultato `prezzo × quantità` per ogni prodotto nell’ordine.
+
+  **Tavola degli accessi (per calcolo di un importo ordine):**
+  | Concetto                | Costrutto | Accessi                        | Tipo |
+  |-------------------------|-----------|--------------------------------|------|
+  | comprensione_o.         | R         | 4                              | L    |
+  | COMPRENSIONE_IN_ORDINE  | E         | 4                              | L    |
+  | comprensione_o.p.       | R         | 4                              | L    |
+  | PRODOTTO                | E         | 4                              | L    |
+  | applicazione            | R         | 150 / 500 * 4 = 1.2            | L    |
+  | SCONTO                  | E         | 1.2                            | L    |
+
+  Totale: ~19L  
+  Frequenza: La frequenza di questa operazione può dipendere da molteplici operazioni e viene stimata intorno alle 10.000 volte al giorno, comprendendo le statistiche lato VENDITORE, le consultazioni lato UTENTE dei propri ordini e l'invio di notifiche da parte del sistema.
+  **Costo totale:** 19 x 10.000 = 19.000 accessi al giorno.
+
+- **Con ridondanza (importo memorizzato)**
+
+  Il campo importo in ORDINE è aggiornato al momento della creazione dell’ordine e presenta sempre il valore corretto.
+  - Per conoscere l’importo: si effettua una sola lettura nella relazione **ORDINE** (campo importo).
+  - L’unico costo aggiuntivo è l’aggiornamento puntuale del campo in fase di inserimento/aggiornamento ordine. 
+  - L'unica differenza è che al momento della creazione bisognerà calcolare l'importo come descrtto precedentemente (19L).
+
+  **Tavola degli accessi (per calcolo e lettura importo):**
+  | Concetto      | Costrutto | Accessi | Tipo |
+  |---------------|-----------|---------|------|
+  | ORDINE        | E         | 1       | L    |
+  
+  Totale: 1L  
+  Frequenza: 120 volte/giorno  
+  **Costo totale:** 1 x 10.000 = 10.000 accessi al giorno.
+
+**Valutazione e scelta**
+
+La ridondanza comporta un lieve aumento di spazio occupato (una colonna in più per ciascun ordine), ma porta a un notevole risparmio in termini di accessi necessari per tutte le operazioni di consultazione (es. visualizzazione storici, stampa ricevute e analisi statistiche). Inoltre, permette di conservare l’importo esatto anche in caso di modifica futura del prezzo dei prodotti o delle regole di sconto, garantendo la tracciabilità dei dati storici. Si decide quindi di mantenere all’interno del modello l’attributo *importo* nella tabella ORDINE. Lo spreco di spazio è minimo rispetto al vantaggio in termini di prestazioni e semplificazione, sia per l’applicazione che per le interrogazioni di analisi.
+
+## Raffinamento dello schema
+
+### Eliminazione delle gerarchie
+
+Nello **schema E/R iniziale** compaiono due principali gerarchie da eliminare:  
+- la gerarchia sull’entità **ACCOUNT_REGISTRATO** (con le specializzazioni UTENTE e VENDITORE)
+- la gerarchia sull’entità **PRODOTTO** (con le specializzazioni PIANTA, VASO, PRODOTTO_CHIMICO, SUBSTRATO).
+
+**Gerarchia ACCOUNT_REGISTRATO (UTENTE, VENDITORE)**
+
+Si è scelto il **collasso verso il basso**:  
+- Le entità **UTENTE** e **VENDITORE** vengono mantenute distinte, ognuna con tutti gli attributi comuni a ACCOUNT_REGISTRATO (nome, cognome, email, password, telefono, ecc.).
+- Ogni entità specializzata contiene soltanto i dati dei rispettivi ruoli, e l’informazione di “ruolo” può essere utilizzata a livello di software/applicazione anziché nel database centrale.
+- Le relazioni a valle (come “possesso” di indirizzi, “scrittura” di recensioni, ricezione/invio di notifiche) fanno riferimento direttamente a UTENTE o VENDITORE.
+
+**Motivazione della scelta:**  
+Il collasso verso il basso è particolarmente conveniente in questo scenario in quanto UTENTE e VENDITORE svolgono funzioni molto diverse e pertanto accedono a domini applicativi (e interfacce) separati. La duplicazione di alcuni attributi è ritenuta tollerabile e aumenta la chiarezza durante la gestione dei permessi e delle funzionalità amministrative.
+
+**Gerarchia PRODOTTO (PIANTA, VASO, PRODOTTO_CHIMICO, SUBSTRATO)**
+
+Per questa gerarchia si è scelto di **sostituire la generalizzazione con associazioni 1:1**:
+
+- Tutte le entità della gerarchia vengono **mantenute esplicitamente** nel modello: sia l’entità generale (**PRODOTTO**) che le entità figlie (**PIANTA, VASO, PRODOTTO_CHIMICO, SUBSTRATO**).
+- Le entità figlie sono **associate all’entità padre tramite una relazione binaria 1:1** (ad es. “appartenenza_p.” tra PIANTA e PRODOTTO). In questo modo, ogni istanza delle entità figlie è identificata attraverso una chiave esterna che punta a PRODOTTO, evitando duplicazioni di attributi comuni.
+- Questa soluzione, detta anche “sostituzione con associazioni”, è applicabile indipendentemente dal fatto che la gerarchia sia totale o parziale.
+
+**Motivazione della scelta:**  
+La sostituzione con associazioni porta vantaggi di normalizzazione e di chiarezza:
+- Gli attributi comuni (es. nome, descrizione, quantità, prezzo) rimangono **solo** in PRODOTTO evitando ridondanza e valori nulli nelle entità figlie.
+- Ogni entità figlia contiene **solo gli attributi specifici** (es. specie per PIANTA, materiale per VASO, livello di drenaggio per SUBSTRATO).
+- Grazie alle associazioni binarie, è possibile mantenere separate le tipologie di prodotto, facilitando controlli di integrità, interrogazioni specifiche e futuri ampliamenti della gerarchia.
+
+### Eliminazione degli attributi composti
+
+Nello schema di partenza, l’attributo **Indirizzo** era modellato come campo unico.  
+Dopo il raffinamento, “Indirizzo” viene **scomposto** nei suoi sotto-attributi: **Via, Numero Civico, CAP, ecc.** sia in DATI_FATTURAZIONE che in DATI_SPEDIZIONE, favorendo ricerche, filtri e validazioni più efficienti.
+
+### Scelta delle chiavi primarie
+
+Ogni tabella (UTENTE, VENDITORE, PIANTA, VASO, ecc.) è identificata da una **chiave primaria semplice** (ad esempio, Email per UTENTE e VENDITORE, ID_Prodotto per ciascuna sottotabella di prodotto).
+
+### Reificazione delle relazioni in entità
+
+DA SISTEMARE!!!!!!!!
+
+Nel raffinamento dello schema concettuale, alcune relazioni sono state trasformate in vere e proprie entità (reificate), dando luogo alle entità:
+
+- **NOTIFICA_UTENTE_RICEVUTA**
+- **NOTIFICA_VENDITORE_RICEVUTA**
+- **COMPRENSIONE_IN_CARRELLO**
+- **COMPRENSIONE_IN_ORDINE**
+
+
+Nel caso di **NOTIFICA_UTENTE_RICEVUTA** e **NOTIFICA_VENDITORE_RICEVUTA** si è scelto di reificare la relazione “ricezione” per i seguenti motivi:
+- Ogni ricezione di notifica può richiedere **attributi specifici** (es. data di ricezione, stato di lettura).
+- Un utente può ricevere la stessa notifica in più momenti o in condizioni diverse.
+- Si semplifica il tracciamento dello **storico notifiche** e la gestione della logica applicativa (ad esempio “segna come letto” viene gestita a livello di istanza della ricezione).
+
+Esempio di attributi aggiunti:  
+- `data_ricezione`
+- `stato_lettura` (letto/non letto)
+- Possibilità di eliminazione/archiviazione su base utente
+
+---
+
+#### Caso: **COMPRENSIONE_IN_CARRELLO**
+
+La relazione tra UTENTE e PRODOTTO, per rappresentare i prodotti attualmente inseriti nel carrello, è stata reificata in **COMPRENSIONE_IN_CARRELLO**:
+- È necessario **associare alla relazione un attributo fondamentale**: la **quantità** di ciascun prodotto messo nel carrello dal singolo utente.
+- Potenzialmente, anche altri attributi possono emergere in futuro (ad esempio data/ora di inserimento, selezione di opzioni/taglie temporanee).
+- La reificazione supporta la gestione efficace di tutte le operazioni di aggiornamento, cancellazione e visualizzazione dello stato corrente del carrello.
+
+---
+
+#### Caso: **COMPRENSIONE_IN_ORDINE**
+
+Analogamente, la relazione tra ORDINE e PRODOTTO viene reificata in **COMPRENSIONE_IN_ORDINE**:
+- È indispensabile memorizzare, oltre al legame tra ordine e prodotto, **informazioni come la quantità ordinata** e il prezzo specifico (che potrebbe essere diverso dallo standard, a causa di sconti promozionali applicati al momento dell’acquisto).
+- Eventuali altri attributi possono includere: stato di evasione parziale, promozioni dedicate, restituzioni o sostituzioni parziali.
+- La reificazione consente di rappresentare in modo naturale il **dettaglio riga ordine** (struttura tipica di ogni sistema e-commerce, detta anche order line).
