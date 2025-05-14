@@ -15,9 +15,9 @@
 <div style="page-break-after: always;"></div>
 
 - [Relazione Progetto Basi di Dati](#relazione-progetto-basi-di-dati)
-  - [Analisi dei requisiti](#analisi-dei-requisiti)
+  - [Analisi dei Requisiti](#analisi-dei-requisiti)
     - [Intervista](#intervista)
-    - [Estrazione dei concetti principali](#estrazione-dei-concetti-principali)
+    - [Estrazione dei Concetti Principali](#estrazione-dei-concetti-principali)
     - [Terminologia](#terminologia)
   - [Progettazione Concettuale](#progettazione-concettuale)
     - [Schema Scheletro e Raffinamenti Successivi](#schema-scheletro-e-raffinamenti-successivi)
@@ -26,27 +26,23 @@
     - [Stima del Volume dei Dati](#stima-del-volume-dei-dati)
     - [Funzionalità Principali e Stima della Frequenza](#funzionalità-principali-e-stima-della-frequenza)
     - [Tabella Frequenza Operazioni Principali](#tabella-frequenza-operazioni-principali)
-    - [Schemi di navigazione e tabelle degli accessi](#schemi-di-navigazione-e-tabelle-degli-accessi)
-      - [02 VISUALIZZAZIONE CATALOGO FILTRATO](#02-visualizzazione-catalogo-filtrato)
-      - [04 AGGIUNTA PRODOTTO AL CARRELLO](#04-aggiunta-prodotto-al-carrello)
-      - [05 EFFETTUARE UN ORDINE](#05-effettuare-un-ordine)
-      - [06 VALUTAZIONE PRODOTTO](#06-valutazione-prodotto)
-      - [08 CONSULTAZIONE STATISTICHE SULLE VENDITE (ADMIN)](#08-consultazione-statistiche-sulle-vendite-admin)
-      - [10 APPLICAZIONE DI UNO SCONTO SU PRODOTTI (ADMIN)](#10-applicazione-di-uno-sconto-su-prodotti-admin)
-    - [Analisi delle ridondanze](#analisi-delle-ridondanze)
-      - [Attributo Importo nell'entità ORDINE](#attributo-importo-nellentità-ordine)
-  - [Raffinamento dello schema](#raffinamento-dello-schema)
-    - [Eliminazione delle gerarchie](#eliminazione-delle-gerarchie)
-    - [Eliminazione degli attributi composti](#eliminazione-degli-attributi-composti)
-    - [Scelta delle chiavi primarie](#scelta-delle-chiavi-primarie)
-    - [Reificazione delle relazioni in entità](#reificazione-delle-relazioni-in-entità)
-      - [Caso: **COMPRENSIONE\_IN\_CARRELLO**](#caso-comprensione_in_carrello)
-      - [Caso: **COMPRENSIONE\_IN\_ORDINE**](#caso-comprensione_in_ordine)
+    - [Schemi di Navigazione e Tabelle degli Accessi](#schemi-di-navigazione-e-tabelle-degli-accessi)
+    - [Analisi delle Ridondanze](#analisi-delle-ridondanze)
+  - [Raffinamento dello Schema](#raffinamento-dello-schema)
+    - [Eliminazione delle Gerarchie](#eliminazione-delle-gerarchie)
+    - [Eliminazione degli Attributi Composti](#eliminazione-degli-attributi-composti)
+    - [Scelta delle Chiavi Primarie](#scelta-delle-chiavi-primarie)
+    - [Reificazione delle Relazioni in Entità](#reificazione-delle-relazioni-in-entità)
+    - [Traduzione delle Entità e delle Assocaizioni in Relazioni](#traduzione-delle-entità-e-delle-assocaizioni-in-relazioni)
+    - [Schema Relazionale Finale](#schema-relazionale-finale)
+    - [Costruzione delle Tabelle del DB in SQL](#costruzione-delle-tabelle-del-db-in-sql)
+    - [Traduzione delle Operazioni in query SQL](#traduzione-delle-operazioni-in-query-sql)
+  - [Progettazione della Web App](#progettazione-della-web-app)
 
 
 <div style="page-break-after: always;"></div>
 
-## Analisi dei requisiti
+## Analisi dei Requisiti
 
 Si vuole realizzare un sistema informativo per la gestione di un sito e-commerce dedicato alla vendita di piante, vasi, prodotti chimici e substrati. Il database dovrà memorizzare le informazioni relative agli utenti, ai prodotti disponibili, agli ordini effettuati, alle relative spedizioni, pagamenti e alle valutazioni dei clienti. Gli amministratori potranno gestire il catalogo, creare offerte e sconti, visualizzare statistiche e inviare notifiche agli utenti.  
 Ogni utente registrato potrà acquistare prodotti, tenere traccia dei propri ordini, ricevere notifiche e valutare i prodotti acquistati.
@@ -61,7 +57,7 @@ Le piante possiedono una specie ed una sereie di accortezze da dedicrgli, mentre
 Dopo l’acquisto, l’utente ha la possibilità di valutare i prodotti con stelle e recensioni testuali. Nell’area personale, ogni utente può consultare i propri dati, gli ordini effettuati e riceve notifiche relative allo stato degli ordini. L’amministratore, attraverso un’area riservata, può gestire l’inserimento di nuovi prodotti, la creazione di sconti, la visualizzazione della lista utenti, la gestione delle notifiche e consultare statistiche relative alle vendite.
 
 
-### Estrazione dei concetti principali
+### Estrazione dei Concetti Principali
 
 A seguito della lettura e comprensione dei requisiti, si riassumono i concetti principali, chiarendo le ambiguità e formalizzando i termini:
 
@@ -222,11 +218,11 @@ Segue un elenco delle principali azioni richieste:
 | 10   | Applicare o modificare uno sconto su prodotti (admin)                                                 | 3 al giorno (150 sconti/anno)                                | I                        |
 
 
-### Schemi di navigazione e tabelle degli accessi
+### Schemi di Navigazione e Tabelle degli Accessi
 
 Dopo aver determinato il volume dei dati e la frequenza delle operazioni, si dettagliano gli accessi di alcune operazioni chiave. Nel calcolo degli accessi si stima come doppio il peso degli accessi in scrittura rispetto ai lettura.
 
-#### 02 VISUALIZZAZIONE CATALOGO FILTRATO
+**02 VISUALIZZAZIONE CATALOGO FILTRATO**
 
 **Obiettivo:** Visualizzare prodotti in base alla categoria. Assumiamo si ricerchi la categoria piante ovvero quella con più istanze e con più ricerche giornaliere (1000 delle 3000 totali).
 
@@ -250,7 +246,7 @@ Totale: 2.300L = 2.300 accessi
 Frequenza: 1.000 al giorno  
 **Costo totale:** 1.000 x 2.300 = 2.300.000 accessi al giorno
 
-#### 04 AGGIUNTA PRODOTTO AL CARRELLO
+**04 AGGIUNTA PRODOTTO AL CARRELLO**
 
 **Obiettivo:** Un utente aggiunge un prodotto al proprio carrello.
 
@@ -270,7 +266,7 @@ Totale: 500L + 3S = 506 accessi
 Frequenza: 1.000 al giorno  
 **Costo:** 506 x 1.000 = 506.000 accessi al giorno  
 
-#### 05 EFFETTUARE UN ORDINE
+**05 EFFETTUARE UN ORDINE**
 
 **Obiettivo:** Un utente procede all'acquisto del proprio carrello.
 
@@ -299,7 +295,7 @@ Totale: 19S + 3L = 41 accessi
 Frequenza: 120 al giorno  
 **Costo:** 41 x 120 = 4.920 accessi al giorno  
 
-#### 06 VALUTAZIONE PRODOTTO
+**06 VALUTAZIONE PRODOTTO**
 
 **Obiettivo:** Utente recensisce un prodotto dopo averlo acquistato.
 
@@ -320,7 +316,7 @@ Totale: 17.980L + 3S = 17.986 accessi
 Frequenza: 70 al giorno  
 **Costo:** 17.986 x 70 = 1.259.020 accessi al giorno  
 
-#### 08 CONSULTAZIONE STATISTICHE SULLE VENDITE (ADMIN)
+**08 CONSULTAZIONE STATISTICHE SULLE VENDITE (ADMIN)**
 
 **Obiettivo:** L’amministratore consulta statistiche aggregate su ordini, prodotti e recensioni, ad esempio i dieci prodotti più venduti con il relativo totale di recensioni e valutazione media.
 
@@ -341,7 +337,7 @@ ORDINE → comprensione_o.p. → PRODOTTO → valutazione → RECENSIONE
 **Frequenza:** 20 al giorno  
 **Costo totale:** 121.250 x 20 = 121.250 accessi al giorno
 
-#### 10 APPLICAZIONE DI UNO SCONTO SU PRODOTTI (ADMIN)
+**10 APPLICAZIONE DI UNO SCONTO SU PRODOTTI (ADMIN)**
 
 **Obiettivo:** L’amministratore attiva uno sconto e lo associa a un prodotto.
 
@@ -360,9 +356,9 @@ SCONTO_PRODOTTO → applicazione → PRODOTTO
 **Frequenza:** 3 al giorno  
 **Costo totale:** 504 x 3 = 1012 accessi al giorno
 
-### Analisi delle ridondanze
+### Analisi delle Ridondanze
 
-#### Attributo Importo nell'entità ORDINE
+**Attributo Importo nell'Entità ORDINE**
 
 Nel modello proposto, un possibile caso di **ridondanza controllata** riguarda l’attributo **`importo`** all’interno dell’entità **ORDINE**.
 
@@ -414,9 +410,9 @@ L’importo totale di un ordine può essere ottenuto come **somma dei (prezzo ×
 
 La ridondanza comporta un lieve aumento di spazio occupato (una colonna in più per ciascun ordine), ma porta a un notevole risparmio in termini di accessi necessari per tutte le operazioni di consultazione (es. visualizzazione storici, stampa ricevute e analisi statistiche). Inoltre, permette di conservare l’importo esatto anche in caso di modifica futura del prezzo dei prodotti o delle regole di sconto, garantendo la tracciabilità dei dati storici. Si decide quindi di mantenere all’interno del modello l’attributo *importo* nella tabella ORDINE. Lo spreco di spazio è minimo rispetto al vantaggio in termini di prestazioni e semplificazione, sia per l’applicazione che per le interrogazioni di analisi.
 
-## Raffinamento dello schema
+## Raffinamento dello Schema
 
-### Eliminazione delle gerarchie
+### Eliminazione delle Gerarchie
 
 Nello **schema E/R iniziale** compaiono due principali gerarchie da eliminare:  
 - la gerarchia sull’entità **ACCOUNT_REGISTRATO** (con le specializzazioni UTENTE e VENDITORE)
@@ -446,51 +442,93 @@ La sostituzione con associazioni porta vantaggi di normalizzazione e di chiarezz
 - Ogni entità figlia contiene **solo gli attributi specifici** (es. specie per PIANTA, materiale per VASO, livello di drenaggio per SUBSTRATO).
 - Grazie alle associazioni binarie, è possibile mantenere separate le tipologie di prodotto, facilitando controlli di integrità, interrogazioni specifiche e futuri ampliamenti della gerarchia.
 
-### Eliminazione degli attributi composti
+### Eliminazione degli Attributi Composti
 
 Nello schema di partenza, l’attributo **Indirizzo** era modellato come campo unico.  
 Dopo il raffinamento, “Indirizzo” viene **scomposto** nei suoi sotto-attributi: **Via, Numero Civico, CAP, ecc.** sia in DATI_FATTURAZIONE che in DATI_SPEDIZIONE, favorendo ricerche, filtri e validazioni più efficienti.
 
-### Scelta delle chiavi primarie
+### Scelta delle Chiavi Primarie
 
 Ogni tabella (UTENTE, VENDITORE, PIANTA, VASO, ecc.) è identificata da una **chiave primaria semplice** (ad esempio, Email per UTENTE e VENDITORE, ID_Prodotto per ciascuna sottotabella di prodotto).
 
-### Reificazione delle relazioni in entità
+### Reificazione delle Relazioni in Entità
 
-DA SISTEMARE!!!!!!!!
-
-Nel raffinamento dello schema concettuale, alcune relazioni sono state trasformate in vere e proprie entità (reificate), dando luogo alle entità:
+Nel raffinamento dello schema concettuale, alcune relazioni sono state reificate, dando luogo alle entità:
 
 - **NOTIFICA_UTENTE_RICEVUTA**
 - **NOTIFICA_VENDITORE_RICEVUTA**
 - **COMPRENSIONE_IN_CARRELLO**
 - **COMPRENSIONE_IN_ORDINE**
 
+1. Nel caso di **NOTIFICA_UTENTE_RICEVUTA** e **NOTIFICA_VENDITORE_RICEVUTA** si è scelto di reificare la relazione “ricezione” per i seguenti motivi:
+   - Ogni ricezione di notifica può richiedere **attributi specifici** (es. data di ricezione, stato di lettura).
+   - Un utente può ricevere la stessa notifica in più momenti o in condizioni diverse.
+   - Si semplifica il tracciamento dello **storico notifiche** e la gestione della logica applicativa (ad esempio “segna come letto” viene gestita a livello di istanza della ricezione).
+   - La reificazione introduce una problematica legata a un vincolo aggiuntivo non presente nel dominio originale né nello schema E/R iniziale. Reificando, diventa necessario un identificativo univoco (ID) per la nuova entità. Se tale ID fosse definito come combinazione della **data di ricezione**, della chiave esterna **email** dell'account ricevente e della chiave esterna **ID_NOTIFICA**, si introdurrebbe un vincolo indesiderato: non sarebbe possibile istanziare più notifiche della stessa tipologia per lo stesso utente nella stessa giornata.
+   - Per risolvere questa limitazione, si decide di introdurre un **codice univoco** all'interno della nuova entità. Questo codice, combinato con l'email dell'utente, consente di evitare il problema, garantendo la possibilità di associare più notifiche dello stesso tipo a uno stesso utente nello stesso giorno.
 
-Nel caso di **NOTIFICA_UTENTE_RICEVUTA** e **NOTIFICA_VENDITORE_RICEVUTA** si è scelto di reificare la relazione “ricezione” per i seguenti motivi:
-- Ogni ricezione di notifica può richiedere **attributi specifici** (es. data di ricezione, stato di lettura).
-- Un utente può ricevere la stessa notifica in più momenti o in condizioni diverse.
-- Si semplifica il tracciamento dello **storico notifiche** e la gestione della logica applicativa (ad esempio “segna come letto” viene gestita a livello di istanza della ricezione).
+2. La relazione tra UTENTE e PRODOTTO, per rappresentare i prodotti attualmente inseriti nel carrello, è stata reificata in **COMPRENSIONE_IN_CARRELLO**:
+   - È necessario **associare alla relazione un attributo fondamentale**: la **quantità** di ciascun prodotto messo nel carrello dal singolo utente.
+   - Potenzialmente, anche altri attributi possono emergere in futuro (ad esempio data/ora di inserimento, selezione di opzioni/taglie temporanee).
+   - La reificazione supporta la gestione efficace di tutte le operazioni di aggiornamento, cancellazione e visualizzazione dello stato corrente del carrello.
 
-Esempio di attributi aggiunti:  
-- `data_ricezione`
-- `stato_lettura` (letto/non letto)
-- Possibilità di eliminazione/archiviazione su base utente
+3. Analogamente, la relazione tra ORDINE e PRODOTTO viene reificata in **COMPRENSIONE_IN_ORDINE**:
+   - È indispensabile memorizzare il legame tra ordine e prodotto e **informazioni come la quantità ordinata**.
+   - La reificazione consente di rappresentare in modo naturale il **dettaglio ordine**.
 
----
+### Traduzione delle Entità e delle Assocaizioni in Relazioni
 
-#### Caso: **COMPRENSIONE_IN_CARRELLO**
+- **UTENTI** (<u>Email</u>, Nome, Cognome, Password, Telefono*)
+- **DATI_FATTURAZIONE** (<u>Email, IdDatoFatt</u>, PartitaIVA, Indirizzo, CAP)
+  - FK: Email → UTENTI
+- **DATI_SPEDIZIONE** (<u>IdDatoSped</u>, Indirizzo, CAP)
+- **ORDINI** (<u>IdOrdine</u>, IdDatoSped, Data, Importo, Email, IdDatoFatt)
+  - UK: IdDatoSped
+  - FK: (Email, IdDatoFatt) → DATI_FATTURAZIONE
+  - FK: IdDatoSped → DATI_SPEDIZIONE
+- **COMPRENSIONE_IN_CARRELLO** (<u>IdProdotto, Email</u>, Quantità)
+  - FK: Email → UTENTI
+  - FK: IdProdotto → PRODOTTI
+- **COMPRENSIONE_IN_ORDINE** (<u>IdProdotto, IdOrdine</u>, Quantità)
+  - FK: IdOrdine → ORDINI
+  - FK: IdProdotto → PRODOTTI
+- **PAGAMENTI** (<u>IdPagamento</u>, Data, Metodo, IdOrdine)
+  - FK: IdOrdine → ORDINI
+- **PRODOTTI** (<u>IdProdotto</u>, Descrizione, Dimensione, DataSconto*, Nome, Prezzo)
+  - FK: DataSconto → SCONTO_PRODOTTO*
+- **PIANTE** (<u>IdProdotto</u>, NomeSpecie)
+  - FK: IdProdotto → PRODOTTI
+  - FK: NomeSpecie → SPECIE
+- **SPECIE** (<u>Nome</u>, IdCura)
+  - FK: IdCura → CURE
+- **CURE** (<u>IdCura</u>, Temperatura, Umidità, LivelloLuce)
+- **PRODOTTO_CHIMICO** (<u>IdProdotto</u>, Formato, Utilizzo)
+  - FK: IdProdotto → PRODOTTI
+- **SUBSTRATI** (<u>IdProdotto</u>, LivelloDrenaggio)
+  - FK: IdProdotto → PRODOTTI
+- **VASI** (<u>IdProdotto</u>, Forma, NomeMateriale)
+  - FK: IdProdotto → PRODOTTI
+  - FK: NomeMateriale → MATERIALI
+- **MATERIALI** (<u>Nome</u>)
+- **NOTIFICHE_UTENTE** (<u>IdNotifica</u>, Testo)
+- **NOTIFICHE_VENDITORE** (<u>IdNotifica</u>, Testo)
+- **NOTIFICA_UTENTE_RICEVUTA** (<u>Email, IdNotificaRicevuta</u>, Data, Stato, IdNotifica)
+  - FK: Email → UTENTI
+  - FK: IdNotifica → NOTIFICHE_UTENTE
+- **NOTIFICA_VENDITORE_RICEVUTA** (<u>Email, IdNotificaRicevuta</u>, Data, Stato, IdNotifica)
+  - FK: Email → VENDITORI
+  - FK: IdNotifica → NOTIFICHE_VENDITORE
+- **RECENSIONI** (<u>Email, IdRecensione</u>, Testo, Stelle, EmailVenditore*, IdProdotto)
+  - FK: Email → UTENTI
+  - FK: EmailVenditore → VENDITORI
+  - FK: IdProdotto → PRODOTTI
+- **SCONTO_PRODOTTO** (<u>DataInizio</u>, DataFine, Percentuale)
+- **VENDITORI** (<u>Email</u>, Nome, Cognome, Password, Telefono*)
 
-La relazione tra UTENTE e PRODOTTO, per rappresentare i prodotti attualmente inseriti nel carrello, è stata reificata in **COMPRENSIONE_IN_CARRELLO**:
-- È necessario **associare alla relazione un attributo fondamentale**: la **quantità** di ciascun prodotto messo nel carrello dal singolo utente.
-- Potenzialmente, anche altri attributi possono emergere in futuro (ad esempio data/ora di inserimento, selezione di opzioni/taglie temporanee).
-- La reificazione supporta la gestione efficace di tutte le operazioni di aggiornamento, cancellazione e visualizzazione dello stato corrente del carrello.
+### Schema Relazionale Finale
 
----
+### Costruzione delle Tabelle del DB in SQL
 
-#### Caso: **COMPRENSIONE_IN_ORDINE**
+### Traduzione delle Operazioni in query SQL
 
-Analogamente, la relazione tra ORDINE e PRODOTTO viene reificata in **COMPRENSIONE_IN_ORDINE**:
-- È indispensabile memorizzare, oltre al legame tra ordine e prodotto, **informazioni come la quantità ordinata** e il prezzo specifico (che potrebbe essere diverso dallo standard, a causa di sconti promozionali applicati al momento dell’acquisto).
-- Eventuali altri attributi possono includere: stato di evasione parziale, promozioni dedicate, restituzioni o sostituzioni parziali.
-- La reificazione consente di rappresentare in modo naturale il **dettaglio riga ordine** (struttura tipica di ogni sistema e-commerce, detta anche order line).
+## Progettazione della Web App
