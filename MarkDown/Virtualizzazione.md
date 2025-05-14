@@ -131,6 +131,16 @@
     - [Comandi e Configurazioni di Docker Compose](#comandi-e-configurazioni-di-docker-compose)
     - [Gestione delle Reti e dei Volumi](#gestione-delle-reti-e-dei-volumi)
       - [Esempio di Configurazione di Rete:](#esempio-di-configurazione-di-rete)
+  - [Esempio: Applicazione Node.js + MongoDB con Docker Compose](#esempio-applicazione-nodejs--mongodb-con-docker-compose)
+    - [Descrizione dell’Applicazione](#descrizione-dellapplicazione)
+    - [1. Installazione del pacchetto Docker Compose su Linux](#1-installazione-del-pacchetto-docker-compose-su-linux)
+    - [2. Creazione delle Reti Virtuali Docker](#2-creazione-delle-reti-virtuali-docker)
+    - [3. Costruzione dell’Immagine del Container per l’Applicazione Web Node.js/Express/Mongoose](#3-costruzione-dellimmagine-del-container-per-lapplicazione-web-nodejsexpressmongoose)
+    - [4. Costruzione e Gestione del Container e dei Dati MongoDB](#4-costruzione-e-gestione-del-container-e-dei-dati-mongodb)
+    - [5. Costruzione dell’Immagine Per MongoDB e Inizializzazione Database](#5-costruzione-dellimmagine-per-mongodb-e-inizializzazione-database)
+    - [6. Esecuzione del Container con MongoDB e il Database dbsa](#6-esecuzione-del-container-con-mongodb-e-il-database-dbsa)
+    - [7. Esecuzione del Container con l’Applicazione Web Node.js](#7-esecuzione-del-container-con-lapplicazione-web-nodejs)
+    - [8. Automazione Completa con Docker Compose](#8-automazione-completa-con-docker-compose)
   - [Active Directory](#active-directory)
     - [Dominio Windows](#dominio-windows)
     - [Protocolli di Active Directory](#protocolli-di-active-directory)
@@ -1815,13 +1825,11 @@ Content-Type: text/html; charset=iso-8859-1
 ### Compiti di Init in Shell ed Exec mode
 - **Shell Form**: Se un processo è eseguito con il formato shell, la shell stessa avrà il PID 1, dunque il processo principale, non gestirà i processi zombie, tali processi possono essere gestiti solola dal processo con PID 1, inoltre la shell di base non ha le capacità di gestire i processi zombi. Rimane necessaria quando si devono eseguire comandi compositi con espansioni bash o operatori condizionali. Si può includere uno script inline nel Dockerfile che viene eseguito nella exec form. Inoltre torna utile per un uso rapido o di debug.
 
-```dockerfile
-#---partiamo da un'immagine alpine e non ubuntu---#
+```dockerfilepartiamo da un'immagine alpine e non ubun#
 FROM alpine
 RUN apk add bash
 COPY --chmod=755 <<EOT
-/entrypoint.sh
-#---usaimo questo camand, che non è un commento, ma che serve a spechificare l'interprete da usare---#
+/entrypoint.shusaimo questo camand, che non è un commento, ma che serve a spechificare l'interprete da usa#
 #!/usr/bin/env bash
 set -e
 my-background-process &
@@ -2115,8 +2123,6 @@ Alla base di YAML c'è un sistema di chiavi e valori organizzati gerarchicamente
    residenza: *luogo
    ```
 
----
-
 ### Docker Compose e File YAML
 
 Un "Compose file" è un file YAML utilizzato da Docker Compose per gestire applicazioni multi-container. La sua struttura include diversi blocchi chiave come `version`, `services`, `volumes`, `networks`, e `secrets`, ciascuno dei quali ha una funzione specifica nel definire il comportamento dei container.
@@ -2340,6 +2346,536 @@ networks:
 ```
 
 Questa configurazione consente ai servizi `app` e `redis` di comunicare tra loro attraverso la rete `mynet`.
+
+## Esempio: Applicazione Node.js + MongoDB con Docker Compose
+
+### Descrizione dell’Applicazione
+
+L’applicazione consiste in una web app realizzata in Node.js usando il framework Express, con un database gestito da MongoDB. L’intera soluzione è containerizzata tramite Docker e orchestrata con Docker Compose.
+
+**Funzionalità dell’Applicazione**
+
+- Il server Node.js gestisce richieste HTTP su tre endpoint principali:
+  - **POST /submit:**  
+    Riceve due parametri (`seq1` e `seq2`).  
+    Calcola due nuove stringhe basate su questi parametri, poi salva nel database la quadrupla:  
+    `seq1`, `seq2`, [nuova stringa 1], [nuova stringa 2].  
+    Restituisce la quadrupla al client.
+  - **GET /show:**  
+    Restituisce l’intero contenuto (tutte le quadruple) presenti nel database.
+  - **GET /**  
+    Restituisce una pagina HTML con un form per inserire due stringhe (`seq1`, `seq2`).  
+    Il form invia i dati al server tramite una richiesta POST su `/submit`, che poi mostra la quadrupla prodotta.
+
+**Architettura e Struttura a Container**
+
+Ciascun componente principale è isolato in un proprio container Docker:
+
+- **Container 1:** Node.js + Express (porta 3000 TCP)
+- **Container 2:** MongoDB (porta 27017 TCP)
+
+I due container vengono gestiti tramite Docker Compose, che ne facilita l’esecuzione e la rete interna.
+
+![](img/Virtualizzazione/aswh4.png)
+
+**Nota:** I browser client NON fanno parte dell’applicazione containerizzata.
+
+**Esecuzione su Macchina Virtuale (VirtualBox)**
+
+Se l’applicazione viene avviata su una macchina virtuale (es: VirtualBox con OS Linux):
+
+- È necessario configurare il **port forwarding** di VirtualBox.
+  - Per esempio, la porta 3000 del container Node.js va esposta come 8080 all’esterno della VM.
+- In questo modo, i client sul PC host possono raggiungere il servizio all’indirizzo `localhost:8080`.
+
+![Schema VirtualBox Port Forwarding](schema_virtualbox_port_forwarding.png)
+
+**Caso Alternativo:**  
+Se i test vengono eseguiti all’interno della stessa VM (client interni), NON serve configurare il port forwarding; i client si connetteranno direttamente alla porta esposta da Node.js nel network della VM.
+
+**Gestione del Codice e dei File**
+
+Tutti i sorgenti, i file di configurazione Docker e i file necessari per la creazione e l’avvio dei container sono raccolti all’interno dell’archivio **ASWh4.zip**.
+
+Continuazione degli appunti, mantenendo la formattazione e lo stile richiesti:
+
+**Organizzazione del Documento:** Questo documento è strutturato in 10 parti fondamentali, che descrivono in dettaglio il processo completo di installazione, costruzione, esecuzione e automazione di una moderna applicazione multi-container composta da Node.js, Express e MongoDB, gestita tramite Docker Compose.
+
+**Elenco delle Parti:**
+
+1. **Installazione di Docker Compose.**
+2. **Costruzione della rete virtuale "interna"** che connette tra loro i due container del web server Node.js e MongoDB **e costruzione della rete virtuale “esterna”** che permette la comunicazione tra il container web server, la VM host e altri eventuali container gateway.
+3. **Creazione ed esecuzione del container dell’applicazione web** Node.js + Express, con particolare focalizzazione sulla corretta configurazione della rete affinché il servizio Node.js possa comunicare con il servizio MongoDB tramite DNS Docker, usando il nome del container come hostname.
+4. [Mancante nel testo originale: salto numerazione]
+5. **Costruzione dell’immagine del container MongoDB** con il database dbsa e la collection alignments. Si definisce il Dockerfile e il processo di build.
+6. **Esecuzione del container con MongoDB e il database dbsa.** Istruzioni su come avviare, monitorare i log e verificare errori.
+7. **Esecuzione del container Node.js/Express/Mongoose** e controllo dei log in caso di errori.
+8. **Automatizzazione di tutte le operazioni** (build, deploy, esecuzione e terminazione dell’applicazione) tramite Docker Compose, inclusa la gestione e l’ispezione dei log.
+9. [Ripetizione o salto: numerazione da correggere se necessario]
+10. [Ripetizione o salto: numerazione da correggere se necessario]
+
+### 1. Installazione del pacchetto Docker Compose su Linux
+
+**Installazione di Docker su Ubuntu tramite script di convenienza**
+
+Per procedere all’installazione, assicurarsi di avere i privilegi di `sudo`.
+
+```bash
+# Aggiornamento del sistema e installazione di curl
+sudo apt-get update
+sudo apt-get install curl
+
+# Installazione del Docker Engine tramite script ufficiale
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Verifica installazione Docker
+sudo docker -v
+```
+
+**Esecuzione di Docker senza "sudo"**
+
+Per poter utilizzare Docker senza dover anteporre "sudo" ai comandi:
+
+```bash
+# Aggiungere l’utente corrente al gruppo docker
+sudo usermod -aG docker ${USER}
+
+# Verificare i gruppi dell’utente
+id -nG
+
+# Ricaricare la sessione dell’utente (necessario)
+su - ${USER}
+
+# Verifica che docker sia ora eseguibile senza sudo
+docker -v
+```
+
+**Installazione di Docker Compose su Debian**
+
+Se Docker è già installato, per aggiungere Docker Compose:
+
+```bash
+sudo apt update
+sudo apt install docker-compose
+```
+
+### 2. Creazione delle Reti Virtuali Docker
+
+**Rete "interna": comunicazione tra i container (Node.js ⇄ MongoDB)**
+
+Scopo: permettere ai container di comunicare tra loro tramite i nomi dei container grazie al DNS interno creato da Docker.
+
+```bash
+docker network create -d bridge --internal interna
+```
+- La rete "interna" è **di tipo bridge** e **solo per il traffico tra container**.
+
+Per verificare la rete creata:
+
+```bash
+docker network ls
+```
+
+Per ottenere dettagli specifici sulla rete "interna":
+
+```bash
+docker network inspect interna
+```
+
+**Rete "esterna": comunicazione tra Web Server e VM Host**
+
+Serve a esporre il servizio web Node.js verso la macchina host (ad esempio la VM Linux/VirtualBox).
+
+```bash
+docker network create -d bridge esterna
+```
+- La rete "esterna" di tipo bridge consente di pubblicare porte e accettare richieste dall’esterno (host o LAN).
+
+**Note:**  
+- I container collegati alla stessa rete "interna" possono essere raggiunti tramite il nome del container, risolto automaticamente dal DNS Docker.
+- L’uso di reti distinte ("interna" ed "esterna") permette di segmentare il traffico e controllare la visibilità dei servizi, migliorando sicurezza e scalabilità.
+
+### 3. Costruzione dell’Immagine del Container per l’Applicazione Web Node.js/Express/Mongoose
+
+All’interno della directory principale **ASWh4** si trovano due sottodirectory fondamentali:  
+- **nodejs**: contiene i file per costruire l’immagine e il container dell’applicazione web  
+- **mongodb**: contiene quanto necessario per la creazione dell’immagine del database documentale
+
+**Struttura della directory ./ASWh4/nodejs**
+
+```
+./app
+  ├── package-lock.json
+  ├── package.json
+  └── index.js
+  └── src
+       ├── controllers/
+       │   └── controller.js
+       ├── lib/
+       │   └── sequences_alignment.js
+       ├── models/
+       │   └── alignmentModels.js
+       └── routes/
+           └── routes.js
+./Dockerfile
+```
+- La cartella `app` contiene il codice sorgente organizzato in sottodirectory funzionali.
+- Il file `package.json` gestisce le dipendenze necessarie (es. express, mongoose, body-parser).
+- `index.js` è il punto di ingresso dell’applicazione.
+
+**Estratto rilevante di `index.js`** 
+Connessione Node.js ←→ MongoDB via nome DNS del container:
+
+```js
+var express = require('express');
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var Alignment = require('./src/models/alignmentModels');
+var app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Attenzione: "mongodb" qui è il nome del servizio/container come verrà definito nel compose file.
+mongoose.connect('mongodb://mongodb/dbsa', { useNewUrlParser: true, useFindAndModify: false });
+
+var routes = require('./src/routes/routes');
+routes(app);
+
+app.listen(3000, function () {
+    console.log('Node API server started on port 3000!');
+});
+```
+Grazie alla rete virtuale "interna" e al DNS Docker, il nome `mongodb` viene risolto all’interno della rete dei container.
+
+**Dockerfile nella directory nodejs**
+
+Esempio di Dockerfile utilizzato:
+
+```Dockerfile
+FROM ubuntu:xenial
+ENV WORKINGDIR=/root/app
+WORKDIR ${WORKINGDIR}
+RUN mkdir -p ${WORKINGDIR} && chmod 666 ${WORKINGDIR}
+COPY ./app ${WORKINGDIR}/
+RUN apt-get -y update && \
+    apt-get -y install apt-utils && \
+    apt-get -y install nodejs && \
+    apt-get -y install npm && \
+    apt-get -y clean
+RUN npm install
+EXPOSE 3000
+CMD nodejs index.js
+```
+
+- In WORKINGDIR=/root/app andrò a posizionare il mio js. Vado poi con COPY a copiare tutti i sorgenti ed provedo ad instalalre tutte le dipendenze (sarei potuto partire con un container con tutte le dipendenze già presenti) 
+- `EXPOSE 3000`: la porta dove l’applicazione ascolterà tra i container (per essere realmente esposta all’host serve il mapping nel docker run o nel compose file)
+- `CMD nodejs index.js`: comando di avvio
+
+**Build dell’immagine**
+
+Portarsi nella cartella `nodejs` contenente il Dockerfile e lanciare:
+
+```bash
+docker build -t nodejsapp .
+```
+
+Verifica della build:
+```bash
+docker images | grep nodejsapp
+```
+
+### 4. Costruzione e Gestione del Container e dei Dati MongoDB
+
+MongoDB, per garantire la persistenza dei dati anche in caso di riavvio del container, mappa le proprie directory interne (/data/db e /data/configdb) su una directory del filesystem dell’host o su un volume Docker. Senza volume i dati andrebbero persi al termine del container, con il volume invece i dati risultano persistenti anche dopo la chiusura del container.
+
+![](img/Virtualizzazione/mappaturaData.png)
+
+### 5. Costruzione dell’Immagine Per MongoDB e Inizializzazione Database
+
+**Inizializzazione automatica del database e della collection**
+
+Il comando principale del container mongodb è **docker-entrypoint.sh**.
+Per impostazione predefinita, questo script cerca tutti i file di
+scripting .js o .sh che, nel container, si trovano nella directory
+/docker-entrypoint-initdb.d/ e li esegue la prima volta che il
+container viene messo in esecuzione, o meglio, la volta che il
+container viene messo in esecuzione e nel db non ci sono database.
+Perciò, creo e scrivo un file in linguaggio javascript che farò
+eseguire dal mio mongodb solo la prima volta che lo metterò in
+esecuzione. Chiamo il file "mydbinit.js".
+
+1. Creare uno script di inizializzazione, ad esempio **mydbinit.js**:
+
+```js
+// mydbinit.js
+var conn = new Mongo();
+var db = conn.getDB('dbsa');
+db.createCollection('alignments', function(err, collection) {});
+try { db.alignments.deleteMany({}); } catch (e) { print(e); }
+db.alignments.insert({
+    "s1": "GCATGCU",
+    "s2": "GATTACA",
+    "as1": "GCATGC-U",
+    "as2": "G-ATTACA"
+});
+```
+2. Dare permessi di esecuzione:
+```bash
+chmod 777 mydbinit.js
+```
+
+**Uso dei volumi Docker nel Dockerfile MongoDB**
+
+Aggiungi riga specifica (già presente o da aggiungere):
+
+```Dockerfile
+VOLUME /data/db /data/configdb
+```
+
+Il container scriverà dati persistenti su questi volumi montati sull’host.
+
+**Copia dello script di inizializzazione dentro l’immagine MongoDB**
+
+Aggiungi questa riga nel Dockerfile dopo i commenti pertinenti:
+```Dockerfile
+COPY ./mydbinit.js /docker-entrypoint-initdb.d/
+```
+Docker/MongoDB eseguirà automaticamente qualsiasi script `.js` presente nella directory `/docker-entrypoint-initdb.d/` SOLO al primo avvio del container (quando il database non è inizializzato).
+
+**Build dell’immagine personalizzata MongoDB**
+
+Portarsi nella directory mongodb (contenente Dockerfile e script) e lanciare:
+
+```bash
+docker build -t mymongo .
+```
+
+Verifica:
+```bash
+docker images | grep mymongo
+```
+
+**Nota:**  
+Ora disponi di due immagini personalizzate e pronte all’uso:  
+- `nodejsapp` per l’applicazione web  
+- `mymongo` per il database inizializzato e con persistenza dei dati.
+
+Continuazione e conclusione degli appunti sulla gestione e automazione dei container Node.js e MongoDB tramite Docker e Docker Compose, mantenendo impostazione e formato coerente con i punti precedenti:
+
+### 6. Esecuzione del Container con MongoDB e il Database dbsa
+
+Prima di avviare il container MongoDB, controlla che la rete virtuale "interna" sia presente ed attiva:
+
+```bash
+docker network ls -f name=interna
+```
+Expected output (se la rete esiste):
+```
+NETWORK ID          NAME      DRIVER    SCOPE
+7e9f77130cd4        interna   bridge    local
+```
+Se non esiste, crea la rete come nei punti precedenti:
+```bash
+docker network create -d bridge --internal interna
+```
+
+**Avvio del container MongoDB (in background) con nome mongodb:**
+
+```bash
+docker run -itd --network interna -p 27017-27019:27017-27019 --name mongodb mymongo
+```
+- **--network interna**: collega il container alla rete per la comunicazione interna coi servizi Node.js.
+- **--name mongodb**: il nome del container deve corrispondere al nome usato dalla web app per il collegamento.
+- **-p 27017-27019:27017-27019**: espone le porte per debugging e accesso diretto da host.
+
+Verifica container in esecuzione:
+```bash
+docker ps -a
+```
+Esempio di output:
+```
+CONTAINER ID   IMAGE      COMMAND                  STATUS          PORTS                                      NAMES
+0f70e9a6f83e   mymongo    "docker-entrypoint.s…"   Up 7 minutes    0.0.0.0:27017-27019->27017-27019/tcp       mongodb
+```
+In caso di problemi (status Exited, container errori), consulta il log con:
+```bash
+docker logs mongodb
+```
+Per verificare il contenuto della collection nel database dbsa direttamente dal container MongoDB:
+```bash
+docker exec -it mongodb /usr/bin/mongo --eval "var conn = new Mongo(); var db = conn.getDB('dbsa'); var cursor = db.alignments.find(); while ( cursor.hasNext() ) { printjson(cursor.next()); }"
+```
+Dovresti vedere il documento caricato tramite lo script di inizializzazione (esempio output semplificato):
+```
+{
+    "_id" : ObjectId("..."),
+    "s1" : "GCATGCU",
+    "s2" : "GATTACA",
+    "as1" : "GCATGC-U",
+    "as2" : "G-ATTACA"
+}
+```
+Puoi anche collegarti direttamente da host (es. con `mongodb-clients` installato) per test e debugging:
+```bash
+mongo 127.0.0.1:27017/dbsa
+```
+In questa shell puoi ispezionare e modificare dati come:
+```javascript
+use dbsa
+db.alignments.find()
+db.alignments.insert({"s1":"PAZTAZ", "s2":"ZACZAC", "as1":"PAZTAZ-U", "as2":"GZACZACVAF"})
+```
+
+### 7. Esecuzione del Container con l’Applicazione Web Node.js
+
+Ora puoi avviare il container per la web application, collegandolo alla rete interna (e poi alla esterna):
+
+```bash
+docker run -itd --rm --network interna --name nodejsapp -p 3000:3000 nodejsapp
+```
+Poi collega il container alla rete esterna così che sia accessibile dall’host:
+```bash
+docker network connect esterna nodejsapp
+```
+- La porta 3000 sarà ora esposta e accessibile dai browser o tramite curl/postman sull’host.
+
+Verifica il funzionamento con un esempio di POST:
+```bash
+curl --header "Content-Type: application/x-www-form-urlencoded" --request POST --data "seq1=ALFABETAGAMMA&seq2=UFFA" 0.0.0.0:3000/submit
+```
+Risposta attesa: un oggetto JSON con le stringhe elaborate e salvate su MongoDB:
+```json
+{"s1":"ALFABETAGAMMA","s2":"UFFA","as1":"LF-ABETAGAMMA","as2":"UF"}
+```
+**Comandi di gestione container Node.js:**
+- Stop container:
+    ```bash
+    docker stop nodejsapp
+    ```
+- Rimozione container se non parte con --rm:
+    ```bash
+    docker rm nodejsapp
+    ```
+
+### 8. Automazione Completa con Docker Compose
+
+Per automatizzare build, deploy, collegamento reti/volumi e avvio/stop di tutti i servizi, si utilizza **docker-compose**.
+
+**Attenzione:**  
+L’app Node.js potrebbe dover attendere che MongoDB sia pronto: inserire un delay di 10 secondi all’avvio (vedi esempio nel file index.js).
+
+Esempio di modifica preventiva:
+```js
+function pausecomp(millis) {
+  var date = new Date(); var curDate = null;
+  do { curDate = new Date(); } while(curDate-date < millis);
+}
+pausecomp(10000);
+mongoose.set('useFindAndModify', false);
+mongoose.set('connectTimeoutMS', 30);
+mongoose
+  .connect('mongodb://mongodb:27017/dbsa', { useNewUrlParser: true })
+  .then(() => console.log('MongoDB Connected'))
+  .catch((err) => console.log(err));
+```
+
+**Esempio di file `docker-compose.yml`:**
+
+```yaml
+version: '3'
+services:
+  nodejsapp:
+    build:
+      context: ./nodejs
+      dockerfile: Dockerfile
+    image: nodejsapp
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - 3000:3000
+    networks:
+      - interna
+      - esterna
+  mongodb:
+    build:
+      context: ./mongodb
+      dockerfile: Dockerfile
+    image: mymongodb
+    restart: always
+    #test lanciato a d intervalli regloari per verificare se il db è ancora su (si crea di consegieunza un nuovo possiblile stato del conteiner funzionate o meno)
+    healthcheck:
+      test: |
+        host=`hostname --ip-address || echo '127.0.0.1'`;
+        mongo --quiet $${host}/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+    environment:
+      - MONGO_INITDB_DATABASE=dbsa
+    networks:
+      - interna
+    volumes:
+      - type: volume
+        source: mydb
+        target: /data/db
+        volume:
+          nocopy: true
+      - type: volume
+        source: myconfigdb
+        target: /data/configdb
+        volume:
+          nocopy: true
+
+networks:
+  interna:
+    driver: bridge
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: "br-interna00000"
+  esterna:
+    driver: bridge
+    internal: false
+    driver_opts:
+      com.docker.network.bridge.name: "br-esterna000000"
+
+volumes:
+  mydb:
+  myconfigdb:
+```
+
+**Comandi principali di Docker Compose per la gestione dei servizi:**
+
+- Build delle immagini (da dentro la directory del file compose):
+    ```bash
+    docker-compose build
+    ```
+- Avvio in background di tutti i container e creazione reti:
+    ```bash
+    docker-compose up -d
+    ```
+- Stop dei container (senza eliminare nulla):
+    ```bash
+    docker-compose stop
+    ```
+- Stop ed eliminazione dei container e delle reti:
+    ```bash
+    docker-compose down
+    ```
+- Stop, eliminazione container, reti e immagini:
+    ```bash
+    docker-compose down --rmi all
+    ```
+- Stop, eliminazione container, reti, immagini e volumi:
+    ```bash
+    docker-compose down --rmi all -v
+    ```
+
+I nomi generati da docker-compose seguono il pattern `<nome_progetto>-<servizio>-<numero>`, dove il nome progetto di default è quello della directory che contiene il `docker-compose.yml`.  
+Puoi specificare il nome desiderato nel file `.env` così:
+```
+COMPOSE_PROJECT_NAME=aswh4
+```
 
 ## Active Directory
 
