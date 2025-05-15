@@ -417,6 +417,7 @@ La ridondanza comporta un lieve aumento di spazio occupato (una colonna in più 
 Nello **schema E/R iniziale** compaiono due principali gerarchie da eliminare:  
 - la gerarchia sull’entità **ACCOUNT_REGISTRATO** (con le specializzazioni UTENTE e VENDITORE)
 - la gerarchia sull’entità **PRODOTTO** (con le specializzazioni PIANTA, VASO, PRODOTTO_CHIMICO, SUBSTRATO).
+- la gerarchia sull'entità **PAGAMENTO** (con specializzazione PAYPAL, BONIFICO e CARTA_DI_CREDITO)
 
 **Gerarchia ACCOUNT_REGISTRATO (UTENTE, VENDITORE)**
 
@@ -441,6 +442,15 @@ La sostituzione con associazioni porta vantaggi di normalizzazione e di chiarezz
 - Gli attributi comuni (es. nome, descrizione, quantità, prezzo) rimangono **solo** in PRODOTTO evitando ridondanza e valori nulli nelle entità figlie.
 - Ogni entità figlia contiene **solo gli attributi specifici** (es. specie per PIANTA, materiale per VASO, livello di drenaggio per SUBSTRATO).
 - Grazie alle associazioni binarie, è possibile mantenere separate le tipologie di prodotto, facilitando controlli di integrità, interrogazioni specifiche e futuri ampliamenti della gerarchia.
+
+**Gerarchia PAGAMENTO (PAYPAL, BONIFICO e CARTA_DI_CREDITO)**
+
+Si è scelto il **collasso verso l'alto**:
+- Così facendo le specializzazioni sapriscono e si aggiungono due attributi all'entità **PAGAMENTO** ovvero Metodo e Dati che letti in combinazione permetteranno di soppiantare la presenza della gerarechia originale.
+- Nello specifico l'atributo Metodo permetterà di salvare la tipologia di pagamento ricevuta metre in dati si andrà a salvare in formato testuale i dati specifici per quel pagamneto.
+
+**Motivazione della scelta:**
+Il collasso verso l'alto permette di modellare tutti i vincoli del dominio senza rinunciare ad alcuna funzionalità, anzi aumentando la facilià con cui si aggiungono metodi di pagamneto a discapito di una gestione capillare dei dati delle specifiche tipologie di pagamento.
 
 ### Eliminazione degli Attributi Composti
 
@@ -483,7 +493,6 @@ Nel raffinamento dello schema concettuale, alcune relazioni sono state reificate
   - FK: Email → UTENTI
 - **DATI_SPEDIZIONE** (<u>IdDatoSped</u>, Indirizzo, CAP)
 - **ORDINI** (<u>IdOrdine</u>, IdDatoSped, Data, Importo, Email, IdDatoFatt)
-  - UK: IdDatoSped
   - FK: (Email, IdDatoFatt) → DATI_FATTURAZIONE
   - FK: IdDatoSped → DATI_SPEDIZIONE
 - **COMPRENSIONE_IN_CARRELLO** (<u>IdProdotto, Email</u>, Quantità)
@@ -492,7 +501,7 @@ Nel raffinamento dello schema concettuale, alcune relazioni sono state reificate
 - **COMPRENSIONE_IN_ORDINE** (<u>IdProdotto, IdOrdine</u>, Quantità)
   - FK: IdOrdine → ORDINI
   - FK: IdProdotto → PRODOTTI
-- **PAGAMENTI** (<u>IdPagamento</u>, Data, Metodo, IdOrdine)
+- **PAGAMENTI** (<u>IdPagamento</u>, Data, Metodo, Dati, IdOrdine)
   - FK: IdOrdine → ORDINI
 - **PRODOTTI** (<u>IdProdotto</u>, Descrizione, Dimensione, DataSconto*, Nome, Prezzo)
   - FK: DataSconto → SCONTO_PRODOTTO*
@@ -527,7 +536,272 @@ Nel raffinamento dello schema concettuale, alcune relazioni sono state reificate
 
 ### Schema Relazionale Finale
 
+![](img/logico.png)
+
 ### Costruzione delle Tabelle del DB in SQL
+
+create table COMPRENSIONE_IN_CARRELLO (
+	Quantita int not null,
+	ID_prodotto varchar(16) not null,
+	Email char(32) not null,
+	primary key (Email, ID_prodotto)
+);
+
+create table COMPRENSIONE_IN_ORDINE (
+	Quantita int not null,
+	ID_prodotto varchar(16) not null,
+	ID_ordine varchar(16) not null,
+	primary key (ID_ordine, ID_prodotto)
+);
+
+create table CURA (
+	ID_Cura varchar(8) not null,
+	TemperaturaMin decimal(4,1) not null,
+	TemperaturaMax decimal(4,1) not null,
+	UmiditaMin decimal(5,2) not null,
+	UmiditaMax decimal(5,2) not null,
+	Livello_luce varchar(32) not null,
+	primary key (ID_Cura)
+);
+
+create table DATI_FATTURAZIONE (
+	Email_utente char(32) not null,
+	ID_Dato_F varchar(8) not null,
+	PartitaIVA char(16) not null,
+	Indirizzo varchar(128) not null,
+	CAP char(5) not null,
+	primary key (Email_utente, ID_Dato_F)
+);
+
+create table DATI_SPEDIZIONE (
+	ID_Dato_S varchar(8) not null,
+	Indirizzo varchar(128) not null,
+	NumeroCivico varchar(8),
+	CAP char(5) not null,
+	primary key (ID_Dato_S)
+);
+
+create table MATERIALE (
+	Nome varchar(64) not null,
+	primary key (Nome)
+);
+
+create table NOTIFICA_UTENTE_RICEVUTA (
+	Email_utente char(32) not null,
+	ID_notifica int not null,
+	Data date not null,
+	Stato varchar(32) not null,
+	primary key (Email_utente, ID_notifica, Data)
+);
+
+create table NOTIFICA_VENDITORE_RICEVUTA (
+	Email_venditore char(32) not null,
+	ID_notifica int not null,
+	Data date not null,
+	Stato varchar(32) not null,
+	primary key (Email_venditore, ID_notifica, Data)
+);
+
+create table NOTIFICHE_UTENTE (
+	ID_notifica int not null auto_increment,
+	Testo varchar(512) not null,
+	primary key (ID_notifica)
+);
+
+create table NOTIFICHE_VENDITORE (
+	ID_notifica int not null auto_increment,
+	Testo varchar(512) not null,
+	primary key (ID_notifica)
+);
+
+create table ORDINE (
+	ID_ordine varchar(16) not null,
+	ID_Dato_S varchar(8) not null,
+	Data date not null,
+	Importo decimal(8,2) not null,
+	Email_utente char(32) not null,
+	ID_Dato_F varchar(8) not null,
+	primary key (ID_ordine)
+);
+
+create table PAGAMENTO (
+	ID_Pagamento varchar(16) not null,
+	Data date not null,
+	Metodo varchar(32) not null,
+	Dati varchar(256) not null,
+	ID_ordine varchar(16) not null,
+	primary key (ID_Pagamento)
+);
+
+create table PRODOTTO (
+	ID_prodotto varchar(16) not null,
+	Descrizione varchar(512) not null,
+	Dimensione varchar(16) not null,
+	Data_sconto date,
+	Nome varchar(32) not null,
+	Prezzo decimal(8,2) not null,
+	Tipo_prodotto varchar(20) not null,
+	primary key (ID_prodotto)
+);
+
+create table PIANTA (
+	ID_prodotto varchar(16) not null,
+	Nome_specie varchar(32) not null,
+	primary key (ID_prodotto)
+);
+
+create table PRODOTTO_CHIMICO (
+	ID_prodotto varchar(16) not null,
+	Formato varchar(32) not null,
+	Utilizzo varchar(512) not null,
+	primary key (ID_prodotto)
+);
+
+create table RECENSIONE (
+	Email_utente char(32) not null,
+	ID_recensione int not null auto_increment,
+	Testo varchar(512) not null,
+	Stelle int not null check (Stelle between 1 and 5),
+	ID_prodotto varchar(16) not null,
+	Email_venditore char(32),
+	primary key (Email_utente, ID_recensione)
+);
+
+create table SCONTO_PRODOTTO (
+	DataInizio date not null,
+	DataFine date not null,
+	Percentuale decimal(5,2) not null,
+	primary key (DataInizio)
+);
+
+create table SPECIE (
+	Nome varchar(32) not null,
+	ID_Cura varchar(8) not null,
+	primary key (Nome)
+);
+
+create table SUBSTRATO (
+	ID_prodotto varchar(16) not null,
+	Livello_di_Drenaggio int not null,
+	primary key (ID_prodotto)
+);
+
+create table UTENTE (
+	Nome varchar(32) not null,
+	Cognome varchar(32) not null,
+	Password varchar(64) not null,
+	Email char(32) not null,
+	Telefono char(10),
+	primary key (Email)
+);
+
+create table VASO (
+	ID_prodotto varchar(16) not null,
+	Forma varchar(64) not null,
+	Nome_materiale varchar(64) not null,
+	primary key (ID_prodotto)
+);
+
+create table VENDITORE (
+	Nome varchar(32) not null,
+	Cognome varchar(32) not null,
+	Password varchar(64) not null,
+	Email char(32) not null,
+	Telefono char(10),
+	primary key (Email)
+);
+
+alter table COMPRENSIONE_IN_CARRELLO add constraint FK_carrello_utente
+	foreign key (Email)
+	references UTENTE(Email);
+
+alter table COMPRENSIONE_IN_CARRELLO add constraint FK_carrello_prodotto
+	foreign key (ID_prodotto)
+	references PRODOTTO(ID_prodotto);
+
+alter table COMPRENSIONE_IN_ORDINE add constraint FK_ordine
+	foreign key (ID_ordine)
+	references ORDINE(ID_ordine);
+
+alter table COMPRENSIONE_IN_ORDINE add constraint FK_ordine_prodotto
+	foreign key (ID_prodotto)
+	references PRODOTTO(ID_prodotto);
+
+alter table DATI_FATTURAZIONE add constraint FK_fatturazione_utente
+	foreign key (Email_utente)
+	references UTENTE(Email);
+
+alter table DATI_SPEDIZIONE add constraint FK_spedizione_ordine
+	foreign key (ID_Dato_S)
+	references ORDINE(ID_Dato_S);
+
+alter table NOTIFICA_UTENTE_RICEVUTA add constraint FK_notifica_utente
+	foreign key (Email_utente)
+	references UTENTE(Email);
+
+alter table NOTIFICA_UTENTE_RICEVUTA add constraint FK_notifica_id_utente
+	foreign key (ID_notifica)
+	references NOTIFICHE_UTENTE(ID_notifica);
+
+alter table NOTIFICA_VENDITORE_RICEVUTA add constraint FK_notifica_venditore
+	foreign key (Email_venditore)
+	references VENDITORE(Email);
+
+alter table NOTIFICA_VENDITORE_RICEVUTA add constraint FK_notifica_id_venditore
+	foreign key (ID_notifica)
+	references NOTIFICHE_VENDITORE(ID_notifica);
+
+alter table ORDINE add constraint FK_ordine_fatturazione
+	foreign key (Email_utente, ID_Dato_F)
+	references DATI_FATTURAZIONE(Email_utente, ID_Dato_F);
+
+alter table ORDINE add constraint FK_ordine_spedizione
+	foreign key (ID_Dato_S)
+	references DATI_SPEDIZIONE(ID_Dato_S);
+
+alter table PAGAMENTO add constraint FK_pag_ordine
+	foreign key (ID_ordine)
+	references ORDINE(ID_ordine);
+
+alter table PIANTA add constraint FK_pianta_prodotto
+	foreign key (ID_prodotto)
+	references PRODOTTO(ID_prodotto);
+
+alter table PIANTA add constraint FK_pianta_specie
+	foreign key (Nome_specie)
+	references SPECIE(Nome);
+
+alter table PRODOTTO_CHIMICO add constraint FK_chimico_prodotto
+	foreign key (ID_prodotto)
+	references PRODOTTO(ID_prodotto);
+
+alter table RECENSIONE add constraint FK_recensione_utente
+	foreign key (Email_utente)
+	references UTENTE(Email);
+
+alter table RECENSIONE add constraint FK_recensione_prodotto
+	foreign key (ID_prodotto)
+	references PRODOTTO(ID_prodotto);
+
+alter table RECENSIONE add constraint FK_recensione_venditore
+	foreign key (Email_venditore)
+	references VENDITORE(Email);
+
+alter table SPECIE add constraint FK_specie_cura
+	foreign key (ID_Cura)
+	references CURA(ID_Cura);
+
+alter table SUBSTRATO add constraint FK_substrato_prodotto
+	foreign key (ID_prodotto)
+	references PRODOTTO(ID_prodotto);
+
+alter table VASO add constraint FK_vaso_prodotto
+	foreign key (ID_prodotto)
+	references PRODOTTO(ID_prodotto);
+
+alter table VASO add constraint FK_vaso_materiale
+	foreign key (Nome_materiale)
+	references MATERIALE(Nome);
 
 ### Traduzione delle Operazioni in query SQL
 
