@@ -15,29 +15,29 @@
 <div style="page-break-after: always;"></div>
 
 - [Relazione Progetto Basi di Dati](#relazione-progetto-basi-di-dati)
-  - [Analisi dei Requisiti](#analisi-dei-requisiti)
-    - [Intervista](#intervista)
-    - [Estrazione dei Concetti Principali](#estrazione-dei-concetti-principali)
-    - [Terminologia](#terminologia)
-  - [Progettazione Concettuale](#progettazione-concettuale)
-    - [Schema Scheletro e Raffinamenti Successivi](#schema-scheletro-e-raffinamenti-successivi)
-    - [Schema Finale](#schema-finale)
-  - [Progettazione Logica](#progettazione-logica)
-    - [Stima del Volume dei Dati](#stima-del-volume-dei-dati)
-    - [Funzionalità Principali e Stima della Frequenza](#funzionalità-principali-e-stima-della-frequenza)
-    - [Tabella Frequenza Operazioni Principali](#tabella-frequenza-operazioni-principali)
-    - [Schemi di Navigazione e Tabelle degli Accessi](#schemi-di-navigazione-e-tabelle-degli-accessi)
-    - [Analisi delle Ridondanze](#analisi-delle-ridondanze)
-  - [Raffinamento dello Schema](#raffinamento-dello-schema)
-    - [Eliminazione delle Gerarchie](#eliminazione-delle-gerarchie)
-    - [Eliminazione degli Attributi Composti](#eliminazione-degli-attributi-composti)
-    - [Scelta delle Chiavi Primarie](#scelta-delle-chiavi-primarie)
-    - [Reificazione delle Relazioni in Entità](#reificazione-delle-relazioni-in-entità)
-    - [Traduzione delle Entità e delle Assocaizioni in Relazioni](#traduzione-delle-entità-e-delle-assocaizioni-in-relazioni)
-    - [Schema Relazionale Finale](#schema-relazionale-finale)
-    - [Costruzione delle Tabelle del DB in SQL](#costruzione-delle-tabelle-del-db-in-sql)
-    - [Traduzione delle Operazioni in query SQL](#traduzione-delle-operazioni-in-query-sql)
-  - [Progettazione della Web App](#progettazione-della-web-app)
+	- [Analisi dei Requisiti](#analisi-dei-requisiti)
+		- [Intervista](#intervista)
+		- [Estrazione dei Concetti Principali](#estrazione-dei-concetti-principali)
+		- [Terminologia](#terminologia)
+	- [Progettazione Concettuale](#progettazione-concettuale)
+		- [Schema Scheletro e Raffinamenti Successivi](#schema-scheletro-e-raffinamenti-successivi)
+		- [Schema Finale](#schema-finale)
+	- [Progettazione Logica](#progettazione-logica)
+		- [Stima del Volume dei Dati](#stima-del-volume-dei-dati)
+		- [Funzionalità Principali e Stima della Frequenza](#funzionalità-principali-e-stima-della-frequenza)
+		- [Tabella Frequenza Operazioni Principali](#tabella-frequenza-operazioni-principali)
+		- [Schemi di Navigazione e Tabelle degli Accessi](#schemi-di-navigazione-e-tabelle-degli-accessi)
+		- [Analisi delle Ridondanze](#analisi-delle-ridondanze)
+	- [Raffinamento dello Schema](#raffinamento-dello-schema)
+		- [Eliminazione delle Gerarchie](#eliminazione-delle-gerarchie)
+		- [Eliminazione degli Attributi Composti](#eliminazione-degli-attributi-composti)
+		- [Scelta delle Chiavi Primarie](#scelta-delle-chiavi-primarie)
+		- [Reificazione delle Relazioni in Entità](#reificazione-delle-relazioni-in-entità)
+		- [Traduzione delle Entità e delle Assocaizioni in Relazioni](#traduzione-delle-entità-e-delle-assocaizioni-in-relazioni)
+		- [Schema Relazionale Finale](#schema-relazionale-finale)
+		- [Costruzione delle Tabelle del DB in SQL](#costruzione-delle-tabelle-del-db-in-sql)
+		- [Traduzione delle Operazioni in query SQL](#traduzione-delle-operazioni-in-query-sql)
+	- [Progettazione della Web App](#progettazione-della-web-app)
 
 
 <div style="page-break-after: always;"></div>
@@ -200,7 +200,7 @@ Segue un elenco delle principali azioni richieste:
 7.  Inviare notifiche personalizzate agli utenti (admin)
 8.  Consultare statistiche sulle vendite (admin)
 9.  Inserire, aggiornare o rimuovere un prodotto dal catalogo (admin)
-10. Applicare o modificare uno sconto su uno o più prodotti (admin)
+10. Applicare uno sconto su uno o più prodotti (admin)
 
 ### Tabella Frequenza Operazioni Principali
 
@@ -540,6 +540,10 @@ Nel raffinamento dello schema concettuale, alcune relazioni sono state reificate
 
 ### Costruzione delle Tabelle del DB in SQL
 
+drop database if exists ER_logico_per_DB;
+create database ER_logico_per_DB;
+use ER_logico_per_DB;
+
 create table COMPRENSIONE_IN_CARRELLO (
 	Quantita int not null,
 	ID_prodotto varchar(16) not null,
@@ -621,7 +625,8 @@ create table ORDINE (
 	Importo decimal(8,2) not null,
 	Email_utente char(32) not null,
 	ID_Dato_F varchar(8) not null,
-	primary key (ID_ordine)
+	primary key (ID_ordine),
+    unique (ID_Dato_S)
 );
 
 create table PAGAMENTO (
@@ -664,7 +669,8 @@ create table RECENSIONE (
 	Stelle int not null check (Stelle between 1 and 5),
 	ID_prodotto varchar(16) not null,
 	Email_venditore char(32),
-	primary key (Email_utente, ID_recensione)
+	primary key (ID_recensione),
+    unique (Email_utente, ID_prodotto)
 );
 
 create table SCONTO_PRODOTTO (
@@ -730,10 +736,6 @@ alter table COMPRENSIONE_IN_ORDINE add constraint FK_ordine_prodotto
 alter table DATI_FATTURAZIONE add constraint FK_fatturazione_utente
 	foreign key (Email_utente)
 	references UTENTE(Email);
-
-alter table DATI_SPEDIZIONE add constraint FK_spedizione_ordine
-	foreign key (ID_Dato_S)
-	references ORDINE(ID_Dato_S);
 
 alter table NOTIFICA_UTENTE_RICEVUTA add constraint FK_notifica_utente
 	foreign key (Email_utente)
@@ -804,5 +806,164 @@ alter table VASO add constraint FK_vaso_materiale
 	references MATERIALE(Nome);
 
 ### Traduzione delle Operazioni in query SQL
+
+**01. Registrarsi al sito (utente)**
+
+```sql
+INSERT INTO UTENTE (Nome, Cognome, Password, Email, Telefono)
+VALUES (?,?,?,?,?);
+```
+
+**02. Visualizzare all'interno del catalogo specifiche fasce di prodotti sulla base di filtri specifici (utente)**
+
+**Esempio: solo piante tra 20€ e 100€, nome contiene 'ficus', dimensione 'L'**
+
+```sql
+SELECT P.ID_prodotto, P.Nome, P.Prezzo, P.Descrizione, P.Dimensione
+FROM PRODOTTO P
+JOIN PIANTA PT ON PT.ID_prodotto = P.ID_prodotto
+WHERE P.Prezzo BETWEEN 20.0 AND 100.0
+  AND P.Nome LIKE '%ficus%'
+  AND P.Dimensione = 'L';
+```
+
+**03. Visualizzare e gestire i propri dati personali (utente)**
+
+**Visualizza:**
+```sql
+SELECT *
+FROM UTENTE
+WHERE Email = ?;
+```
+
+**Modifica (es. cambio telefono):**
+```sql
+UPDATE UTENTE
+SET Telefono = ?
+WHERE Email = ?;
+```
+
+**04. Aggiungere prodotti al carrello (utente)**
+
+Se il prodotto esiste già nel carrello: **fai un UPDATE**, altrimenti **INSERT**.
+
+```sql
+-- Se non esiste ancora:
+INSERT INTO COMPRENSIONE_IN_CARRELLO (Quantita, ID_prodotto, Email)
+VALUES (?, ?, ?);
+
+-- Se esiste già:
+UPDATE COMPRENSIONE_IN_CARRELLO
+SET Quantita = Quantita + 1
+WHERE ID_prodotto = ? AND Email = ?;
+```
+
+**05. Effettuare un ordine scegliendo metodo di pagamento e inserendo dati spedizione e fatturazione (utente)**
+
+**Ipotizziamo di conoscere già gli ID dei dati spedizione/fatturazione dell’utente. Inserisci l’ordine:**
+```sql
+INSERT INTO ORDINE (ID_ordine, ID_Dato_S, Data, Importo, Email_utente, ID_Dato_F)
+VALUES (?, ?, CURRENT_DATE, ?, ?, ?);
+```
+
+Per ogni prodotto del carrello:
+```sql
+INSERT INTO COMPRENSIONE_IN_ORDINE (Quantita, ID_prodotto, ID_ordine)
+SELECT Quantita, ID_prodotto, GetLastIdOrder()
+FROM COMPRENSIONE_IN_CARRELLO
+WHERE Email = ?;
+```
+
+Svuota il carrello:
+```sql
+DELETE FROM COMPRENSIONE_IN_CARRELLO WHERE Email = ?;
+```
+
+Pagamento:
+```sql
+INSERT INTO PAGAMENTO (ID_Pagamento, Data, Metodo, Dati, ID_ordine)
+VALUES (?, CURRENT_DATE, ?, ?, ?);
+```
+
+**06. Valutare i prodotti acquistati con stelle e recensione (utente)**
+
+```sql
+INSERT INTO RECENSIONE (Email_utente, Testo, Stelle, ID_prodotto, Email_venditore)
+VALUES (?, ?, ?, ?, ?);
+```
+*non è stato inserito l'id perchè è auto increment*
+
+**07. Inviare notifiche personalizzate agli utenti (admin)**
+
+```sql
+-- Crea la notifica generale
+INSERT INTO NOTIFICHE_UTENTE (Testo)
+VALUES (?);
+
+-- Supponendo che l’amministratore conosca il nuovo ID della notifica appena inserita:
+INSERT INTO NOTIFICA_UTENTE_RICEVUTA (Email_utente, ID_notifica, Data, Stato)
+VALUES (?, GetLastIdNotification(), CURRENT_DATE, ?);
+```
+
+Se vuoi inviare la stessa notifica a più utenti:
+```sql
+INSERT INTO NOTIFICA_UTENTE_RICEVUTA (Email_utente, ID_notifica, Data, Stato)
+SELECT Email, LAST_INSERT_ID(), CURRENT_DATE, 'NonLetta'
+FROM UTENTE
+WHERE <condizione sui destinatari>;
+```
+
+**08. Consultare statistiche sulle vendite (admin)**
+
+**Totale vendite e fatturato per prodotto:**
+```sql
+SELECT P.ID_prodotto, P.Nome, COUNT(CO.ID_prodotto) AS Num_vendite, SUM(CO.Quantita) AS Quantita_totale, SUM(O.Importo) AS Totale_incassato
+FROM COMPRENSIONE_IN_ORDINE CO
+JOIN PRODOTTO P ON P.ID_prodotto = CO.ID_prodotto
+JOIN ORDINE O ON O.ID_ordine = CO.ID_ordine
+GROUP BY P.ID_prodotto, P.Nome
+ORDER BY Totale_incassato DESC;
+```
+
+**09. Inserire, aggiornare o rimuovere un prodotto dal catalogo (admin)**
+
+**Inserimento:**
+```sql
+INSERT INTO PRODOTTO (ID_prodotto, Descrizione, Dimensione, Data_sconto, Nome, Prezzo, Tipo_prodotto)
+VALUES (?, ?, ?, NULL, ?, ?, ?);
+```
+E nella tabella specializzazione:
+```sql
+INSERT INTO PIANTA (ID_prodotto, Nome_specie)
+VALUES (GetLastIdProduct(), ?);
+```
+
+**Aggiornamento:**
+```sql
+UPDATE PRODOTTO
+SET Prezzo = ?
+WHERE ID_prodotto = ?;
+```
+
+**Rimozione:**
+```sql
+DELETE FROM PIANTA WHERE ID_prodotto = ?;
+DELETE FROM PRODOTTO WHERE ID_prodotto = ?;
+```
+
+**10. Applicare uno sconto su uno o più prodotti (admin)**
+
+**Crea lo sconto:**
+```sql
+INSERT INTO SCONTO_PRODOTTO (DataInizio, DataFine, Percentuale)
+VALUES (?, ?, ?);
+```
+
+**Associa lo sconto ai prodotti interessati:**
+```sql
+UPDATE PRODOTTO
+SET Data_sconto = ?
+WHERE ID_prodotto IN (?, ?, ?);
+```
 
 ## Progettazione della Web App
