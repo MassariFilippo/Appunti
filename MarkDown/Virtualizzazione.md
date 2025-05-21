@@ -2877,6 +2877,105 @@ Puoi specificare il nome desiderato nel file `.env` così:
 COMPOSE_PROJECT_NAME=aswh4
 ```
 
+## Introduzione a Docker Swarm
+
+### Costruire Servizi Replicati su un Cluster
+
+Docker Swarm è uno strumento potente per orchestrare container Docker su un cluster di nodi. A differenza di Docker Compose, che opera su un singolo host, Docker Swarm consente di gestire applicazioni distribuendole su più macchine, garantendo scalabilità e ridondanza.
+
+### Struttura di Docker Swarm
+
+#### Struttura di Base
+
+- **Swarm**: Un insieme di nodi (macchine) che lavorano insieme. 
+- **Nodo Manager**: Coordina il cluster, distribuendo i compiti ai nodi worker e mantenendo lo stato del cluster.
+- **Nodi Worker**: Eseguono i container, gestendo le istanze replicate dei servizi. Un nodo manager può anche agire come worker.
+
+#### Stack e Servizi
+
+- **Stack**: Un gruppo di servizi gestiti insieme. Simile ai servizi definiti in un file Compose, uno stack è composto da immagini container e le relative strutture (reti, volumi...).
+- **Servizi**: Sono distribuiti su nodi worker, creando più istanze dei container, chiamate compiti (tasks).
+  
+### Funzionamento di un Swarm
+
+Un swarm può eseguire più stack, e ogni stack è una collezione di servizi o tasks, gestiti da nodi worker e coordinati da un nodo manager. Il manager distribuisce le richieste dei client alle varie istanze dei servizi in esecuzione sui worker.
+
+### Presupposti di Rete
+
+- Docker Swarm utilizza iptables per indirizzare le connessioni dei client alle repliche selezionate.
+- La comunicazione tra manager e worker avviene attraverso le porte TCP 2376 e 2377.
+- Si presume che i nodi siano connessi tramite una rete.
+
+### Operazioni di Swarm: Esempio Pratico
+
+#### Comandi Ed Esempi
+
+1. **Inizializzare il Manager del Swarm**:
+   ```bash
+   docker swarm init --advertise-addr 10.133.7.101
+   ```
+
+2. **Creare un Servizio Registry**:
+   ```bash
+   docker service create --name myregistry --publish published=5000,target=5000 registry:2
+   ```
+
+3. **Visualizzare i Servizi**:
+   ```bash
+   docker service ls
+   ```
+
+4. **Distribuire uno Stack**:
+   ```bash
+   docker stack deploy --compose-file docker-compose-v3.yml mystack
+   ```
+
+5. **Visualizzare i Servizi dello Stack**:
+   ```bash
+   docker stack services mystack
+   ```
+
+6. **Unirsi al Cluster**:
+   ```bash
+   docker swarm join --token SWMTKN-1- 4oj8bfuo7wk1jh0kgymq33xosmj5rv94zn3r89nfhaurdr7290- 73ilqpldlphdxopip9ibc3dpt 10.133.7.101:2377
+   ```
+
+7. **Scalare un Servizio**:
+   ```bash
+   docker service scale mystack_tcpreplayservice=2
+   ```
+
+8. **Visualizzare i Nodi del Cluster**:
+   ```bash
+   docker node ls
+   ```
+
+9. **Aggiornare la Disponibilità di un Nodo**:
+   ```bash
+   docker node update --availability drain node-1
+   ```
+
+10. **Rimuovere un Nodo dal Swarm**:
+    ```bash
+    docker swarm leave
+    ```
+
+11. **Rimuovere uno Stack**:
+    ```bash
+    docker stack rm mystack
+    ```
+
+12. **Rimuovere Servizi Specifici**:
+    ```bash
+    docker service rm mystack_tcpreplayservice
+    docker service rm myregistry
+    ```
+
+13. **Forzare un Nodo a Lasciare il Swarm**:
+    ```bash
+    docker swarm leave --force
+    ```
+
 ## Active Directory
 
 Active Directory è un insieme di protocolli di rete che include servizi di directory, autenticazione e naming. I principali protocolli utilizzati sono LDAP, Kerberos, NTP e DNS.
