@@ -2906,16 +2906,16 @@ Un swarm può eseguire più stack, e ogni stack è una collezione di servizi o t
 - La comunicazione tra manager e worker avviene attraverso le porte TCP 2376 e 2377.
 - Si presume che i nodi siano connessi tramite una rete.
 
-### Operazioni di Swarm: Esempio Pratico
+### Comandi Ed Esempi
 
-#### Comandi Ed Esempi
+Tutti i comandi che seguono vengono lanciti sui nodi menager ad eccezione di join (che indirizza un nodo ad un claster con specifico manager facendolo diventare worker) e leave (con cui un worker puó lasciare il claster).
 
-1. **Inizializzare il Manager del Swarm**:
+1. **Inizializzare il Manager del Swarm**, specificando su quale indirizzo ip si vogliono ricevere le richieste di join da parte dei worker:
    ```bash
    docker swarm init --advertise-addr 10.133.7.101
    ```
 
-2. **Creare un Servizio Registry**:
+2. **Creare un Servizio Registry** ovvero la lista delle copie immagini da distribuire su necessità hai worker, passando dati come il nome del servizio ed specifiche dell'immagine da salvare, in particolare rispettivamente porta dell'host e del container per il servizio:
    ```bash
    docker service create --name myregistry --publish published=5000,target=5000 registry:2
    ```
@@ -2925,12 +2925,12 @@ Un swarm può eseguire più stack, e ogni stack è una collezione di servizi o t
    docker service ls
    ```
 
-4. **Distribuire uno Stack**:
+4. **Distribuire uno Stack**, ovvero creare le repliche dei servizi descritti da un compose file con nome e path indicato da specifiche, successivamente specificheró il nome dell'applicazione per poi poer chiamarci sopra specifiche operazioni:
    ```bash
    docker stack deploy --compose-file docker-compose-v3.yml mystack
    ```
 
-5. **Visualizzare i Servizi dello Stack**:
+5. **Visualizzare i Servizi dello Stack**, specificando il nome della stessa:
    ```bash
    docker stack services mystack
    ```
@@ -2940,7 +2940,7 @@ Un swarm può eseguire più stack, e ogni stack è una collezione di servizi o t
    docker swarm join --token SWMTKN-1- 4oj8bfuo7wk1jh0kgymq33xosmj5rv94zn3r89nfhaurdr7290- 73ilqpldlphdxopip9ibc3dpt 10.133.7.101:2377
    ```
 
-7. **Scalare un Servizio**:
+7. **Scalare un Servizio**: 
    ```bash
    docker service scale mystack_tcpreplayservice=2
    ```
@@ -2950,31 +2950,78 @@ Un swarm può eseguire più stack, e ogni stack è una collezione di servizi o t
    docker node ls
    ```
 
-9. **Aggiornare la Disponibilità di un Nodo**:
+9. **Aggiornare la Disponibilità di un Nodo**, in particolare deve spegnere i container su quel nodo e ridistribuiscili se possible su altri nodi (compito del menager) altrimenti semplicemente muoino:
    ```bash
    docker node update --availability drain node-1
    ```
 
-10. **Rimuovere un Nodo dal Swarm**:
+10. **Rimuovere un Nodo dal Swarm**, se lanciato sul manager così com'è non fará niente sarà necessario usare --force:
     ```bash
     docker swarm leave
+    docker swarm leave --force
     ```
 
-11. **Rimuovere uno Stack**:
+11. **Rimuovere uno Stack**, di base elminina l'intera applicazione ma si può utilizzare anche solo per eliminare un solo sevizio :
     ```bash
     docker stack rm mystack
-    ```
-
-12. **Rimuovere Servizi Specifici**:
-    ```bash
     docker service rm mystack_tcpreplayservice
     docker service rm myregistry
     ```
+    
 
-13. **Forzare un Nodo a Lasciare il Swarm**:
-    ```bash
-    docker swarm leave --force
-    ```
+### Struttura dell'Esempio Docker Swarm
+
+- **Giallo**: VM con nodo Swarm.
+- **Beige**: VM con client, emula client esterni.
+- **Verde**: Host fisico.
+
+### Dettagli Strutturali
+
+- **Host Fisico**: Include macchine virtuali su Virtualbox.
+- **VM `deb1` e `deb2`**: Rappresentano nodi worker e manager.
+- **Clienti**: Emulati nella VM client.
+- **Nodi Swarm**: Servizi deployati su macchine virtuali, ogni compito (task) eseguito su nodi distinti.
+
+## Pubblicazione delle Porte e Routing Mesh
+
+### Meccanismo di Pubblicazione
+
+Non è essenziale collocare i worker su una rete interna separata. Attraverso la pubblicazione delle porte in modalità ingress, qualsiasi nodo può ricevere richieste e inoltrarle tramite routing mesh a un nodo che esegue il servizio richiesto.
+
+### Sicurezza
+
+- Aumenta la sicurezza collocando i worker su una rete interna per ricevere richieste solo tramite il manager. Riduce l'esposizione delle porte pubblicate e aumenta la sicurezza generale del sistema.
+
+## Problematiche di Sicurezza
+
+### Esposizione a Rischi
+
+- Esporre le porte di tutti i nodi aumenta il rischio di attacchi. Limitare l'esposizione al solo nodo manager può mitigare questo rischio.
+
+### Soluzioni
+
+- Usare strumenti come Traefik o NGINX per la discovery automatica delle repliche attive aiuta nel mantenere la sicurezza e l'efficienza del cluster. È importante considerare la posizione di questi strumenti rispetto al nodo manager per ridurre il rischio.
+
+## Discovery Automatica delle Repliche Attive
+
+### Processo
+
+- **Service Discovery**: Un reverse proxy come Traefik o NGINX rileva i container attivi, la loro posizione e porta, configurando dinamicamente le rotte.
+
+### Strumenti Usati
+
+1. **Docker Socket**: Accessibile solo dal nodo manager, semplice ma legato strettamente a Docker.
+2. **Consul o Etcd**: Strumenti esterni per registrare i servizi attivi, più complessi ma portabili e fault-tolerant.
+
+### Riepilogo
+
+| Metodo         | Accesso al Cluster      | Complessità | Auto-discovery | Note                              |
+|----------------|-------------------------|-------------|----------------|-----------------------------------|
+| Docker Socket  | Solo nodo manager       | Bassa       | Sì             | Facile, legato a Docker           |
+| Consul         | Totale                  | Media/Alta  | Sì             | Scalabile e multi-cluster         |
+| Etcd           | Totale                  | Alta        | Sì             | Usato in ambienti Kubernetes      |
+| Statico        | Nessuno                 | Bassa       | No             | Richiede configurazione manuale   |
+
 
 ## Active Directory
 
