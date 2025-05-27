@@ -141,6 +141,32 @@
     - [6. Esecuzione del Container con MongoDB e il Database dbsa](#6-esecuzione-del-container-con-mongodb-e-il-database-dbsa)
     - [7. Esecuzione del Container con l’Applicazione Web Node.js](#7-esecuzione-del-container-con-lapplicazione-web-nodejs)
     - [8. Automazione Completa con Docker Compose](#8-automazione-completa-con-docker-compose)
+  - [Introduzione a Docker Swarm](#introduzione-a-docker-swarm)
+    - [Costruire Servizi Replicati su un Cluster](#costruire-servizi-replicati-su-un-cluster)
+    - [Struttura di Docker Swarm](#struttura-di-docker-swarm)
+      - [Struttura di Base](#struttura-di-base)
+      - [Stack e Servizi](#stack-e-servizi)
+    - [Funzionamento di un Swarm](#funzionamento-di-un-swarm)
+    - [Presupposti di Rete](#presupposti-di-rete)
+    - [Comandi Ed Esempi](#comandi-ed-esempi)
+    - [Struttura dell'Esempio Docker Swarm](#struttura-dellesempio-docker-swarm)
+    - [Dettagli Strutturali](#dettagli-strutturali)
+  - [Pubblicazione delle Porte e Routing Mesh](#pubblicazione-delle-porte-e-routing-mesh)
+    - [Meccanismo di Pubblicazione](#meccanismo-di-pubblicazione)
+    - [Sicurezza](#sicurezza)
+  - [Problematiche di Sicurezza](#problematiche-di-sicurezza)
+    - [Esposizione a Rischi](#esposizione-a-rischi)
+    - [Soluzioni](#soluzioni)
+  - [Discovery Automatica delle Repliche Attive](#discovery-automatica-delle-repliche-attive)
+    - [Processo](#processo)
+    - [Strumenti Usati](#strumenti-usati)
+    - [Riepilogo](#riepilogo)
+  - [Esempio Docker Swarm: App Node.js + MongoDB](#esempio-docker-swarm-app-nodejs--mongodb)
+    - [Definizione dei Servizi](#definizione-dei-servizi)
+    - [Reti Overlay](#reti-overlay)
+    - [Volumi per Persistenza](#volumi-per-persistenza)
+    - [Considerazioni Chiave](#considerazioni-chiave)
+    - [Comandi Swarm Utili (Ripasso)](#comandi-swarm-utili-ripasso)
   - [Active Directory](#active-directory)
     - [Dominio Windows](#dominio-windows)
     - [Protocolli di Active Directory](#protocolli-di-active-directory)
@@ -3021,6 +3047,168 @@ Non è essenziale collocare i worker su una rete interna separata. Attraverso la
 | Consul         | Totale                  | Media/Alta  | Sì             | Scalabile e multi-cluster         |
 | Etcd           | Totale                  | Alta        | Sì             | Usato in ambienti Kubernetes      |
 | Statico        | Nessuno                 | Bassa       | No             | Richiede configurazione manuale   |
+
+Certo! Ecco la versione degli appunti riscritta **in formato Markdown**, mantenendo lo stile coerente con l'esempio fornito, **con commenti tecnici** per chiarire passaggi critici e concetti chiave (ad es. l'uso di reti `overlay` in ambiente distribuito):
+
+## Esempio Docker Swarm: App Node.js + MongoDB
+
+Questo esempio mostra il deploy di due servizi su Docker Swarm:
+
+Un’applicazione **Node.js** (`nodejsapp`)
+Un database **MongoDB** (`mongodb`)
+
+Entrambi i servizi sono **conteneirizzati**, **replicati** e gestiti da **stack Swarm**, con reti overlay e volumi persistenti.
+
+### Definizione dei Servizi
+
+```yaml
+services:
+
+  # === Servizio APP Node.js ===
+  nodejsapp:
+    build:
+      context: ./nodejs
+      dockerfile: Dockerfile
+      args:
+        - IMAGE_VERSION=non_serve
+
+    # Si utilizza un'immagine caricata in un registry privato
+    # gestito dal nodo manager (registry su porta 5000)
+    image: 10.133.7.101:5000/nodejsapp
+
+    command: [ "nodejs", "index.js" ]
+
+    restart: on-failure
+
+    # `depends_on` NON HA EFFETTO in Swarm
+    # quindi va gestita la dipendenza (es. MongoDB pronto)
+    # a livello applicativo (retry logic)
+    depends_on:
+      - mongodb
+
+    environment:
+      - MIAVAR=non_serve__solo_come_esempio
+
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role == manager"
+
+    # Pubblico la porta 3000 per accedere da fuori
+    ports:
+      - 3000:3000
+
+    networks:
+      - esterna
+      - interna
+
+
+  # === Servizio DATABASE MongoDB ===
+  mongodb:
+    build:
+      context: ./mongodb
+      dockerfile: Dockerfile
+      args:
+        - IMAGE_VERSION=non_serve
+
+    # Come sopra, immagine salvata nel registry
+    image: 10.133.7.101:5000/mymongo
+
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role == worker"
+
+    # Comando esplicito di avvio per MongoDB
+    command: [ "docker-entrypoint.sh", "mongod" ]
+
+    restart: on-failure
+
+    networks:
+      - interna
+
+    # Volumi esterni per persistenza dati
+    volumes:
+      - type: volume
+        source: mydb
+        target: /data/db
+        volume:
+          nocopy: true
+      - type: volume
+        source: myconfigdb
+        target: /data/configdb
+        volume:
+          nocopy: true
+```
+
+### Reti Overlay
+
+```yaml
+networks:
+
+  interna:
+    # Rete overlay per comunicazione inter-container tra nodi diversi
+    # Necessaria in un cluster multi-nodo (non possiamo usare `bridge`)
+    driver: overlay
+    internal: true  # Rende la rete accessibile solo internamente ai container
+    driver_opts:
+      com.docker.network.bridge.name: "br-interna89012"
+      com.docker.network.enable_ipv6: "false"
+
+  esterna:
+    # Rete overlay accessibile anche dall'esterno (es. per HTTP)
+    driver: overlay
+    internal: false
+    driver_opts:
+      com.docker.network.bridge.name: "br-esterna89012"
+      com.docker.network.enable_ipv6: "false"
+```
+
+In ambienti Swarm su più nodi, le reti `bridge` funzionano solo all’interno dello stesso nodo. Per comunicazioni cross-node, si usa **`overlay`**, che permette il traffico tra container su host diversi.
+
+### Volumi per Persistenza
+
+```yaml
+volumes:
+  mydb:
+  myconfigdb:
+```
+
+I volumi vengono gestiti da Docker Swarm e montati sui nodi dove gira MongoDB. L’opzione `nocopy: true` impedisce che i dati presenti nella directory del container sovrascrivano il contenuto del volume montato.
+
+### Considerazioni Chiave
+
+**`depends_on` in Swarm è ignorato**: la sequenza di avvio deve essere gestita dentro l'app o tramite meccanismi come `healthcheck`, `retry`, o orchestratori esterni.
+
+**Routing Mesh**: Docker Swarm permette di inoltrare richieste a qualunque nodo del cluster, indipendentemente da dove gira il container, tramite un sistema di **load balancing interno** (ingress mode).
+
+**Sicurezza**: È buona pratica rendere **interne** le reti non necessarie all’esterno (`internal: true`) per evitare esposizione non voluta.
+
+**Posizionamento dei servizi**:
+
+  * MongoDB su `worker` per separare il livello dati dal frontend
+  * Node.js su `manager` per esempio, accessibile da client esterni
+
+### Comandi Swarm Utili (Ripasso)
+
+```bash
+# Avvio cluster manager
+docker swarm init --advertise-addr 10.133.7.101
+
+# Deploy dello stack
+docker stack deploy -c docker-compose.yml mystack
+
+# Visualizzare servizi
+docker stack services mystack
+
+# Scalare un servizio
+docker service scale mystack_nodejsapp=3
+
+# Rimuovere lo stack
+docker stack rm mystack
+```
 
 
 ## Active Directory
