@@ -37,7 +37,9 @@
 		- [Schema Relazionale Finale](#schema-relazionale-finale)
 		- [Costruzione delle Tabelle del DB in SQL](#costruzione-delle-tabelle-del-db-in-sql)
 		- [Traduzione delle Operazioni in query SQL](#traduzione-delle-operazioni-in-query-sql)
-	- [Progettazione della Web App](#progettazione-della-web-app)
+	- [Progettazione dell’applicazione](#progettazione-dellapplicazione)
+		- [Infrastruttura e tecnologia utilizzata](#infrastruttura-e-tecnologia-utilizzata)
+		- [Gestione modelli ed entità](#gestione-modelli-ed-entità)
 
 
 <div style="page-break-after: always;"></div>
@@ -87,6 +89,8 @@ Per ogni **ordine** viene registrata la data, l’elenco dei prodotti acquistati
 | Dati di fatturazione | Informazioni fiscali per generare la ricevuta/fattura              |                                   |
 | Statistiche       | Informazioni riepilogative su vendite e ordini                        | Analitica, Report                 |
 
+<div style="page-break-after: always;"></div>
+
 ## Progettazione Concettuale
 
 ### Schema Scheletro e Raffinamenti Successivi
@@ -94,7 +98,7 @@ Per ogni **ordine** viene registrata la data, l’elenco dei prodotti acquistati
 Le entità di **Admin** e **Utente** sono la generalizzazione di una entità **Account registrato**, identificata tramite l’e-mail, che rappresenta la chiave univoca per ciascun utente registrato nella piattaforma. Questa soluzione consente di gestire entrambi i ruoli mantenendo una struttura coerente e senza ridondanze informative.
 
 <p align="center">
-  <img src="img/accountMigl..png" width="300">
+  <img src="img/accountMigl1..png" width="400">
 </p>
 
 Dall’analisi del dominio si evince che:
@@ -104,26 +108,30 @@ Dall’analisi del dominio si evince che:
 Per gestire le varianti di prodotto legate a tipo e caratteristiche specifiche (ad esempio, il vaso che ha forma e materiale, la pianta che ha specie e caratteristiche di cura), si introduce una gerarchia che ha come padre l'entità Prodotto. Inizialmete tale gerarchia aveva il seguente E/R:
 
 <p align="center">
-  <img src="img/prodottoImperf..png" width="300">
+  <img src="img/prodottoImperf..png" width="400">
 </p>
 
 Successivamente sostituito da: 
 
 <p align="center">
-  <img src="img/prodottoMigl..png" width="300">
+  <img src="img/prodottoMigl1..png" width="400">
 </p>
 
 Reificando l'entità **materiale** posso creare una lista di materiali evitando di avere duplicati o errori di battitura nell'inserimento del prodotto che rendono complessa la ricercaed il filtraggio. Per quanto riguarda l'entità pianta ho messo in relazione l'entità **cura** direttamente con l'entità **specie** andando a semplificare l'inserimento di una nuova pianta.
 
 Gli **ordini** sono identificati da un codice univoco e sono associati a un utente e ai dati di **spedizione** e **fatturazione** forniti al momento della conferma. L’ordine serve anche da collegamento con il **pagamento** avvenuto e può essere composto da più prodotti in quantità variabile (gestita da una relazione tra Ordine e Prodotto che contiene anche il campo Quantità). Inizialmente avevo ideato il pagamento come un'entità in relazione con una seconda entità che modellava il **metodo di pagamento**, questa soluzione è stata poi soppiantata da una gerarchia che mi permettesse di associare gli appositi atrubuti agli specifici metodi di pagamento, questo ovviamente va a discapito della scalbilità ma migliarta la precisione, la completezza e l'usabilità delle entità stesse.
 
-<img src="img/ordineImperf..png" width="200"> <img src="img/ordineMigl..png" width="350">
-
-Ogni **notifica** viene generata come entità a sé e può essere rivolta sia agli utenti (es. conferma ordine, spedizione, promozione) che all’admin (ad esempio segnalazione di esaurimento scorte).
-
-
 <p align="center">
-  <img src="img/notificheMigl..png" width="300">
+	<img src="img/ordineImperf..png" width="150" style="display:inline-block; margin-right: 20px;">
+	<img src="img/ordineMigl..png" width="300" style="display:inline-block;">
+</p>
+
+Ogni **notifica** viene generata come entità a sé e può essere rivolta sia agli utenti (es. conferma ordine, spedizione, promozione) che all’admin (ad esempio segnalazione di esaurimento scorte). Nella priam versione dello schema la relazione recezione non prevedeva atributi, successivamente è stata aggiunta la data e lo stato, ovvero un calore booleano che rappresenta l'avvenuta lettura della notifica. 
+
+
+<p align="center" style="display: flex; justify-content: center; gap: 24px;">
+	<img src="img/notificheImp..png" width="300" style="display: inline-block; margin-right: 24px;">
+	<img src="img/notificheMigl..png" width="200" style="display: inline-block;">
 </p>
 
 Gli **sconti** sono modellati come entità relazionate a uno o più prodotti, e possono essere definiti secondo validità temporale e percentuale di sconto.
@@ -131,12 +139,14 @@ Gli **sconti** sono modellati come entità relazionate a uno o più prodotti, e 
 Un qualsiasi **account registaro** ha la possibilità di rilascire recensioni che, nel caso degli utenti saranno riferite direttamente ai prodotti, mentre nel caso del venditore saranno risposte alle recensioni ricevute.
 
 <p align="center">
-  <img src="img/recensioneMigl..png" width="300">
+  <img src="img/recensioneMigl..png" width="400">
 </p>
 
 ### Schema Finale
 
-![](img/er.png)
+![](img/er1.png)
+
+<div style="page-break-after: always;"></div>
 
 ## Progettazione Logica
 
@@ -410,6 +420,8 @@ L’importo totale di un ordine può essere ottenuto come **somma dei (prezzo ×
 
 La ridondanza comporta un lieve aumento di spazio occupato (una colonna in più per ciascun ordine), ma porta a un notevole risparmio in termini di accessi necessari per tutte le operazioni di consultazione (es. visualizzazione storici, stampa ricevute e analisi statistiche). Inoltre, permette di conservare l’importo esatto anche in caso di modifica futura del prezzo dei prodotti o delle regole di sconto, garantendo la tracciabilità dei dati storici. Si decide quindi di mantenere all’interno del modello l’attributo *importo* nella tabella ORDINE. Lo spreco di spazio è minimo rispetto al vantaggio in termini di prestazioni e semplificazione, sia per l’applicazione che per le interrogazioni di analisi.
 
+<div style="page-break-after: always;"></div>
+
 ## Raffinamento dello Schema
 
 ### Eliminazione delle Gerarchie
@@ -536,7 +548,7 @@ Nel raffinamento dello schema concettuale, alcune relazioni sono state reificate
 
 ### Schema Relazionale Finale
 
-![](img/logico.png)
+![](img/logico1.png)
 
 ### Costruzione delle Tabelle del DB in SQL
 
@@ -966,4 +978,74 @@ SET Data_sconto = ?
 WHERE ID_prodotto IN (?, ?, ?);
 ```
 
-## Progettazione della Web App
+<div style="page-break-after: always;"></div>
+
+## Progettazione dell’applicazione
+
+**Descrizione dell'architettura dell'applicazione realizzata**
+
+Si è sviluppata un’applicazione web per la gestione e la vendita online di piante e accessori, con doppia interfaccia utente (cliente e amministratore), completamente realizzata utilizzando **PHP** (per la logica server-side e l’interazione col database), **JavaScript** (per funzionalità dinamiche lato client e AJAX), **HTML** e **CSS** (per la struttura e lo stile delle pagine). Tutta l’applicazione è containerizzata tramite **Docker** per garantire portabilità e semplicità di deploy.
+
+![](img/homePage.png)
+
+### Infrastruttura e tecnologia utilizzata
+
+- **Server Web**: Apache, containerizzato in Docker e configurato per servire file PHP.
+- **Backend**: PHP, organizzato secondo uno stile modulare, suddiviso in script che offrono interfacce alla web app. Per ciascuna entità e operazione del modello dati si vanno poi a fare chiamate backend alle API che restituranno json conteneti i dati richiesti.
+- **Frontend**: pagine HTML/CSS per la struttura e lo stile, con l’uso di JavaScript per interazione asincrona (AJAX) e dinamicità delle interfacce.
+- **Database**: MySQL, in un container dedicato.
+- **Gestione ambiente**: Docker Compose per orchestrare i container di Apache/PHP e MySQL.
+
+### Gestione modelli ed entità
+
+Per ogni tabella del database è stato realizzato in PHP uno script dedicato che si occupa delle operazioni di **inserimento, aggiornamento, eliminazione e visualizzazione** delle informazioni. Ogni area funzionale del sito richiama questi script tramite azioni su form HTML o richieste AJAX.
+
+**Flusso di autenticazione e ruoli**
+
+All’avvio dell’applicazione viene proposta una **schermata di login**. L’autenticazione distingue tra utente cliente e amministratore:
+
+- **Cliente**: accede tramite email e password registrate. Al login, una sessione PHP mantiene l’identità e il ruolo durante la navigazione.
+- **Amministratore**: inserisce una password di amministrazione preconfigurata o un indirizzo email di amministratore per accedere all’area di gestione. Le operazioni di amministrazione sono protette e accessibili solo a sessioni con ruolo admin.
+
+![](img/loginPage.png)
+
+**Funzionalità per l’Amministratore**
+
+Tramite l’interfaccia admin, l’amministratore può:
+- Visualizzare e modificare alcune tabella del database (prodotti, ordini, notifichee).
+- Inserire, aggiornare e cancellare prodotti dal catalogo.
+- Applicare sconti e promozioni su uno o più prodotti.
+- Visualizzare statistiche aggregate (ordini, fatturato, prodotti più venduti, recensioni).
+- Inviare notifiche e messaggi mirati agli utenti.
+- Gestire e monitorare lo stato degli ordini dei clienti.
+
+Tutte queste operazioni sono esposte tramite apposite pagine web, che fanno uso di form HTML e tabelle dinamiche; le azioni inviano richieste ai file PHP dedicati, che effettuano l’operazione e restituiscono il risultato (anche via AJAX quando necessario per evitare reload dell’intera pagina).
+
+![](img/statsPage.png)
+
+**Funzionalità per l’Utente Cliente**
+
+Il cliente registrato può:
+- Consultare e filtrare il catalogo.
+- Gestire il proprio profilo, incluse informazioni di fatturazione e spedizione.
+- Creare, aggiornare e svuotare il proprio carrello.
+- Effettuare ordini scegliendo modalità di pagamento e inserendo/spuntando i dati di spedizione e fatturazione.
+- Consultare lo storico acquisti.
+- Lasciare recensioni e valutazioni sui prodotti acquistati.
+- Ricevere notifiche sulla sua area riservata (ad esempio promozioni, aggiornamenti di stato ordini, ecc.).
+
+I dati vengono gestiti in sicurezza grazie alle sessioni PHP e ai controlli sulle operazioni. L’interfaccia cliente è pensata per essere semplice, chiara e responsiva.
+
+![](img/userPage.png)
+
+**Sicurezza e gestione dati sensibili**
+
+- La gestione delle password utente avviene tramite hashing lato server.
+- Le principali operazioni sono protette tramite token di sessione PHP.
+- L’accesso alle operazioni di amministrazione è vincolato dal controllo del ruolo in sessione.
+
+**Automazione e sviluppo**
+
+Il deployment dell’intera piattaforma avviene tramite Docker Compose: con un solo comando vengono avviati 
+- Il container `php-apache` (che serve l’intera logica applicativa e la parte frontend)  
+- Il container MySQL (per i dati) e, se necessario, altri servizi (es. mailer per notifiche).
