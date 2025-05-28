@@ -167,6 +167,20 @@
     - [Volumi per Persistenza](#volumi-per-persistenza)
     - [Considerazioni Chiave](#considerazioni-chiave)
     - [Comandi Swarm Utili (Ripasso)](#comandi-swarm-utili-ripasso)
+  - [Kubernetes](#kubernetes)
+    - [Kubernetes Concepts](#kubernetes-concepts)
+    - [Autoscaling](#autoscaling)
+    - [Kubernetes Architecture](#kubernetes-architecture)
+    - [Prodotti per Orchestrazione di Container basati su Kubernetes](#prodotti-per-orchestrazione-di-container-basati-su-kubernetes)
+      - [Dispiegamento in Cloud](#dispiegamento-in-cloud)
+      - [Dispiegamento On-Premise (Cluster di Nodi Utente)](#dispiegamento-on-premise-cluster-di-nodi-utente)
+      - [Infrastruttura Minimale (Singolo Nodo) per Apprendimento/Sviluppo](#infrastruttura-minimale-singolo-nodo-per-apprendimentosviluppo)
+    - [Organizzazione delle Macchine Virtuali per le Esercitazioni in Aula (Esempio su PC del Docente)](#organizzazione-delle-macchine-virtuali-per-le-esercitazioni-in-aula-esempio-su-pc-del-docente)
+    - [Esempio di Applicazione con Kubernetes (su Minikube)](#esempio-di-applicazione-con-kubernetes-su-minikube)
+    - [Kubernetizzare l'Applicazione](#kubernetizzare-lapplicazione)
+    - [Aspetti di Collegamento tra i Pods](#aspetti-di-collegamento-tra-i-pods)
+    - [Ambiente delle Prove (Configurazione Locale)](#ambiente-delle-prove-configurazione-locale)
+    - [Comandi Pratici per Dispiegare l'Applicazione](#comandi-pratici-per-dispiegare-lapplicazione)
   - [Active Directory](#active-directory)
     - [Dominio Windows](#dominio-windows)
     - [Protocolli di Active Directory](#protocolli-di-active-directory)
@@ -3208,6 +3222,459 @@ docker service scale mystack_nodejsapp=3
 
 # Rimuovere lo stack
 docker stack rm mystack
+```
+
+## Kubernetes
+
+Kubernetes è una potente architettura software client-server progettata per la gestione e l'orchestrazione di container su un cluster di host. L'amministratore interagisce tipicamente con Kubernetes tramite un client, come `kubectl`.
+
+**Per approfondimenti, consultare:**
+- Serie di articoli "Kubernetes and everything else" di Rinor Maloku: [https://rinormaloku.com/series/kubernetes-andeverything-else/](https://rinormaloku.com/series/kubernetes-andeverything-else/)
+- Documentazione ufficiale di Kubernetes: [https://kubernetes.io/docs/home/](https://kubernetes.io/docs/home/)
+
+### Kubernetes Concepts
+
+- **Nodi (Nodes)**: Gli host all'interno di un cluster Kubernetes sono chiamati **nodi**.
+
+- **Pods**: I Pods sono le unità fondamentali di dispiegamento in Kubernetes, realizzano specificge funzionalità raggruppando uno o più container che devono lavorare in stretta collaborazione, come se fossero su un unico host virtuale, per tanto:
+
+-   **Condivisione IP**: I container all'interno dello stesso Pod condividono lo stesso indirizzo IP.
+-   **Spazio Porte Condiviso**: Non possono esserci due container nello stesso Pod che utilizzano la stessa porta di protocollo.
+-   **Comunicazione Interna**: Possono comunicare tra loro tramite `localhost` e le Inter Process Communications (IPC).
+-   **Comunicazione Esterna**: Container in Pods diversi comunicano tra loro specificando l'indirizzo IP del Pod di destinazione.
+-   **Localizzazione**: Ogni Pod risiede su un singolo nodo del cluster, ma un nodo può ospitare più Pods, ciascuno con il proprio indirizzo IP.
+
+- **Labels**: Le **Labels** sono coppie chiave-valore (stringhe) utilizzate per classificare e organizzare le risorse Kubernetes (es. Pods). Tutti i Pods con la stessa coppia nome/valore di Label sono considerati equivalenti per una data funzionalità e possono agire come repliche.
+*Esempio:* `role=production`.
+
+- **Selectors**: I **Selectors** permettono di ricercare e filtrare risorse specificando una Label e il suo valore desiderato.
+*Esempio:* cercare i Pods con la Label `role=production`.
+
+- **Deployments**: I **Deployments** sono meccanismi per dispiegare e gestire gruppi di repliche di Pods. Quando Kubernetes dispiega un Pod che necessita di repliche, crea un Deployment per gestire questo gruppo. È fondamentale per la distribuzione del carico di lavoro e la selezione dei Pods.
+
+*Flusso Operativo:* Per dispiegare un'applicazione, si istanziano prima i singoli Pods (o le repliche), creando il Deployment.
+
+- **Services**: Un **Service** è un'astrazione che definisce un insieme di Pods (solitamente individuati da un Selettore) e le modalità per accedervi.
+  -   **Accesso**: Fornisce l'indirizzo IP del Pod o il nome DNS con cui il Pod viene mappato.
+  -   **Bilanciamento del Carico**: Include una politica per il bilanciamento del carico delle richieste tra i diversi Pods che fanno parte dello stesso Service. Questo bilanciamento può essere gestito internamente da Kubernetes o tramite un servizio esterno.
+  -   **Protezione**: Ogni gruppo di Pods definito da uno stesso Selettore è "protetto" da un Service che ne regola l'accesso.
+
+*Flusso Operativo:* Dopo aver creato il Deployment dei Pods, si istanzia il Service davanti a ciascun gruppo di Pods per regolarne l'accesso.
+
+![](img/Virtualizzazione/serviseInKuberneticks.png)
+
+**Esempio di Service in un'Architettura a più Livelli**: Un client accede a un Service (es. `Load balancer SA-WebApp`) che inoltra la richiesta a un gruppo di Pods (es. `Pos SA-WebApp`). Questi Pods, a loro volta, per completare il servizio, richiedono un servizio da un altro gruppo di Pods (es. `Pod SA-Logic`), rivolgendosi al relativo Service (es. `Service SA-Logic`) che si occupa di inoltrare la richiesta a uno dei suoi Pods, seguendo una politica di bilanciamento del carico.
+
+### Autoscaling
+
+L'**Autoscaling** è una tecnica del cloud computing che consente di aumentare o ridurre dinamicamente le risorse computazionali messe a disposizione da una server farm. È cruciale per ottimizzare i costi e garantire le prestazioni in presenza di traffico imprevedibile.
+
+- **Vantaggi dell'Autoscaling**:
+  -   **Cloud Privati**: Spegnere/mettere in standby macchine non necessarie per risparmiare sui costi di elettricità.
+  -   **Cloud Pubblici**: Ridurre i costi pagando solo le risorse effettivamente utilizzate quando necessario.
+  -   **Robustezza**: Sostituisce le istanze "unhealthy" (con tempi di risposta elevati) per prevenire disservizi.
+
+**Strumenti di Autoscaling in Kubernetes**
+
+Kubernetes offre tre meccanismi principali per l'autoscaling:
+
+1.  **Horizontal Pod Autoscaler (HPA)**: Scala automaticamente il **numero di repliche** di un Pod (incremento/riduzione) basandosi su metriche osservate (es. uso CPU, RAM). Non è sempre detto che aumentere i pods quando il carico è altro perchè la macchina potrebbe già essere sotto stress.
+
+1.  **Vertical Pod Autoscaler (VPA)**: Aumenta o diminuisce le **risorse (CPU e memoria)** richieste da un Pod al nodo su cui è dispiegato.
+
+2.  **Cluster Autoscaler**: Aumenta o diminuisce il **numero di nodi** di un cluster su cui eseguire i Pods. Per facilitarci in questo possimo usare MAAS (Metal As A Server) che permette di lanciare boot custom su specifiche macchine da remoto.
+
+*possibile criticità*: troviamo un problema di privaci dovuto all'utilizzo della RAM su dispositivi estrni in clout dato che il prprietario delel macchie potreebe osservare ciò che c'è in memoria, si sta dunque studiando se è possibile criptare i dati in ram per poi decritarli in utilizzo senza un down prestazionale eccessivo.
+
+### Kubernetes Architecture
+
+L'architettura di kubernetes prevede che i nodi del cluster siano connessi da una rete di
+tipo overlay e che tra i nodi del cluster ci sia un nodo che svolga il ruolo di master.
+
+![](img/Virtualizzazione/arcKubernitics.png)
+
+### Prodotti per Orchestrazione di Container basati su Kubernetes
+
+Un'infrastruttura per gestire servizi containerizzati e orchestrati con Kubernetes può essere dispiegata in **cloud** o **on-premise**. In entrambi i casi, Kubernetes offre una dashboard di controllo per monitorare i servizi.
+
+#### Dispiegamento in Cloud
+
+Per l'infrastruttura cloud, esistono diverse opzioni:
+
+-   **Servizi gestiti (Platform as a Service - PaaS)**:
+    -   **Google Kubernetes Engine (GKE)**: Kubernetes è disponibile come servizio integrato.
+-   **Installazione su Macchine Virtuali (Infrastructure as a Service - IaaS)**:
+    -   **Amazon Web Services (AWS)** e **Microsoft Azure**: Prevedono l'installazione di Kubernetes su macchine virtuali (sebbene i servizi gestiti siano sempre più diffusi).
+-   **Ambienti di Apprendimento (Kubernetes Playground)**:
+    -   Piattaforme come **Katakoda** ([https://www.katacoda.com/courses/kubernetes/playground](https://www.katacoda.com/courses/kubernetes/playground)) offrono cluster Kubernetes preconfigurati nel cloud (es. cluster a 2 nodi) per la pratica e l'apprendimento tramite browser.
+
+#### Dispiegamento On-Premise (Cluster di Nodi Utente)
+
+Per l'utilizzo on-premise su cluster di nodi propri, si possono adottare diverse strategie:
+
+-   **Distribuzioni Linux Generiche**:
+    -   Utilizzare una distribuzione Linux standard e installare manualmente le dipendenze e i componenti necessari di Kubernetes.
+-   **Distribuzioni Linux Specializzate per Kubernetes**:
+    -   Alcune distribuzioni sono progettate specificamente per fungere da nodi di cluster Kubernetes, semplificando l'installazione e la gestione:
+        -   **RancherOS**: Distribuzione open source ([https://rancher.com/rancher-os/](https://rancher.com/rancher-os/)).
+        -   **Tectonic**: Prodotto commerciale (CoreOS, ora parte di Red Hat/IBM - il link `https://coreos.com/tectonic` potrebbe non essere più attivo o reindirizzare).
+
+#### Infrastruttura Minimale (Singolo Nodo) per Apprendimento/Sviluppo
+
+Per scopi di apprendimento o sviluppo locale su un singolo nodo, la soluzione più comune è:
+
+-   **Minikube**:
+    -   Applicativo che **genera una macchina virtuale** in cui emula un cluster Kubernetes.
+    -   Permette di eseguire i Pods e i container dell'applicazione all'interno di questa VM simulata.
+    -   Fornisce strumenti a riga di comando per la gestione del cluster.
+    -   Viene installato insieme a `kubectl`, l'interfaccia a riga di comando di Kubernetes per l'orchestrazione dei servizi.
+    -   Dispone di una **dashboard di Kubernetes** per il monitoraggio.
+    -   Compatibile con sistemi operativi **Linux, Windows e Mac**.
+
+### Organizzazione delle Macchine Virtuali per le Esercitazioni in Aula (Esempio su PC del Docente)
+
+Questa sezione descrive una configurazione specifica per le esercitazioni, volta a superare le limitazioni di una VM minimale come Minikube e a integrare l'ambiente di sviluppo.
+
+**Scenario: Minikube su Macchina Windows con VirtualBox**
+
+Nell'esempio descritto, Minikube viene installato su una macchina Windows che utilizza VirtualBox come hypervisor.
+
+**Composizione dell'Ambiente**:
+
+-   **Host Fisico (Windows)**:
+    -   File system principale (`C:\...`).
+    -   Installato `minikube.exe` e `kubectl.exe` (applicativi a riga di comando Windows).
+    -   Utilizzato **Cygwin** come emulatore Linux per avere una console Bash e interagire con `minikube.exe` e `kubectl.exe` come se si fosse in ambiente Linux.
+
+-   **VM Ubuntu (su VirtualBox)**:
+    -   Installata su Windows.
+    -   Condivide una directory dell'host Windows (es. `C:\DIDATTICA\SystemsIntegration\DISPENSE\MINIKUBE\`) mappandola come `/media/MINIKUBE/`.
+    -   Utilizzata per eseguire comandi `docker build` e creare le immagini dei container, salvandole nella directory condivisa.
+
+-   **VM Minikube (creata da `minikube start`)**:
+    -   Una macchina virtuale minimale generata da Minikube per ospitare Kubernetes e i Pods/container dell'applicazione.
+    -   Mappa la directory dei sorgenti dell'applicazione dall'host Windows (e quindi dalla VM Ubuntu) come `/MINIKUBE/` al suo interno.
+    -   Contiene un'installazione interna di Docker, utilizzata da `minikube.exe` e `kubectl.exe` (invocati da Cygwin) per operare sui container.
+
+Flusso di Lavoro per le Esercitazioni:
+
+1.  **Sorgenti Applicazioni**: Collocati nella directory `C:\DIDATTICA\SystemsIntegration\DISPENSE\MINIKUBE\` sul filesystem di Windows.
+2.  **Creazione Immagini Docker**: Dalla VM Ubuntu (che vede la directory condivisa come `/media/MINIKUBE/`), si creano le immagini Docker dei container e si salvano nella stessa directory condivisa.
+3.  **Avvio Cluster Minikube**: Dalla console Cygwin su Windows, si avvia il cluster Minikube con il comando `minikube start`. Questo creerà la VM Minikube.
+4.  **Dispiegamento Applicazioni**: Sempre da Cygwin, si invocano i comandi `kubectl` con i parametri e i file di configurazione necessari per dispiegare le applicazioni sul cluster Minikube.
+5.  **Interazione**: I comandi `minikube.exe` e `kubectl.exe` eseguiti da Cygwin interagiscono con il Docker Daemon all'interno della VM Minikube per gestire i Pods e i container.
+
+### Esempio di Applicazione con Kubernetes (su Minikube)
+
+L'applicazione Guestbook è composta da tre componenti, ciascuno implementato in un container:
+
+1.  **`redis-master`**:
+    *   Contiene il database Redis in memoria.
+    *   Gestisce operazioni di lettura e scrittura.
+    *   **Non può essere replicato**.
+
+2.  **`redis-slave`**:
+    *   Riceve solo ordini di lettura.
+    *   Per effettuare le letture, si rivolge al `redis-master`.
+    *   **Può essere replicato** per parallelizzare i compiti.
+
+3.  **`frontend` (Web Server PHP)**:
+    *   Riceve messaggi dall'utente tramite un browser web.
+    *   Ordina la scrittura del messaggio sul `redis-master`.
+    *   Ordina la lettura di tutte le stringhe dal `redis-slave` e le visualizza all'utente.
+    *   **Può essere replicato** per parallelizzare i compiti.
+  
+  ![](img/Virtualizzazione/strKub.png)
+
+### Kubernetizzare l'Applicazione
+
+Ogni componente dell'applicazione viene mappato a oggetti Kubernetes:
+
+*   Ciascun componente viene realizzato da un **Pod**.
+*   Per ogni insieme di componenti analoghi (che possono essere replicati) si istanzia un **Deployment**.
+*   Davanti a ciascun Deployment si istanzia un **Service** che si occupa di bilanciare il carico di richieste tra i diversi Pods a cui fa da interfaccia.
+
+**Strutturazione in Deployments e Services:**
+
+*   **Deployment `redis-master`**: Un solo deployment (corrispondente all'unico Pod `redis-master`).
+*   **Service `redis-master`**.
+*   **Deployment `redis-slave`**: Più di uno (per le repliche).
+*   **Service `redis-slave`**.
+*   **Deployment `frontend`**: Più di uno (per le repliche).
+*   **Service `frontend`**.
+
+### Aspetti di Collegamento tra i Pods
+
+1.  **Bilanciamento di Carico**: Viene gestito automaticamente da Kubernetes.
+2.  **Risoluzione Nomi**: Ciascun Pod accede agli altri Pods specificando, nel proprio codice, il **nome del servizio** a cui vuole accedere. Questo nome viene risolto automaticamente in un indirizzo IP dal **DNS implicito fornito da Kubernetes**.
+    *   **Nel codice PHP del frontend**: si cita `redis-master` per le scritture e `redis-slave` per le letture.
+    *   **Nella configurazione del `redis-slave`**: si specifica `redis-master` come riferimento per il suo master.
+    *   *Nota*: Altri sistemi di orchestrazione potrebbero non fornire un servizio DNS implicito, richiedendo strumenti aggiuntivi.
+3.  **Servizio Frontend**: Differente dagli altri, poiché è **acceduto da browser esterni** (non da container gestiti da Kubernetes). Non può quindi usufruire del DNS implicito di Kubernetes. È necessario ottenere l'indirizzo esterno del frontend da Kubernetes e fornirlo al browser.
+
+### Ambiente delle Prove (Configurazione Locale)
+
+L'ambiente di prova sfrutta una configurazione a 3 macchine virtuali su un PC Windows, con una directory di codice condivisa. Si assume che le immagini dei container siano già state create dalla VM Ubuntu.
+
+*   **Host Fisico (Windows)**: Contiene i sorgenti dell'applicazione e gli eseguibili `minikube.exe`, `kubectl.exe`.
+*   **VM Ubuntu (su VirtualBox)**: Per la creazione delle immagini Docker. Condivide la directory dei sorgenti con l'host Windows.
+*   **Cygwin (su Windows)**: Emulatore di terminale Linux per eseguire i comandi `minikube` e `kubectl`.
+*   **VM Minikube (creata all'avvio)**: Ospita i Pods e i container di Kubernetes. Mappa la directory condivisa dei sorgenti al suo interno.
+
+### Comandi Pratici per Dispiegare l'Applicazione
+
+**1. Avvio del Cluster e Navigazione Progetto:**
+
+```bash
+minikube start             # Avvia il cluster Minikube
+cd ./examples-master/guestbook # Spostati nella directory del progetto
+```
+
+**2. Dispiegamento del `redis-master` (Deployment e Service):**
+
+```bash
+kubectl apply -f redis-master-deployment.yaml # Dispiega il Deployment
+```
+**Contenuto di `redis-master-deployment.yaml`:**
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-master
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      role: master
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: master
+        tier: backend
+    spec:
+      containers:
+        - name: master
+          image: redis # Immagine Docker di Redis
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 6379
+```
+
+```bash
+kubectl get pods                     # Verifica lo stato del Pod
+kubectl logs -f <NOME_POD_REDIS_MASTER> # Visualizza i log del Pod (es. redis-master-...)
+```
+*(Per eliminare un deployment in caso di errori: `kubectl delete -f redis-master-deployment.yaml`)*
+
+```bash
+kubectl apply -f redis-master-service.yaml   # Crea il Service
+```
+**Contenuto di `redis-master-service.yaml`:**
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-master
+  labels:
+    app: redis
+    role: master
+    tier: backend
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: redis
+    role: master
+    tier: backend
+```
+
+```bash
+kubectl get service                  # Verifica il Service creato
+```
+
+**3. Dispiegamento dei `redis-slave` (Deployment e Service):**
+
+```bash
+kubectl apply -f redis-slave-deployment.yaml # Dispiega il Deployment
+```
+**Contenuto di `redis-slave-deployment.yaml`:**
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-slave
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      role: slave
+      tier: backend
+  replicas: 2 # Due repliche
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: slave
+        tier: backend
+    spec:
+      containers:
+        - name: slave
+          image: gcr.io/google_samples/gb-redisslave:v1 # Immagine del redis slave
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns # Utilizza il DNS di Kubernetes per trovare il master
+          ports:
+            - containerPort: 6379
+```
+
+```bash
+kubectl get pods                     # Verifica lo stato dei Pods
+```
+
+```bash
+kubectl apply -f redis-slave-service.yaml    # Crea il Service
+```
+**Contenuto di `redis-slave-service.yaml`:**
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-slave
+  labels:
+    app: redis
+    role: slave
+    tier: backend
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis
+    role: slave
+    tier: backend
+```
+
+```bash
+kubectl get service                  # Verifica il Service
+```
+
+**4. Dispiegamento del `frontend` (Deployment e Service):**
+
+```bash
+kubectl apply -f frontend-deployment.yaml    # Dispiega il Deployment
+```
+**Contenuto di `frontend-deployment.yaml`:**
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+spec:
+  selector:
+    matchLabels:
+      app: guestbook
+      tier: frontend
+  replicas: 3 # Tre repliche
+  template:
+    metadata:
+      labels:
+        app: guestbook
+        tier: frontend
+    spec:
+      containers:
+        - name: php-redis
+          image: us-docker.pkg.dev/googlesamples/containers/gke/gb-frontend:v5 # Immagine del frontend
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns # Utilizza il DNS di Kubernetes per trovare i servizi Redis
+          ports:
+            - containerPort: 80
+```
+
+```bash
+kubectl get pods -l app=guestbook -l tier=frontend # Verifica i Pods del frontend
+```
+
+```bash
+kubectl apply -f frontend-service.yaml       # Crea ed espone il Service
+```
+**Contenuto di `frontend-service.yaml`:**
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  type: NodePort # Espone il servizio tramite una porta sul nodo
+  ports:
+    - port: 80
+  selector:
+    app: guestbook
+    tier: frontend
+```
+
+```bash
+kubectl get services                 # Verifica i servizi
+```
+
+**5. Accesso all'Applicazione Frontend:**
+
+```bash
+minikube service frontend --url      # Ottieni l'URL di accesso al servizio frontend
+kubectl get service frontend         # Visualizza i dettagli del servizio frontend
+```
+*Copia l'URL restituito e incollalo nel tuo browser per accedere all'applicazione.*
+
+**6. Scalabilità del Frontend:**
+
+```bash
+kubectl scale deployment frontend --replicas=5 # Aumenta le repliche a 5
+kubectl get pods                             # Verifica i Pods
+```
+
+```bash
+kubectl scale deployment frontend --replicas=2 # Diminuisci le repliche a 2
+kubectl get pods                             # Verifica i Pods
+```
+
+**7. Pulizia delle Risorse:**
+
+```bash
+kubectl delete deployment -l app=redis       # Elimina i deployment Redis
+kubectl delete service -l app=redis          # Elimina i servizi Redis
+kubectl delete deployment -l app=guestbook   # Elimina i deployment Guestbook
+kubectl delete service -l app=guestbook      # Elimina i servizi Guestbook
+kubectl get pods                             # Verifica che i Pods siano stati eliminati
+kubectl get services                         # Verifica che i servizi siano stati eliminati
+```
+
+**8. Arresto del Cluster Minikube:**
+
+```bash
+minikube stop                        # Ferma il cluster Minikube
 ```
 
 
