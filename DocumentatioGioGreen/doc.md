@@ -21,7 +21,7 @@
 		- [Terminologia](#terminologia)
 	- [Progettazione Concettuale](#progettazione-concettuale)
 		- [Schema Scheletro e Raffinamenti Successivi](#schema-scheletro-e-raffinamenti-successivi)
-		- [Schema Finale](#schema-finale)
+		- [Schema Relazionale Finale](#schema-relazionale-finale)
 	- [Progettazione Logica](#progettazione-logica)
 		- [Stima del Volume dei Dati](#stima-del-volume-dei-dati)
 		- [Funzionalità Principali e Stima della Frequenza](#funzionalità-principali-e-stima-della-frequenza)
@@ -33,8 +33,9 @@
 		- [Eliminazione degli Attributi Composti](#eliminazione-degli-attributi-composti)
 		- [Scelta delle Chiavi Primarie](#scelta-delle-chiavi-primarie)
 		- [Reificazione delle Relazioni in Entità](#reificazione-delle-relazioni-in-entità)
+		- [Schema Relazionale Raffinato](#schema-relazionale-raffinato)
 		- [Traduzione delle Entità e delle Assocaizioni in Relazioni](#traduzione-delle-entità-e-delle-assocaizioni-in-relazioni)
-		- [Schema Relazionale Finale](#schema-relazionale-finale)
+		- [Schema Logico Finale](#schema-logico-finale)
 		- [Costruzione delle Tabelle del DB in SQL](#costruzione-delle-tabelle-del-db-in-sql)
 		- [Traduzione delle Operazioni in query SQL](#traduzione-delle-operazioni-in-query-sql)
 	- [Progettazione dell’applicazione](#progettazione-dellapplicazione)
@@ -142,7 +143,7 @@ Un qualsiasi **account registaro** ha la possibilità di rilascire recensioni ch
   <img src="img/recensioneMigl..png" width="400">
 </p>
 
-### Schema Finale
+### Schema Relazionale Finale
 
 ![](img/er1.png)
 
@@ -224,7 +225,7 @@ Segue un elenco delle principali azioni richieste:
 | 06   | Valutare/prodotti acquistati con stelle e recensione                                                  | 70 al giorno (25.000 recensioni/anno ≈ 2.000 al mese)        | I                        |
 | 07   | Inviare notifiche personalizzate agli utenti (admin)                                                  | 5.000 al giorno (media; dati tabella notifiche utente alta)  | B                        |
 | 08   | Consultare statistiche vendite (admin)                                                                | 10 al giorno                                                 | I                        |
-| 08   | Inserimento/aggiornamento/rimozione prodotto nel catalogo (admin)                                     | 10 al giorno (500 prodotti attivi, aggiornamenti frequenti)  | I                        |
+| 09   | Inserimento/aggiornamento/rimozione prodotto nel catalogo (admin)                                     | 10 al giorno (500 prodotti attivi, aggiornamenti frequenti)  | I                        |
 | 10   | Applicare o modificare uno sconto su prodotti (admin)                                                 | 3 al giorno (150 sconti/anno)                                | I                        |
 
 
@@ -267,14 +268,14 @@ PRODOTTO → comprensione_p. → COMPRENSIONE_IN_CARRELLO → comprensione_u.
 
 | Concetto                | Costrutto | Accessi | Tipo |
 |-------------------------|-----------|---------|------|
-| PRODOTTO                | E         | 500     | L    |
+| PRODOTTO                | E         | 1       | L    |
 | comprensione_p.         | R         | 1       | S    |
 | COMPRENSIONE_IN_CARRELLO| E         | 1       | S    |
 | comprensione_u.         | R         | 1       | S    |
 
-Totale: 500L + 3S = 506 accessi 
+Totale: 1L + 3S = 7 accessi 
 Frequenza: 1.000 al giorno  
-**Costo:** 506 x 1.000 = 506.000 accessi al giorno  
+**Costo:** 7 x 1.000 = 7.000 accessi al giorno  
 
 **05 EFFETTUARE UN ORDINE**
 
@@ -310,28 +311,30 @@ Frequenza: 120 al giorno
 **Obiettivo:** Utente recensisce un prodotto dopo averlo acquistato.
 
 **Schema navigazione:**  
-UTENTE → ORDINE → COMPRENSIONE_IN_ORDINE → PRODOTTO → RECENSIONE
+PRODOTTO → comprensione_o.p. → COMPRENSIONE_IN_ORDINE → comprensione_o. → ORDINE → UTENTE → scrittura → RECENSIONE → valutazione 
 
 | Concetto              | Costrutto | Accessi                 | Tipo |
 |-----------------------|-----------|-------------------------|------|
-| PRODOTTO              | E         | 500                     | L    |
+| PRODOTTO              | E         | 1                       | L    |
 | comprensione_o.p.     | R         | 120.000 / 500 = 240     | L    |
 | COMPRENSIONE_IN_ORDINE| E         | 240                     | L    |
-| UTENTE                | E         | 17.000                  | L    |
+| comprensione_o.       | R         | 240                     | L    |
+| ORDINE                | E         | 240                     | L    |
+| UTENTE                | E         | 1                       | L    |
 | scrittura             | R         | 1                       | S    |
 | RECENSIONE            | E         | 1                       | S    |
 | valutazione           | R         | 1                       | S    |
  
-Totale: 17.980L + 3S = 17.986 accessi 
+Totale: 962L + 3S = 968 accessi 
 Frequenza: 70 al giorno  
-**Costo:** 17.986 x 70 = 1.259.020 accessi al giorno  
+**Costo:** 968 x 70 = 67.760 accessi al giorno  
 
 **08 CONSULTAZIONE STATISTICHE SULLE VENDITE (ADMIN)**
 
 **Obiettivo:** L’amministratore consulta statistiche aggregate su ordini, prodotti e recensioni, ad esempio i dieci prodotti più venduti con il relativo totale di recensioni e valutazione media.
 
 **Schema di navigazione:**  
-ORDINE → comprensione_o.p. → PRODOTTO → valutazione → RECENSIONE  
+COMPRENSIONE_IN_ORDINE → comprensione_o.p. → PRODOTTO → valutazione → RECENSIONE   
 
 **Tavola degli accessi:**
 
@@ -352,7 +355,7 @@ ORDINE → comprensione_o.p. → PRODOTTO → valutazione → RECENSIONE
 **Obiettivo:** L’amministratore attiva uno sconto e lo associa a un prodotto.
 
 **Schema di navigazione:**  
-SCONTO_PRODOTTO → applicazione → PRODOTTO
+SCONTO_PRODOTTO → applicazione
 
 **Tavola degli accessi:**
 
@@ -360,11 +363,10 @@ SCONTO_PRODOTTO → applicazione → PRODOTTO
 |------------------|-----------|-------------|------|
 | SCONTO_PRODOTTO  | E         | 1           | S    |
 | applicazione     | R         | 1           | S    |
-| PRODOTTO         | E         | 500         | L    |
   
-**Totale:** 500L + 2S = 504 accessi
+**Totale:** 2S = 4 accessi
 **Frequenza:** 3 al giorno  
-**Costo totale:** 504 x 3 = 1012 accessi al giorno
+**Costo totale:** 4 x 3 = 12 accessi al giorno
 
 ### Analisi delle Ridondanze
 
@@ -498,55 +500,36 @@ Nel raffinamento dello schema concettuale, alcune relazioni sono state reificate
    - È indispensabile memorizzare il legame tra ordine e prodotto e **informazioni come la quantità ordinata**.
    - La reificazione consente di rappresentare in modo naturale il **dettaglio ordine**.
 
+### Schema Relazionale Raffinato
+
+![](img/raff.png)
+
 ### Traduzione delle Entità e delle Assocaizioni in Relazioni
 
 - **UTENTI** (<u>Email</u>, Nome, Cognome, Password, Telefono*)
-- **DATI_FATTURAZIONE** (<u>Email, IdDatoFatt</u>, PartitaIVA, Indirizzo, CAP)
-  - FK: Email → UTENTI
+- **DATI_FATTURAZIONE** (<u>Email:UTENTI, IdDatoFatt</u>, PartitaIVA, Indirizzo, CAP)
 - **DATI_SPEDIZIONE** (<u>IdDatoSped</u>, Indirizzo, CAP)
-- **ORDINI** (<u>IdOrdine</u>, IdDatoSped, Data, Importo, Email, IdDatoFatt)
-  - FK: (Email, IdDatoFatt) → DATI_FATTURAZIONE
-  - FK: IdDatoSped → DATI_SPEDIZIONE
-- **COMPRENSIONE_IN_CARRELLO** (<u>IdProdotto, Email</u>, Quantità)
-  - FK: Email → UTENTI
-  - FK: IdProdotto → PRODOTTI
-- **COMPRENSIONE_IN_ORDINE** (<u>IdProdotto, IdOrdine</u>, Quantità)
-  - FK: IdOrdine → ORDINI
-  - FK: IdProdotto → PRODOTTI
-- **PAGAMENTI** (<u>IdPagamento</u>, Data, Metodo, Dati, IdOrdine)
-  - FK: IdOrdine → ORDINI
-- **PRODOTTI** (<u>IdProdotto</u>, Descrizione, Dimensione, DataSconto*, Nome, Prezzo)
-  - FK: DataSconto → SCONTO_PRODOTTO*
-- **PIANTE** (<u>IdProdotto</u>, NomeSpecie)
-  - FK: IdProdotto → PRODOTTI
-  - FK: NomeSpecie → SPECIE
-- **SPECIE** (<u>Nome</u>, IdCura)
-  - FK: IdCura → CURE
+- **PAGAMENTI** (<u>IdPagamento</u>, Data, Metodo, Dati)
+- **ORDINI** (<u>IdOrdine</u>, IdDatoSped:DATI_SPEDIZIONE, Data, Importo, (Email, IdDatoFatt):DATI_FATTURAZIONE, IdPagamento:PAGAMENTI)
+- **PRODOTTI** (<u>IdProdotto</u>, Descrizione, Dimensione, DataSconto*:SCONTO_PRODOTTO, Nome, Prezzo)
+- **COMPRENSIONE_IN_CARRELLO** (<u>IdProdotto:PRODOTTI, Email:UTENTI</u>, Quantità)
+- **COMPRENSIONE_IN_ORDINE** (<u>IdProdotto:ORDINI, IdOrdine</u>, Quantità:PRODOTTI)
+- **PIANTE** (<u>IdProdotto:PRODOTTI</u>, NomeSpecie:SPECIE)
+- **SPECIE** (<u>Nome</u>, IdCura:CURE)
 - **CURE** (<u>IdCura</u>, Temperatura, Umidità, LivelloLuce)
-- **PRODOTTO_CHIMICO** (<u>IdProdotto</u>, Formato, Utilizzo)
-  - FK: IdProdotto → PRODOTTI
-- **SUBSTRATI** (<u>IdProdotto</u>, LivelloDrenaggio)
-  - FK: IdProdotto → PRODOTTI
-- **VASI** (<u>IdProdotto</u>, Forma, NomeMateriale)
-  - FK: IdProdotto → PRODOTTI
-  - FK: NomeMateriale → MATERIALI
+- **PRODOTTO_CHIMICO** (<u>IdProdotto:PRODOTTI</u>, Formato, Utilizzo) 
+- **SUBSTRATI** (<u>IdProdotto:PRODOTTI</u>, LivelloDrenaggio)
+- **VASI** (<u>IdProdotto:PRODOTTI</u>, Forma, NomeMateriale:MATERIALI)
 - **MATERIALI** (<u>Nome</u>)
 - **NOTIFICHE_UTENTE** (<u>IdNotifica</u>, Testo)
 - **NOTIFICHE_VENDITORE** (<u>IdNotifica</u>, Testo)
-- **NOTIFICA_UTENTE_RICEVUTA** (<u>Email, IdNotificaRicevuta</u>, Data, Stato, IdNotifica)
-  - FK: Email → UTENTI
-  - FK: IdNotifica → NOTIFICHE_UTENTE
-- **NOTIFICA_VENDITORE_RICEVUTA** (<u>Email, IdNotificaRicevuta</u>, Data, Stato, IdNotifica)
-  - FK: Email → VENDITORI
-  - FK: IdNotifica → NOTIFICHE_VENDITORE
-- **RECENSIONI** (<u>Email, IdRecensione</u>, Testo, Stelle, EmailVenditore*, IdProdotto)
-  - FK: Email → UTENTI
-  - FK: EmailVenditore → VENDITORI
-  - FK: IdProdotto → PRODOTTI
+- **NOTIFICA_UTENTE_RICEVUTA** (<u>Email:UTENTI, IdNotificaRicevuta</u>, Data, Stato, IdNotifica:NOTIFICHE_UTENTE)
+- **NOTIFICA_VENDITORE_RICEVUTA** (<u>Email:VENDITORI, IdNotificaRicevuta</u>, Data, Stato, IdNotifica:NOTIFICHE_VENDITORE) 
+- **RECENSIONI** (<u>Email:UTENTI, IdRecensione</u>, Testo, Stelle, EmailVenditore*:VENDITORI, IdProdotto: PRODOTTI)
 - **SCONTO_PRODOTTO** (<u>DataInizio</u>, DataFine, Percentuale)
 - **VENDITORI** (<u>Email</u>, Nome, Cognome, Password, Telefono*)
 
-### Schema Relazionale Finale
+### Schema Logico Finale
 
 ![](img/logico1.png)
 
@@ -630,17 +613,6 @@ create table NOTIFICHE_VENDITORE (
 	primary key (ID_notifica)
 );
 
-create table ORDINE (
-	ID_ordine varchar(16) not null,
-	ID_Dato_S varchar(8) not null,
-	Data date not null,
-	Importo decimal(8,2) not null,
-	Email_utente char(32) not null,
-	ID_Dato_F varchar(8) not null,
-	primary key (ID_ordine),
-    unique (ID_Dato_S)
-);
-
 create table PAGAMENTO (
 	ID_Pagamento varchar(16) not null,
 	Data date not null,
@@ -648,6 +620,19 @@ create table PAGAMENTO (
 	Dati varchar(256) not null,
 	ID_ordine varchar(16) not null,
 	primary key (ID_Pagamento)
+);
+
+create table ORDINE (
+	ID_ordine varchar(16) not null,
+	ID_Dato_S varchar(16) not null,
+	ID_Pagamento varchar(8) not null,
+	Data date not null,
+	Importo decimal(8,2) not null,
+	Email_utente char(32) not null,
+	ID_Dato_F varchar(8) not null,
+	primary key (ID_ordine),
+    unique (ID_Dato_S),
+	unique (ID_Pagamento)
 );
 
 create table PRODOTTO (
