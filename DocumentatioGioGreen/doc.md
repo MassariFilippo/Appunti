@@ -968,7 +968,7 @@ WHERE ID_prodotto IN (?, ?, ?);
 
 ## Progettazione dell’applicazione
 
-**Descrizione dell'architettura dell'applicazione realizzata**
+### Descrizione dell'architettura dell'applicazione realizzata
 
 Si è sviluppata un’applicazione web per la gestione e la vendita online di piante e accessori, con doppia interfaccia utente (cliente e amministratore), completamente realizzata utilizzando **PHP** (per la logica server-side e l’interazione col database), **JavaScript** (per funzionalità dinamiche lato client e AJAX), **HTML** e **CSS** (per la struttura e lo stile delle pagine). Tutta l’applicazione è containerizzata tramite **Docker** per garantire portabilità e semplicità di deploy.
 
