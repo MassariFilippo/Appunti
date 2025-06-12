@@ -40,6 +40,7 @@
 		- [Costruzione delle Tabelle del DB in SQL](#costruzione-delle-tabelle-del-db-in-sql)
 		- [Traduzione delle Operazioni in query SQL](#traduzione-delle-operazioni-in-query-sql)
 	- [Progettazione dell’applicazione](#progettazione-dellapplicazione)
+		- [Descrizione dell'architettura dell'applicazione realizzata](#descrizione-dellarchitettura-dellapplicazione-realizzata)
 		- [Infrastruttura e tecnologia utilizzata](#infrastruttura-e-tecnologia-utilizzata)
 		- [Gestione modelli ed entità](#gestione-modelli-ed-entità)
 
