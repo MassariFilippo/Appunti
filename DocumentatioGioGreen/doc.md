@@ -13,6 +13,7 @@
 </div>
 
 <div style="page-break-after: always;"></div>
+<div style="page-break-after: always;"></div>
 
 - [Relazione Progetto Basi di Dati](#relazione-progetto-basi-di-dati)
 	- [Analisi dei Requisiti](#analisi-dei-requisiti)
@@ -42,7 +43,7 @@
 		- [Infrastruttura e tecnologia utilizzata](#infrastruttura-e-tecnologia-utilizzata)
 		- [Gestione modelli ed entità](#gestione-modelli-ed-entità)
 
-
+<div style="page-break-after: always;"></div>
 <div style="page-break-after: always;"></div>
 
 ## Analisi dei Requisiti
