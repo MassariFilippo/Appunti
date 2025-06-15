@@ -39,7 +39,6 @@
 		- [Schema Logico Finale](#schema-logico-finale)
 		- [Costruzione delle Tabelle del DB in SQL](#costruzione-delle-tabelle-del-db-in-sql)
 		- [Traduzione delle Operazioni in query SQL](#traduzione-delle-operazioni-in-query-sql)
-	- [Progettazione dell’applicazione](#progettazione-dellapplicazione)
 		- [Descrizione dell'architettura dell'applicazione realizzata](#descrizione-dellarchitettura-dellapplicazione-realizzata)
 		- [Infrastruttura e tecnologia utilizzata](#infrastruttura-e-tecnologia-utilizzata)
 		- [Gestione modelli ed entità](#gestione-modelli-ed-entità)
@@ -101,7 +100,7 @@ Per ogni **ordine** viene registrata la data, l’elenco dei prodotti acquistati
 Le entità di **Admin** e **Utente** sono la generalizzazione di una entità **Account registrato**, identificata tramite l’e-mail, che rappresenta la chiave univoca per ciascun utente registrato nella piattaforma. Questa soluzione consente di gestire entrambi i ruoli mantenendo una struttura coerente e senza ridondanze informative.
 
 <p align="center">
-  <img src="img/accountMigl1..png" width="400">
+  <img src="img/accountMigl1..png" width="500">
 </p>
 
 Dall’analisi del dominio si evince che:
@@ -111,25 +110,25 @@ Dall’analisi del dominio si evince che:
 Per gestire le varianti di prodotto legate a tipo e caratteristiche specifiche (ad esempio, il vaso che ha forma e materiale, la pianta che ha specie e caratteristiche di cura), si introduce una gerarchia che ha come padre l'entità Prodotto. Inizialmete tale gerarchia aveva il seguente E/R:
 
 <p align="center">
-  <img src="img/prodottoImperf..png" width="400">
+  <img src="img/prodottoImperf..png" width="500">
 </p>
 
 Successivamente sostituito da: 
 
 <p align="center">
-  <img src="img/prodottoMigl1..png" width="400">
+  <img src="img/prodottoMigl1..png" width="600">
 </p>
 
-Reificando l'entità **materiale** posso creare una lista di materiali evitando di avere duplicati o errori di battitura nell'inserimento del prodotto che rendono complessa la ricercaed il filtraggio. Per quanto riguarda l'entità pianta ho messo in relazione l'entità **cura** direttamente con l'entità **specie** andando a semplificare l'inserimento di una nuova pianta.
+Reificando l'entità **materiale** posso creare una lista di materiali evitando di avere duplicati o errori di battitura nell'inserimento del prodotto che rendono complessa la ricerca ed il filtraggio. Per quanto riguarda l'entità pianta ho messo in relazione l'entità **cura** direttamente con l'entità **specie** andando a semplificare l'inserimento di una nuova pianta.
 
 Gli **ordini** sono identificati da un codice univoco e sono associati a un utente e ai dati di **spedizione** e **fatturazione** forniti al momento della conferma. L’ordine serve anche da collegamento con il **pagamento** avvenuto e può essere composto da più prodotti in quantità variabile (gestita da una relazione tra Ordine e Prodotto che contiene anche il campo Quantità). Inizialmente avevo ideato il pagamento come un'entità in relazione con una seconda entità che modellava il **metodo di pagamento**, questa soluzione è stata poi soppiantata da una gerarchia che mi permettesse di associare gli appositi atrubuti agli specifici metodi di pagamento, questo ovviamente va a discapito della scalbilità ma migliarta la precisione, la completezza e l'usabilità delle entità stesse.
 
 <p align="center">
-	<img src="img/ordineImperf..png" width="150" style="display:inline-block; margin-right: 20px;">
-	<img src="img/ordineMigl..png" width="300" style="display:inline-block;">
+	<img src="img/ordineImperf.png" width="150" style="display:inline-block; margin-right: 20px;">
+	<img src="img/ordineMigl1.png" width="300" style="display:inline-block;">
 </p>
 
-Ogni **notifica** viene generata come entità a sé e può essere rivolta sia agli utenti (es. conferma ordine, spedizione, promozione) che all’admin (ad esempio segnalazione di esaurimento scorte). Nella priam versione dello schema la relazione recezione non prevedeva atributi, successivamente è stata aggiunta la data e lo stato, ovvero un calore booleano che rappresenta l'avvenuta lettura della notifica. 
+Ogni **notifica** viene generata come entità a sé e può essere rivolta sia agli utenti (es. conferma ordine, spedizione, promozione) che all’admin (ad esempio segnalazione di esaurimento scorte). Nella priama versione dello schema la relazione recezione non prevedeva atributi, successivamente è stata aggiunta la data e lo stato, ovvero un calore booleano che rappresenta l'avvenuta lettura della notifica. 
 
 
 <p align="center" style="display: flex; justify-content: center; gap: 24px;">
@@ -217,18 +216,18 @@ Segue un elenco delle principali azioni richieste:
 
 ### Tabella Frequenza Operazioni Principali
 
-| Cod. | Nome Operazione                                                                                       | Frequenza Stimata                                            | Tipo (Interattiva/Batch) |
-|------|-------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|--------------------------|
-| 01   | Registrarsi al sito (nuovo UTENTE)                                                                    | 10 al giorno (3.600 all’anno ≈ 20% nuovi/ricambio utenti)    | I                        |
-| 02   | Visualizzare catalogo con filtri                                                                      | 3.000 al giorno (con ≈ 17.000 utenti attivi)                 | I                        |
-| 03   | Gestire/visualizzare dati personali                                                                   | 80 al giorno                                                 | I                        |
-| 04   | Aggiungere prodotti al carrello                                                                       | 1.000 al giorno (da stima 5.000 carrelli/17.000 utenti)      | I                        |
-| 05   | Effettuare ordine con inserimento spedizione, fatturazione, pagamento                                 | 120 al giorno (da 30.000 ordini annui)                       | I                        |
-| 06   | Valutare/prodotti acquistati con stelle e recensione                                                  | 70 al giorno (25.000 recensioni/anno ≈ 2.000 al mese)        | I                        |
-| 07   | Inviare notifiche personalizzate agli utenti (admin)                                                  | 5.000 al giorno (media; dati tabella notifiche utente alta)  | B                        |
-| 08   | Consultare statistiche vendite (admin)                                                                | 10 al giorno                                                 | I                        |
-| 09   | Inserimento/aggiornamento/rimozione prodotto nel catalogo (admin)                                     | 10 al giorno (500 prodotti attivi, aggiornamenti frequenti)  | I                        |
-| 10   | Applicare o modificare uno sconto su prodotti (admin)                                                 | 3 al giorno (150 sconti/anno)                                | I                        |
+| Cod. | Nome Operazione                                                        | Frequenza Stimata   | Tipo (Interattiva/Batch) |
+|------|------------------------------------------------------------------------|---------------------|--------------------------|
+| 01   | Registrarsi al sito (nuovo UTENTE)                                     | 10 al giorno        | I                        |
+| 02   | Visualizzare catalogo con filtri                                       | 3.000 al giorno     | I                        |
+| 03   | Gestire/Visualizzare dati personali                                    | 80 al giorno        | I                        |
+| 04   | Aggiungere prodotti al carrello                                        | 1.000 al giorno     | I                        |
+| 05   | Effettuare ordine con inserimento spedizione, fatturazione, pagamento  | 120 al giorno       | I                        |
+| 06   | Valutare prodotti acquistati con stelle e recensione                   | 70 al giorno        | I                        |
+| 07   | Inviare notifiche personalizzate agli utenti (admin)                   | 5.000 al giorno     | B                        |
+| 08   | Consultare statistiche vendite (admin)                                 | 10 al giorno        | I                        |
+| 09   | Inserimento/aggiornamento/rimozione prodotto nel catalogo (admin)      | 10 al giorno        | I                        |
+| 10   | Applicare o modificare uno sconto su prodotti (admin)                  | 3 al giorno         | I                        |
 
 
 ### Schemi di Navigazione e Tabelle degli Accessi
@@ -430,7 +429,7 @@ La ridondanza comporta un lieve aumento di spazio occupato (una colonna in più 
 
 ### Eliminazione delle Gerarchie
 
-Nello **schema E/R iniziale** compaiono due principali gerarchie da eliminare:  
+Nello **schema E/R iniziale** compaiono tre principali gerarchie da eliminare:  
 - la gerarchia sull’entità **ACCOUNT_REGISTRATO** (con le specializzazioni UTENTE e VENDITORE)
 - la gerarchia sull’entità **PRODOTTO** (con le specializzazioni PIANTA, VASO, PRODOTTO_CHIMICO, SUBSTRATO).
 - la gerarchia sull'entità **PAGAMENTO** (con specializzazione PAYPAL, BONIFICO e CARTA_DI_CREDITO)
@@ -451,13 +450,12 @@ Per questa gerarchia si è scelto di **sostituire la generalizzazione con associ
 
 - Tutte le entità della gerarchia vengono **mantenute esplicitamente** nel modello: sia l’entità generale (**PRODOTTO**) che le entità figlie (**PIANTA, VASO, PRODOTTO_CHIMICO, SUBSTRATO**).
 - Le entità figlie sono **associate all’entità padre tramite una relazione binaria 1:1** (ad es. “appartenenza_p.” tra PIANTA e PRODOTTO). In questo modo, ogni istanza delle entità figlie è identificata attraverso una chiave esterna che punta a PRODOTTO, evitando duplicazioni di attributi comuni.
-- Questa soluzione, detta anche “sostituzione con associazioni”, è applicabile indipendentemente dal fatto che la gerarchia sia totale o parziale.
 
 **Motivazione della scelta:**  
 La sostituzione con associazioni porta vantaggi di normalizzazione e di chiarezza:
 - Gli attributi comuni (es. nome, descrizione, quantità, prezzo) rimangono **solo** in PRODOTTO evitando ridondanza e valori nulli nelle entità figlie.
 - Ogni entità figlia contiene **solo gli attributi specifici** (es. specie per PIANTA, materiale per VASO, livello di drenaggio per SUBSTRATO).
-- Grazie alle associazioni binarie, è possibile mantenere separate le tipologie di prodotto, facilitando controlli di integrità, interrogazioni specifiche e futuri ampliamenti della gerarchia.
+- Grazie alle associazioni binarie, è possibile mantenere separate le tipologie di prodotto, facilitando controlli di integrità e interrogazioni specifiche.
 
 **Gerarchia PAGAMENTO (PAYPAL, BONIFICO e CARTA_DI_CREDITO)**
 
@@ -490,12 +488,11 @@ Nel raffinamento dello schema concettuale, alcune relazioni sono state reificate
    - Ogni ricezione di notifica può richiedere **attributi specifici** (es. data di ricezione, stato di lettura).
    - Un utente può ricevere la stessa notifica in più momenti o in condizioni diverse.
    - Si semplifica il tracciamento dello **storico notifiche** e la gestione della logica applicativa (ad esempio “segna come letto” viene gestita a livello di istanza della ricezione).
-   - La reificazione introduce una problematica legata a un vincolo aggiuntivo non presente nel dominio originale né nello schema E/R iniziale. Reificando, diventa necessario un identificativo univoco (ID) per la nuova entità. Se tale ID fosse definito come combinazione della **data di ricezione**, della chiave esterna **email** dell'account ricevente e della chiave esterna **ID_NOTIFICA**, si introdurrebbe un vincolo indesiderato: non sarebbe possibile istanziare più notifiche della stessa tipologia per lo stesso utente nella stessa giornata.
-   - Per risolvere questa limitazione, si decide di introdurre un **codice univoco** all'interno della nuova entità. Questo codice, combinato con l'email dell'utente, consente di evitare il problema, garantendo la possibilità di associare più notifiche dello stesso tipo a uno stesso utente nello stesso giorno.
-
+   - La reificazione introduce una problematica legata a un vincolo aggiuntivo non presente nel dominio originale né nello schema E/R iniziale. Reificando, diventa necessario un identificativo univoco (ID) per la nuova entità. Se tale ID fosse definito come combinazione della **data di ricezione**, della chiave esterna **email** dell'account ricevente e della chiave esterna **ID_NOTIFICA**, si introdurrebbe un vincolo indesiderato: non sarebbe possibile istanziare più notifiche della stessa tipologia per lo stesso utente nella stessa giornata. Per risolvere questa limitazione, si decide di introdurre un **codice univoco** all'interno della nuova entità. Questo codice, combinato con l'email dell'utente, consente di evitare il problema, garantendo la possibilità di associare più notifiche dello stesso tipo a uno stesso utente nello stesso giorno.
+  
 2. La relazione tra UTENTE e PRODOTTO, per rappresentare i prodotti attualmente inseriti nel carrello, è stata reificata in **COMPRENSIONE_IN_CARRELLO**:
    - È necessario **associare alla relazione un attributo fondamentale**: la **quantità** di ciascun prodotto messo nel carrello dal singolo utente.
-   - Potenzialmente, anche altri attributi possono emergere in futuro (ad esempio data/ora di inserimento, selezione di opzioni/taglie temporanee).
+   - Potenzialmente, anche altri attributi possono emergere in futuro (ad esempio data/ora di inserimento, selezione di opzioni aggiuntive).
    - La reificazione supporta la gestione efficace di tutte le operazioni di aggiornamento, cancellazione e visualizzazione dello stato corrente del carrello.
 
 3. Analogamente, la relazione tra ORDINE e PRODOTTO viene reificata in **COMPRENSIONE_IN_ORDINE**:
@@ -967,7 +964,7 @@ WHERE ID_prodotto IN (?, ?, ?);
 
 <div style="page-break-after: always;"></div>
 
-## Progettazione dell’applicazione
+F## Progettazione dell’applicazione
 
 ### Descrizione dell'architettura dell'applicazione realizzata
 
