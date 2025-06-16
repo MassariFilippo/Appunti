@@ -113,12 +113,12 @@ Gli indici sono strutture dati usate per migliorare la velocità delle operazion
 *   La radice ha almeno 2 figli (a meno che non sia anche una foglia).
 
 **Struttura:**
-*   **Nodi interni:** Contengono chiavi e puntatori ai nodi figli. Le chiavi servono per guidare la ricerca.
+*   **Nodi interni:** Contengono chiavi e puntatori ai nodi figli, le chiavi possono già essere i valori di nostra ricerca oppure possono essere sfruttate per la ricerca binaria.
 *   **Nodi foglia:** Contengono le chiavi e i puntatori ai record di dati (o i record di dati stessi).
 
 #### B+-tree (B-plus tree)
 
-**Definizione:** Un B+-tree è una variazione del B-tree, ottimizzata per l'archiviazione secondaria (dischi). La distinzione principale è che *tutti i dati sono memorizzati solo nei nodi foglia*, mentre i nodi interni fungono esclusivamente da indice. Inoltre, i nodi foglia sono spesso collegati tra loro per facilitare le scansioni sequenziali.
+**Definizione:** Un B+-tree è una variazione del B-tree, ottimizzata per l'archiviazione secondaria (dischi). La distinzione principale è che *tutti i dati sono memorizzati solo nei nodi foglia* che sono inoltre linkati tra loro ciò migliora decisamente le ricerche squenziali rispetto ai B-tree, mentre i nodi interni fungono esclusivamente da indice.
 
 **Importanza (Vantaggi rispetto al B-tree):**
 1.  **Migliori Performance per Range Query:** Poiché tutte le chiavi con i dati associati si trovano nelle foglie e queste sono collegate tra loro, è possibile eseguire facilmente scansioni per intervallo scorrendo orizzontalmente i nodi foglia una volta trovato il punto di inizio, senza dover risalire e scendere l'albero.
