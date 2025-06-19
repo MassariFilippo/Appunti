@@ -28,7 +28,6 @@
       - [Autenticazione in Canali Wireless](#autenticazione-in-canali-wireless)
       - [Autorizzazione all'Uso di Applicazioni (Single Sign-On)](#autorizzazione-alluso-di-applicazioni-single-sign-on)
     - [Dispiegamento di Servizi Scalabili e Isolati mediante Virtualizzazione e Containerizzazione](#dispiegamento-di-servizi-scalabili-e-isolati-mediante-virtualizzazione-e-containerizzazione)
-      - [Virtualizzazione](#virtualizzazione)
       - [Containerizzazione](#containerizzazione)
       - [Container vs. Virtual Machine](#container-vs-virtual-machine)
       - [Cloud e Categorie di Servizi Cloud](#cloud-e-categorie-di-servizi-cloud)
@@ -42,7 +41,6 @@
     - [Importanza della Sincronizzazione nella Sicurezza](#importanza-della-sincronizzazione-nella-sicurezza)
     - [Tipi di Clock](#tipi-di-clock)
     - [Meccanismi di Sincronizzazione](#meccanismi-di-sincronizzazione)
-    - [Meccanismo Three-Way di Sincronizzazione](#meccanismo-three-way-di-sincronizzazione)
     - [Problemi e Limitazioni](#problemi-e-limitazioni)
     - [Sincronizzazione dei Clock Fisici](#sincronizzazione-dei-clock-fisici)
     - [Sincronizzazione Esterna dei Clock Fisici](#sincronizzazione-esterna-dei-clock-fisici)
@@ -106,7 +104,7 @@
     - [Condivisione e gestione dei layers](#condivisione-e-gestione-dei-layers)
     - [Docker Area e Storage Driver](#docker-area-e-storage-driver)
   - [Reti Docker Definite dall'Utente](#reti-docker-definite-dallutente)
-      - [Esempi di Utilizzo del Comando `docker inspect`](#esempi-di-utilizzo-del-comando-docker-inspect)
+      - [Esempi di Utilizzo del Comando docker inspect](#esempi-di-utilizzo-del-comando-docker-inspect)
     - [Creazione e Gestione delle Reti](#creazione-e-gestione-delle-reti)
       - [Esempio di Creazione di una Rete:](#esempio-di-creazione-di-una-rete)
     - [Collegamento dei Container alle Reti](#collegamento-dei-container-alle-reti)
@@ -354,8 +352,6 @@ Un altro esempio è Microsoft Azure Service Bus Messaging, che opera nei datacen
 
 Va considerato che questi strumenti ovviamenete introducono un ritardo di comunicazione ma contengono decisamente la complessità della comuczionine molti a molti con actor dinamici.
 
-![](img/Virtualizzazione/SolCom2.png)
-
 ### Sistema a Micro-Servizi Principalmente in Cloud
 
 Parliamo di sistemi che controllano dispositivi distribuiti a livello globale, caratterizzati da un elevato numero di client e risorse centrali limitate. È plausibile che queste macchine comunichino utilizzando protocolli diversi e siano gestite da utenti con dispositivi eterogenei. Inoltre, la presenza di proprietari diversi aumenta la complessità del sistema, rendendo necessaria una particolare attenzione alla tutela dei dati.
@@ -391,8 +387,6 @@ Questo servizio prevede dunque che si salvino i dati di configurazione delle mac
 
 Un esempio pratico di Directory Service è rappresentato dai laboratori e dai computer del personale amministrativo dell'Università di Bologna (Unibo). Qui è stato implementato un sistema centralizzato di autenticazione e autorizzazione che utilizza **Microsoft Active Directory**, distribuito su sistemi Windows Server 2008, sui sistemi Linux trovaimo il fratello quasi equivalente **Samba**. Questo sistema gestisce le responsabilità e le funzionalità su cinque campus, distinguendo tra i domini interni unibo.it e studio.unibo.it.
 
-I PC degli studenti appartengono al dominio "studio.unibo.it" e gli studenti si autenticano presso server localizzati nei campus. Possono accedere a servizi condivisi, come file system remoti, forniti da sistemi Windows o Linux attraverso protocolli standard come SMB, CIFS e Samba. Le politiche di sicurezza sono centralizzate, consentendo un join immediato per i PC Windows, mentre i PC Linux utilizzano applicativi e protocolli come LDAP e Samba per accedere alle risorse. È anche possibile avere server basati su Linux, utilizzando applicativi della suite Samba, informalmente noti come Linux Active Directory, e client Windows.
-
 #### Autenticazione in Canali Wireless
 
 Per l'autenticazione nell'accesso a punti di accesso WiFi e alle reti retrostanti, si utilizza un server RADIUS data la sua capacità di interfacciarsi con una grande varietà di protocolli anche molto datati, in conformità con gli standard WPA2 e 802.1x. Lo standard WPA2 per la sicurezza nelle reti wireless prevede l'uso di 802.1x per gestire l'autenticazione, offrendo ottima sicurezza e grande flessibilità, poiché consente di gestire vari metodi di autenticazione.
@@ -419,10 +413,6 @@ Per servizi **non web-based** si utilizza **Kerberos**, specialmente in contesti
 ![](img/Virtualizzazione/SsoKerberos.png)
 
 ### Dispiegamento di Servizi Scalabili e Isolati mediante Virtualizzazione e Containerizzazione
-
-Di seguito il testo riorganizzato, corretto e con le parole importanti evidenziate:
-
-#### Virtualizzazione
 
 La **virtualizzazione** è il processo di creazione di una rappresentazione virtuale, basata su software, di risorse fisiche. Questa tecnologia consente di virtualizzare applicazioni, server, storage e reti. In particolare, la virtualizzazione del server permette di eseguire un **sistema operativo** isolato all'interno di una **macchina virtuale (VM)**, che non è fisica ma viene realizzata tramite uno strato software chiamato **Virtual Machine Monitor** o **Hypervisor**.
 
@@ -593,9 +583,7 @@ Successivamente, il dispositivo slave aggiorna il proprio orologio applicando ta
 
 Attraverso questi calcoli, è possibile regolare il clock dello slave per avvicinarlo il più possibile a quello del master.
 
-### Meccanismo Three-Way di Sincronizzazione
-
-Nel meccanismo three-way di sincronizzazione, il processo inizia con il **master** che invia una richiesta contenente il proprio timestamp, indicato come **T₁**. Questo messaggio viene inviato allo **slave**, il quale, al momento della ricezione, registra il proprio timestamp come **T₂**. Successivamente, lo slave prepara una risposta includendo il valore ricevuto, ovvero **T₁**, insieme al suo timestamp di ricezione (**T₂**) e al timestamp al momento dell'invio della risposta (**T₃**).
+- **Meccanismo Three-Way di Sincronizzazione:** Nel meccanismo three-way di sincronizzazione, il processo inizia con il **master** che invia una richiesta contenente il proprio timestamp, indicato come **T₁**. Questo messaggio viene inviato allo **slave**, il quale, al momento della ricezione, registra il proprio timestamp come **T₂**. Successivamente, lo slave prepara una risposta includendo il valore ricevuto, ovvero **T₁**, insieme al suo timestamp di ricezione (**T₂**) e al timestamp al momento dell'invio della risposta (**T₃**).
 
 Una volta che il master riceve la risposta dallo slave (al tempo **T₄**), egli stima il ritardo di trasmissione (**Delay D**) approssimandolo come metà del **round-trip time (RTT)**. La formula utilizzata per calcolare il ritardo è la seguente:
 
@@ -915,16 +903,6 @@ Questo insieme di componenti è definito un **realm**, che tipicamente rappresen
 
 ### Archittettura Kerberos 
 
-Kerberos è un sistema di autenticazione che si basa su un modello di terza parte fidata. La sua architettura è composta principalmente da un **Key Distribution Center (KDC)**, che si suddivide in due parti fondamentali:
-
-1. **Authentication Server (AS):**  
-   In questa fase iniziale, l'applicazione dell'utente negozia con l'AS per identificare l'utente stesso. L'AS fornisce quindi un **ticket granting ticket (TGT)**, che è una credenziale di autenticazione non alterabile.
-
-2. **Ticket Granting Server (TGS):**  
-   Nella fase successiva, l'utente richiede accesso a servizi specifici utilizzando il TGT ottenuto dall'AS.
-
-![](img/Virtualizzazione/strKerberos.png)
-
 ### Chiavi Statiche e Dinamiche in Kerberos
 
 **Chiavi Statiche:** Le chiavi private condivise sono memorizzate nel database del KDC e vengono definite durante la configurazione del sistema. Ad esempio, quando si inserisce un nuovo utente, viene generata una chiave **Kc** per l'utente, mentre per i servizi viene generata una chiave **Ks**. Queste chiavi sono essenziali per garantire la sicurezza delle comunicazioni tra client e server. La chiave **Kc** utilizzata da un utente per criptare le comunicazioni con l'Authentication Server è derivata dalla password dell'utente per il realm dell'AS, applicando una funzione hash. La funzione di libreria **string2key** trasforma la password in una chiave di cifratura simmetrica. La trasformazione varia a seconda dell'algoritmo di crittografia utilizzato, come **DES**, **Triple-DES** o **AES**.
@@ -944,6 +922,8 @@ Nella seconda fase, il client utilizza il TGT ottenuto per inviare una richiesta
 **3. Accesso al Servizio**
 
 Nella terza fase, il client utilizza il ticket di servizio per autenticarsi presso il server del servizio richiesto. Il server verifica la validità del ticket e, se tutto è in ordine, consente l'accesso al servizio. Questo passaggio è cruciale, poiché garantisce che solo gli utenti che possiedono un ticket valido possano interagire con il servizio, mantenendo così la sicurezza dell'intero sistema.
+
+![](img/Virtualizzazione/strKerberos.png)
 
 ### Meccanismo di Autenticazione e Verifica
 
@@ -1504,20 +1484,15 @@ Per scollegare un container in primo piano senza fermarlo, usa `CTRL+p` e `CTRL+
 
 Il sottosistema di rete di Docker è altamente modulare e utilizza driver per fornire funzionalità di rete flessibili e scalabili. I driver di rete predefiniti includono:
 
-- **Bridge:**  
-  Questo driver consente ai container di comunicare tra loro e con servizi esterni. È il tipo di rete predefinito se non viene specificato un altro driver. Le reti bridge permettono ai container connessi di comunicare tra loro, fornendo isolamento dai container non connessi alla stessa rete. È possibile creare reti bridge personalizzate definite dall'utente per una maggiore flessibilità.
+- **Bridge:** Questo driver consente ai container di comunicare tra loro e con servizi esterni. È il tipo di rete predefinito se non viene specificato un altro driver. Le reti bridge permettono ai container connessi di comunicare tra loro, fornendo isolamento dai container non connessi alla stessa rete. È possibile creare reti bridge personalizzate definite dall'utente per una maggiore flessibilità.
 
-- **Host:**  
-  Rimuove l'isolamento di rete tra il container e l'host Docker, permettendo al container di utilizzare direttamente la rete dell'host. Questo è utile per applicazioni che richiedono alte prestazioni di rete.
+- **Host:** Rimuove l'isolamento di rete tra il container e l'host Docker, permettendo al container di utilizzare direttamente la rete dell'host. Questo è utile per applicazioni che richiedono alte prestazioni di rete.
 
-- **Overlay:**  
-  Connette più demoni Docker, consentendo ai servizi swarm di comunicare tra loro. Le reti overlay sono ideali per la comunicazione tra container su diversi host Docker.
+- **Overlay:** Connette più demoni Docker, consentendo ai servizi swarm di comunicare tra loro. Le reti overlay sono ideali per la comunicazione tra container su diversi host Docker.
 
-- **Macvlan:**  
-  Assegna un indirizzo MAC a un container, facendolo apparire come un dispositivo fisico sulla rete. Questo è utile per applicazioni legacy che richiedono una connessione diretta alla rete fisica.
+- **Macvlan:**  Assegna un indirizzo MAC a un container, facendolo apparire come un dispositivo fisico sulla rete. Questo è utile per applicazioni legacy che richiedono una connessione diretta alla rete fisica.
 
-- **None:**  
-  Disabilita tutte le funzionalità di rete per il container, utile per applicazioni che non necessitano di connettività di rete.
+- **None:** Disabilita tutte le funzionalità di rete per il container, utile per applicazioni che non necessitano di connettività di rete.
 
 La **rete bridge predefinita** consente ai container di connettersi al mondo esterno. Tuttavia, per abilitare il forwarding del traffico dai container verso l'esterno, è necessario configurare il kernel Linux:
 
@@ -2027,7 +2002,7 @@ ENTRYPOINT [ "/bin/bash", "-c", "/entrypoint.sh" ]
 
 Nel contesto della virtualizzazione e dell'integrazione di sistemi, le reti definite dall'utente in Docker offrono una flessibilità notevole per la gestione dei container e delle loro interazioni. Queste reti permettono di personalizzare la configurazione di rete e integrare facilmente i container su un host o su più host. Le reti definite dall'utente consentono agli sviluppatori di creare ambienti isolati per applicazioni, garantendo una migliore gestione della sicurezza e dell'accesso alle risorse. Grazie a Docker, è possibile creare diverse tipologie di reti, come le reti bridge e overlay, che soddisfano diverse esigenze di infrastruttura. Le reti bridge operano su singoli host, mentre le reti overlay si estendono su più host, consentendo comunicazione tra container distribuiti. Docker offre una serie di comandi utili per interagire con le reti e i container. Il comando `docker inspect` è particolarmente importante, poiché fornisce informazioni dettagliate sugli oggetti Docker. Utilizzando il formato JSON di default o personalizzato, si possono ottenere dettagli specifici delle configurazioni di rete e del sistema.
 
-#### Esempi di Utilizzo del Comando `docker inspect`
+#### Esempi di Utilizzo del Comando docker inspect
 
 1. **Avviare un container e ispezionarlo:**
 
