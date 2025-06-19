@@ -209,6 +209,27 @@
     - [Macchine Virtuali](#macchine-virtuali)
     - [Campus \& Virtualizzazione Desktop](#campus--virtualizzazione-desktop)
     - [Server Virtualization](#server-virtualization)
+  - [SAMBA,DNS, RADIUS](#sambadns-radius)
+    - [I Pilastri di un Dominio (Active Directory, LDAP, Kerberos)](#i-pilastri-di-un-dominio-active-directory-ldap-kerberos)
+      - [**1. Active Directory (AD): Il Concetto di Directory Service**](#1-active-directory-ad-il-concetto-di-directory-service)
+      - [**2. LDAP (Lightweight Directory Access Protocol): Il Protocollo di Accesso**](#2-ldap-lightweight-directory-access-protocol-il-protocollo-di-accesso)
+      - [**3. Kerberos: Il Protocollo di Autenticazione**](#3-kerberos-il-protocollo-di-autenticazione)
+    - [Preparazione del Server Linux e DNS](#preparazione-del-server-linux-e-dns)
+      - [**1. Gestione dei Servizi e del Sistema con `systemd`**](#1-gestione-dei-servizi-e-del-sistema-con-systemd)
+      - [**2. Gestione Utenti Locali e Privilegi con `sudo`**](#2-gestione-utenti-locali-e-privilegi-con-sudo)
+      - [**3. Configurazione di Rete Statica con `netplan`**](#3-configurazione-di-rete-statica-con-netplan)
+      - [**4. Il Servizio DNS (Domain Name System) con BIND**](#4-il-servizio-dns-domain-name-system-con-bind)
+    - [Samba come Domain Controller Active Directory](#samba-come-domain-controller-active-directory)
+      - [**1. Samba: Oltre la Condivisione di File**](#1-samba-oltre-la-condivisione-di-file)
+      - [**2. Winbind: Il Ponte tra Mondi**](#2-winbind-il-ponte-tra-mondi)
+      - [**3. ACL (Access Control List) e Attributi Estesi: Permessi "alla Windows" su Linux**](#3-acl-access-control-list-e-attributi-estesi-permessi-alla-windows-su-linux)
+      - [**4. Il Processo di "Provisioning" del Dominio**](#4-il-processo-di-provisioning-del-dominio)
+      - [**5. I File di Configurazione Chiave**](#5-i-file-di-configurazione-chiave)
+      - [**6. Comandi Essenziali per la Gestione (`samba-tool`)**](#6-comandi-essenziali-per-la-gestione-samba-tool)
+    - [Gestione del Dominio e Autenticazione Avanzata (RADIUS)](#gestione-del-dominio-e-autenticazione-avanzata-radius)
+      - [**1. Amministrazione Remota da un Client Windows (RSAT)**](#1-amministrazione-remota-da-un-client-windows-rsat)
+      - [**2. I Ruoli FSMO (Flexible Single Master Operation)**](#2-i-ruoli-fsmo-flexible-single-master-operation)
+      - [**3. RADIUS (Remote Authentication Dial-In User Service): Centralizzare l'Autenticazione di Rete**](#3-radius-remote-authentication-dial-in-user-service-centralizzare-lautenticazione-di-rete)
 
 
 <div style="page-break-after: always;"></div>
@@ -3986,3 +4007,306 @@ La virtualizzazione è un processo di astrazione delle risorse informatiche, che
 
 - **Configurazione Hardware Psico**
   - **Server HP ProLiant DL580 Gen9**: CPU Intel Xeon, 384 GB RAM, configurazione di rete e storage simile al campus principale.
+
+## SAMBA,DNS, RADIUS
+
+### I Pilastri di un Dominio (Active Directory, LDAP, Kerberos)
+
+Per comprendere come si integrano sistemi complessi, è fondamentale partire dai servizi che ne gestiscono l'identità e l'autenticazione. I seguenti concetti sono il fondamento su cui si costruisce un'infrastruttura di rete centralizzata, anche in ambienti Linux.
+
+#### **1. Active Directory (AD): Il Concetto di Directory Service**
+
+**Cos'è?**
+Active Directory (AD) è un **Directory Service**, ovvero un database gerarchico e distribuito che centralizza la gestione di tutte le risorse di una rete (utenti, computer, stampanti, cartelle condivise, policy di sicurezza). Sebbene sia una tecnologia Microsoft, i suoi principi e protocolli sono standardizzati e possono essere implementati anche su Linux (tramite **Samba**).
+
+**Scopo Principale:**
+*   **Gestione Centralizzata:** Un unico punto per amministrare utenti, gruppi e permessi.
+*   **Autenticazione e Autorizzazione:** Controllare chi può accedere a cosa.
+*   **Policy di Sicurezza:** Applicare configurazioni e restrizioni di sicurezza in modo uniforme su tutti i computer del dominio.
+
+**Struttura Logica:**
+L'architettura di AD si basa su:
+*   **Dominio:** Un confine amministrativo per utenti e computer (es. `example.local`).
+*   **Forest/Tree (Foresta/Albero):** Insiemi di domini che si fidano l'uno dell'altro.
+
+#### **2. LDAP (Lightweight Directory Access Protocol): Il Protocollo di Accesso**
+
+**Cos'è?**
+LDAP non è un prodotto, ma un **protocollo standard** per accedere e manipolare le informazioni contenute in un Directory Service come Active Directory. È il linguaggio che le applicazioni usano per "parlare" con la directory.
+
+**Come Funziona?**
+Le informazioni nella directory sono organizzate in modo gerarchico, simile a un file system. Ogni oggetto (un utente, un computer) ha un percorso univoco chiamato **Distinguished Name (DN)**.
+
+*   **Esempio di DN:** `CN=Mario Rossi,OU=Marketing,DC=example,DC=local`
+    *   `CN`: Common Name (il nome dell'oggetto)
+    *   `OU`: Organizational Unit (un contenitore per organizzare gli oggetti)
+    *   `DC`: Domain Component (una parte del nome del dominio)
+
+Le applicazioni possono eseguire operazioni LDAP per:
+*   **Ricercare (Query):** Trovare utenti con un certo attributo (es. tutti gli utenti del gruppo "Vendite").
+*   **Aggiungere/Modificare/Eliminare:** Gestire oggetti e i loro attributi (es. cambiare la password di un utente).
+
+Lo strumento **LdapAdmin** menzionato nei tuoi appunti è un client grafico che permette di eseguire queste query in modo visuale.
+
+#### **3. Kerberos: Il Protocollo di Autenticazione**
+
+**Cos'è?**
+Kerberos è il protocollo di autenticazione di default in Active Directory. È progettato per fornire un'autenticazione forte e sicura in reti non sicure, basandosi sul concetto di "ticket".
+
+**Principio di Funzionamento (semplificato):**
+1.  **Richiesta Iniziale:** Quando un utente fa login, il suo client contatta il **Key Distribution Center (KDC)**, il cuore di Kerberos, richiedendo un "biglietto per ottenere biglietti" (**Ticket-Granting Ticket, TGT**).
+2.  **Ottenimento del TGT:** Il KDC verifica le credenziali dell'utente e, se corrette, invia un TGT crittografato. Questo TGT è la prova che l'utente è stato autenticato.
+3.  **Richiesta di Servizio:** Quando l'utente vuole accedere a una risorsa (es. un file server), il suo client presenta il TGT al KDC e chiede un **Service Ticket** specifico per quella risorsa.
+4.  **Accesso al Servizio:** Il client presenta il Service Ticket al file server, che lo verifica e concede l'accesso senza che la password dell'utente viaggi mai sulla rete.
+
+**Prerequisito Fondamentale:**
+Kerberos è estremamente sensibile alla sincronizzazione temporale. Tutti i computer del dominio (client e server) devono avere gli orologi sincronizzati. Per questo motivo, un server **NTP (Network Time Protocol)** è un componente critico dell'infrastruttura.
+
+**Comandi Principali di Kerberos:**
+*   `kinit <username>`: Ottiene manualmente un Ticket-Granting Ticket (TGT) per un utente, utile per i test.
+*   `klist`: Mostra i ticket Kerberos attualmente in cache sul client.
+*   `kdestroy`: Cancella tutti i ticket dalla cache.
+
+
+### Preparazione del Server Linux e DNS
+
+Prima di poter implementare un Domain Controller, il sistema operativo sottostante deve essere configurato in modo robusto e prevedibile. Un server, a differenza di un desktop, richiede una gestione precisa dei servizi e una configurazione di rete statica.
+
+#### **1. Gestione dei Servizi e del Sistema con `systemd`**
+
+In quasi tutte le distribuzioni Linux moderne, `systemd` è l'**init system**, ovvero il primo processo avviato dal kernel, responsabile della gestione di tutti gli altri servizi (demoni) del sistema.
+
+**Concetto Chiave:** `systemd` non solo avvia i servizi, ma ne monitora lo stato, gestisce le dipendenze (es. avviare la rete prima del server web) e centralizza la gestione dei log.
+
+**Comandi Essenziali (`systemctl`):**
+Il comando principale per interagire con `systemd` è `systemctl`.
+*   **Avviare/Fermare/Riavviare un servizio:**
+    ```bash
+    systemctl start <nomeservizio>
+    systemctl stop <nomeservizio>
+    systemctl restart <nomeservizio>
+    ```
+*   **Abilitare/Disabilitare un servizio al boot:**
+    ```bash
+    systemctl enable <nomeservizio>  # Il servizio partirà al prossimo riavvio
+    systemctl disable <nomeservizio> # Il servizio non partirà più in automatico
+    ```
+*   **Controllare lo stato di un servizio:**
+    ```bash
+    systemctl status <nomeservizio>
+    ```
+*   **Consultare i log di sistema:**
+    `journalctl` è lo strumento di `systemd` per visualizzare i log.
+    ```bash
+    journalctl -u <nomeservizio> # Mostra i log solo per un servizio specifico
+    journalctl -f               # Mostra i log in tempo reale (come tail -f)
+    ```
+
+#### **2. Gestione Utenti Locali e Privilegi con `sudo`**
+
+Un server deve avere una gestione rigorosa degli accessi. Il comando `sudo` (SuperUser DO) è lo strumento standard per permettere a un utente non-privilegiato di eseguire comandi con i privilegi di un altro utente (solitamente `root`).
+
+**Concetto Chiave:** `sudo` è preferibile al login diretto come `root` perché:
+1.  **Tracciabilità:** Ogni comando eseguito con `sudo` viene registrato (`/var/log/auth.log`), fornendo un audit trail.
+2.  **Controllo Granulare:** È possibile configurare quali comandi specifici un utente o un gruppo può eseguire. Questa configurazione si trova nel file `/etc/sudoers` (da modificare sempre e solo con il comando `visudo`).
+
+**Comandi Essenziali:**
+*   `adduser <nomeutente>`: Crea un nuovo utente locale.
+*   `passwd <nomeutente>`: Cambia la password di un utente.
+*   `usermod -aG <gruppo> <utente>`: Aggiunge un utente a un gruppo (es. `usermod -aG sudo mario`).
+
+#### **3. Configurazione di Rete Statica con `netplan`**
+
+Un server deve avere un **indirizzo IP statico** per essere raggiungibile in modo affidabile. Nelle versioni moderne di Ubuntu/Lubuntu, la configurazione di rete è gestita da **Netplan**, un'utility che astrae la configurazione di rete tramite semplici file in formato **YAML**.
+
+**Concetto Chiave:** In un ambiente server, servizi come `NetworkManager` (pensato per ambienti desktop con connessioni variabili) vengono disabilitati in favore di `systemd-networkd`, che è più adatto per configurazioni statiche e viene controllato da Netplan.
+
+**File di Configurazione Esempio (`/etc/netplan/01-config.yaml`):**
+```yaml
+network:
+  version: 2
+  renderer: networkd  # Specifica che il gestore è systemd-networkd
+  ethernets:
+    ens18: # Nome dell'interfaccia di rete
+      addresses:
+        - 192.168.48.200/24 # IP statico e subnet mask in notazione CIDR
+      routes:
+        - to: default
+          via: 192.168.48.2 # Gateway di default
+      nameservers:
+          addresses: [192.168.48.200, 8.8.8.8] # DNS primario (il server stesso) e secondario
+```
+*   **Applicare la configurazione:**
+    ```bash
+    sudo netplan apply
+    ```
+
+#### **4. Il Servizio DNS (Domain Name System) con BIND**
+
+Il DNS è la "rubrica telefonica di Internet" e un **prerequisito non negoziabile** per Active Directory. AD lo usa intensamente per la *service discovery*: i client trovano i Domain Controller, i server Kerberos e altri servizi interrogando record DNS specifici.
+
+**Concetti Fondamentali:**
+*   **Risoluzione DNS:** Processo di traduzione di un nome (es. `www.google.com`) in un indirizzo IP (es. `142.250.184.68`).
+*   **Modalità di Funzionamento:**
+    *   **Forwarding:** Il server DNS riceve una richiesta e la "gira" a un altro DNS server (es. quello del provider o di Google), memorizzando la risposta in cache. È semplice ma meno controllato.
+    *   **Recursion:** Il server DNS risolve autonomamente la richiesta partendo dai server root (`.`), interrogando via via i server autoritativi per ogni livello del dominio (`.com`, `google.com`, `www.google.com`). Questa modalità dà il pieno controllo ma deve essere ristretta ai soli client fidati per evitare attacchi (DNS Amplification).
+*   **Server Autoritativo:** Il server DNS che ha la responsabilità "ufficiale" per una specifica zona (dominio). Il nostro server sarà autoritativo per `example.local`.
+
+**Tipi di Record DNS Essenziali:**
+*   **A**: Mappa un nome host a un indirizzo IPv4.
+*   **AAAA**: Mappa un nome host a un indirizzo IPv6.
+*   **CNAME**: Crea un alias (un nome punta a un altro nome).
+*   **MX**: Specifica il mail server per un dominio.
+*   **PTR**: Mappa un indirizzo IP a un nome (per la risoluzione DNS inversa).
+*   **SRV**: **Record di servizio**. Fondamentale per AD, indica quale host offre un determinato servizio su una specifica porta (es. `_ldap._tcp.example.local`).
+*   **NS**: Dichiara qual è il server DNS autoritativo per un dominio.
+
+**Implementazione su Linux:**
+**BIND (Berkeley Internet Name Domain)** è il software DNS più diffuso e di fatto lo standard su Linux. La sua configurazione è potente ma complessa, gestita tramite file di testo.
+
+**Comandi Essenziali:**
+*   `nslookup <hostname>`: Esegue una query DNS.
+*   `dig <hostname>`: Strumento più avanzato e dettagliato per le query DNS.
+
+
+### Samba come Domain Controller Active Directory
+
+Una volta preparato il server con rete statica e DNS, possiamo installare il software che emulerà le funzionalità di un Domain Controller Windows: **Samba**.
+
+#### **1. Samba: Oltre la Condivisione di File**
+
+Samba è nato come un'implementazione libera del protocollo **SMB/CIFS (Server Message Block/Common Internet File System)**, permettendo ai server Linux di agire come file server e print server in reti Windows.
+
+Tuttavia, dalla versione 4, Samba ha fatto un salto qualitativo epocale: è in grado di funzionare come un **Domain Controller Active Directory (AD DC)** completo. Questo significa che può gestire:
+*   Autenticazione degli utenti tramite **Kerberos**.
+*   Il database degli oggetti di dominio tramite un backend **LDAP**.
+*   Le **Group Policy**.
+*   Tutti i ruoli **FSMO (Flexible Single Master Operation)**.
+
+**Concetto Chiave:** Samba non è *un'alternativa* ad Active Directory, ma un'**implementazione compatibile** con essa. Un Domain Controller Samba può coesistere in una foresta con DC Windows, oppure creare un dominio da zero.
+
+#### **2. Winbind: Il Ponte tra Mondi**
+
+Per far sì che il sistema operativo Linux "veda" gli utenti e i gruppi del dominio Active Directory come se fossero locali, Samba utilizza un componente chiamato **Winbind**.
+
+**Come funziona?** Winbind si integra con il sistema Linux tramite:
+*   **NSS (Name Service Switch):** Modificando il file `/etc/nsswitch.conf`, diciamo al sistema operativo di cercare utenti e gruppi non solo nei file locali (`/etc/passwd`, `/etc/group`) ma anche tramite Winbind (e quindi in Active Directory).
+*   **PAM (Pluggable Authentication Modules):** Winbind fornisce un modulo PAM che permette ai servizi locali (come SSH) di autenticare gli utenti usando le credenziali del dominio (tramite Kerberos/NTLM).
+
+**Comandi Utili per il Debug di Winbind:**
+*   `getent passwd`: Mostra tutti gli utenti che il sistema "vede", sia locali che di dominio.
+*   `getent group`: Mostra tutti i gruppi.
+*   `wbinfo -u`: Elenca gli utenti del dominio visti da Winbind.
+*   `wbinfo -g`: Elenca i gruppi del dominio.
+
+#### **3. ACL (Access Control List) e Attributi Estesi: Permessi "alla Windows" su Linux**
+
+Il sistema di permessi standard di Linux (`rwx` per proprietario, gruppo, altri) è meno granulare di quello di Windows, che permette di assegnare permessi specifici a più utenti e gruppi.
+
+Per replicare questo comportamento, è necessario abilitare due funzionalità sul file system:
+1.  **ACL (Access Control Lists):** Permettono di definire permessi di accesso per utenti e gruppi aggiuntivi, oltre al classico trio proprietario/gruppo/altri.
+2.  **Attributi Estesi (xattr):** Consentono di associare metadati ai file, necessari a Samba per memorizzare informazioni specifiche di Windows (es. attributi DOS come "nascosto" o "sola lettura").
+
+Queste opzioni vengono abilitate nel file `/etc/fstab` per la partizione desiderata e richiedono un riavvio per essere attivate.
+
+#### **4. Il Processo di "Provisioning" del Dominio**
+
+Creare un nuovo dominio con Samba non è una semplice installazione, ma un processo chiamato **provisioning**. Durante questa fase, eseguita con il comando `samba-tool domain provision`, vengono creati:
+*   Lo **schema** di Active Directory (la definizione di tutti i possibili oggetti e attributi).
+*   Gli utenti e i gruppi di default (es. `Administrator`, `Domain Admins`).
+*   Le partizioni del database LDAP.
+*   I file di configurazione base.
+
+**Opzioni Cruciali nel Provisioning:**
+*   `--use-rfc2307`: Abilita attributi specifici per l'integrazione con sistemi UNIX/Linux (es. UID/GID numerici per gli utenti AD).
+*   `--dns-backend=BIND9_DLZ`: Questa è un'opzione avanzata e molto potente. Invece di usare il DNS interno di Samba o file di testo, si dice a Samba di integrarsi direttamente con **BIND**. I record DNS del dominio AD non saranno in un file di testo, ma verranno memorizzati nel database LDAP di Samba e serviti dinamicamente da BIND tramite un modulo speciale (**DLZ - Dynamically Loadable Zones**). Questo permette **aggiornamenti DNS sicuri e dinamici**, proprio come in un ambiente Windows nativo.
+
+#### **5. I File di Configurazione Chiave**
+
+*   `/etc/samba/smb.conf`: Il file di configurazione principale di Samba. Definisce il ruolo del server (AD DC), il realm Kerberos, le condivisioni di rete (come `netlogon` e `sysvol`, fondamentali per AD) e le impostazioni di Winbind.
+*   `/etc/bind/named.conf.options` e `/etc/bind/named.conf`: File di configurazione di BIND, dove si abilita l'integrazione con Samba (tramite la direttiva `tkey-gssapi-keytab` e l'inclusione della configurazione DLZ).
+*   `/etc/krb5.conf`: File di configurazione di Kerberos. Specifica qual è il KDC per il nostro realm.
+
+#### **6. Comandi Essenziali per la Gestione (`samba-tool`)**
+
+Mentre la gestione può essere fatta da un client Windows con RSAT, Samba fornisce un potente strumento a riga di comando per amministrare il dominio direttamente dal server: `samba-tool`.
+
+*   **Gestione Utenti:**
+    ```bash
+    samba-tool user create <nomeutente>
+    samba-tool user list
+    samba-tool user setpassword <nomeutente>
+    ```
+*   **Gestione Gruppi:**
+    ```bash
+    samba-tool group add <nomegruppo>
+    samba-tool group addmembers <nomegruppo> <utente1> <utente2>
+    samba-tool group listmembers <nomegruppo>
+    ```
+*   **Gestione DNS (se si usa il backend BIND9_DLZ):**
+    ```bash
+    samba-tool dns query <server> <zona> @ ALL
+    ```
+
+### Gestione del Dominio e Autenticazione Avanzata (RADIUS)
+
+Una volta che il nostro Domain Controller Samba è operativo, il passo successivo è integrarlo con i client e utilizzarlo per centralizzare l'autenticazione su più servizi.
+
+#### **1. Amministrazione Remota da un Client Windows (RSAT)**
+
+Sebbene `samba-tool` sia potente, la gestione quotidiana di Active Directory è spesso più agevole tramite le interfacce grafiche a cui gli amministratori Windows sono abituati. Per fare questo, si utilizzano gli **RSAT (Remote Server Administration Tools)**.
+
+**Concetto Chiave:** RSAT è una suite di strumenti Microsoft che può essere installata su un client Windows (es. Windows 10/11) per gestire remotamente server e domini. Una volta che il client Windows è stato aggiunto ("joinato") al dominio gestito da Samba, gli strumenti RSAT si connetteranno al DC Samba come se fosse un DC Windows, permettendo di gestire:
+
+*   **Active Directory Users and Computers:** Creare, modificare ed eliminare utenti, gruppi e computer.
+*   **DNS Management:** Gestire i record DNS del dominio.
+*   **Group Policy Management:** Creare e modificare le **Group Policy Objects (GPO)**.
+
+**Group Policy (GPO):**
+Le GPO sono uno strumento estremamente potente di Active Directory. Permettono di definire e applicare centralmente impostazioni di configurazione e sicurezza a utenti e computer del dominio. Ad esempio, si può usare una GPO per:
+*   Mappare un drive di rete in automatico per tutti gli utenti di un reparto.
+*   Impostare uno sfondo del desktop standard.
+*   Disabilitare l'accesso al Pannello di Controllo.
+*   Installare software automaticamente.
+
+Le policy vengono fisicamente salvate nella condivisione `sysvol` del Domain Controller.
+
+#### **2. I Ruoli FSMO (Flexible Single Master Operation)**
+
+In un ambiente con più Domain Controller, per evitare conflitti su operazioni critiche, Active Directory designa un singolo DC come "master" per determinate operazioni. Questi sono i ruoli FSMO. Anche se stiamo usando un solo DC, questi ruoli esistono e sono tutti assegnati ad esso.
+
+**I 5 Ruoli FSMO:**
+1.  **Schema Master:** L'unico DC che può modificare lo schema di AD (la struttura del database).
+2.  **Domain Naming Master:** L'unico DC che può aggiungere o rimuovere domini dalla foresta.
+3.  **PDC Emulator (Primary Domain Controller Emulator):** Il più critico. Funge da sorgente temporale autorevole per il dominio, gestisce i blocchi degli account e le modifiche immediate delle password. È il DC di riferimento per i client.
+4.  **RID Master (Relative ID Master):** Assegna pool di ID univoci (RID) agli altri DC per garantire che ogni oggetto creato nel dominio abbia un SID (Security Identifier) unico.
+5.  **Infrastructure Master:** Responsabile della sincronizzazione dei riferimenti a oggetti tra domini diversi all'interno della stessa foresta.
+
+È possibile visualizzare e (in un ambiente multi-DC) trasferire questi ruoli tramite gli snap-in di RSAT.
+
+#### **3. RADIUS (Remote Authentication Dial-In User Service): Centralizzare l'Autenticazione di Rete**
+
+Molti dispositivi di rete, come Access Point Wi-Fi, switch di rete e VPN concentrator, non possono interagire direttamente con Kerberos, ma supportano un protocollo standard per l'autenticazione centralizzata: **RADIUS**.
+
+**Architettura AAA:** RADIUS è un protocollo **AAA**:
+*   **Authentication:** Verifica chi sei (utente e password).
+*   **Authorization:** Decide a cosa hai accesso (es. a quale VLAN assegnarti).
+*   **Accounting:** Tiene traccia del tuo utilizzo (es. tempo di connessione, dati trasferiti).
+
+**Flusso di Funzionamento (es. Wi-Fi):**
+1.  Un utente tenta di connettersi a una rete Wi-Fi protetta con **WPA2/WPA3-Enterprise**.
+2.  L'**Access Point** (che agisce da **RADIUS Client** o **NAS - Network Access Server**) non conosce le credenziali. Invece di verificarle, le inoltra al **RADIUS Server** (nel nostro caso, un server Linux con **FreeRADIUS**).
+3.  Il **RADIUS Server** riceve la richiesta. Per verificare le credenziali, **non usa un proprio database**, ma si interfaccia con il nostro Domain Controller Active Directory (Samba) tramite il protocollo **NTLM**.
+4.  Se il DC conferma che le credenziali sono valide, FreeRADIUS risponde all'Access Point con un messaggio di "Access-Accept".
+5.  L'Access Point concede l'accesso alla rete all'utente.
+
+**EAP (Extensible Authentication Protocol):**
+Per rendere la comunicazione tra il client (il laptop dell'utente) e l'Access Point più sicura, si usa il protocollo EAP. Questo "incapsula" il dialogo di autenticazione. Il metodo più comune in ambito aziendale è **PEAP-MSCHAPv2**:
+*   **PEAP (Protected EAP):** Crea un tunnel crittografato (TLS) tra il client e il server RADIUS, proteggendo la fase di autenticazione. Per questo, il server RADIUS deve avere un **certificato SSL/TLS**.
+*   **MS-CHAPv2:** È il metodo di autenticazione vero e proprio (basato su username/password) che viaggia all'interno del tunnel sicuro creato da PEAP.
+
+**Implementazione su Linux:**
+**FreeRADIUS** è l'implementazione RADIUS open-source più diffusa. La sua configurazione chiave consiste nel:
+1.  Definire i client RADIUS (gli IP degli Access Point) e le loro "shared secret" nel file `clients.conf`.
+2.  Configurare il modulo EAP (`mods-available/eap`) per usare PEAP, specificando i percorsi dei certificati SSL.
+3.  Configurare il modulo `mschap` per usare `ntlm_auth` (uno strumento fornito da Samba) per inoltrare le richieste di autenticazione al Domain Controller.
