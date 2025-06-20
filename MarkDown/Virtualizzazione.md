@@ -110,60 +110,29 @@
       - [Esempio di Utilizzo del Server DNS:](#esempio-di-utilizzo-del-server-dns)
   - [DokerCompose e Formato di File YAML](#dokercompose-e-formato-di-file-yaml)
     - [Struttura e Regole di YAML](#struttura-e-regole-di-yaml)
-      - [Alcuni Principi Fondamentali di YAML:](#alcuni-principi-fondamentali-di-yaml)
-      - [Esempi Separati](#esempi-separati)
     - [Docker Compose e File YAML](#docker-compose-e-file-yaml)
-    - [Componenti Principali del Compose File](#componenti-principali-del-compose-file)
-      - [Esempi di Utilizzo](#esempi-di-utilizzo)
     - [Comandi Utili di Docker Compose](#comandi-utili-di-docker-compose)
-  - [Gestione delle Applicazioni con Docker Compose](#gestione-delle-applicazioni-con-docker-compose)
-    - [Esempio Pratico di un'Applicazione Locale](#esempio-pratico-di-unapplicazione-locale)
-      - [L'Applicazione](#lapplicazione)
-      - [Files Necessari](#files-necessari)
-      - [Configurazione del Progetto](#configurazione-del-progetto)
-    - [Comprendere Docker Compose e Docker Swarm](#comprendere-docker-compose-e-docker-swarm)
-    - [Struttura del Compose File](#struttura-del-compose-file)
+    - [Gestione delle Applicazioni con Docker Compose](#gestione-delle-applicazioni-con-docker-compose)
     - [Comandi e Configurazioni di Docker Compose](#comandi-e-configurazioni-di-docker-compose)
-    - [Gestione delle Reti e dei Volumi](#gestione-delle-reti-e-dei-volumi)
-      - [Esempio di Configurazione di Rete:](#esempio-di-configurazione-di-rete)
-  - [Esempio: Applicazione Node.js + MongoDB con Docker Compose](#esempio-applicazione-nodejs--mongodb-con-docker-compose)
-    - [Descrizione dell’Applicazione](#descrizione-dellapplicazione)
-    - [1. Installazione del pacchetto Docker Compose su Linux](#1-installazione-del-pacchetto-docker-compose-su-linux)
-    - [2. Creazione delle Reti Virtuali Docker](#2-creazione-delle-reti-virtuali-docker)
-    - [3. Costruzione dell’Immagine del Container per l’Applicazione Web Node.js/Express/Mongoose](#3-costruzione-dellimmagine-del-container-per-lapplicazione-web-nodejsexpressmongoose)
-    - [4. Costruzione e Gestione del Container e dei Dati MongoDB](#4-costruzione-e-gestione-del-container-e-dei-dati-mongodb)
-    - [5. Costruzione dell’Immagine Per MongoDB e Inizializzazione Database](#5-costruzione-dellimmagine-per-mongodb-e-inizializzazione-database)
-    - [6. Esecuzione del Container con MongoDB e il Database dbsa](#6-esecuzione-del-container-con-mongodb-e-il-database-dbsa)
-    - [7. Esecuzione del Container con l’Applicazione Web Node.js](#7-esecuzione-del-container-con-lapplicazione-web-nodejs)
-    - [8. Automazione Completa con Docker Compose](#8-automazione-completa-con-docker-compose)
-  - [Introduzione a Docker Swarm](#introduzione-a-docker-swarm)
-    - [Costruire Servizi Replicati su un Cluster](#costruire-servizi-replicati-su-un-cluster)
+    - [Gestione delle Reti e dei Volumi con Compose](#gestione-delle-reti-e-dei-volumi-con-compose)
+  - [**Applicazione Node.js + MongoDB con Docker Compose**](#applicazione-nodejs--mongodb-con-docker-compose)
+    - [Installazione di Docker su Linux](#installazione-di-docker-su-linux)
+    - [Creazione delle Reti Virtuali Docker](#creazione-delle-reti-virtuali-docker)
+    - [Costruzione dell’Immagine del Container per l’Applicazione Web Node.js/Express/Mongoose](#costruzione-dellimmagine-del-container-per-lapplicazione-web-nodejsexpressmongoose)
+    - [Costruzione e Gestione del Container e dei Dati MongoDB](#costruzione-e-gestione-del-container-e-dei-dati-mongodb)
+    - [Costruzione dell’Immagine Per MongoDB e Inizializzazione Database](#costruzione-dellimmagine-per-mongodb-e-inizializzazione-database)
+    - [Esecuzione del Container con MongoDB e il Database dbsa](#esecuzione-del-container-con-mongodb-e-il-database-dbsa)
+    - [Esecuzione del Container con l’Applicazione Web Node.js](#esecuzione-del-container-con-lapplicazione-web-nodejs)
+    - [Automazione Completa con Docker Compose](#automazione-completa-con-docker-compose)
+  - [Docker Swarm](#docker-swarm)
     - [Struttura di Docker Swarm](#struttura-di-docker-swarm)
-      - [Struttura di Base](#struttura-di-base)
-      - [Stack e Servizi](#stack-e-servizi)
     - [Funzionamento di un Swarm](#funzionamento-di-un-swarm)
-    - [Presupposti di Rete](#presupposti-di-rete)
     - [Comandi Ed Esempi](#comandi-ed-esempi)
-    - [Struttura dell'Esempio Docker Swarm](#struttura-dellesempio-docker-swarm)
-    - [Dettagli Strutturali](#dettagli-strutturali)
-  - [Pubblicazione delle Porte e Routing Mesh](#pubblicazione-delle-porte-e-routing-mesh)
-    - [Meccanismo di Pubblicazione](#meccanismo-di-pubblicazione)
-    - [Sicurezza](#sicurezza)
-  - [Problematiche di Sicurezza](#problematiche-di-sicurezza)
-    - [Esposizione a Rischi](#esposizione-a-rischi)
-    - [Soluzioni](#soluzioni)
-  - [Discovery Automatica delle Repliche Attive](#discovery-automatica-delle-repliche-attive)
-    - [Processo](#processo)
-    - [Strumenti Usati](#strumenti-usati)
-    - [Riepilogo](#riepilogo)
-  - [Esempio Docker Swarm: App Node.js + MongoDB](#esempio-docker-swarm-app-nodejs--mongodb)
-    - [Definizione dei Servizi](#definizione-dei-servizi)
-    - [Reti Overlay](#reti-overlay)
-    - [Volumi per Persistenza](#volumi-per-persistenza)
-    - [Considerazioni Chiave](#considerazioni-chiave)
-    - [Comandi Swarm Utili (Ripasso)](#comandi-swarm-utili-ripasso)
+    - [Pubblicazione delle Porte e Routing Mesh](#pubblicazione-delle-porte-e-routing-mesh)
+    - [Discovery Automatica delle Repliche Attive](#discovery-automatica-delle-repliche-attive)
+    - [Esempio Docker Swarm: App Node.js + MongoDB](#esempio-docker-swarm-app-nodejs--mongodb)
+    - [Comandi Swarm Utili](#comandi-swarm-utili)
   - [Kubernetes](#kubernetes)
-    - [Kubernetes Concepts](#kubernetes-concepts)
     - [Autoscaling](#autoscaling)
     - [Kubernetes Architecture](#kubernetes-architecture)
     - [Prodotti per Orchestrazione di Container basati su Kubernetes](#prodotti-per-orchestrazione-di-container-basati-su-kubernetes)
@@ -198,33 +167,15 @@
     - [Gestione delle Deleghe](#gestione-delle-deleghe)
   - [RADIUS (Remote Authentication Dial-In User Service)](#radius-remote-authentication-dial-in-user-service)
     - [Funzionamento di RADIUS](#funzionamento-di-radius)
-    - [Esempio di RADIUS](#esempio-di-radius)
-    - [Installazione di RADIUS](#installazione-di-radius)
   - [Virtuslizzazione sul Campus di Cesena](#virtuslizzazione-sul-campus-di-cesena)
     - [Macchine Virtuali](#macchine-virtuali)
     - [Campus \& Virtualizzazione Desktop](#campus--virtualizzazione-desktop)
     - [Server Virtualization](#server-virtualization)
   - [SAMBA,DNS, RADIUS](#sambadns-radius)
     - [I Pilastri di un Dominio (Active Directory, LDAP, Kerberos)](#i-pilastri-di-un-dominio-active-directory-ldap-kerberos)
-      - [**1. Active Directory (AD): Il Concetto di Directory Service**](#1-active-directory-ad-il-concetto-di-directory-service)
-      - [**2. LDAP (Lightweight Directory Access Protocol): Il Protocollo di Accesso**](#2-ldap-lightweight-directory-access-protocol-il-protocollo-di-accesso)
-      - [**3. Kerberos: Il Protocollo di Autenticazione**](#3-kerberos-il-protocollo-di-autenticazione)
     - [Preparazione del Server Linux e DNS](#preparazione-del-server-linux-e-dns)
-      - [**1. Gestione dei Servizi e del Sistema con `systemd`**](#1-gestione-dei-servizi-e-del-sistema-con-systemd)
-      - [**2. Gestione Utenti Locali e Privilegi con `sudo`**](#2-gestione-utenti-locali-e-privilegi-con-sudo)
-      - [**3. Configurazione di Rete Statica con `netplan`**](#3-configurazione-di-rete-statica-con-netplan)
-      - [**4. Il Servizio DNS (Domain Name System) con BIND**](#4-il-servizio-dns-domain-name-system-con-bind)
     - [Samba come Domain Controller Active Directory](#samba-come-domain-controller-active-directory)
-      - [**1. Samba: Oltre la Condivisione di File**](#1-samba-oltre-la-condivisione-di-file)
-      - [**2. Winbind: Il Ponte tra Mondi**](#2-winbind-il-ponte-tra-mondi)
-      - [**3. ACL (Access Control List) e Attributi Estesi: Permessi "alla Windows" su Linux**](#3-acl-access-control-list-e-attributi-estesi-permessi-alla-windows-su-linux)
-      - [**4. Il Processo di "Provisioning" del Dominio**](#4-il-processo-di-provisioning-del-dominio)
-      - [**5. I File di Configurazione Chiave**](#5-i-file-di-configurazione-chiave)
-      - [**6. Comandi Essenziali per la Gestione (`samba-tool`)**](#6-comandi-essenziali-per-la-gestione-samba-tool)
     - [Gestione del Dominio e Autenticazione Avanzata (RADIUS)](#gestione-del-dominio-e-autenticazione-avanzata-radius)
-      - [**1. Amministrazione Remota da un Client Windows (RSAT)**](#1-amministrazione-remota-da-un-client-windows-rsat)
-      - [**2. I Ruoli FSMO (Flexible Single Master Operation)**](#2-i-ruoli-fsmo-flexible-single-master-operation)
-      - [**3. RADIUS (Remote Authentication Dial-In User Service): Centralizzare l'Autenticazione di Rete**](#3-radius-remote-authentication-dial-in-user-service-centralizzare-lautenticazione-di-rete)
 
 
 <div style="page-break-after: always;"></div>
@@ -2094,7 +2045,7 @@ YAML, acronimo di "Yet Another Markup Language" o "YAML Ain't Markup Language", 
 
 Alla base di YAML c'è un sistema di chiavi e valori organizzati gerarchicamente. Questa organizzazione è resa per mezzo di indentazioni fatte esclusivamente con spazi (mai tabulazioni). Le chiavi sono seguite da due punti ':' e dal loro valore, il quale può essere una stringa, numero, booleano, oggetto o lista. L'indentazione corretta è cruciale per la definizione degli oggetti, liste e mappe.
 
-#### Alcuni Principi Fondamentali di YAML:
+**Alcuni Principi Fondamentali di YAML:**
 
 **Coppie Chiave-Valore**: Formato semplice che usa "chiave: valore".
 **Liste**: Gli elementi di una lista sono preceduti da un trattino (-) e devono essere indentati rispetto alla chiave.
@@ -2102,7 +2053,7 @@ Alla base di YAML c'è un sistema di chiavi e valori organizzati gerarchicamente
 **Multi-Line Stringhe**: YAML supporta stringhe multilinea che possono essere rappresentate in due modi, usando `>` per concatenare le righe senza newline e `|` per mantenere i newline.
 **Alias e Riferimenti**: Utilizzando le ancora (&) e i riferimenti (*), YAML permette di evitare ridondanze nella definizione dei dati.
 
-#### Esempi Separati
+**Esempi Separati**
 
 1. **Coppie Chiave-Valore**:
    ```yaml
@@ -2154,7 +2105,7 @@ Alla base di YAML c'è un sistema di chiavi e valori organizzati gerarchicamente
 
 Un "Compose file" è un file YAML utilizzato da Docker Compose per gestire applicazioni multi-container. La sua struttura include diversi blocchi chiave come `version`, `services`, `volumes`, `networks`, e `secrets`, ciascuno dei quali ha una funzione specifica nel definire il comportamento dei container.
 
-### Componenti Principali del Compose File
+**Componenti Principali del Compose File**
 
 1. **Version**: Specifica la versione del formato del file Compose.
 2. **Services**: Definisce i servizi che compongono l'applicazione.
@@ -2162,7 +2113,7 @@ Un "Compose file" è un file YAML utilizzato da Docker Compose per gestire appli
 4. **Networks**: Stabilisce le reti per la comunicazione tra servizi.
 5. **Secrets**: Gestisce le informazioni riservate ai container.
 
-#### Esempi di Utilizzo
+**Esempi di Utilizzo**
 
 1. **Schema di Applicazione con Database**:
    ```yaml
@@ -2242,13 +2193,11 @@ Un "Compose file" è un file YAML utilizzato da Docker Compose per gestire appli
 - **`docker compose logs`**: Visualizza i log dei servizi.
 
 
-## Gestione delle Applicazioni con Docker Compose
+### Gestione delle Applicazioni con Docker Compose
 
 Docker Compose è uno strumento potente che permette di definire e gestire applicazioni multi-container usando un singolo file YAML noto come "Compose file". Questo strumento è particolarmente utile per orchestrare vari servizi su un singolo host, consentendo agli sviluppatori di definire le interazioni tra i container e le configurazioni di rete in modo preciso e leggibile.
 
-### Esempio Pratico di un'Applicazione Locale
-
-#### L'Applicazione
+**Esempio Pratico di un'Applicazione Locale**
 
 L'esempio che esploreremo coinvolge un'applicazione Python Flask che interagisce con un database in-memory Redis. Questa applicazione consente agli utenti di:
 
@@ -2262,7 +2211,7 @@ L'applicazione è composta da due container:
 
 Entrambi i container condividono una rete, il che significa che possono comunicare usando il nome del servizio. Inoltre, il container dell'app espone la porta TCP 5000 alla porta TCP 8080 dell'host, consentendo agli utenti di interagire con l'applicazione tramite un browser.
 
-#### Files Necessari
+**Files Necessari**
 
 Per configurare l'applicazione, i seguenti file sono fondamentali:
 
@@ -2272,7 +2221,7 @@ Per configurare l'applicazione, i seguenti file sono fondamentali:
 - **docker-compose.yml**: Coordina i servizi in un unico ambiente.
 - **README.txt**: Descrizione del progetto.
 
-#### Configurazione del Progetto
+**Configurazione del Progetto**
 
 1. **Creazione della Struttura del Progetto**:
 
@@ -2308,19 +2257,6 @@ Per configurare l'applicazione, i seguenti file sono fondamentali:
    redis<3.0.0
    ```
 
-### Comprendere Docker Compose e Docker Swarm
-
-Docker Compose gestisce applicazioni multi-container su una singola macchina. Al contrario, Docker Swarm estende questa funzionalità a cluster di computer, consentendo di distribuire stack di applicazioni su più macchine.
-
-### Struttura del Compose File
-
-Il `docker-compose.yml`, che definisce la configurazione dell'applicazione, include diverse sezioni:
-
-- **version**: Specifichiamo la versione del formato Compose.
-- **services**: Definiamo i servizi e i container associati.
-- **networks**: Configuriamo la rete per comunicazioni tra servizi.
-- **volumes**: Definiamo i volumi per la persistenza dei dati.
-
 ### Comandi e Configurazioni di Docker Compose
 
 Con Docker Compose, è possibile avviare i servizi, costruire immagini e gestire container usando semplici comandi. È possibile eseguire questi comandi per creare l'applicazione e i relativi servizi:
@@ -2351,11 +2287,11 @@ Con Docker Compose, è possibile avviare i servizi, costruire immagini e gestire
   docker-compose down
   ```
 
-### Gestione delle Reti e dei Volumi
+### Gestione delle Reti e dei Volumi con Compose
 
 Docker Compose permette di definire reti personalizzate e usare volumi per mantenere i dati persistenti anche dopo la rimozione dei container. Nella sezione `networks` del `docker-compose.yml`, si può specificare una rete utente definita che isola l'accesso ai container.
 
-#### Esempio di Configurazione di Rete:
+**Esempio di Configurazione di Rete:**
 
 ```yaml
 version: '3'
@@ -2374,9 +2310,7 @@ networks:
 
 Questa configurazione consente ai servizi `app` e `redis` di comunicare tra loro attraverso la rete `mynet`.
 
-## Esempio: Applicazione Node.js + MongoDB con Docker Compose
-
-### Descrizione dell’Applicazione
+## **Applicazione Node.js + MongoDB con Docker Compose**
 
 L’applicazione consiste in una web app realizzata in Node.js usando il framework Express, con un database gestito da MongoDB. L’intera soluzione è containerizzata tramite Docker e orchestrata con Docker Compose.
 
@@ -2441,7 +2375,7 @@ Continuazione degli appunti, mantenendo la formattazione e lo stile richiesti:
 9. [Ripetizione o salto: numerazione da correggere se necessario]
 10. [Ripetizione o salto: numerazione da correggere se necessario]
 
-### 1. Installazione del pacchetto Docker Compose su Linux
+### Installazione di Docker su Linux
 
 **Installazione di Docker su Ubuntu tramite script di convenienza**
 
@@ -2487,7 +2421,7 @@ sudo apt update
 sudo apt install docker-compose
 ```
 
-### 2. Creazione delle Reti Virtuali Docker
+### Creazione delle Reti Virtuali Docker
 
 **Rete "interna": comunicazione tra i container (Node.js ⇄ MongoDB)**
 
@@ -2523,7 +2457,7 @@ docker network create -d bridge esterna
 - I container collegati alla stessa rete "interna" possono essere raggiunti tramite il nome del container, risolto automaticamente dal DNS Docker.
 - L’uso di reti distinte ("interna" ed "esterna") permette di segmentare il traffico e controllare la visibilità dei servizi, migliorando sicurezza e scalabilità.
 
-### 3. Costruzione dell’Immagine del Container per l’Applicazione Web Node.js/Express/Mongoose
+### Costruzione dell’Immagine del Container per l’Applicazione Web Node.js/Express/Mongoose
 
 All’interno della directory principale **ASWh4** si trovano due sottodirectory fondamentali:  
 - **nodejs**: contiene i file per costruire l’immagine e il container dell’applicazione web  
@@ -2613,13 +2547,13 @@ Verifica della build:
 docker images | grep nodejsapp
 ```
 
-### 4. Costruzione e Gestione del Container e dei Dati MongoDB
+### Costruzione e Gestione del Container e dei Dati MongoDB
 
 MongoDB, per garantire la persistenza dei dati anche in caso di riavvio del container, mappa le proprie directory interne (/data/db e /data/configdb) su una directory del filesystem dell’host o su un volume Docker. Senza volume i dati andrebbero persi al termine del container, con il volume invece i dati risultano persistenti anche dopo la chiusura del container.
 
 ![](img/Virtualizzazione/mappaturaData.png)
 
-### 5. Costruzione dell’Immagine Per MongoDB e Inizializzazione Database
+### Costruzione dell’Immagine Per MongoDB e Inizializzazione Database
 
 **Inizializzazione automatica del database e della collection**
 
@@ -2691,7 +2625,7 @@ Ora disponi di due immagini personalizzate e pronte all’uso:
 
 Continuazione e conclusione degli appunti sulla gestione e automazione dei container Node.js e MongoDB tramite Docker e Docker Compose, mantenendo impostazione e formato coerente con i punti precedenti:
 
-### 6. Esecuzione del Container con MongoDB e il Database dbsa
+### Esecuzione del Container con MongoDB e il Database dbsa
 
 Prima di avviare il container MongoDB, controlla che la rete virtuale "interna" sia presente ed attiva:
 
@@ -2755,7 +2689,7 @@ db.alignments.find()
 db.alignments.insert({"s1":"PAZTAZ", "s2":"ZACZAC", "as1":"PAZTAZ-U", "as2":"GZACZACVAF"})
 ```
 
-### 7. Esecuzione del Container con l’Applicazione Web Node.js
+### Esecuzione del Container con l’Applicazione Web Node.js
 
 Ora puoi avviare il container per la web application, collegandolo alla rete interna (e poi alla esterna):
 
@@ -2786,7 +2720,7 @@ Risposta attesa: un oggetto JSON con le stringhe elaborate e salvate su MongoDB:
     docker rm nodejsapp
     ```
 
-### 8. Automazione Completa con Docker Compose
+### Automazione Completa con Docker Compose
 
 Per automatizzare build, deploy, collegamento reti/volumi e avvio/stop di tutti i servizi, si utilizza **docker-compose**.
 
@@ -2904,21 +2838,15 @@ Puoi specificare il nome desiderato nel file `.env` così:
 COMPOSE_PROJECT_NAME=aswh4
 ```
 
-## Introduzione a Docker Swarm
+## Docker Swarm
 
-### Costruire Servizi Replicati su un Cluster
-
-Docker Swarm è uno strumento potente per orchestrare container Docker su un cluster di nodi. A differenza di Docker Compose, che opera su un singolo host, Docker Swarm consente di gestire applicazioni distribuendole su più macchine, garantendo scalabilità e ridondanza.
+Docker Swarm è uno strumento potente per orchestrare container Docker su un cluster di nodi. A differenza di Docker Compose, che opera su un singolo host, Docker Swarm consente di gestire applicazioni distribuendole su più macchine, garantendo scalabilità e ridondanza. Docker Compose gestisce applicazioni multi-container su una singola macchina. Al contrario, Docker Swarm estende questa funzionalità a cluster di computer, consentendo di distribuire stack di applicazioni su più macchine.
 
 ### Struttura di Docker Swarm
 
-#### Struttura di Base
-
 - **Swarm**: Un insieme di nodi (macchine) che lavorano insieme. 
 - **Nodo Manager**: Coordina il cluster, distribuendo i compiti ai nodi worker e mantenendo lo stato del cluster.
-- **Nodi Worker**: Eseguono i container, gestendo le istanze replicate dei servizi. Un nodo manager può anche agire come worker.
-
-#### Stack e Servizi
+- **Nodi Worker**: Eseguono i container, gestendo le istanze replicate dei servizi. Un nodo manager può anche agire come worker. Sono deployati su macchine virtuali, ogni compito (task) eseguito su nodi distinti.
 
 - **Stack**: Un gruppo di servizi gestiti insieme. Simile ai servizi definiti in un file Compose, uno stack è composto da immagini container e le relative strutture (reti, volumi...).
 - **Servizi**: Sono distribuiti su nodi worker, creando più istanze dei container, chiamate compiti (tasks).
@@ -2927,7 +2855,7 @@ Docker Swarm è uno strumento potente per orchestrare container Docker su un clu
 
 Un swarm può eseguire più stack, e ogni stack è una collezione di servizi o tasks, gestiti da nodi worker e coordinati da un nodo manager. Il manager distribuisce le richieste dei client alle varie istanze dei servizi in esecuzione sui worker.
 
-### Presupposti di Rete
+**Presupposti di Rete**
 
 - Docker Swarm utilizza iptables per indirizzare le connessioni dei client alle repliche selezionate.
 - La comunicazione tra manager e worker avviene attraverso le porte TCP 2376 e 2377.
@@ -2994,53 +2922,21 @@ Tutti i comandi che seguono vengono lanciti sui nodi menager ad eccezione di joi
     docker service rm mystack_tcpreplayservice
     docker service rm myregistry
     ```
-    
 
-### Struttura dell'Esempio Docker Swarm
 
-- **Giallo**: VM con nodo Swarm.
-- **Beige**: VM con client, emula client esterni.
-- **Verde**: Host fisico.
+### Pubblicazione delle Porte e Routing Mesh
 
-### Dettagli Strutturali
-
-- **Host Fisico**: Include macchine virtuali su Virtualbox.
-- **VM `deb1` e `deb2`**: Rappresentano nodi worker e manager.
-- **Clienti**: Emulati nella VM client.
-- **Nodi Swarm**: Servizi deployati su macchine virtuali, ogni compito (task) eseguito su nodi distinti.
-
-## Pubblicazione delle Porte e Routing Mesh
-
-### Meccanismo di Pubblicazione
-
-Non è essenziale collocare i worker su una rete interna separata. Attraverso la pubblicazione delle porte in modalità ingress, qualsiasi nodo può ricevere richieste e inoltrarle tramite routing mesh a un nodo che esegue il servizio richiesto.
-
-### Sicurezza
-
+- Non è essenziale collocare i worker su una rete interna separata. Attraverso la pubblicazione delle porte in modalità ingress, qualsiasi nodo può ricevere richieste e inoltrarle tramite routing mesh a un nodo che esegue il servizio richiesto.
 - Aumenta la sicurezza collocando i worker su una rete interna per ricevere richieste solo tramite il manager. Riduce l'esposizione delle porte pubblicate e aumenta la sicurezza generale del sistema.
-
-## Problematiche di Sicurezza
-
-### Esposizione a Rischi
-
 - Esporre le porte di tutti i nodi aumenta il rischio di attacchi. Limitare l'esposizione al solo nodo manager può mitigare questo rischio.
-
-### Soluzioni
-
 - Usare strumenti come Traefik o NGINX per la discovery automatica delle repliche attive aiuta nel mantenere la sicurezza e l'efficienza del cluster. È importante considerare la posizione di questi strumenti rispetto al nodo manager per ridurre il rischio.
 
-## Discovery Automatica delle Repliche Attive
-
-### Processo
+### Discovery Automatica delle Repliche Attive
 
 - **Service Discovery**: Un reverse proxy come Traefik o NGINX rileva i container attivi, la loro posizione e porta, configurando dinamicamente le rotte.
 
-### Strumenti Usati
-
 1. **Docker Socket**: Accessibile solo dal nodo manager, semplice ma legato strettamente a Docker.
 2. **Consul o Etcd**: Strumenti esterni per registrare i servizi attivi, più complessi ma portabili e fault-tolerant.
-
-### Riepilogo
 
 | Metodo         | Accesso al Cluster      | Complessità | Auto-discovery | Note                              |
 |----------------|-------------------------|-------------|----------------|-----------------------------------|
@@ -3049,9 +2945,7 @@ Non è essenziale collocare i worker su una rete interna separata. Attraverso la
 | Etcd           | Totale                  | Alta        | Sì             | Usato in ambienti Kubernetes      |
 | Statico        | Nessuno                 | Bassa       | No             | Richiede configurazione manuale   |
 
-Certo! Ecco la versione degli appunti riscritta **in formato Markdown**, mantenendo lo stile coerente con l'esempio fornito, **con commenti tecnici** per chiarire passaggi critici e concetti chiave (ad es. l'uso di reti `overlay` in ambiente distribuito):
-
-## Esempio Docker Swarm: App Node.js + MongoDB
+### Esempio Docker Swarm: App Node.js + MongoDB
 
 Questo esempio mostra il deploy di due servizi su Docker Swarm:
 
@@ -3060,7 +2954,7 @@ Un database **MongoDB** (`mongodb`)
 
 Entrambi i servizi sono **conteneirizzati**, **replicati** e gestiti da **stack Swarm**, con reti overlay e volumi persistenti.
 
-### Definizione dei Servizi
+**Definizione dei Servizi**
 
 ```yaml
 services:
@@ -3143,8 +3037,7 @@ services:
         volume:
           nocopy: true
 ```
-
-### Reti Overlay
+**Reti Overlay**
 
 ```yaml
 networks:
@@ -3169,7 +3062,7 @@ networks:
 
 In ambienti Swarm su più nodi, le reti `bridge` funzionano solo all’interno dello stesso nodo. Per comunicazioni cross-node, si usa **`overlay`**, che permette il traffico tra container su host diversi.
 
-### Volumi per Persistenza
+**Volumi per Persistenza**
 
 ```yaml
 volumes:
@@ -3178,8 +3071,6 @@ volumes:
 ```
 
 I volumi vengono gestiti da Docker Swarm e montati sui nodi dove gira MongoDB. L’opzione `nocopy: true` impedisce che i dati presenti nella directory del container sovrascrivano il contenuto del volume montato.
-
-### Considerazioni Chiave
 
 **`depends_on` in Swarm è ignorato**: la sequenza di avvio deve essere gestita dentro l'app o tramite meccanismi come `healthcheck`, `retry`, o orchestratori esterni.
 
@@ -3192,7 +3083,7 @@ I volumi vengono gestiti da Docker Swarm e montati sui nodi dove gira MongoDB. L
   * MongoDB su `worker` per separare il livello dati dal frontend
   * Node.js su `manager` per esempio, accessibile da client esterni
 
-### Comandi Swarm Utili (Ripasso)
+### Comandi Swarm Utili
 
 ```bash
 # Avvio cluster manager
@@ -3218,8 +3109,6 @@ Kubernetes è una potente architettura software client-server progettata per la 
 **Per approfondimenti, consultare:**
 - Serie di articoli "Kubernetes and everything else" di Rinor Maloku: [https://rinormaloku.com/series/kubernetes-andeverything-else/](https://rinormaloku.com/series/kubernetes-andeverything-else/)
 - Documentazione ufficiale di Kubernetes: [https://kubernetes.io/docs/home/](https://kubernetes.io/docs/home/)
-
-### Kubernetes Concepts
 
 - **Nodi (Nodes)**: Gli host all'interno di un cluster Kubernetes sono chiamati **nodi**.
 
@@ -3878,13 +3767,7 @@ RADIUS è un servizio AAA (Autenticazione, Autorizzazione, Accounting) che astra
 ### Funzionamento di RADIUS
 
 - **Attori**: Client, Network Access Server (NAS) e server RADIUS.
-- **Processo**: Il client invia una richiesta di autenticazione al NAS, che la inoltra al server RADIUS. Il server verifica le credenziali e restituisce una conferma o un rifiuto di accesso, eventualmente con informazioni aggiuntive come l'assegnazione di VLAN.
-
-### Esempio di RADIUS
-
-In uno scenario in cui l'accesso web è controllato tramite credenziali Active Directory, il NAS (server web) si interfaccia con il server RADIUS, che si integra nativamente con Active Directory.
-
-### Installazione di RADIUS
+- **Processo**: Il client invia una richiesta di autenticazione al NAS, che la inoltra al server RADIUS. Il server verifica le credenziali e restituisce una conferma o un rifiuto di accesso, eventualmente con informazioni aggiuntive come l'assegnazione di VLAN. In uno scenario in cui l'accesso web è controllato tramite credenziali Active Directory, il NAS (server web) si interfaccia con il server RADIUS, che si integra nativamente con Active Directory.
 
 Per installare RADIUS su un DC, aggiungere il ruolo "Policy and Access Services", che include:
 
@@ -3980,7 +3863,7 @@ La virtualizzazione è un processo di astrazione delle risorse informatiche, che
 
 Per comprendere come si integrano sistemi complessi, è fondamentale partire dai servizi che ne gestiscono l'identità e l'autenticazione. I seguenti concetti sono il fondamento su cui si costruisce un'infrastruttura di rete centralizzata, anche in ambienti Linux.
 
-#### **1. Active Directory (AD): Il Concetto di Directory Service**
+**Active Directory (AD): Il Concetto di Directory Service**
 
 **Cos'è?**
 Active Directory (AD) è un **Directory Service**, ovvero un database gerarchico e distribuito che centralizza la gestione di tutte le risorse di una rete (utenti, computer, stampanti, cartelle condivise, policy di sicurezza). Sebbene sia una tecnologia Microsoft, i suoi principi e protocolli sono standardizzati e possono essere implementati anche su Linux (tramite **Samba**).
@@ -3995,7 +3878,7 @@ L'architettura di AD si basa su:
 *   **Dominio:** Un confine amministrativo per utenti e computer (es. `example.local`).
 *   **Forest/Tree (Foresta/Albero):** Insiemi di domini che si fidano l'uno dell'altro.
 
-#### **2. LDAP (Lightweight Directory Access Protocol): Il Protocollo di Accesso**
+**LDAP (Lightweight Directory Access Protocol): Il Protocollo di Accesso**
 
 **Cos'è?**
 LDAP non è un prodotto, ma un **protocollo standard** per accedere e manipolare le informazioni contenute in un Directory Service come Active Directory. È il linguaggio che le applicazioni usano per "parlare" con la directory.
@@ -4014,7 +3897,7 @@ Le applicazioni possono eseguire operazioni LDAP per:
 
 Lo strumento **LdapAdmin** menzionato nei tuoi appunti è un client grafico che permette di eseguire queste query in modo visuale.
 
-#### **3. Kerberos: Il Protocollo di Autenticazione**
+**Kerberos: Il Protocollo di Autenticazione**
 
 **Cos'è?**
 Kerberos è il protocollo di autenticazione di default in Active Directory. È progettato per fornire un'autenticazione forte e sicura in reti non sicure, basandosi sul concetto di "ticket".
@@ -4038,7 +3921,7 @@ Kerberos è estremamente sensibile alla sincronizzazione temporale. Tutti i comp
 
 Prima di poter implementare un Domain Controller, il sistema operativo sottostante deve essere configurato in modo robusto e prevedibile. Un server, a differenza di un desktop, richiede una gestione precisa dei servizi e una configurazione di rete statica.
 
-#### **1. Gestione dei Servizi e del Sistema con `systemd`**
+**Gestione dei Servizi e del Sistema con `systemd`**
 
 In quasi tutte le distribuzioni Linux moderne, `systemd` è l'**init system**, ovvero il primo processo avviato dal kernel, responsabile della gestione di tutti gli altri servizi (demoni) del sistema.
 
@@ -4068,7 +3951,7 @@ Il comando principale per interagire con `systemd` è `systemctl`.
     journalctl -f               # Mostra i log in tempo reale (come tail -f)
     ```
 
-#### **2. Gestione Utenti Locali e Privilegi con `sudo`**
+**Gestione Utenti Locali e Privilegi con `sudo`**
 
 Un server deve avere una gestione rigorosa degli accessi. Il comando `sudo` (SuperUser DO) è lo strumento standard per permettere a un utente non-privilegiato di eseguire comandi con i privilegi di un altro utente (solitamente `root`).
 
@@ -4081,7 +3964,7 @@ Un server deve avere una gestione rigorosa degli accessi. Il comando `sudo` (Sup
 *   `passwd <nomeutente>`: Cambia la password di un utente.
 *   `usermod -aG <gruppo> <utente>`: Aggiunge un utente a un gruppo (es. `usermod -aG sudo mario`).
 
-#### **3. Configurazione di Rete Statica con `netplan`**
+**Configurazione di Rete Statica con `netplan`**
 
 Un server deve avere un **indirizzo IP statico** per essere raggiungibile in modo affidabile. Nelle versioni moderne di Ubuntu/Lubuntu, la configurazione di rete è gestita da **Netplan**, un'utility che astrae la configurazione di rete tramite semplici file in formato **YAML**.
 
@@ -4107,7 +3990,7 @@ network:
     sudo netplan apply
     ```
 
-#### **4. Il Servizio DNS (Domain Name System) con BIND**
+**Il Servizio DNS (Domain Name System) con BIND**
 
 Il DNS è la "rubrica telefonica di Internet" e un **prerequisito non negoziabile** per Active Directory. AD lo usa intensamente per la *service discovery*: i client trovano i Domain Controller, i server Kerberos e altri servizi interrogando record DNS specifici.
 
@@ -4137,11 +4020,7 @@ Il DNS è la "rubrica telefonica di Internet" e un **prerequisito non negoziabil
 
 ### Samba come Domain Controller Active Directory
 
-Una volta preparato il server con rete statica e DNS, possiamo installare il software che emulerà le funzionalità di un Domain Controller Windows: **Samba**.
-
-#### **1. Samba: Oltre la Condivisione di File**
-
-Samba è nato come un'implementazione libera del protocollo **SMB/CIFS (Server Message Block/Common Internet File System)**, permettendo ai server Linux di agire come file server e print server in reti Windows.
+Una volta preparato il server con rete statica e DNS, possiamo installare il software che emulerà le funzionalità di un Domain Controller Windows: **Samba**. Samba è nato come un'implementazione libera del protocollo **SMB/CIFS (Server Message Block/Common Internet File System)**, permettendo ai server Linux di agire come file server e print server in reti Windows.
 
 Tuttavia, dalla versione 4, Samba ha fatto un salto qualitativo epocale: è in grado di funzionare come un **Domain Controller Active Directory (AD DC)** completo. Questo significa che può gestire:
 *   Autenticazione degli utenti tramite **Kerberos**.
@@ -4151,7 +4030,7 @@ Tuttavia, dalla versione 4, Samba ha fatto un salto qualitativo epocale: è in g
 
 **Concetto Chiave:** Samba non è *un'alternativa* ad Active Directory, ma un'**implementazione compatibile** con essa. Un Domain Controller Samba può coesistere in una foresta con DC Windows, oppure creare un dominio da zero.
 
-#### **2. Winbind: Il Ponte tra Mondi**
+**Winbind: Il Ponte tra Mondi**
 
 Per far sì che il sistema operativo Linux "veda" gli utenti e i gruppi del dominio Active Directory come se fossero locali, Samba utilizza un componente chiamato **Winbind**.
 
@@ -4165,7 +4044,7 @@ Per far sì che il sistema operativo Linux "veda" gli utenti e i gruppi del domi
 *   `wbinfo -u`: Elenca gli utenti del dominio visti da Winbind.
 *   `wbinfo -g`: Elenca i gruppi del dominio.
 
-#### **3. ACL (Access Control List) e Attributi Estesi: Permessi "alla Windows" su Linux**
+**ACL (Access Control List) e Attributi Estesi: Permessi "alla Windows" su Linux**
 
 Il sistema di permessi standard di Linux (`rwx` per proprietario, gruppo, altri) è meno granulare di quello di Windows, che permette di assegnare permessi specifici a più utenti e gruppi.
 
@@ -4175,7 +4054,7 @@ Per replicare questo comportamento, è necessario abilitare due funzionalità su
 
 Queste opzioni vengono abilitate nel file `/etc/fstab` per la partizione desiderata e richiedono un riavvio per essere attivate.
 
-#### **4. Il Processo di "Provisioning" del Dominio**
+**Il Processo di "Provisioning" del Dominio**
 
 Creare un nuovo dominio con Samba non è una semplice installazione, ma un processo chiamato **provisioning**. Durante questa fase, eseguita con il comando `samba-tool domain provision`, vengono creati:
 *   Lo **schema** di Active Directory (la definizione di tutti i possibili oggetti e attributi).
@@ -4187,13 +4066,13 @@ Creare un nuovo dominio con Samba non è una semplice installazione, ma un proce
 *   `--use-rfc2307`: Abilita attributi specifici per l'integrazione con sistemi UNIX/Linux (es. UID/GID numerici per gli utenti AD).
 *   `--dns-backend=BIND9_DLZ`: Questa è un'opzione avanzata e molto potente. Invece di usare il DNS interno di Samba o file di testo, si dice a Samba di integrarsi direttamente con **BIND**. I record DNS del dominio AD non saranno in un file di testo, ma verranno memorizzati nel database LDAP di Samba e serviti dinamicamente da BIND tramite un modulo speciale (**DLZ - Dynamically Loadable Zones**). Questo permette **aggiornamenti DNS sicuri e dinamici**, proprio come in un ambiente Windows nativo.
 
-#### **5. I File di Configurazione Chiave**
+**I File di Configurazione Chiave**
 
 *   `/etc/samba/smb.conf`: Il file di configurazione principale di Samba. Definisce il ruolo del server (AD DC), il realm Kerberos, le condivisioni di rete (come `netlogon` e `sysvol`, fondamentali per AD) e le impostazioni di Winbind.
 *   `/etc/bind/named.conf.options` e `/etc/bind/named.conf`: File di configurazione di BIND, dove si abilita l'integrazione con Samba (tramite la direttiva `tkey-gssapi-keytab` e l'inclusione della configurazione DLZ).
 *   `/etc/krb5.conf`: File di configurazione di Kerberos. Specifica qual è il KDC per il nostro realm.
 
-#### **6. Comandi Essenziali per la Gestione (`samba-tool`)**
+**Comandi Essenziali per la Gestione (`samba-tool`)**
 
 Mentre la gestione può essere fatta da un client Windows con RSAT, Samba fornisce un potente strumento a riga di comando per amministrare il dominio direttamente dal server: `samba-tool`.
 
@@ -4218,7 +4097,7 @@ Mentre la gestione può essere fatta da un client Windows con RSAT, Samba fornis
 
 Una volta che il nostro Domain Controller Samba è operativo, il passo successivo è integrarlo con i client e utilizzarlo per centralizzare l'autenticazione su più servizi.
 
-#### **1. Amministrazione Remota da un Client Windows (RSAT)**
+**Amministrazione Remota da un Client Windows (RSAT)**
 
 Sebbene `samba-tool` sia potente, la gestione quotidiana di Active Directory è spesso più agevole tramite le interfacce grafiche a cui gli amministratori Windows sono abituati. Per fare questo, si utilizzano gli **RSAT (Remote Server Administration Tools)**.
 
@@ -4237,7 +4116,7 @@ Le GPO sono uno strumento estremamente potente di Active Directory. Permettono d
 
 Le policy vengono fisicamente salvate nella condivisione `sysvol` del Domain Controller.
 
-#### **2. I Ruoli FSMO (Flexible Single Master Operation)**
+**I Ruoli FSMO (Flexible Single Master Operation)**
 
 In un ambiente con più Domain Controller, per evitare conflitti su operazioni critiche, Active Directory designa un singolo DC come "master" per determinate operazioni. Questi sono i ruoli FSMO. Anche se stiamo usando un solo DC, questi ruoli esistono e sono tutti assegnati ad esso.
 
@@ -4250,7 +4129,7 @@ In un ambiente con più Domain Controller, per evitare conflitti su operazioni c
 
 È possibile visualizzare e (in un ambiente multi-DC) trasferire questi ruoli tramite gli snap-in di RSAT.
 
-#### **3. RADIUS (Remote Authentication Dial-In User Service): Centralizzare l'Autenticazione di Rete**
+**RADIUS (Remote Authentication Dial-In User Service): Centralizzare l'Autenticazione di Rete**
 
 Molti dispositivi di rete, come Access Point Wi-Fi, switch di rete e VPN concentrator, non possono interagire direttamente con Kerberos, ma supportano un protocollo standard per l'autenticazione centralizzata: **RADIUS**.
 
