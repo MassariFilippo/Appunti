@@ -128,8 +128,7 @@
     - [Struttura di Docker Swarm](#struttura-di-docker-swarm)
     - [Funzionamento di un Swarm](#funzionamento-di-un-swarm)
     - [Comandi Ed Esempi](#comandi-ed-esempi)
-    - [Pubblicazione delle Porte, Routing Mesh e Sicurezza](#pubblicazione-delle-porte-routing-mesh-e-sicurezza)
-    - [Discovery Automatica delle Repliche Attive](#discovery-automatica-delle-repliche-attive)
+    - [Docker Swarm: Routing Mesh (Ingress Overlay Network), Sicurezza e Strategie di Pubblicazione dei Servizi](#docker-swarm-routing-mesh-ingress-overlay-network-sicurezza-e-strategie-di-pubblicazione-dei-servizi)
     - [Esempio Docker Swarm: App Node.js + MongoDB](#esempio-docker-swarm-app-nodejs--mongodb)
     - [Comandi Swarm Utili](#comandi-swarm-utili)
   - [Kubernetes](#kubernetes)
@@ -2921,47 +2920,57 @@ Tutti i comandi che seguono vengono lanciti sui nodi menager ad eccezione di joi
     docker service rm myregistry
     ```
 
+### Docker Swarm: Routing Mesh (Ingress Overlay Network), Sicurezza e Strategie di Pubblicazione dei Servizi
 
-### Pubblicazione delle Porte, Routing Mesh e Sicurezza
-
-Docker Swarm offre un potente meccanismo per la pubblicazione dei servizi e il bilanciamento del carico chiamato **Routing Mesh (o Ingress Overlay Network)**. Tuttavia, la sua semplicità d'uso introduce importanti considerazioni di sicurezza.
+Docker Swarm semplifica la pubblicazione dei servizi e il bilanciamento del carico grazie al suo **Routing Mesh**, noto anche come **Ingress Overlay Network**. Sebbene sia estremamente comodo, introduce importanti considerazioni di sicurezza dovute alla sua architettura di default.
 
 **Il Funzionamento del Routing Mesh**
 
-*   **Pubblicazione "Ingress":** Quando un servizio viene pubblicato in Docker Swarm (tramite l'opzione `ports` in modalità `ingress`), la porta specificata viene aperta su **tutti i nodi** del cluster, sia manager che worker, indipendentemente dal fatto che il servizio sia effettivamente in esecuzione su quel nodo.
-*   **Bilanciamento e Inoltro:** Qualsiasi richiesta in arrivo su quella porta, su *qualsiasi* nodo del cluster, viene intercettata dal Routing Mesh. Questo sistema interno si occupa poi di bilanciare il carico e inoltrare la richiesta a un'istanza (replica) attiva e sana del servizio, che può trovarsi su un nodo diverso.
+Quando un servizio Docker Swarm viene pubblicato con l'opzione `ports` in modalità `ingress`, la porta specificata viene aperta su **tutti i nodi del cluster** (sia manager che worker), indipendentemente da dove le repliche del servizio siano effettivamente in esecuzione.
 
-**Implicazioni di Sicurezza e Strategie di Mitigazione**
+Qualsiasi richiesta in arrivo su questa porta, su *qualsiasi* nodo dello swarm, viene intercettata dal Routing Mesh. Questo sistema interno si occupa poi di bilanciare il carico e inoltrare la richiesta a un'istanza (replica) attiva e sana del servizio, che può trovarsi su un nodo diverso da quello che ha ricevuto la richiesta iniziale.
 
-La natura "any-node, any-port" del Routing Mesh, se da un lato è comoda, dall'altro presenta dei rischi di sicurezza. Esporre le porte su *tutti* i nodi del cluster significa che ogni worker, oltre ai manager, diventa un potenziale punto di ingresso per attacchi. Questo aumenta drasticamente la "superficie di attacco" complessiva del sistema.
+**Implicazioni di Sicurezza: L'Aumento della Superficie di Attacco**
 
-Per mitigare questi rischi, è **fortemente consigliato** adottare le seguenti strategie:
-**Segmentazione della Rete (Isolamento dei Worker):**
-  *   Collocare i **nodi worker su una rete interna separata e isolata** (es. una sottorete privata non direttamente accessibile dall'esterno).
-  *   In questa configurazione, i worker dovrebbero comunicare solo con i nodi manager e con gli altri servizi interni, senza ricevere direttamente traffico dall'esterno.
-  *   Ciò **riduce l'esposizione delle porte pubblicate** al mondo esterno, in quanto solo i nodi designati (solitamente i manager o nodi dedicati al traffico in ingresso) avranno connettività pubblica.
+La natura "any-node, any-port" del Routing Mesh, pur essendo un vantaggio in termini di semplicità e alta disponibilità, espone ogni nodo (inclusi i worker) come potenziale punto di ingresso. Questo **aumenta significativamente la superficie di attacco complessiva** del sistema, rendendo cruciale l'adozione di strategie di mitigazione per proteggere il cluster.
 
-**Uso di Load Balancer / Reverse Proxy Esterni (es. Traefik, NGINX):**
-  *   Per una gestione più robusta e sicura del traffico in ingresso, è preferibile utilizzare strumenti esterni come **Traefik o NGINX**.
-  *   Questi strumenti si posizionano **davanti al cluster Swarm**, fungendo da unico punto di ingresso pubblico. Si occupano di:
-    *   Terminare le connessioni esterne.
-    *   Bilanciare il carico tra i nodi dello swarm.
-    *   Instradare le richieste ai servizi corretti all'interno del cluster (spesso tramite "discovery automatica" delle repliche attive attraverso l'API di Swarm).
-  * Per massimizzare la sicurezza e le prestazioni, questi strumenti dovrebbero essere ospitati su **nodi dedicati** o su un'infrastruttura di bilanciamento del carico esterna al cluster Swarm stesso.
+**Strategie di Mitigazione e Pubblicazione Sicura dei Servizi**
 
-### Discovery Automatica delle Repliche Attive
+Per mitigare i rischi e gestire il traffico in ingresso in modo più sicuro e controllato, è **fortemente consigliato** adottare le seguenti strategie:
 
-- **Service Discovery**: Un reverse proxy come Traefik o NGINX rileva i container attivi, la loro posizione e porta, configurando dinamicamente le rotte.
+1.  **Segmentazione della Rete (Isolamento dei Worker):**
+    La prima linea di difesa è la **segmentazione della rete**. È cruciale collocare i **nodi worker su una rete interna privata e isolata**, che non sia direttamente accessibile dall'esterno. In questa configurazione, i worker dovrebbero comunicare solo con i nodi manager e con gli altri servizi interni dello swarm.
+    Solo i nodi designati (tipicamente i manager o nodi front-end specifici) avranno connettività pubblica. Questo riduce drasticamente l'esposizione delle porte pubblicate al mondo esterno, limitando il traffico in ingresso ai soli punti controllati e protetti.
 
-1. **Docker Socket**: Accessibile solo dal nodo manager, semplice ma legato strettamente a Docker.
-2. **Consul o Etcd**: Strumenti esterni per registrare i servizi attivi, più complessi ma portabili e fault-tolerant.
+2.  **Uso di Load Balancer / Reverse Proxy Esterni (es. Traefik, NGINX):**
+    Per una gestione più robusta, flessibile e sicura del traffico in ingresso, l'approccio preferibile è l'utilizzo di strumenti esterni dedicati come **Traefik o NGINX**. Questi si posizionano **davanti al cluster Swarm**, fungendo da unico punto di ingresso pubblico e fornendo un controllo granulare sul traffico.
 
-| Metodo         | Accesso al Cluster      | Complessità | Auto-discovery | Note                              |
-|----------------|-------------------------|-------------|----------------|-----------------------------------|
-| Docker Socket  | Solo nodo manager       | Bassa       | Sì             | Facile, legato a Docker           |
-| Consul         | Totale                  | Media/Alta  | Sì             | Scalabile e multi-cluster         |
-| Etcd           | Totale                  | Alta        | Sì             | Usato in ambienti Kubernetes      |
-| Statico        | Nessuno                 | Bassa       | No             | Richiede configurazione manuale   |
+    I loro compiti principali includono:
+    *   **Terminazione delle connessioni esterne:** Gestiscono il traffico in entrata e possono occuparsi della terminazione SSL/TLS.
+    *   **Bilanciamento del carico intelligente:** Distribuiscono le richieste in modo efficiente tra le repliche attive dei servizi Docker Swarm.
+    *   **Instradamento dinamico delle richieste:** Grazie a meccanismi di *Service Discovery*.
+
+    Per massimizzare sicurezza e prestazioni, questi load balancer/reverse proxy dovrebbero essere ospitati su **nodi dedicati** o su un'infrastruttura di bilanciamento del carico esterna al cluster Swarm stesso, fornendo un ulteriore strato di isolamento e resilienza.
+
+**Discovery Automatica delle Repliche Attive (Service Discovery)**
+
+La **Discovery Automatica delle Repliche Attive** è una funzionalità chiave quando si utilizzano reverse proxy esterni. Permette a questi proxy di rilevare in tempo reale i container attivi, la loro posizione (indirizzo IP e porta), e di configurare dinamicamente le rotte senza intervento manuale. Questo assicura che il traffico sia sempre diretto a istanze disponibili e sane del servizio, anche quando i servizi scalano su/giù o si spostano tra i nodi.
+
+I metodi comuni per la Service Discovery che un reverse proxy può utilizzare includono:
+
+*   **Docker Socket:** Il reverse proxy accede direttamente all'API Docker (spesso sui nodi manager) per interrogare lo stato dei servizi e ottenere le informazioni necessarie per il routing.
+    *   **Vantaggi:** Semplice e nativo per l'ambiente Docker, facile da configurare per scenari di base.
+    *   **Svantaggi:** Richiede che il proxy abbia accesso al socket Docker, il che può presentare un rischio di sicurezza se non gestito con attenzione; meno scalabile per cluster molto grandi o complessi.
+
+*   **Sistemi Key-Value Distribuiti:** I servizi si registrano automaticamente al loro avvio in un sistema Key-Value distribuito (come Consul o Etcd) che funge da registro centralizzato. Il reverse proxy interroga questi registri per ottenere le informazioni di routing più aggiornate.
+    *   **Vantaggi:** Altamente scalabile, robusto, agnostico rispetto alla piattaforma di orchestrazione sottostante (quindi più portabile), offre funzionalità avanzate come health checks distribuiti.
+    *   **Svantaggi:** Maggiore complessità di setup e gestione, richiede un'infrastruttura aggiuntiva dedicata per il sistema K/V.
+
+| Metodo di Discovery      | Descrizione                                                               | Vantaggi                                      | Svantaggi                                                    |
+|--------------------------|---------------------------------------------------------------------------|-----------------------------------------------|--------------------------------------------------------------|
+| **Docker Socket**        | Il reverse proxy interroga direttamente l'API Docker (spesso sui manager) per le informazioni sui servizi. | Semplice e nativo per Docker; rapida implementazione. | Richiede accesso privilegiato al socket Docker; scalabilità limitata per grandi cluster. |
+| **Consul / Etcd**        | I servizi si registrano in un sistema K/V distribuito; il proxy legge da lì. | Altamente scalabile, robusto, flessibile; agnostico alla piattaforma. | Maggiore complessità di setup e gestione; richiede infrastruttura esterna. |
+| **Statico (Non raccomandato)** | Le rotte sono configurate manualmente e fisse nel reverse proxy.           | Nessuna dipendenza esterna; semplice per test. | Nessuna auto-discovery; inadatto per ambienti dinamici e di produzione. |
 
 ### Esempio Docker Swarm: App Node.js + MongoDB
 
