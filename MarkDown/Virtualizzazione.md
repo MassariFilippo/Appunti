@@ -128,7 +128,7 @@
     - [Struttura di Docker Swarm](#struttura-di-docker-swarm)
     - [Funzionamento di un Swarm](#funzionamento-di-un-swarm)
     - [Comandi Ed Esempi](#comandi-ed-esempi)
-    - [Pubblicazione delle Porte e Routing Mesh](#pubblicazione-delle-porte-e-routing-mesh)
+    - [Pubblicazione delle Porte, Routing Mesh e Sicurezza](#pubblicazione-delle-porte-routing-mesh-e-sicurezza)
     - [Discovery Automatica delle Repliche Attive](#discovery-automatica-delle-repliche-attive)
     - [Esempio Docker Swarm: App Node.js + MongoDB](#esempio-docker-swarm-app-nodejs--mongodb)
     - [Comandi Swarm Utili](#comandi-swarm-utili)
@@ -2349,8 +2349,6 @@ Se l’applicazione viene avviata su una macchina virtuale (es: VirtualBox con O
   - Per esempio, la porta 3000 del container Node.js va esposta come 8080 all’esterno della VM.
 - In questo modo, i client sul PC host possono raggiungere il servizio all’indirizzo `localhost:8080`.
 
-![Schema VirtualBox Port Forwarding](schema_virtualbox_port_forwarding.png)
-
 **Caso Alternativo:**  
 Se i test vengono eseguiti all’interno della stessa VM (client interni), NON serve configurare il port forwarding; i client si connetteranno direttamente alla porta esposta da Node.js nel network della VM.
 
@@ -2840,7 +2838,7 @@ COMPOSE_PROJECT_NAME=aswh4
 
 ## Docker Swarm
 
-Docker Swarm è uno strumento potente per orchestrare container Docker su un cluster di nodi. A differenza di Docker Compose, che opera su un singolo host, Docker Swarm consente di gestire applicazioni distribuendole su più macchine, garantendo scalabilità e ridondanza. Docker Compose gestisce applicazioni multi-container su una singola macchina. Al contrario, Docker Swarm estende questa funzionalità a cluster di computer, consentendo di distribuire stack di applicazioni su più macchine.
+Docker Swarm è uno strumento potente per orchestrare container Docker su un cluster di nodi. A differenza di Docker Compose, che opera su un singolo host, Docker Swarm consente di gestire applicazioni distribuendole su più macchine, garantendo scalabilità e ridondanza. Docker Compose gestisce applicazioni multi-container su una singola macchina al contrario, Docker Swarm estende questa funzionalità a cluster di computer, consentendo di distribuire stack di applicazioni su più macchine.
 
 ### Struttura di Docker Swarm
 
@@ -2924,12 +2922,32 @@ Tutti i comandi che seguono vengono lanciti sui nodi menager ad eccezione di joi
     ```
 
 
-### Pubblicazione delle Porte e Routing Mesh
+### Pubblicazione delle Porte, Routing Mesh e Sicurezza
 
-- Non è essenziale collocare i worker su una rete interna separata. Attraverso la pubblicazione delle porte in modalità ingress, qualsiasi nodo può ricevere richieste e inoltrarle tramite routing mesh a un nodo che esegue il servizio richiesto.
-- Aumenta la sicurezza collocando i worker su una rete interna per ricevere richieste solo tramite il manager. Riduce l'esposizione delle porte pubblicate e aumenta la sicurezza generale del sistema.
-- Esporre le porte di tutti i nodi aumenta il rischio di attacchi. Limitare l'esposizione al solo nodo manager può mitigare questo rischio.
-- Usare strumenti come Traefik o NGINX per la discovery automatica delle repliche attive aiuta nel mantenere la sicurezza e l'efficienza del cluster. È importante considerare la posizione di questi strumenti rispetto al nodo manager per ridurre il rischio.
+Docker Swarm offre un potente meccanismo per la pubblicazione dei servizi e il bilanciamento del carico chiamato **Routing Mesh (o Ingress Overlay Network)**. Tuttavia, la sua semplicità d'uso introduce importanti considerazioni di sicurezza.
+
+**Il Funzionamento del Routing Mesh**
+
+*   **Pubblicazione "Ingress":** Quando un servizio viene pubblicato in Docker Swarm (tramite l'opzione `ports` in modalità `ingress`), la porta specificata viene aperta su **tutti i nodi** del cluster, sia manager che worker, indipendentemente dal fatto che il servizio sia effettivamente in esecuzione su quel nodo.
+*   **Bilanciamento e Inoltro:** Qualsiasi richiesta in arrivo su quella porta, su *qualsiasi* nodo del cluster, viene intercettata dal Routing Mesh. Questo sistema interno si occupa poi di bilanciare il carico e inoltrare la richiesta a un'istanza (replica) attiva e sana del servizio, che può trovarsi su un nodo diverso.
+
+**Implicazioni di Sicurezza e Strategie di Mitigazione**
+
+La natura "any-node, any-port" del Routing Mesh, se da un lato è comoda, dall'altro presenta dei rischi di sicurezza. Esporre le porte su *tutti* i nodi del cluster significa che ogni worker, oltre ai manager, diventa un potenziale punto di ingresso per attacchi. Questo aumenta drasticamente la "superficie di attacco" complessiva del sistema.
+
+Per mitigare questi rischi, è **fortemente consigliato** adottare le seguenti strategie:
+**Segmentazione della Rete (Isolamento dei Worker):**
+  *   Collocare i **nodi worker su una rete interna separata e isolata** (es. una sottorete privata non direttamente accessibile dall'esterno).
+  *   In questa configurazione, i worker dovrebbero comunicare solo con i nodi manager e con gli altri servizi interni, senza ricevere direttamente traffico dall'esterno.
+  *   Ciò **riduce l'esposizione delle porte pubblicate** al mondo esterno, in quanto solo i nodi designati (solitamente i manager o nodi dedicati al traffico in ingresso) avranno connettività pubblica.
+
+**Uso di Load Balancer / Reverse Proxy Esterni (es. Traefik, NGINX):**
+  *   Per una gestione più robusta e sicura del traffico in ingresso, è preferibile utilizzare strumenti esterni come **Traefik o NGINX**.
+  *   Questi strumenti si posizionano **davanti al cluster Swarm**, fungendo da unico punto di ingresso pubblico. Si occupano di:
+    *   Terminare le connessioni esterne.
+    *   Bilanciare il carico tra i nodi dello swarm.
+    *   Instradare le richieste ai servizi corretti all'interno del cluster (spesso tramite "discovery automatica" delle repliche attive attraverso l'API di Swarm).
+  * Per massimizzare la sicurezza e le prestazioni, questi strumenti dovrebbero essere ospitati su **nodi dedicati** o su un'infrastruttura di bilanciamento del carico esterna al cluster Swarm stesso.
 
 ### Discovery Automatica delle Repliche Attive
 
