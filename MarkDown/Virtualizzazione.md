@@ -99,10 +99,7 @@
     - [Compiti di Init in Shell ed Exec mode](#compiti-di-init-in-shell-ed-exec-mode)
     - [ENV e ARG - Confronto](#env-e-arg---confronto)
     - [Ispezione di un'immagine Docker](#ispezione-di-unimmagine-docker)
-    - [Filesystem dei container in esecuzione](#filesystem-dei-container-in-esecuzione)
-    - [Struttura incrementale delle immagini](#struttura-incrementale-delle-immagini)
-    - [Condivisione e gestione dei layers](#condivisione-e-gestione-dei-layers)
-    - [Docker Area e Storage Driver](#docker-area-e-storage-driver)
+    - [Gestione del Filesystem in Docker: Immagini, Container e Layer](#gestione-del-filesystem-in-docker-immagini-container-e-layer)
   - [Reti Docker Definite dall'Utente](#reti-docker-definite-dallutente)
       - [Esempi di Utilizzo del Comando docker inspect](#esempi-di-utilizzo-del-comando-docker-inspect)
     - [Creazione e Gestione delle Reti](#creazione-e-gestione-delle-reti)
@@ -1978,25 +1975,30 @@ ENTRYPOINT [ "/bin/bash", "-c", "/entrypoint.sh" ]
 - **Comando di ispezione**: Utilizzare `docker image inspect NOME_IMMAGINE` per ottenere dettagli completi su un'immagine Docker. Questo comando fornisce informazioni cruciali come l'Entrypoint, il comando di default (Cmd), l'utente (User), la directory di lavoro (WorkingDir), i volumi, l'architettura, il sistema operativo e l'Id dell'immagine.
 - **Formato e selezione dei dati**: L'output è in formato JSON, ma è possibile estrarre campi specifici usando l'opzione `--format`. Ad esempio, per ottenere l'Id dell'immagine, si può usare `docker image inspect --format='{{.Id}}' NOME_IMMAGINE`.
 
-### Filesystem dei container in esecuzione
+### Gestione del Filesystem in Docker: Immagini, Container e Layer
 
-- **Condivisione del filesystem**: I container condividono in sola lettura il filesystem dell'immagine di base. Ogni container aggiunge un proprio layer in lettura e scrittura per registrare le modifiche effettuate durante l'esecuzione.
-- **Efficienza del Copy-on-Write**: Questo approccio consente di risparmiare spazio su disco, mantenendo un'unica copia dell'immagine di base e registrando solo le differenze nei container individuali. Le modifiche vengono eliminate quando il container viene rimosso.
+Il filesystem di Docker è basato su un'architettura efficiente a **layer (strati)** e sul principio **Copy-on-Write (CoW)**.
 
-### Struttura incrementale delle immagini
+**Immagini: Layer in Sola Lettura e Build Incrementale**
 
-- **Creazione di immagini**: Le immagini Docker sono costruite in modo incrementale attraverso una serie di layers. Ogni comando nel Dockerfile che modifica il filesystem genera un nuovo layer che memorizza solo le differenze rispetto ai layers precedenti.
-- **Vantaggi del modello incrementale**: Questo metodo consente di riutilizzare i layers comuni tra diverse immagini, riducendo il tempo di build e l'utilizzo dello spazio su disco. Al contrario, `docker commit` crea un'immagine con un unico grande layer.
+Le **immagini Docker** sono costruite come una pila di **layer in sola lettura**. Ogni istruzione del `Dockerfile` che modifica il filesystem (es. `RUN`, `COPY`) crea un nuovo layer, che memorizza solo le differenze rispetto ai layer precedenti. Questo approccio incrementale offre due vantaggi chiave:
 
-### Condivisione e gestione dei layers
+*   **Efficienza Spaziale e di Build:** I layer comuni sono **condivisi** tra diverse immagini (specialmente se basate sulla stessa immagine base), evitando duplicazioni su disco. Ciò riduce significativamente lo spazio occupato e, grazie al caching dei layer, velocizza le successive operazioni di build. Un'immagine creata con `docker commit` (che genera un unico grande layer) non beneficia di questa efficienza.
+*   **Immagini Intermedie e "Dangling":** Durante il processo di build, vengono create immagini e layer intermedi che fungono da cache. I layer non più referenziati da alcuna immagine diventano "dangling" (orfani) e possono essere rimossi per liberare spazio.
 
-- **Condivisione dei layers**: Se due immagini partono dalla stessa immagine base, non duplicano la base ma mantengono solo le differenze. Immagini con lo stesso digest condividono gli stessi layers.
-- **Immagini intermedie e dangling**: Durante il build, possono essere create immagini intermedie che fungono da cache. Queste immagini, quando non più referenziate, diventano "dangling" e possono essere eliminate per liberare spazio.
+**Container: Il Layer Scrivibile e Copy-on-Write**
 
-### Docker Area e Storage Driver
+Quando un container viene eseguito da un'immagine, Docker sovrappone ai layer in sola lettura dell'immagine un sottile **layer scrivibile (writable)**, unico per quel container.
 
-- **Memorizzazione delle immagini**: Le immagini e i layers sono memorizzati nel filesystem dell'host all'interno della Docker Area, situata tipicamente in `/var/lib/docker/`.
-- **Gestione efficiente con OverlayFS**: La Docker Area può essere una partizione separata con un filesystem specializzato, come OverlayFS, che ottimizza la memorizzazione e la gestione dei layers. Il driver di storage predefinito, `overlay2`, gestisce la creazione e il collegamento dei layers, garantendo un uso efficiente dello spazio e proteggendo l'integrità dei container in esecuzione.
+Il meccanismo **Copy-on-Write** gestisce le modifiche:
+*   Le operazioni di **lettura** accedono direttamente ai file nei layer sottostanti dell'immagine.
+*   Le operazioni di **scrittura** non modificano i layer di base; invece, il file viene copiato nel layer scrivibile del container e solo lì modificato.
+
+Questo garantisce che le modifiche siano isolate a quel singolo container e non influenzino l'immagine originale. Tuttavia, tutte le modifiche apportate nel layer scrivibile vengono **perse quando il container viene rimosso** (`docker rm`).
+
+**Memorizzazione e Gestione Fisica**
+
+Tutti i layer e le immagini sono memorizzati sul filesystem dell'host, tipicamente nella **Docker Area (`/var/lib/docker/`)**. La gestione di questa struttura è affidata a uno **storage driver**, con `overlay2` (basato su OverlayFS) come scelta predefinita. Questo driver ottimizza l'allocazione dello spazio e assicura l'integrità dei dati dei container in esecuzione.
 
 ## Reti Docker Definite dall'Utente
 
@@ -2075,7 +2077,7 @@ Uno dei vantaggi delle reti Docker è il server DNS incorporato, che facilita la
 
 #### Esempio di Utilizzo del Server DNS:
 
-1. **Comunicare tra container tramite nomi:**
+**Comunicare tra container tramite nomi:**
 
    Dopo aver collegato i container alla stessa rete, si può usare il comando `ping` per comunicare tra loro tramite il nome del container:
 
@@ -2084,32 +2086,21 @@ Uno dei vantaggi delle reti Docker è il server DNS incorporato, che facilita la
    ping container2
    ```
 
-   Questo esempio mostra come i container collegati alla stessa rete possano facilmente risolvere i nomi degli altri container, migliorando l'interazione tra applicazioni.
-
 ## DokerCompose e Formato di File YAML
 
 YAML, acronimo di "Yet Another Markup Language" o "YAML Ain't Markup Language", è un formato di serializzazione di dati estremamente leggibile e utilizzato ampiamente per le configurazioni. La sua struttura semplice e ordinata con indentazioni basate su spazi lo rende simile a JSON, ma spesso più intuitivo da leggere per gli esseri umani.
 
 ### Struttura e Regole di YAML
 
-Alla base di YAML c'è un sistema di chiavi e valori organizzati gerarchicamente. Questa organizzazione è resa per mezzo di indentazioni fatte esclusivamente con spazi (mai tabulazioni). Le chiavi sono seguite da due punti (:) e dal loro valore, il quale può essere una stringa, numero, booleano, oggetto o lista. L'indentazione corretta è cruciale per la definizione degli oggetti, liste e mappe.
+Alla base di YAML c'è un sistema di chiavi e valori organizzati gerarchicamente. Questa organizzazione è resa per mezzo di indentazioni fatte esclusivamente con spazi (mai tabulazioni). Le chiavi sono seguite da due punti ':' e dal loro valore, il quale può essere una stringa, numero, booleano, oggetto o lista. L'indentazione corretta è cruciale per la definizione degli oggetti, liste e mappe.
 
 #### Alcuni Principi Fondamentali di YAML:
 
-1. **Coppie Chiave-Valore**:
-   - Formato semplice che usa "chiave: valore".
-
-2. **Liste**:
-   - Gli elementi di una lista sono preceduti da un trattino (-) e devono essere indentati rispetto alla chiave.
-
-3. **Oggetti Annidati**:
-   - Gli oggetti possono essere annidati, e devono essere indentati rispetto alla chiave principale.
-
-4. **Multi-Line Stringhe**:
-   - YAML supporta stringhe multilinea che possono essere rappresentate in due modi, usando `>` per concatenare le righe senza newline e `|` per mantenere i newline.
-
-5. **Alias e Riferimenti**:
-   - Utilizzando le ancora (&) e i riferimenti (*), YAML permette di evitare ridondanze nella definizione dei dati.
+**Coppie Chiave-Valore**: Formato semplice che usa "chiave: valore".
+**Liste**: Gli elementi di una lista sono preceduti da un trattino (-) e devono essere indentati rispetto alla chiave.
+**Oggetti Annidati**: Gli oggetti possono essere annidati, e devono essere indentati rispetto alla chiave principale.
+**Multi-Line Stringhe**: YAML supporta stringhe multilinea che possono essere rappresentate in due modi, usando `>` per concatenare le righe senza newline e `|` per mantenere i newline.
+**Alias e Riferimenti**: Utilizzando le ancora (&) e i riferimenti (*), YAML permette di evitare ridondanze nella definizione dei dati.
 
 #### Esempi Separati
 
