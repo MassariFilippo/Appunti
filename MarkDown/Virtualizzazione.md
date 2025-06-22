@@ -115,7 +115,7 @@
     - [Gestione delle Applicazioni con Docker Compose](#gestione-delle-applicazioni-con-docker-compose)
     - [Comandi e Configurazioni di Docker Compose](#comandi-e-configurazioni-di-docker-compose)
     - [Gestione delle Reti e dei Volumi con Compose](#gestione-delle-reti-e-dei-volumi-con-compose)
-  - [**Applicazione Node.js + MongoDB con Docker Compose**](#applicazione-nodejs--mongodb-con-docker-compose)
+  - [Applicazione Node.js + MongoDB con Docker Compose](#applicazione-nodejs--mongodb-con-docker-compose)
     - [Installazione di Docker su Linux](#installazione-di-docker-su-linux)
     - [Creazione delle Reti Virtuali Docker](#creazione-delle-reti-virtuali-docker)
     - [Costruzione dell’Immagine del Container per l’Applicazione Web Node.js/Express/Mongoose](#costruzione-dellimmagine-del-container-per-lapplicazione-web-nodejsexpressmongoose)
@@ -2309,7 +2309,7 @@ networks:
 
 Questa configurazione consente ai servizi `app` e `redis` di comunicare tra loro attraverso la rete `mynet`.
 
-## **Applicazione Node.js + MongoDB con Docker Compose**
+## Applicazione Node.js + MongoDB con Docker Compose
 
 L’applicazione consiste in una web app realizzata in Node.js usando il framework Express, con un database gestito da MongoDB. L’intera soluzione è containerizzata tramite Docker e orchestrata con Docker Compose.
 
