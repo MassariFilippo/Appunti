@@ -3133,19 +3133,14 @@ docker stack rm mystack
 
 Kubernetes è una potente architettura software client-server progettata per la gestione e l'orchestrazione di container su un cluster di host. L'amministratore interagisce tipicamente con Kubernetes tramite un client, come `kubectl`.
 
-**Per approfondimenti, consultare:**
-- Serie di articoli "Kubernetes and everything else" di Rinor Maloku: [https://rinormaloku.com/series/kubernetes-andeverything-else/](https://rinormaloku.com/series/kubernetes-andeverything-else/)
-- Documentazione ufficiale di Kubernetes: [https://kubernetes.io/docs/home/](https://kubernetes.io/docs/home/)
-
 - **Nodi (Nodes)**: Gli host all'interno di un cluster Kubernetes sono chiamati **nodi**.
 
 - **Pods**: I Pods sono le unità fondamentali di dispiegamento in Kubernetes, realizzano specificge funzionalità raggruppando uno o più container che devono lavorare in stretta collaborazione, come se fossero su un unico host virtuale, per tanto:
-
--   **Condivisione IP**: I container all'interno dello stesso Pod condividono lo stesso indirizzo IP.
--   **Spazio Porte Condiviso**: Non possono esserci due container nello stesso Pod che utilizzano la stessa porta di protocollo.
--   **Comunicazione Interna**: Possono comunicare tra loro tramite `localhost` e le Inter Process Communications (IPC).
--   **Comunicazione Esterna**: Container in Pods diversi comunicano tra loro specificando l'indirizzo IP del Pod di destinazione.
--   **Localizzazione**: Ogni Pod risiede su un singolo nodo del cluster, ma un nodo può ospitare più Pods, ciascuno con il proprio indirizzo IP.
+  -   **Condivisione IP**: I container all'interno dello stesso Pod condividono lo stesso indirizzo IP.
+  -   **Spazio Porte Condiviso**: Non possono esserci due container nello stesso Pod che utilizzano la stessa porta di protocollo.
+  -   **Comunicazione Interna**: Possono comunicare tra loro tramite `localhost` e le Inter Process Communications (IPC).
+  -   **Comunicazione Esterna**: Container in Pods diversi comunicano tra loro specificando l'indirizzo IP del Pod di destinazione.
+  -   **Localizzazione**: Ogni Pod risiede su un singolo nodo del cluster, ma un nodo può ospitare più Pods, ciascuno con il proprio indirizzo IP.
 
 - **Labels**: Le **Labels** sono coppie chiave-valore (stringhe) utilizzate per classificare e organizzare le risorse Kubernetes (es. Pods). Tutti i Pods con la stessa coppia nome/valore di Label sono considerati equivalenti per una data funzionalità e possono agire come repliche.
 *Esempio:* `role=production`.
