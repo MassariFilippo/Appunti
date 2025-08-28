@@ -20,7 +20,7 @@
       - [**Intersezione tra Curve Ellittiche e Rette**](#intersezione-tra-curve-ellittiche-e-rette)
   - [**Capitolo 2: L'Algebra delle Curve Ellittiche: L'Operazione di Gruppo**](#capitolo-2-lalgebra-delle-curve-ellittiche-loperazione-di-gruppo)
     - [**2.1 La Struttura di Gruppo Abeliano**](#21-la-struttura-di-gruppo-abeliano)
-    - [**2.2 L'Operazione di Addizione (Somma) di Punti**](#22-loperazione-di-addizione-somma-di-punti)
+    - [**2.2 L'Operazione di Addizione di Punti**](#22-loperazione-di-addizione-di-punti)
       - [**Definizione Geometrica**](#definizione-geometrica)
       - [**Derivazione delle Formule Algebriche**](#derivazione-delle-formule-algebriche)
         - [**Caso 1: Addizione di due punti distinti ($P \\neq Q$)**](#caso-1-addizione-di-due-punti-distinti-p-neq-q)
@@ -30,12 +30,15 @@
       - [**Algoritmo Double-and-Add**](#algoritmo-double-and-add)
   - [**Capitolo 3: Curve Ellittiche su Campi Finiti: Il Cuore della Crittografia**](#capitolo-3-curve-ellittiche-su-campi-finiti-il-cuore-della-crittografia)
     - [**3.1 Motivazioni per l'Uso di Campi Finiti**](#31-motivazioni-per-luso-di-campi-finiti)
-    - [**3.2 Curve Ellittiche su $\\mathbb{Z}\_p$ (Campi Primi)**](#32-curve-ellittiche-su-mathbbz_p-campi-primi)
+    - [**3.2 Curve Ellittiche su $\\mathbb{Z}\_p$**](#32-curve-ellittiche-su-mathbbz_p)
       - [**Definizione Formale**](#definizione-formale)
       - [**Inversi Modulari e Algoritmo di Euclide Esteso**](#inversi-modulari-e-algoritmo-di-euclide-esteso)
-      - [**Esempio di Addizione in $\\mathbb{Z}\_p$**](#esempio-di-addizione-in-mathbbz_p)
-      - [**Ordine di una Curva e Ordine di un Punto**](#ordine-di-una-curva-e-ordine-di-un-punto)
-    - [**3.3 Curve Ellittiche su Campi Binari $GF(2^m)$ (Cenni)**](#33-curve-ellittiche-su-campi-binari-gf2m-cenni)
+    - [**Esempio Dettagliato di Addizione in $\\mathbb{Z}\_p$**](#esempio-dettagliato-di-addizione-in-mathbbz_p)
+    - [**Ordine della Curva e Ordine del Punto**](#ordine-della-curva-e-ordine-del-punto)
+      - [**Ordine della Curva e il Teorema di Hasse: Quantificare lo Spazio delle Soluzioni**](#ordine-della-curva-e-il-teorema-di-hasse-quantificare-lo-spazio-delle-soluzioni)
+      - [**Ordine di un Punto e Sottogruppi Ciclici: Il Vero Campo di Gioco Crittografico**](#ordine-di-un-punto-e-sottogruppi-ciclici-il-vero-campo-di-gioco-crittografico)
+      - [**Il Cofattore e la Scelta dei Parametri di Dominio**](#il-cofattore-e-la-scelta-dei-parametri-di-dominio)
+    - [**3.3 Cenni di Curve Ellittiche su Campi Binari $GF(2^m)$**](#33-cenni-di-curve-ellittiche-su-campi-binari-gf2m)
   - [**Capitolo 4: Il Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP)**](#capitolo-4-il-problema-del-logaritmo-discreto-su-curve-ellittiche-ecdlp)
     - [**4.1 Definizione e Natura dell'ECDLP**](#41-definizione-e-natura-dellecdlp)
     - [**4.2 Difficoltà Computazionale dell'ECDLP**](#42-difficoltà-computazionale-dellecdlp)
@@ -231,7 +234,7 @@ Il motivo principale per cui le curve ellittiche sono così potenti in crittogra
 
 Un gruppo abeliano è un insieme dotato di un'operazione binaria che soddisfa le proprietà di chiusura, associatività, commutatività, esistenza dell'elemento neutro e dell'inverso per ogni elemento. Vedremo come l'operazione di "somma" tra punti di una curva ellittica soddisfi tutti questi requisiti. L'elemento neutro del gruppo è il punto all'infinito $O$.
 
-### **2.2 L'Operazione di Addizione (Somma) di Punti**
+### **2.2 L'Operazione di Addizione di Punti**
 
 L'operazione di addizione è definita a partire da una regola geometrica basata sulla collinearità.
 
@@ -300,7 +303,7 @@ La **moltiplicazione scalare** è l'operazione di sommare un punto $P$ a se stes
 $$kP = \underbrace{P + P + \dots + P}_{k \text{ volte}}$$
 Questa operazione è l'analogo della potenza nell'aritmetica modulare ed è centrale in crittografia. Ad esempio, $3P = P + P + P = (2P) + P$.
 
-Calcolare $kP$ in modo naïf (sommando $P$ per $k-1$ volte) sarebbe inefficiente per valori grandi di $k$. Si utilizza invece un algoritmo molto più rapido.
+Calcolare $kP$ in modo naïf ovvero sommando $P$ per $k-1$ volte sarebbe inefficiente per valori grandi di $k$. Si utilizza invece un algoritmo molto più rapido detto **Algoritmo Double-and-Add**.
 
 #### **Algoritmo Double-and-Add**
 
@@ -338,14 +341,14 @@ Il risultato finale è $13P$. La complessità di questo algoritmo è di circa $\
 ### **3.1 Motivazioni per l'Uso di Campi Finiti**
 
 Le curve ellittiche definite sui numeri reali sono eccellenti per la visualizzazione e la comprensione geometrica, ma sono inadatte per la crittografia per due ragioni principali:
-1.  **Errori di arrotondamento:** L'aritmetica in $\mathbb{R}$ su un computer è approssimata tramite numeri in virgola mobile. Le operazioni crittografiche richiedono una precisione assoluta; qualsiasi errore di arrotondamento distruggerebbe l'integrità dei calcoli.
+1.  **Errori di arrotondamento:** L'aritmetica in $\mathbb{R}$ su di un calcolatore è approssimata tramite numeri in virgola mobile. Le operazioni crittografiche richiedono una precisione assoluta; qualsiasi errore di arrotondamento distruggerebbe l'integrità dei calcoli, rendendo di fatto inaffidabile il processo.
 2.  **Insieme infinito:** L'insieme dei punti è infinito e continuo, il che rende difficile definire problemi computazionalmente "difficili" in modo discreto.
 
-I **campi finiti**, come $\mathbb{Z}_p$, risolvono entrambi i problemi. L'aritmetica modulare è esatta e opera su un insieme finito di elementi. Questo ambiente discreto e finito è ideale per costruire problemi computazionalmente intrattabili, che sono il fondamento della sicurezza crittografica.
+I **campi finiti**, come $\mathbb{Z}_p$, risolvono entrambi i problemi. L'aritmetica modulare è esatta e opera su un insieme finito di elementi. Questo ambiente discreto e finito è ideale per costruire problemi con caso pessimo di risoluzione computazionalmente esponenziale, che sono il fondamento della sicurezza crittografica.
 
-### **3.2 Curve Ellittiche su $\mathbb{Z}_p$ (Campi Primi)**
+### **3.2 Curve Ellittiche su $\mathbb{Z}_p$**
 
-Una curva ellittica su un campo finito primo $\mathbb{Z}_p$ (con $p>3$ primo) è definita in modo analogo al caso reale, ma tutte le operazioni sono eseguite modulo $p$.
+Una curva ellittica su un campo finito primo $\mathbb{Z}_p$ con $p>3$ e primo è definita in modo analogo al caso reale, ma tutte le operazioni sono eseguite in modulo $p$.
 
 #### **Definizione Formale**
 
@@ -362,11 +365,11 @@ L'insieme dei punti non è più una curva continua, ma una nuvola di punti discr
 Le formule per l'addizione dei punti coinvolgono divisioni, come nel calcolo di $\lambda$. In un campo finito $\mathbb{Z}_p$, la divisione per un numero $d$ è definita come la moltiplicazione per il suo **inverso moltiplicativo modulare**, $d^{-1} \pmod p$.
 L'inverso moltiplicativo di un intero $d \in \mathbb{Z}_p \setminus \{0\}$ è un intero $d^{-1}$ tale che:
 $$d \cdot d^{-1} \equiv 1 \pmod p$$
-Questo inverso esiste ed è unico se e solo se $\gcd(d, p) = 1$. Poiché $p$ è primo e $d \in \{1, \ldots, p-1\}$, questa condizione è sempre soddisfatta.
+Questo inverso esiste ed è unico se e solo se $\text{MCD}(d, p) = 1$. Poiché $p$ è primo e $d \in \{1, \ldots, p-1\}$, questa condizione è sempre soddisfatta.
 
 Per calcolare l'inverso modulare si utilizza l'**Algoritmo di Euclide Esteso**. Questo algoritmo, dato due interi $d$ e $p$, trova due interi $s$ e $t$ tali che:
-$$s \cdot d + t \cdot p = \gcd(d, p)$$
-Se $\gcd(d, p) = 1$, allora abbiamo $s \cdot d + t \cdot p = 1$. Considerando questa equazione modulo $p$, il termine $t \cdot p$ diventa zero:
+$$s \cdot d + t \cdot p = \text{MCD}(d, p)$$
+Se $\text{MCD}(d, p) = 1$, allora abbiamo $s \cdot d + t \cdot p = 1$. Considerando questa equazione modulo $p$, il termine $t \cdot p$ diventa zero:
 $$s \cdot d \equiv 1 \pmod p$$
 Quindi, $s \pmod p$ è l'inverso moltiplicativo di $d$ modulo $p$.
 
@@ -374,7 +377,7 @@ Quindi, $s \pmod p$ è l'inverso moltiplicativo di $d$ modulo $p$.
 Applichiamo l'algoritmo di Euclide Esteso a 23 e 7:
 * $23 = 3 \cdot 7 + 2$
 * $7 = 3 \cdot 2 + 1$
-* $2 = 2 \cdot 1 + 0 \implies \gcd(23, 7) = 1$.
+* $2 = 2 \cdot 1 + 0 \implies \text{MCD}(23, 7) = 1$.
 
 Ora lavoriamo a ritroso per esprimere 1 come combinazione lineare di 7 e 23:
 * $1 = 7 - 3 \cdot 2$
@@ -387,43 +390,105 @@ Considerando questa equazione modulo 23:
 $10 \cdot 7 \equiv 1 \pmod{23}$.
 Quindi, $7^{-1} \equiv 10 \pmod{23}$.
 
-#### **Esempio di Addizione in $\mathbb{Z}_p$**
+### **Esempio Dettagliato di Addizione in $\mathbb{Z}_p$**
 
-Consideriamo la curva $y^2 \equiv x^3 - x + 1 \pmod{67}$ e i punti $P = (17, 41)$ e $Q = (27, 48)$. Verifichiamo prima che appartengano alla curva:
-* Per $P$: $41^2 = 1681 \equiv 6 \pmod{67}$. $17^3 - 17 + 1 = 4913 - 16 = 4897 \equiv 6 \pmod{67}$. Il punto $P$ è sulla curva.
-* Per $Q$: $48^2 = 2304 \equiv 26 \pmod{67}$. $27^3 - 27 + 1 = 19683 - 26 = 19657 \equiv 26 \pmod{67}$. Il punto $Q$ è sulla curva.
+Consideriamo la curva $E$ definita dall'equazione $y^2 \equiv x^3 + x + 1 \pmod{23}$.
+Scegliamo due punti sulla curva: $P = (1, 7)$ e $Q = (3, 10)$.
 
-Calcoliamo $S = P+Q$. Usiamo le formule di addizione modulo 67.
-$$\lambda \equiv (y_Q - y_P)(x_Q - x_P)^{-1} \pmod{67}$$
-$$\lambda \equiv (48 - 41)(27 - 17)^{-1} \equiv 7 \cdot 10^{-1} \pmod{67}$$
-Dobbiamo calcolare $10^{-1} \pmod{67}$. Con l'algoritmo di Euclide Esteso: $67 = 6 \cdot 10 + 7$, $10 = 1 \cdot 7 + 3$, $7=2 \cdot 3 + 1$. Lavorando a ritroso si ottiene $1 = (-2) \cdot 67 + (13) \cdot 10$. Quindi $10^{-1} \equiv 13 \pmod{67}$.
-$$\lambda \equiv 7 \cdot 13 = 91 \equiv 24 \pmod{67}$$
-Ora calcoliamo le coordinate di $S = (x_S, y_S)$:
-$$x_S \equiv \lambda^2 - x_P - x_Q \equiv 24^2 - 17 - 27 \equiv 576 - 44 = 532 \equiv 59 \pmod{67}$$
-$$y_S \equiv \lambda(x_P - x_S) - y_P \equiv 24(17 - 59) - 41 \equiv 24(-42) - 41 \pmod{67}$$
-$$y_S \equiv 24(25) - 41 = 600 - 41 = 559 \equiv 23 \pmod{67}$$
-Attenzione: $y_S = -y_R$. La formula corretta è $y_S = \lambda(x_P-x_S)-y_P$.
-$$y_S \equiv 24(17-59)-41 \equiv 24(-42)-41 \equiv 24(25)-41 = 600-41 = 559 \pmod{67}$$
-$559 = 8 \cdot 67 + 23$, quindi $y_S \equiv 23 \pmod{67}$.
-Ma la somma è il riflesso, quindi $P+Q = (59, -y_R)$. L'ordinata del punto somma è:
-$$y_S \equiv \lambda(x_P - x_S) - y_P \equiv 24(17-59)-41 \equiv 24(-42)-41 \equiv 24(25)-41 \pmod{67}$$$$ y_S \equiv 600-41 = 559 \pmod{67} \equiv 23 \pmod{67}$$.
-Il punto somma è $(59, -23 \pmod{67}) = (59, 44 \pmod{67})$.
-*Rifacendo il calcolo con le formule corrette:*
-$x_S = 59$.
-$y_S = -(y_P + \lambda(x_S - x_P)) = -(41 + 24(59-17)) = -(41 + 24(42)) = -(41 + 1008)$.
-$1008 \equiv 3 \pmod{67}$.
-$y_S \equiv -(41+3) = -44 \equiv 23 \pmod{67}$.
-Quindi $P+Q = (59, 23)$. L'esempio negli appunti aveva un errore di calcolo.
+**Passo 1: Verifica dell'appartenenza dei punti alla curva**
+Prima di procedere, verifichiamo che i punti scelti soddisfino effettivamente l'equazione della curva.
 
-#### **Ordine di una Curva e Ordine di un Punto**
+*   **Per il punto $P = (1, 7)$:**
+    *   Lato sinistro: $y_P^2 = 7^2 = 49 \equiv 3 \pmod{23}$.
+    *   Lato destro: $x_P^3 + x_P + 1 = 1^3 + 1 + 1 = 3 \pmod{23}$.
+    *   Poiché $3 \equiv 3$, il punto $P$ appartiene alla curva.
 
-L'**ordine** di una curva ellittica $E_p(a, b)$, denotato $|E_p(a,b)|$, è il numero totale di punti che essa contiene, incluso $O$. Questo valore è cruciale per la sicurezza. Il **Teorema di Hasse** fornisce un intervallo per l'ordine della curva:
-$$p + 1 - 2\sqrt{p} \le |E_p(a,b)| \le p + 1 + 2\sqrt{p}$$
-L'**ordine di un punto** $P$ è il più piccolo intero positivo $n$ tale che $nP = O$. Per il Teorema di Lagrange, l'ordine di qualsiasi punto deve essere un divisore dell'ordine della curva. In crittografia, si cercano curve il cui ordine sia un numero primo grande, o abbia un fattore primo molto grande. Si sceglie poi un punto generatore $B$ il cui ordine $n$ sia questo grande numero primo. Il gruppo utilizzato per la crittografia non è l'intera curva $E_p(a,b)$, ma il sottogruppo ciclico generato da $B$, che ha $n$ elementi.
+*   **Per il punto $Q = (3, 10)$:**
+    *   Lato sinistro: $y_Q^2 = 10^2 = 100 \equiv 8 \pmod{23}$ (poiché $100 = 4 \cdot 23 + 8$).
+    *   Lato destro: $x_Q^3 + x_Q + 1 = 3^3 + 3 + 1 = 27 + 4 = 31 \equiv 8 \pmod{23}$.
+    *   Poiché $8 \equiv 8$, il punto $Q$ appartiene alla curva.
 
-### **3.3 Curve Ellittiche su Campi Binari $GF(2^m)$ (Cenni)**
+**Passo 2: Calcolo del coefficiente angolare $\lambda$**
+Utilizziamo la formula per l'addizione di punti distinti:
+$$ \lambda \equiv \frac{y_Q - y_P}{x_Q - x_P} \equiv (y_Q - y_P)(x_Q - x_P)^{-1} \pmod{23} $$
+Sostituendo i valori:
+$$ \lambda \equiv (10 - 7)(3 - 1)^{-1} \equiv 3 \cdot 2^{-1} \pmod{23} $$
+Ora dobbiamo calcolare l'inverso moltiplicativo di $2$ modulo $23$. Cerchiamo un numero $k$ tale che $2 \cdot k \equiv 1 \pmod{23}$. In questo caso semplice, possiamo vedere che $2 \cdot 12 = 24 \equiv 1 \pmod{23}$. Quindi, $2^{-1} \equiv 12 \pmod{23}$.
 
-Oltre ai campi primi, un'altra famiglia di campi finiti molto usata in crittografia è quella dei **campi binari** (o di caratteristica 2), denotati $GF(2^m)$ o $\mathbb{F}_{2^m}$. Gli elementi di questo campo sono polinomi di grado al più $m-1$ con coefficienti in $\mathbb{Z}_2=\{0,1\}$. L'aritmetica è polinomiale, modulo un polinomio irriducibile di grado $m$.
+Sostituiamo l'inverso per trovare $\lambda$:
+$$ \lambda \equiv 3 \cdot 12 = 36 \equiv 13 \pmod{23} $$
+
+**Passo 3: Calcolo delle coordinate del punto somma $S = P+Q$**
+Ora usiamo le formule per le coordinate di $S = (x_S, y_S)$:
+
+*   **Calcolo dell'ascissa $x_S$:**
+    $$ x_S \equiv \lambda^2 - x_P - x_Q \pmod{23} $$
+    $$ x_S \equiv 13^2 - 1 - 3 = 169 - 4 = 165 \pmod{23} $$
+    Per ridurre 165 modulo 23, calcoliamo $165 = 7 \cdot 23 + 4$. Quindi:
+    $$ x_S \equiv 4 \pmod{23} $$
+
+*   **Calcolo dell'ordinata $y_S$:**
+    $$ y_S \equiv \lambda(x_P - x_S) - y_P \pmod{23} $$
+    $$ y_S \equiv 13(1 - 4) - 7 = 13(-3) - 7 = -39 - 7 = -46 \pmod{23} $$
+    Per ridurre -46 modulo 23, aggiungiamo multipli di 23 fino a ottenere un numero positivo: $-46 + 2 \cdot 23 = -46 + 46 = 0$. Quindi:
+    $$ y_S \equiv 0 \pmod{23} $$
+
+**Passo 4: Risultato finale**
+La somma dei punti $P=(1, 7)$ e $Q=(3, 10)$ sulla curva data è il punto $S = (4, 0)$.
+
+**Passo 5 (Opzionale): Verifica del punto risultante**
+Per confermare la correttezza del calcolo, verifichiamo che il punto $S=(4,0)$ giaccia anch'esso sulla curva:
+*   Lato sinistro: $y_S^2 = 0^2 = 0 \pmod{23}$.
+*   Lato destro: $x_S^3 + x_S + 1 = 4^3 + 4 + 1 = 64 + 5 = 69 \pmod{23}$.
+*   Poiché $69 = 3 \cdot 23$, abbiamo $69 \equiv 0 \pmod{23}$.
+Il punto $S$ appartiene alla curva, confermando la proprietà di chiusura del gruppo e la correttezza dei nostri calcoli.
+
+### **Ordine della Curva e Ordine del Punto**
+
+La sicurezza della crittografia su curve ellittiche non deriva semplicemente dall'esistenza della struttura di gruppo, ma dalla sua **dimensione** e dalla sua **struttura interna**. I concetti di *ordine della curva* e *ordine di un punto* sono quindi fondamentali, poiché definiscono la grandezza del campo di gioco per un crittanalista e determinano la reale difficoltà del Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP).
+
+#### **Ordine della Curva e il Teorema di Hasse: Quantificare lo Spazio delle Soluzioni**
+
+L'**ordine** di una curva ellittica $E_p(a, b)$, denotato $|E_p(a,b)|$, è il numero totale di punti discreti che soddisfano la sua equazione sul campo $\mathbb{Z}_p$, incluso il punto all'infinito $O$. Questo valore rappresenta la cardinalità del gruppo $(E_p(a,b), +)$.
+
+A prima vista, potrebbe non essere ovvio quanti punti ci si possa aspettare su una data curva. Il **Teorema di Hasse** fornisce una stima straordinariamente precisa e potente, legando l'ordine della curva alla dimensione del campo sottostante:
+$$ p + 1 - 2\sqrt{p} \le |E_p(a,b)| \le p + 1 + 2\sqrt{p} $$
+**Implicazioni Crittografiche del Teorema di Hasse:**
+Il teorema ci dice che l'ordine di una curva è sempre "vicino" alla dimensione del campo $p+1$. Per la crittografia, questo è un risultato cruciale:
+1.  **Garanzia di Grandezza:** Scegliendo un numero primo $p$ sufficientemente grande (es. 256 bit), il Teorema di Hasse ci garantisce che l'ordine della curva sarà anch'esso un numero molto grande, dello stesso ordine di grandezza di $p$. Questo assicura che lo spazio totale dei punti sia vasto, rendendo impraticabili attacchi di forza bruta che consistono nell'enumerare tutti i punti.
+2.  **Prevedibilità:** Fornisce un intervallo entro cui cercare l'ordine esatto della curva, un passo fondamentale nella selezione di curve sicure (eseguito con algoritmi di conteggio dei punti come l'algoritmo di Schoof).
+
+#### **Ordine di un Punto e Sottogruppi Ciclici: Il Vero Campo di Gioco Crittografico**
+
+Mentre l'ordine della curva è importante, la sicurezza pratica si basa su un concetto più specifico: l'**ordine di un punto**. L'ordine di un punto $P \in E_p(a,b)$ è il più piccolo intero positivo $n$ tale che:
+$$ nP = \underbrace{P + P + \dots + P}_{n \text{ volte}} = O $$
+Il punto $P$ genera un **sottogruppo ciclico** di $E_p(a,b)$, denotato come $\langle P \rangle$, che è l'insieme di tutti i multipli di $P$:
+$$ \langle P \rangle = \{O, P, 2P, 3P, \ldots, (n-1)P\} $$
+Questo sottogruppo ha esattamente $n$ elementi. Il **Teorema di Lagrange**, un risultato fondamentale della teoria dei gruppi, afferma che l'ordine di qualsiasi sottogruppo deve essere un divisore dell'ordine del gruppo principale. Di conseguenza, l'ordine $n$ di qualsiasi punto $P$ deve essere un divisore dell'ordine della curva $|E_p(a,b)|$. È fondamentale capire che i protocolli crittografici come ECDH e ECDSA **non operano sull'intero gruppo $E_p(a,b)$**, ma all'interno di un **sottogruppo ciclico generato da un punto base pubblico $B$**. La sicurezza del sistema dipende quindi direttamente dalla dimensione $n$ di questo sottogruppo. Per garantire la massima sicurezza, l'obiettivo è scegliere un punto base $B$ il cui ordine $n$ sia un **numero primo molto grande**. La ragione di questo requisito stringente risiede nella vulnerabilità a un attacco specifico: l'**attacco di Pohlig-Hellman** che approfondiremo approfonditamente in seguito, per ora ci è sufficiente sapere che questo attacco sfrutta la fattorizzazione dell'ordine $n$. Se $n$ è un numero composto con fattori primi piccoli, ad esempio $n = q_1^{e_1} \cdot q_2^{e_2} \cdot \ldots \cdot q_k^{e_k}$, l'attacco di Pohlig-Hellman permette di scomporre un singolo "grande" problema ECDLP nel gruppo di ordine $n$ in una serie di problemi ECDLP "piccoli" nei sottogruppi di ordine $q_i$. Questi problemi più piccoli possono essere risolti in modo efficiente e i risultati ricombinati per trovare la soluzione originale.
+
+**Esempio Concettuale:** Risolvere un ECDLP in un gruppo di ordine $n=1.000.000$ potrebbe essere proibitivo. Ma se $n$ si fattorizza in $10^6 = 2^6 \cdot 5^6$, l'attacco lo riduce a problemi molto più semplici nei sottogruppi di ordine 2 e 5.
+
+Scegliendo un ordine $n$ che sia un numero primo, la sua unica fattorizzazione è $n = n^1$. L'attacco di Pohlig-Hellman non offre alcun vantaggio e un crittanalista è costretto a utilizzare algoritmi generici (come il Pollard's Rho), la cui complessità dipende dalla radice quadrata di $n$. Per un $n$ primo di 256 bit, questo è computazionalmente intrattabile.
+
+#### **Il Cofattore e la Scelta dei Parametri di Dominio**
+
+Dato che $n$ ovver l'ordine del sottogruppo deve dividere $|E_p(a,b)|$ ossia l'ordine della curva, possiamo definire un intero $h$, chiamato **cofattore**, come:
+$$ h = \frac{|E_p(a,b)|}{n} $$
+Il cofattore indica quante volte il sottogruppo "entra" nel gruppo principale. Per ragioni di sicurezza, in particolare per mitigare certi attacchi come i **small subgroup attacks**, è desiderabile che il cofattore $h$ sia il più piccolo possibile, idealmente $h=1$. Curve con $h=1$ hanno un ordine che è esso stesso un numero primo, e il sottogruppo coincide con l'intero gruppo di punti. Molte curve standardizzate usano un cofattore piccolo (es. $h \le 4$).
+
+Possiamo dunque dire che la selezione di una curva sicura è un processo di selezione che consiste nel trovare una tupla di **parametri di dominio** $(p, a, b, B, n, h)$, dove:
+*   $p$ è un primo che definisce il campo.
+*   $a, b$ definiscono la curva.
+*   $|E_p(a,b)|$ è l'ordine della curva.
+*   $n$ è un grande numero primo che divide $|E_p(a,b)|$.
+*   $B$ è un punto generatore di un sottogruppo di ordine $n$.
+*   $h$ è un cofattore piccolo.
+
+Questo insieme di parametri definisce l'ambiente sicuro in cui tutte le operazioni crittografiche avranno luogo.
+
+### **3.3 Cenni di Curve Ellittiche su Campi Binari $GF(2^m)$**
+
+Oltre ai campi primi, un'altra famiglia di campi finiti molto usata in crittografia è quella dei **campi binari** ovvero quei campi che presentano caratteristica 2, denotati $GF(2^m)$ o $\mathbb{F}_{2^m}$. Gli elementi di questo campo sono polinomi di grado al più $m-1$ con coefficienti in $\mathbb{Z}_2=\{0,1\}$. L'aritmetica è polinomiale, modulo un polinomio irriducibile di grado $m$.
 Poiché la caratteristica è 2, la forma normale di Weierstrass non è valida. Si usa un'equazione diversa:
 * **Non-supersingolare:** $y^2 + xy = x^3 + ax^2 + b$ (con $b \neq 0$)
 * **Supersingolare:** $y^2 + ay = x^3 + bx + c$
