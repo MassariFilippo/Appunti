@@ -159,7 +159,19 @@ Questa è la forma che verrà utilizzata nel resto del documento, poiché i camp
 
 #### **Il Punto all'Infinito ($O$)**
 
-Per definire una struttura di gruppo algebricamente completa, l'insieme dei punti affini $(x,y)$ di una curva ellittica viene esteso includendo un unico punto addizionale: il **punto all'infinito**, $O$. Formalmente, questo punto emerge dall'estensione della curva al **piano proiettivo**, dove assume le coordinate omogenee $(0:1:0)$. Anche se non visualizzabile nel piano cartesiano standard, $O$ può essere interpretato come il punto di intersezione comune a tutte le rette verticali.
+Per dotare l'insieme dei punti di una curva ellittica di una struttura di gruppo algebricamente coerente, è necessario estenderlo dal piano affine $K^2$ a un contesto geometrico più completo: il **piano proiettivo** $\mathbb{P}^2(K)$.
+
+Il piano proiettivo $\mathbb{P}^2(K)$ può essere concepito come il piano affine $K^2$ a cui viene aggiunta una "retta all'infinito", sulla quale si incontrano le rette parallele. Formalmente, i suoi punti sono rappresentati da **coordinate omogenee** $(X:Y:Z)$, che sono terne di elementi di $K$ (non tutti nulli) definite a meno di un fattore di scala non nullo. Ciò significa che il punto $(X:Y:Z)$ è identico al punto $(\lambda X : \lambda Y : \lambda Z)$ per qualsiasi $\lambda \in K \setminus \{0\}$. La connessione con il piano affine si stabilisce ponendo $x=X/Z$ e $y=Y/Z$ per tutti i punti con $Z \neq 0$. I punti con $Z=0$ costituiscono la retta all'infinito.
+
+Il motivo per cui si **omogeneizza l'equazione** è per renderla compatibile con questa nuova struttura di coordinate. Un'equazione come $y^2 = x^3 + ax + b$ non è ben definita in coordinate omogenee, poiché il suo soddisfacimento dipenderebbe dal fattore di scala scelto. Sostituendo $x=X/Z$ e $y=Y/Z$ e moltiplicando per la potenza di $Z$ necessaria a eliminare i denominatori, si ottiene l'equazione omogenea $Y^2Z = X^3 + aXZ^2 + bZ^3$. Questa nuova equazione ha la proprietà cruciale che tutti i suoi termini hanno lo stesso grado totale che nel nostro caso si attesta a 3. Ciò garantisce che se la terna $(X,Y,Z)$ la soddisfa, allora anche qualsiasi sua multipla $(\lambda X, \lambda Y, \lambda Z)$ la soddisferà, rendendo il concetto di "punto sulla curva" matematicamente consistente nel piano proiettivo.
+
+È proprio questo processo formale che rivela l'esistenza di un unico punto aggiuntivo sulla curva: il **punto all'infinito**, $O$. Imponendo la condizione $Z=0$ nell'equazione omogenea, si trova che l'unica soluzione è $(0:Y:0)$, che per convenzione si normalizza a $(0:1:0)$. Questo punto, assente nel piano affine, è essenziale per la struttura algebrica della curva, agendo da **elemento neutro** del gruppo e garantendo che le operazioni siano sempre definite.
+
+Da un punto di vista geometrico, $O$ può essere interpretato in due modi complementari:
+
+1.  **Come Intersezione di Rette Verticali:** È il punto di intersezione comune a **tutte le rette verticali** del piano. Ogni retta della forma $x=c$ interseca la curva in due punti affini $(c, y)$ e $(c, -y)$ (se esistono nel campo $K$) e nel punto all'infinito $O$.
+
+2.  **Come Chiusura della Curva:** È fondamentale comprendere che $O$ è un punto **singolo**. Le due "braccia" della curva che si estendono indefinitamente per valori di $y$ positivi e negativi si incontrano in questo unico punto. Questa proprietà di unicità è ciò che "chiude" la curva, ma descriverla come un "anello" è un'analogia topologica che può essere fuorviante. La sua funzione primaria in questo contesto non è topologica, ma algebrica: agire come **elemento neutro** del gruppo, garantendo che le operazioni siano sempre definite.
 
 L'inclusione del punto $O$ ha implicazioni strutturali cruciali:
 
@@ -195,12 +207,19 @@ Tutte le curve ellittiche non singolari sono simmetriche rispetto all'asse delle
 
 #### **Intersezione tra Curve Ellittiche e Rette**
 
-Una proprietà geometrica fondamentale, che è alla base della legge di gruppo, è la seguente:
-**Una retta non verticale interseca una curva ellittica in al massimo tre punti.**
-Sostituendo l'equazione di una retta $y = \lambda x + \nu$ nell'equazione della curva, si ottiene:
-$$(\lambda x + \nu)^2 = x^3 + ax + b$$
+Una proprietà geometrica fondamentale, che costituisce la base della legge di gruppo, è che ogni retta interseca una curva ellittica in **esattamente tre punti**, a condizione che questi punti siano contati nel piano proiettivo e con la loro corretta **molteplicità**.
+
+L'analisi si fonda sull'intersezione algebrica. Per una retta non verticale di equazione $y = \lambda x + \nu$, la sostituzione nell'equazione della curva $y^2 = x^3 + ax + b$ produce un'equazione polinomiale di terzo grado in $x$:
 $$x^3 - \lambda^2 x^2 + (a - 2\lambda\nu)x + (b - \nu^2) = 0$$
-Questa è un'equazione cubica in $x$, che ha al massimo tre soluzioni nel campo $K$ (contando le molteplicità). Una retta verticale $x=c$ interseca la curva in due punti $(c, \sqrt{c^3+ac+b})$ e $(c, -\sqrt{c^3+ac+b})$, e si considera che intersechi anche il punto all'infinito $O$, per un totale di tre intersezioni. Questa proprietà garantisce che, dati due punti, la retta che li unisce ne identificherà quasi sempre un terzo, che è il mattone fondamentale per definire l'operazione di somma.
+Il Teorema Fondamentale dell'Algebra garantisce che questa equazione abbia sempre tre radici assumendo di trovarsi in un campo algebricamente chiuso come $\mathbb{C}$ e contate con molteplicità. Questa proprietà algebrica si traduce geometricamente nei seguenti scenari:
+
+*   **Tre intersezioni distinte:** L'equazione ha tre radici distinte, corrispondenti a tre punti $(x_1, y_1), (x_2, y_2), (x_3, y_3)$ distinti sulla curva.
+*   **Un punto di tangenza:** Se la retta è tangente alla curva in un punto $P$, l'equazione ha una radice doppia. Tale punto $P$ conta come **due** intersezioni ovvero presenterà una molteplicità pari a 2 e la retta interseca la curva in un terzo punto distinto $R$.
+*   **Un punto di flesso:** In casi particolari, una retta può intersecare la curva in un unico punto $P$ con molteplicità 3. Ciò corrisponde a una radice tripla dell'equazione.
+
+Il caso di una retta verticale $x=c$ si adatta perfettamente a questa regola nel piano proiettivo: essa interseca la curva nei due punti affini $(c, y)$ e $(c, -y)$ e nel **punto all'infinito $O$**, totalizzando anche in questo caso tre intersezioni.
+
+Questa invarianza, garantita da un principio più generale noto come **Teorema di Bézout**, è ciò che rende la legge di gruppo robusta. Assicura che, dati due punti $P$ e $Q$, la retta che li congiunge determinerà *sempre* un terzo punto di intersezione. Ciò ci permette di definire la somma $P+Q$ in modo universale e senza eccezioni.
 
 ---
 
