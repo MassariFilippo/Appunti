@@ -42,6 +42,9 @@
   - [**Capitolo 4: Il Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP)**](#capitolo-4-il-problema-del-logaritmo-discreto-su-curve-ellittiche-ecdlp)
     - [**4.1 Definizione e Natura dell'ECDLP**](#41-definizione-e-natura-dellecdlp)
     - [**4.2 Difficoltà Computazionale dell'ECDLP**](#42-difficoltà-computazionale-dellecdlp)
+      - [**L'Attacco di Pohlig-Hellman: Sfruttare la Struttura dell'Ordine**](#lattacco-di-pohlig-hellman-sfruttare-la-struttura-dellordine)
+      - [**Contromisure e la Complessità degli Algoritmi Generici**](#contromisure-e-la-complessità-degli-algoritmi-generici)
+    - [**4.3 Implicazioni sulla Sicurezza e Confronto con RSA**](#43-implicazioni-sulla-sicurezza-e-confronto-con-rsa)
   - [**Capitolo 5: Applicazioni Crittografiche Pratiche delle Curve Ellittiche**](#capitolo-5-applicazioni-crittografiche-pratiche-delle-curve-ellittiche)
     - [**5.1 Scambio di Chiavi Diffie-Hellman su Curve Ellittiche (ECDH)**](#51-scambio-di-chiavi-diffie-hellman-su-curve-ellittiche-ecdh)
       - [**Protocollo ECDH**](#protocollo-ecdh)
@@ -464,7 +467,7 @@ Mentre l'ordine della curva è importante, la sicurezza pratica si basa su un co
 $$ nP = \underbrace{P + P + \dots + P}_{n \text{ volte}} = O $$
 Il punto $P$ genera un **sottogruppo ciclico** di $E_p(a,b)$, denotato come $\langle P \rangle$, che è l'insieme di tutti i multipli di $P$:
 $$ \langle P \rangle = \{O, P, 2P, 3P, \ldots, (n-1)P\} $$
-Questo sottogruppo ha esattamente $n$ elementi. Il **Teorema di Lagrange**, un risultato fondamentale della teoria dei gruppi, afferma che l'ordine di qualsiasi sottogruppo deve essere un divisore dell'ordine del gruppo principale. Di conseguenza, l'ordine $n$ di qualsiasi punto $P$ deve essere un divisore dell'ordine della curva $|E_p(a,b)|$. È fondamentale capire che i protocolli crittografici come ECDH e ECDSA **non operano sull'intero gruppo $E_p(a,b)$**, ma all'interno di un **sottogruppo ciclico generato da un punto base pubblico $B$**. La sicurezza del sistema dipende quindi direttamente dalla dimensione $n$ di questo sottogruppo. Per garantire la massima sicurezza, l'obiettivo è scegliere un punto base $B$ il cui ordine $n$ sia un **numero primo molto grande**. La ragione di questo requisito stringente risiede nella vulnerabilità a un attacco specifico: l'**attacco di Pohlig-Hellman** che approfondiremo approfonditamente in seguito, per ora ci è sufficiente sapere che questo attacco sfrutta la fattorizzazione dell'ordine $n$. Se $n$ è un numero composto con fattori primi piccoli, ad esempio $n = q_1^{e_1} \cdot q_2^{e_2} \cdot \ldots \cdot q_k^{e_k}$, l'attacco di Pohlig-Hellman permette di scomporre un singolo "grande" problema ECDLP nel gruppo di ordine $n$ in una serie di problemi ECDLP "piccoli" nei sottogruppi di ordine $q_i$. Questi problemi più piccoli possono essere risolti in modo efficiente e i risultati ricombinati per trovare la soluzione originale.
+Questo sottogruppo ha esattamente $n$ elementi. Il **Teorema di Lagrange**, un risultato fondamentale della teoria dei gruppi, afferma che l'ordine di qualsiasi sottogruppo deve essere un divisore dell'ordine del gruppo principale. Di conseguenza, l'ordine $n$ di qualsiasi punto $P$ deve essere un divisore dell'ordine della curva $|E_p(a,b)|$. È fondamentale capire che i protocolli crittografici come ECDH e ECDSA **non operano sull'intero gruppo $E_p(a,b)$**, ma all'interno di un **sottogruppo ciclico generato da un punto base pubblico $B$**. La sicurezza del sistema dipende quindi direttamente dalla dimensione $n$ di questo sottogruppo. Per garantire la massima sicurezza, l'obiettivo è scegliere un punto base $B$ il cui ordine $n$ sia un **numero primo molto grande**. La ragione di questo requisito stringente risiede nella vulnerabilità a un attacco specifico, overo l'**l'algoritmo di Pohlig-Hellman** che approfondiremo in seguito (TODO) Per il momento ci è sufficiente sapere che questo attacco sfrutta la fattorizzazione dell'ordine $n$. Se $n$ è un numero composto con fattori primi piccoli, ad esempio $n = q_1^{e_1} \cdot q_2^{e_2} \cdot \ldots \cdot q_k^{e_k}$, l'attacco di Pohlig-Hellman permette di scomporre un singolo "grande" problema ECDLP nel gruppo di ordine $n$ in una serie di problemi ECDLP "piccoli" nei sottogruppi di ordine $q_i$. Questi problemi più piccoli possono essere risolti in modo efficiente e i risultati ricombinati per trovare la soluzione originale.
 
 **Esempio Concettuale:** Risolvere un ECDLP in un gruppo di ordine $n=1.000.000$ potrebbe essere proibitivo. Ma se $n$ si fattorizza in $10^6 = 2^6 \cdot 5^6$, l'attacco lo riduce a problemi molto più semplici nei sottogruppi di ordine 2 e 5.
 
@@ -498,36 +501,55 @@ Le formule per l'addizione dei punti sono diverse ma derivate con principi simil
 
 ## **Capitolo 4: Il Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP)**
 
-La sicurezza di tutti i sistemi crittografici basati su curve ellittiche si fonda sulla difficoltà computazionale di un problema specifico: il Problema del Logaritmo Discreto su Curve Ellittiche.
+La sicurezza di tutti i sistemi crittografici basati su curve ellittiche si fonda sulla difficoltà computazionale di un problema specifico: il Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP). La sua intrattabilità è il pilastro che garantisce la robustezza di protocolli come ECDH ed ECDSA.
 
 ### **4.1 Definizione e Natura dell'ECDLP**
 
-Il Problema del Logaritmo Discreto (DLP) "classico" è definito nel gruppo moltiplicativo di un campo finito $\mathbb{Z}_p^*$. Dati un generatore $g$ e un elemento $h$, il problema consiste nel trovare l'intero $k$ tale che $h \equiv g^k \pmod p$.
+Per comprendere l'ECDLP, è utile richiamare il suo analogo nel mondo della moltiplicazione modulare, il Problema del Logaritmo Discreto (DLP) "classico". Definito nel gruppo moltiplicativo di un campo finito $\mathbb{Z}_p^*$, il DLP consiste, dati un generatore $g$ e un elemento $h$, nel trovare l'intero $k$ tale che $h \equiv g^k \pmod p$.
 
-L'**ECDLP** è l'analogo di questo problema nel gruppo additivo dei punti di una curva ellittica.
+L'ECDLP è la trasposizione di questo problema nel gruppo additivo dei punti di una curva ellittica.
 
 **Definizione Formale dell'ECDLP:**
-Dati una curva ellittica $E$ su un campo finito, un punto $P$ sulla curva di ordine $n$, e un altro punto $Q$ che è un multiplo scalare di $P$ (cioè $Q \in \langle P \rangle$), il problema consiste nel trovare l'unico intero $k \in \{0, 1, \dots, n-1\}$ tale che:
+Dati una curva ellittica $E$ su un campo finito, un punto base $P$ sulla curva di ordine $n$, e un altro punto $Q$ che è un multiplo scalare di $P$ (ovvero $Q \in \langle P \rangle$), il problema consiste nel trovare l'unico intero $k \in \{0, 1, \dots, n-1\}$ tale che:
 $$Q = kP$$
 Questo intero $k$ è chiamato il **logaritmo discreto di $Q$ in base $P$**.
 
-L'ECDLP è un esempio perfetto di **funzione one-way**:
-* **Direzione Facile:** Dati $k$ e $P$, calcolare $Q = kP$ è computazionalmente facile. Si può fare efficientemente usando l'algoritmo Double-and-Add in tempo $\mathcal{O}(\log k)$.
-* **Direzione Difficile:** Dati $P$ e $Q$, trovare $k$ è computazionalmente intrattabile per curve e parametri scelti opportunamente.
+La natura dell'ECDLP ne fa una funzione crittografica ideale, in quanto è una funzione one-way ovvero unidirezionale.
+
+*   **Direzione Facile (Moltiplicazione Scalare):** Dati $k$ e $P$, calcolare il punto $Q = kP$ è computazionalmente efficiente. Utilizzando l'algoritmo Double-and-Add visto in precedenza, questa operazione può essere eseguita in tempo logaritmico, $\mathcal{O}(\log k)$.
+*   **Direzione Difficile (Logaritmo Discreto):** Dati i punti $P$ e $Q$, determinare lo scalare $k$ è, per curve e parametri scelti opportunamente, un problema computazionalmente intrattabile.
 
 ### **4.2 Difficoltà Computazionale dell'ECDLP**
 
-La ragione per cui l'ECC è così attraente è che i migliori algoritmi noti per risolvere l'ECDLP sono significativamente meno efficienti dei migliori algoritmi per risolvere i problemi su cui si basano RSA (fattorizzazione) e Diffie-Hellman classico (DLP).
+La robustezza crittografica di un sistema ECC è determinata dalla complessità computazionale richiesta per risolvere l'ECDLP. Questa difficoltà non è assoluta, ma dipende criticamente dalla scelta dei parametri del gruppo, in particolare dalla struttura matematica del suo ordine.
 
-Gli algoritmi più noti per risolvere l'ECDLP in un gruppo generico (cioè senza sfruttare particolari debolezze della curva) sono:
-* **Baby-step Giant-step:** Un algoritmo deterministico con complessità temporale e spaziale di $\mathcal{O}(\sqrt{n})$, dove $n$ è l'ordine del punto base.
-* **Pollard's Rho Algorithm:** Un algoritmo probabilistico con complessità temporale $\mathcal{O}(\sqrt{n})$ ma con requisiti di memoria trascurabili.
+#### **L'Attacco di Pohlig-Hellman: Sfruttare la Struttura dell'Ordine**
 
-Esistono altri algoritmi come Pohlig-Hellman che sono efficaci solo se l'ordine $n$ del gruppo ha fattori primi piccoli. Per questo motivo, in crittografia si sceglie sempre un punto base $B$ il cui ordine $n$ sia un numero primo molto grande.
+Come anticipato nel capitolo precedente, la sicurezza dell'ECDLP è legata non solo alla grandezza dell'ordine $n$ del sottogruppo, ma alla sua **struttura aritmetica**. L'attacco di Pohlig-Hellman è un algoritmo di tipo "divide et impera" che dimostra come un ordine $n$ composto da piccoli fattori primi renda l'ECDLP computazionalmente trattabile, indipendentemente dalla grandezza di $n$ stesso.
 
-La complessità di questi algoritmi è **esponenziale** nella dimensione in bit dell'ordine del gruppo (se l'ordine $n$ ha circa $m$ bit, $\sqrt{n} \approx 2^{m/2}$). Al contrario, i migliori algoritmi per la fattorizzazione (come il General Number Field Sieve) hanno una complessità **sub-esponenziale**. Questa differenza fondamentale implica che per ottenere lo stesso livello di sicurezza, l'ECC richiede chiavi di dimensioni molto più piccole rispetto a RSA.
+Il principio matematico dell'attacco è il seguente: dato il problema $Q = kP$, l'algoritmo non cerca di trovare $k$ direttamente. Invece, sfrutta la fattorizzazione di $n = q_1^{e_1} \cdot q_2^{e_2} \cdot \ldots \cdot q_r^{e_r}$ per determinare il valore di $k$ modulo ciascun fattore primo $q_i^{e_i}$. Una volta ottenute tutte le congruenze:
+$$ k \equiv k_1 \pmod{q_1^{e_1}}, \quad k \equiv k_2 \pmod{q_2^{e_2}}, \quad \dots, \quad k \equiv k_r \pmod{q_r^{e_r}} $$
+L'attaccante può ricombinare queste soluzioni parziali per calcolare in modo efficiente il valore univoco di $k \pmod n$. Il cuore dell'attacco consiste nel ridurre il problema principale in una serie di sotto-problemi ECDLP in gruppi di ordine molto più piccolo e quindi deboli.
 
-Ad esempio, una chiave ECC da 256 bit offre un livello di sicurezza paragonabile a una chiave RSA da 3072 bit. Questo si traduce in un notevole risparmio di memoria, larghezza di banda e potenza di calcolo.
+La complessità totale dell'attacco di Pohlig-Hellman è dominata dal passo più difficile, che è la soluzione dell'ECDLP nel sottogruppo corrispondente al più grande fattore primo di $n$. La complessità è quindi dell'ordine di $\mathcal{O}(\sqrt{q_{max}})$, dove $q_{max}$ è il più grande fattore primo di $n$. Questo significa che se tutti i fattori primi di $n$ sono piccoli, l'intero problema può essere risolto rapidamente, rendendo il sistema crittografico insicuro.
+
+#### **Contromisure e la Complessità degli Algoritmi Generici**
+
+La vulnerabilità all'attacco di Pohlig-Hellman impone una contromisura non negoziabile: l'ordine $n$ del sottogruppo generato dal punto base $B$ deve essere un numero primo molto grande.
+
+Se $n$ è primo, la sua unica fattorizzazione è $n$ stesso. L'attacco di Pohlig-Hellman non offre alcun vantaggio, poiché il "sotto-problema" da risolvere ha la stessa dimensione del problema originale. Un crittanalista è quindi costretto a ricorrere ad algoritmi generici, che non sfruttano alcuna proprietà algebrica dell'ordine del gruppo, ma trattano il gruppo come una "scatola nera". I più noti sono:
+
+*   **L'Algoritmo Baby-step Giant-step (BSGS):** Questo è un algoritmo deterministico basato su una tecnica "meet-in-the-middle". Per risolvere $Q = kP$, si riscrive $k = i \cdot m + j$ (con $m = \lceil\sqrt{n}\rceil$), riarrangiando l'equazione in $Q - i(mP) = jP$. L'algoritmo pre-calcola e memorizza tutti i possibili valori del lato destro detto baby steps in una struttuara dati consona come una tabella hash. Successivamente, calcola iterativamente i valori del lato sinistro ovvero il giant steps, cercando una corrispondenza nella tabella. La sua complessità temporale e spaziale è di $\mathcal{O}(\sqrt{n})$. L'elevato requisito di memoria lo rende però impraticabile per i parametri crittografici moderni.
+
+*   **L'Algoritmo Rho di Pollard:** Questo algoritmo probabilistico risolve l'ECDLP con la stessa complessità temporale di BSGS, $\mathcal{O}(\sqrt{n})$, ma con un requisito di memoria trascurabile ($\mathcal{O}(1)$), rendendolo l'attacco generico di elezione. Si basa sulla ricerca di una collisione in una sequenza pseudo-casuale di punti del gruppo, sfruttando un principio analogo al paradosso del compleanno. In tal senso si cerca di trovare una collisione $P_i = P_j$ che permette di derivare un'equazione lineare in $k$ e risolverla.
+
+### **4.3 Implicazioni sulla Sicurezza e Confronto con RSA**
+
+La complessità di $\mathcal{O}(\sqrt{n})$ degli algoritmi generici è **esponenziale** rispetto alla dimensione in bit ($m$) della chiave. Poiché $n \approx 2^m$, la complessità è $\mathcal{O}(\sqrt{2^m}) = \mathcal{O}(2^{m/2})$. È questa natura esponenziale che rende l'ECDLP un problema difficile e l'ECC un sistema sicuro.
+
+Al contrario, i migliori algoritmi noti per i problemi alla base di RSA ovvero la fattorizzazione e del DLP classico, come il **General Number Field Sieve (GNFS)**, hanno una complessità **sub-esponenziale**.Questa differenza fondamentale nella difficoltà dei problemi sottostanti implica che per ottenere lo stesso livello di sicurezza, l'ECC richiede chiavi di dimensioni molto più piccole.
+
+Ad esempio si stima che una chiave ECC di **256 bit** offra una resistenza paragonabile a una chiave RSA di **3072 bit**. Questo si traduce in un notevole risparmio di memoria, larghezza di banda e potenza di calcolo, rendendo l'ECC la scelta preferita per ambienti con risorse limitate.
 
 ---
 
