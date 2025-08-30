@@ -37,7 +37,8 @@
     - [**Ordine della Curva e Ordine del Punto**](#ordine-della-curva-e-ordine-del-punto)
       - [**Ordine della Curva e il Teorema di Hasse: Quantificare lo Spazio delle Soluzioni**](#ordine-della-curva-e-il-teorema-di-hasse-quantificare-lo-spazio-delle-soluzioni)
       - [**Ordine di un Punto e Sottogruppi Ciclici: Il Vero Campo di Gioco Crittografico**](#ordine-di-un-punto-e-sottogruppi-ciclici-il-vero-campo-di-gioco-crittografico)
-      - [**Il Cofattore e la Scelta dei Parametri di Dominio**](#il-cofattore-e-la-scelta-dei-parametri-di-dominio)
+      - [**Il Cofattore**](#il-cofattore)
+      - [**Scelta dei Parametri di Dominio**](#scelta-dei-parametri-di-dominio)
     - [**3.3 Cenni di Curve Ellittiche su Campi Binari $GF(2^m)$**](#33-cenni-di-curve-ellittiche-su-campi-binari-gf2m)
   - [**Capitolo 4: Il Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP)**](#capitolo-4-il-problema-del-logaritmo-discreto-su-curve-ellittiche-ecdlp)
     - [**4.1 Definizione e Natura dell'ECDLP**](#41-definizione-e-natura-dellecdlp)
@@ -57,10 +58,21 @@
       - [**Generazione delle Chiavi**](#generazione-delle-chiavi)
       - [**Algoritmo di Generazione della Firma**](#algoritmo-di-generazione-della-firma)
       - [**Algoritmo di Verifica della Firma**](#algoritmo-di-verifica-della-firma)
-  - [**Capitolo 6: Parametri di Sicurezza e Implementazione**](#capitolo-6-parametri-di-sicurezza-e-implementazione)
-    - [**6.1 Selezione dei Parametri della Curva**](#61-selezione-dei-parametri-della-curva)
-    - [**6.2 Confronto sulla Robustezza Crittografica**](#62-confronto-sulla-robustezza-crittografica)
-    - [**6.3 Aspetti Implementativi**](#63-aspetti-implementativi)
+  - [**Capitolo 6: Parametri di Sicurezza e Implementazione: Dalla Teoria alla Pratica**](#capitolo-6-parametri-di-sicurezza-e-implementazione-dalla-teoria-alla-pratica)
+    - [**6.1 Generazione Trasparente e "Nothing-Up-My-Sleeve Numbers"**](#61-generazione-trasparente-e-nothing-up-my-sleeve-numbers)
+      - [**Scelta di Campi Finiti Ottimizzati per l'Aritmetica Modulare**](#scelta-di-campi-finiti-ottimizzati-per-laritmetica-modulare)
+        - [Riduzione di Barrett e Varianti Specializzate](#riduzione-di-barrett-e-varianti-specializzate)
+        - [Esempio Pratico: il primo di Curve25519](#esempio-pratico-il-primo-di-curve25519)
+        - [Il Caso di secp256k1: Primi di Solinas](#il-caso-di-secp256k1-primi-di-solinas)
+        - [**Nota sulla Primalità**](#nota-sulla-primalità)
+      - [**Curve Speciali per l'Efficienza: Montgomery ed Edwards**](#curve-speciali-per-lefficienza-montgomery-ed-edwards)
+    - [**6.2 Strategie di Implementazione per l'Efficienza e la Sicurezza**](#62-strategie-di-implementazione-per-lefficienza-e-la-sicurezza)
+      - [**Sistemi di Coordinate non Affini: il Caso delle Coordinate Jacobiane**](#sistemi-di-coordinate-non-affini-il-caso-delle-coordinate-jacobiane)
+      - [**Algoritmi di Moltiplicazione Scalare a Tempo Costante**](#algoritmi-di-moltiplicazione-scalare-a-tempo-costante)
+      - [**Compressione dei Punti**](#compressione-dei-punti)
+    - [**6.3 Considerazioni Avanzate sulla Sicurezza Implementativa**](#63-considerazioni-avanzate-sulla-sicurezza-implementativa)
+      - [**Attacchi a Iniezione di Errore (Fault Attacks)**](#attacchi-a-iniezione-di-errore-fault-attacks)
+      - [**Validazione dei Punti e Attacchi "Invalid Curve"**](#validazione-dei-punti-e-attacchi-invalid-curve)
   - [**Conclusioni**](#conclusioni)
   - [**Bibliografia**](#bibliografia)
 
@@ -477,11 +489,19 @@ Questo sottogruppo ha esattamente $n$ elementi. Il **Teorema di Lagrange**, un r
 
 Scegliendo un ordine $n$ che sia un numero primo, la sua unica fattorizzazione è $n = n^1$. L'attacco di Pohlig-Hellman non offre alcun vantaggio e un crittanalista è costretto a utilizzare algoritmi generici (come il Pollard's Rho), la cui complessità dipende dalla radice quadrata di $n$. Per un $n$ primo di 256 bit, questo è computazionalmente intrattabile.
 
-#### **Il Cofattore e la Scelta dei Parametri di Dominio**
+#### **Il Cofattore**
 
-Dato che $n$ ovver l'ordine del sottogruppo deve dividere $|E_p(a,b)|$ ossia l'ordine della curva, possiamo definire un intero $h$, chiamato **cofattore**, come:
-$$ h = \frac{|E_p(a,b)|}{n} $$
-Il cofattore indica quante volte il sottogruppo "entra" nel gruppo principale. Per ragioni di sicurezza, in particolare per mitigare certi attacchi come i **small subgroup attacks**, è desiderabile che il cofattore $h$ sia il più piccolo possibile, idealmente $h=1$. Curve con $h=1$ hanno un ordine che è esso stesso un numero primo, e il sottogruppo coincide con l'intero gruppo di punti. Molte curve standardizzate usano un cofattore piccolo (es. $h \le 4$).
+Dato che $n$, l'ordine del sottogruppo, deve dividere $|E(\mathbb{Z}_p)|$, l'ordine della curva, possiamo definire un intero $h$, chiamato **cofattore**, come:
+$$ h = \frac{|E(\mathbb{Z}_p)|}{n} $$
+Il cofattore $h$ quantifica il rapporto tra la cardinalità del gruppo totale dei punti e quella del sottogruppo ciclico utilizzato per le operazioni crittografiche. Il suo valore non è un mero dettaglio implementativo, ma un parametro di sicurezza critico la cui selezione influenza direttamente la robustezza di un crittosistema ECC contro specifiche classi di attacchi.
+
+La principale motivazione per un'attenta selezione del cofattore è la mitigazione degli attacchi a sottogruppi di ordine minore o small subgroup attacks. Un avversario può sfruttare un cofattore $h > 1$ con fattori primi di piccole dimensioni per orchestrare un attacco volto a estrarre informazioni sulla chiave privata di una vittima. Per neutralizzare questa minaccia, la progettazione di curve crittografiche sicure segue due approcci principali.
+
+La scelta più sicura e computazionalmente semplice da gestire è un cofattore unitario. Quando $h=1$, l'ordine della curva $|E(\mathbb{Z}_p)|$ è esso stesso un grande numero primo, e di conseguenza $n = |E(\mathbb{Z}_p)|$. Il sottogruppo di lavoro coincide con l'intero gruppo di punti della curva (escluso $O$).
+
+Alcune curve ad alte prestazioni, progettate specificamente per massimizzare l'efficienza e la resistenza ad attacchi a canali laterali, utilizzano deliberatamente un cofattore piccolo, ma maggiore di 1. Un cofattore è considerato sicuro se è una piccola potenza di due, tipicamente $h=4$ o $h=8$. Un cofattore come $h=8$ è ritenuto sicuro perché la massima quantità di informazione sulla chiave privata che un attacco a sottogruppi potrebbe teoricamente rivelare è $d_V \pmod 8$, ovvero solo 3 bit, un valore trascurabile per chiavi di 256 bit o più. Il beneficio ottenuto in termini di performance e sicurezza fisica supera ampiamente questo rischio teorico minimo.
+
+#### **Scelta dei Parametri di Dominio**
 
 Possiamo dunque dire che la selezione di una curva sicura è un processo di selezione che consiste nel trovare una tupla di **parametri di dominio** $(p, a, b, B, n, h)$, dove:
 *   $p$ è un primo che definisce il campo.
@@ -554,16 +574,6 @@ La complessità di $\mathcal{O}(\sqrt{n})$ degli algoritmi generici è **esponen
 Al contrario, i migliori algoritmi noti per i problemi alla base di RSA ovvero la fattorizzazione e del DLP classico, come il **General Number Field Sieve (GNFS)**, hanno una complessità **sub-esponenziale**.Questa differenza fondamentale nella difficoltà dei problemi sottostanti implica che per ottenere lo stesso livello di sicurezza, l'ECC richiede chiavi di dimensioni molto più piccole.
 
 Ad esempio si stima che una chiave ECC di **256 bit** offra una resistenza paragonabile a una chiave RSA di **3072 bit**. Questo si traduce in un notevole risparmio di memoria, larghezza di banda e potenza di calcolo, rendendo l'ECC la scelta preferita per ambienti con risorse limitate.
-
----
-
-Certamente. Ho compreso la richiesta di migliorare il Capitolo 5, focalizzandomi sull'aumento del rigore espositivo e sull'integrazione esplicita del concetto di "funzione a senso unico con trapola" (one-way trapdoor function), che è il principio cardine della crittografia a chiave pubblica.
-
-Procederò a una riscrittura e amplificazione del capitolo, in particolare espandendo in modo significativo la sezione sull'ECDSA, che nel testo originale era solo accennata. Manterrò la coerenza con lo stile e le regole del documento.
-
----
-
-Assolutamente. La critica è corretta: il capitolo, sebbene completo, presenta ridondanze e una struttura migliorabile. Procedo a una revisione mirata a risolvere queste criticità, accorpando le sezioni semanticamente affini, eliminando le ripetizioni e migliorando il flusso logico del testo, mantenendo inalterato il rigore tecnico.
 
 ---
 
@@ -661,43 +671,109 @@ Il punto calcolato è quindi $kB$, la cui coordinata $x$ ridotta modulo $n$ è, 
 
 ---
 
-## **Capitolo 6: Parametri di Sicurezza e Implementazione**
+## **Capitolo 6: Parametri di Sicurezza e Implementazione: Dalla Teoria alla Pratica**
 
-### **6.1 Selezione dei Parametri della Curva**
+La sicurezza teorica di un sistema ECC, fondata sull'intrattabilità dell'ECDLP, è solo il punto di partenza. La sua robustezza pratica dipende in modo critico da una serie di decisioni di basso livello relative alla selezione dei parametri di dominio e all'implementazione degli algoritmi. Scelte sub-ottimali possono introdurre vulnerabilità catastrofiche, indipendentemente dalla dimensione della chiave utilizzata. Questo capitolo analizza gli aspetti tecnici e implementativi avanzati che costituiscono il ponte tra la matematica astratta e la crittografia applicata.
 
-La sicurezza di un sistema ECC non dipende solo dalla dimensione della chiave, ma anche dalla scelta oculata dei parametri di dominio della curva. Una scelta errata può rendere il sistema vulnerabile ad attacchi specifici.
+### **6.1 Generazione Trasparente e "Nothing-Up-My-Sleeve Numbers"**
 
-I criteri fondamentali includono:
-1.  **Dimensione del Campo:** Il numero primo $p$ (per campi primi) o l'esponente $m$ (per campi binari) devono essere sufficientemente grandi da rendere gli attacchi come Pollard's Rho impraticabili. Tipicamente si usano dimensioni di almeno 256 bit.
-2.  **Ordine della Curva:** L'ordine della curva, $|E_p(a,b)|$, non deve essere primo, ma deve avere un fattore primo $n$ molto grande.
-3.  **Punto Base e suo Ordine:** Il punto base $B$ deve generare un sottogruppo di ordine $n$, dove $n$ è un numero primo grande. Questo previene l'attacco di Pohlig-Hellman. Il **cofattore** $h = |E_p(a,b)|/n$ dovrebbe essere piccolo (idealmente $h=1$).
-4.  **Evitare Curve Speciali:** Alcune famiglie di curve, come le curve **supersingolari**, sono vulnerabili all'attacco MOV (Menezes-Okamoto-Vanstone), che riduce l'ECDLP a un DLP in un campo di estensione, dove può essere risolto più facilmente. Pertanto, tali curve devono essere evitate.
+La selezione dei parametri $(p, a, b, B, n, h)$ non è un processo arbitrario, ma segue criteri rigorosi volti a massimizzare sia la sicurezza che l'efficienza.
 
-Per garantire interoperabilità e fiducia, sono state definite diverse **curve standardizzate** da organizzazioni come il NIST (National Institute of Standards and Technology) e Brainpool. Esempi noti includono `NIST P-256`, `P-384`, `P-521`, e `Curve25519`, che sono state attentamente selezionate per le loro proprietà di sicurezza.
+Per garantire la fiducia della comunità crittografica, è essenziale che i parametri di una curva standard non nascondano debolezze strutturali inserite deliberatamente o involontariamente dal progettista. Per questo si adotta il principio della generazione trasparente, in cui i coefficienti della curva e le coordinate del punto base sono derivati in modo deterministico da costanti matematiche note e non correlate, come $\pi$ o $e$.
 
-### **6.2 Confronto sulla Robustezza Crittografica**
+Il processo tipicamente prevede l'uso di un seme (seed) pubblico, che viene processato da una funzione di hash crittografica come la SHA-256 per generare una sequenza di bit. Questa sequenza viene poi interpretata per produrre i coefficienti $a$ e $b$ e le coordinate del punto $B$. Poiché la funzione di hash intriduce una trasformazione a componente randomica della sequenza in ingresso, si assume che i parametri risultanti non posseggano alcuna struttura algebrica nascosta sfruttabile. Questi numeri sono detti Nothing-Up-My-Sleeve numbers ovvero numeri senza assi nella manica, e il loro utilizzo è una prassi standard, ad esempio, per le curve del NIST (National Institute of Standards and Technology). Esempi noti includono NIST P-256, P-384, P-521, e Curve25519 selezionate accuratamente per le loro proprietà di sicurezza.
 
-Il principale vantaggio pratico dell'ECC risiede nella sua efficienza, che si manifesta nella lunghezza delle chiavi necessarie per raggiungere un determinato livello di sicurezza.
+#### **Scelta di Campi Finiti Ottimizzati per l'Aritmetica Modulare**
 
-| Livello di Sicurezza (bit) | Lunghezza Chiave Simmetrica (bit) | Lunghezza Chiave ECC (bit) | Lunghezza Chiave RSA/DH (bit) |
-| :------------------------- | :-------------------------------- | :------------------------- | :---------------------------- |
-| 80                         | 80                                | 160                        | 1024                          |
-| 112                        | 112                               | 224                        | 2048                          |
-| 128                        | 128                               | 256                        | 3072                          |
-| 192                        | 192                               | 384                        | 7680                          |
-| 256                        | 256                               | 521                        | 15360                         |
+L'efficienza di tutte le operazioni sulla curva come: addizione, raddoppio e quindi moltiplicazione scalare, è dominata dalla performance dell'aritmetica nel campo finito sottostante $\mathbb{Z}_p$. L'operazione più critica e computazionalmente costosa in questo contesto è la riduzione modulare, ovvero il calcolo di $x \pmod p$, specialmente per numeri $x$ di grandi dimensioni come ad esempio, il risultato di una moltiplicazione a 256 bit che produce un numero a 512 bit.
 
-[IMMAGINE: Grafico comparativo che mostra la crescita esponenziale della lunghezza delle chiavi RSA rispetto alla crescita lineare di quelle ECC per livelli di sicurezza crescenti.]
+Su un processore generico, questa operazione viene implementata tramite un'istruzione di divisione intera, che è notoriamente una delle istruzioni più lente, con una latenza di decine di cicli di clock. Per aggirare questo collo di bottiglia, le curve ad alte prestazioni non utilizzano primi arbitrari, ma selezionano numeri primi $p$ la cui struttura algebrica permette di sostituire la divisione con una sequenza di operazioni molto più veloci, come shift di bit, addizioni e moltiplicazioni per costanti di piccole dimensioni.
 
-Come si può osservare, la dimensione delle chiavi RSA cresce molto più rapidamente di quella delle chiavi ECC. Questo rende l'ECC particolarmente adatta per ambienti con risorse limitate, come dispositivi mobili, smart card e sistemi IoT (Internet of Things).
+##### Riduzione di Barrett e Varianti Specializzate
 
-### **6.3 Aspetti Implementativi**
+Il principio si basa su una semplice ma potente identità modulare. Consideriamo un primo della forma **primo di Mersenne generalizzato** ovvero:
+$$ p = 2^k - c $$
+dove $k$ è un intero e $c$ è una costante intera di piccole dimensioni. Dall'equazione di definizione del campo, sappiamo che $p \equiv 0 \pmod p$, il che implica:
+$$ 2^k - c \equiv 0 \pmod p \implies 2^k \equiv c \pmod p $$
+Questa congruenza è la chiave dell'ottimizzazione. Ci permette di sostituire un'occorrenza di $2^k$ con la costante $c$.
 
-L'implementazione sicura ed efficiente dell'ECC richiede attenzione a diversi dettagli.
-* **Efficienza:** Gli algoritmi di moltiplicazione scalare devono essere implementati in modo ottimale. L'uso di sistemi di coordinate proiettive o Jacobiane può accelerare i calcoli eliminando le costose operazioni di inversione modulare ad ogni passo dell'algoritmo Double-and-Add.
-* **Resistenza agli Attacchi a Canale Laterale (Side-Channel Attacks):** Questi attacchi sfruttano le informazioni trapelate durante l'esecuzione fisica di un algoritmo (es. tempo di esecuzione, consumo di energia). Ad esempio, un'implementazione naïf dell'algoritmo Double-and-Add potrebbe rivelare i bit della chiave privata a seconda che venga eseguita o meno l'operazione di "add". Per mitigare questi attacchi, si utilizzano algoritmi a tempo costante, come la "scala di Montgomery", che eseguono sempre la stessa sequenza di operazioni indipendentemente dai bit della chiave.
+Consideriamo ora un numero $N$ di grandi dimensioni nell'ordine di grandezza ad esempio dei $2k$ bit che deve essere ridotto modulo $p$. Possiamo rappresentare $N$ in base $2^k$ nel seguente modo:
+$$ N = q \cdot 2^k + r $$
+dove $q$ è il quoziente ovvero i $k$ bit più significativi di $N$ e $r$ è il resto ossia i $k$ bit meno significativi. Questa scomposizione si ottiene efficientemente tramite operazioni a livello di bit: $q = N \gg k$ (right shift) e $r = N \land (2^k - 1)$ (bitwise AND con una maschera).
 
----
+Applicando la nostra identità, la riduzione di $N$ diventa:
+$$ N \pmod p \equiv (q \cdot 2^k + r) \pmod p \equiv (q \cdot c + r) \pmod p $$
+Il risultato, $N' = q \cdot c + r$, è un numero significativamente più piccolo di $N$, ma congruo a esso modulo $p$. Questa operazione ha sostituito una divisione lenta con una serie di operazioni decisamente più rapide a livello computazionale ovvero: uno shift, una maschera, una moltiplicazione per la costante piccola $c$ e un'addizione. Se $N'$ è ancora maggiore di $p$, il processo può essere applicato iterativamente fino a quando il risultato non è completamente ridotto.
+
+##### Esempio Pratico: il primo di Curve25519
+
+La curva **Curve25519** utilizza il primo $p = 2^{255} - 19$. Qui, $k=255$ e $c=19$. L'identità di riduzione è:
+$$ 2^{255} \equiv 19 \pmod p $$
+Supponiamo di dover ridurre un numero a 510 bit, risultato di una moltiplicazione a 255 bit. Lo rappresentiamo come $N = q \cdot 2^{255} + r$, dove $q$ e $r$ sono entrambi numeri a 255 bit. La prima fase di riduzione è:
+$$ N \equiv 19q + r \pmod p $$
+Il risultato è la somma di due numeri a circa 255 bit (poiché 19 è piccolo), che può essere ridotto ulteriormente con pochi altri passaggi simili, senza mai eseguire una divisione a 512 bit.
+
+##### Il Caso di secp256k1: Primi di Solinas
+
+Un'altra classe di primi ottimizzati sono i **primi di Solinas**, che hanno la forma $p = 2^k - \sum_{i=0}^{m} c_i 2^{j_i}$, dove i coefficienti $c_i$ sono $\pm 1$ e gli esponenti $j_i$ sono scelti per allinearsi con le dimensioni delle parole della macchina (es. 32 o 64 bit).
+Il primo della curva **secp256k1** è:
+$$ p = 2^{256} - 2^{32} - 2^9 - 2^8 - 2^7 - 2^6 - 2^4 - 1 $$
+Qui, $k=256$ e la costante $c$ è $c = 2^{32} + 977$. L'identità di riduzione è $2^{256} \equiv c \pmod p$. Sebbene $c$ non sia una costante piccola come 19, la sua rappresentazione binaria è molto sparsa. La moltiplicazione per $c$ non viene eseguita come un'operazione generica, ma implementata come una serie di shift di bit e addizioni, che sono comunque ordini di grandezza più veloci di una divisione.
+
+##### **Nota sulla Primalità**
+
+È fondamentale sottolineare che la forma di un numero non ne garantisce la primalità. La selezione di questi primi è un processo a due stadi. In principio si identificano candidati che hanno una forma algebrica adatta all'ottimizzazione aritmetica. Ciascun candidato viene poi rigorosamente testato per la primalità utilizzando algoritmi probabilistici come, per esempio, Miller-Rabin. Pertanto, $p = 2^{255} - 19$ non viene utilizzato solo perché ha una forma conveniente, ma perché è un numero che, dopo essere stato testato, è risultato essere primo.
+
+#### **Curve Speciali per l'Efficienza: Montgomery ed Edwards**
+
+Sebbene questo documento si sia concentrato sulla forma di Weierstrass, esistono altre forme di equazioni per le curve ellittiche che offrono vantaggi implementativi significativi.
+*   **Curve di Montgomery:** Definite dall'equazione $By^2 = x^3 + Ax^2 + x$. La loro proprietà più notevole è la possibilità di eseguire la moltiplicazione scalare utilizzando solo la coordinata $x$ dei punti, tramite un algoritmo noto come Montgomery Ladder che descriveremo nel dettaglio in seguito. Questo non solo è efficiente, ma fornisce una protezione naturale contro alcuni specifici attacchi. Curve25519 è un esempio di curva di Montgomery.
+*   **Curve di Edwards Ristorte o Twisted Edwards Curves:** Definite da $ax^2 + y^2 = 1 + dx^2y^2$. Il loro vantaggio principale è una **legge di gruppo unificata**. Le formule di addizione sono "complete", ovvero la stessa formula si applica per sommare due punti distinti, per raddoppiare un punto e include anche gli elementi neutri, eliminando la necessità di controlli condizionali e casi speciali nel codice, il che aumenta la sicurezza contro gli attacchi a canali laterali. **Curve448** è basata su questa forma.
+
+### **6.2 Strategie di Implementazione per l'Efficienza e la Sicurezza**
+
+L'efficienza della moltiplicazione scalare $kP$ è il fattore determinante per le prestazioni di qualsiasi protocollo ECC.
+
+#### **Sistemi di Coordinate non Affini: il Caso delle Coordinate Jacobiane**
+
+L'operazione più costosa nell'aritmetica di un campo finito è l'inversione modulare. Le formule di addizione e raddoppio in coordinate affini $(x, y)$ richiedono un'inversione a ogni passo. Per ovviare a questo problema, le implementazioni pratiche utilizzano sistemi di coordinate proiettive.
+
+Nelle **coordinate Jacobiane**, un punto affine $(x, y)$ è rappresentato da una tripla $(X, Y, Z)$ con $Z \neq 0$, tale che:
+$$ x = \frac{X}{Z^2}, \quad y = \frac{Y}{Z^3} $$
+L'equazione della curva $y^2 = x^3 + ax + b$ diventa:
+$$ Y^2 = X^3 + aXZ^4 + bZ^6 $$
+Riformulando le leggi di addizione e raddoppio in queste coordinate, si ottengono formule che richiedono solo moltiplicazioni e addizioni modulari. L'inversione modulare, molto più lenta, viene eseguita una sola volta, alla fine della moltiplicazione scalare, per riconvertire il risultato da coordinate Jacobiane a coordinate affini. Questo approccio riduce drasticamente il costo computazionale.
+
+#### **Algoritmi di Moltiplicazione Scalare a Tempo Costante**
+
+L'algoritmo Double-and-Add, se implementato in modo naïf, è vulnerabile ad attacchi a canali laterali basati sull'analisi dei tempi (Timing Attacks) o della potenza consumata (Power Analysis). La sua struttura `if bit is 1, then add` crea una dipendenza osservabile tra l'esecuzione e i bit della chiave segreta. Per mitigare ciò, si utilizzano algoritmi a **tempo costante**.
+
+La **Montgomery Ladder** è un algoritmo canonico per la moltiplicazione scalare che esegue la stessa sequenza di operazioni per ogni bit della chiave, indipendentemente dal suo valore (0 o 1). L'algoritmo mantiene due registri, $R_0$ e $R_1$, e per ogni bit dello scalare $k$ (scansionato da sinistra a destra) esegue sempre un raddoppio e un'addizione. A seconda del valore del bit, i risultati vengono scambiati tra i registri. Poiché il flusso di operazioni è identico per ogni bit, l'algoritmo non rivela informazioni sulla chiave attraverso canali laterali.
+
+#### **Compressione dei Punti**
+
+Per ridurre l'occupazione di banda e lo spazio di archiviazione, le chiavi pubbliche (che sono punti sulla curva) possono essere trasmesse in formato compresso. Data la coordinata $x$ di un punto e l'equazione della curva $y^2 = x^3+ax+b$, esistono al più due soluzioni per $y$: $y_0$ e $-y_0 \equiv p-y_0$. In un campo primo $\mathbb{Z}_p$ (con $p>2$), una di queste soluzioni sarà un intero "pari" e l'altra "dispari".
+
+*   **Formato non compresso:** Si trasmette un byte di prefisso (es. `0x04`) seguito dalle coordinate $x$ e $y$ complete.
+*   **Formato compresso:** Si trasmette un byte di prefisso (es. `0x02` se $y$ è pari, `0x03` se $y$ è dispari) seguito solo dalla coordinata $x$. Il destinatario può ricostruire la coordinata $y$ calcolando $\sqrt{x^3+ax+b} \pmod p$ e scegliendo la radice con la parità corretta. Questo dimezza quasi la dimensione della chiave pubblica.
+
+### **6.3 Considerazioni Avanzate sulla Sicurezza Implementativa**
+
+Oltre agli attacchi a canali laterali, un'implementazione deve difendersi da altre minacce fisiche e logiche.
+
+#### **Attacchi a Iniezione di Errore (Fault Attacks)**
+
+Un avversario con accesso fisico al dispositivo può tentare di indurre un errore hardware (es. tramite glitch di tensione o laser) durante un'operazione crittografica. Se un bit viene alterato durante il calcolo di una firma ECDSA, il risultato errato, confrontato con la firma corretta, può rivelare informazioni sulla chiave privata.
+
+La contromisura principale è la **verifica del risultato**. Dopo aver calcolato una moltiplicazione scalare $Q=kP$, l'implementazione deve sempre verificare che il punto risultante $Q$ appartenga effettivamente alla curva (soddisfacendo la sua equazione) prima di utilizzarlo. Per le firme, il firmatario può generare la firma e poi verificarla immediatamente con la propria chiave pubblica prima di rilasciarla.
+
+#### **Validazione dei Punti e Attacchi "Invalid Curve"**
+
+Come discusso nel capitolo precedente, è fondamentale validare i punti ricevuti dall'esterno (es. una chiave pubblica in ECDH). Un'implementazione robusta deve eseguire una validazione completa:
+1.  Verificare che le coordinate del punto siano nel campo $\mathbb{Z}_p$.
+2.  Verificare che il punto non sia il punto all'infinito $O$.
+3.  Verificare che il punto soddisfi l'equazione della curva (contromisura per gli **attacchi "Invalid Curve"**, in cui l'avversario fornisce un punto su una curva diversa e più debole).
+4.  Verificare che il punto appartenga al sottogruppo corretto, moltiplicandolo per l'ordine $n$ e controllando che il risultato sia $O$ (contromisura per gli **attacchi a sottogruppi di ordine minore**).
 
 ## **Conclusioni**
 
