@@ -464,5 +464,3 @@ cn=John Doe      cn=LaserJet4
     *   `cn` (Common Name): Il nome comune dell'oggetto.
     *   `ou` (Organizational Unit): Un'unità organizzativa (es. un dipartimento).
     *   `dc` (Domain Component): Una parte del nome di dominio DNS (usato per mappare la struttura DNS alla struttura LDAP).
-
-Spero che questi appunti approfonditi ti siano di grande aiuto per la preparazione del tuo esame. In bocca al lupo
