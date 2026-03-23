@@ -1,74 +1,66 @@
-# **Le Curve Ellittiche in Crittografia: Analisi Tecnica Approfondita**
+<div align="center">
+  
+# **Le Curve Ellittiche: Analisi Tecnica delle Applicazioni Crittografiche**
+
+**Corso di Crittografia A.A. 2024-2025**
+
+**Filippo Massari - 0001071420**
+
+</div>
 
 <div style="page-break-after: always;"></div>
 
-- [**Le Curve Ellittiche in Crittografia: Analisi Tecnica Approfondita**](#le-curve-ellittiche-in-crittografia-analisi-tecnica-approfondita)
+- [**Le Curve Ellittiche: Analisi Tecnica delle Applicazioni Crittografiche**](#le-curve-ellittiche-analisi-tecnica-delle-applicazioni-crittografiche)
   - [**Introduzione**](#introduzione)
   - [**Capitolo 1: Fondamenti Matematici delle Curve Ellittiche**](#capitolo-1-fondamenti-matematici-delle-curve-ellittiche)
-    - [**1.1 Campi Matematici**](#11-campi-matematici)
-      - [**Strutture Algebriche Fondamentali: Il Gruppo**](#strutture-algebriche-fondamentali-il-gruppo)
+    - [**1.1 I Campi Matematici**](#11-i-campi-matematici)
+      - [**I Gruppi**](#i-gruppi)
       - [**Definizione Formale di Campo**](#definizione-formale-di-campo)
-      - [**Esempi di Campi**](#esempi-di-campi)
       - [**Caratteristica di un Campo**](#caratteristica-di-un-campo)
-      - [**Dimostrazione della Primalità della Caratteristica**](#dimostrazione-della-primalità-della-caratteristica)
-    - [**1.2 Definizione e Geometria delle Curve Ellittiche**](#12-definizione-e-geometria-delle-curve-ellittiche)
+    - [**1.2 Definizione delle Curve Ellittiche**](#12-definizione-delle-curve-ellittiche)
       - [**L'Equazione Generale di Weierstrass**](#lequazione-generale-di-weierstrass)
       - [**La Forma Normale di Weierstrass**](#la-forma-normale-di-weierstrass)
       - [**Il Punto all'Infinito ($O$)**](#il-punto-allinfinito-o)
       - [**La Condizione di Non-Singolarità**](#la-condizione-di-non-singolarità)
       - [**Geometria sui Numeri Reali**](#geometria-sui-numeri-reali)
       - [**Intersezione tra Curve Ellittiche e Rette**](#intersezione-tra-curve-ellittiche-e-rette)
-  - [**Capitolo 2: L'Algebra delle Curve Ellittiche: L'Operazione di Gruppo**](#capitolo-2-lalgebra-delle-curve-ellittiche-loperazione-di-gruppo)
-    - [**2.1 La Struttura di Gruppo Abeliano**](#21-la-struttura-di-gruppo-abeliano)
-    - [**2.2 L'Operazione di Addizione di Punti**](#22-loperazione-di-addizione-di-punti)
-      - [**Definizione Geometrica**](#definizione-geometrica)
+  - [**Capitolo 2: L'Algebra sulle Curve Ellittiche**](#capitolo-2-lalgebra-sulle-curve-ellittiche)
+    - [**2.1 Addizione di Punti**](#21-addizione-di-punti)
       - [**Derivazione delle Formule Algebriche**](#derivazione-delle-formule-algebriche)
-        - [**Caso 1: Addizione di due punti distinti ($P \\neq Q$)**](#caso-1-addizione-di-due-punti-distinti-p-neq-q)
-        - [**Caso 2: Raddoppio di un punto ($P = Q$)**](#caso-2-raddoppio-di-un-punto-p--q)
-      - [**Proprietà di Gruppo**](#proprietà-di-gruppo)
-    - [**2.3 Moltiplicazione Scalare di un Punto ($kP$)**](#23-moltiplicazione-scalare-di-un-punto-kp)
+    - [**2.2 Moltiplicazione Scalare di un Punto ($kP$)**](#22-moltiplicazione-scalare-di-un-punto-kp)
       - [**Algoritmo Double-and-Add**](#algoritmo-double-and-add)
-  - [**Capitolo 3: Curve Ellittiche su Campi Finiti: Il Cuore della Crittografia**](#capitolo-3-curve-ellittiche-su-campi-finiti-il-cuore-della-crittografia)
+  - [**Capitolo 3: Curve Ellittiche su Campi Finiti**](#capitolo-3-curve-ellittiche-su-campi-finiti)
     - [**3.1 Motivazioni per l'Uso di Campi Finiti**](#31-motivazioni-per-luso-di-campi-finiti)
     - [**3.2 Curve Ellittiche su $\\mathbb{Z}\_p$**](#32-curve-ellittiche-su-mathbbz_p)
-      - [**Definizione Formale**](#definizione-formale)
       - [**Inversi Modulari e Algoritmo di Euclide Esteso**](#inversi-modulari-e-algoritmo-di-euclide-esteso)
-    - [**Esempio Dettagliato di Addizione in $\\mathbb{Z}\_p$**](#esempio-dettagliato-di-addizione-in-mathbbz_p)
-    - [**Ordine della Curva e Ordine del Punto**](#ordine-della-curva-e-ordine-del-punto)
-      - [**Ordine della Curva e il Teorema di Hasse: Quantificare lo Spazio delle Soluzioni**](#ordine-della-curva-e-il-teorema-di-hasse-quantificare-lo-spazio-delle-soluzioni)
-      - [**Ordine di un Punto e Sottogruppi Ciclici: Il Vero Campo di Gioco Crittografico**](#ordine-di-un-punto-e-sottogruppi-ciclici-il-vero-campo-di-gioco-crittografico)
+      - [**Esempio Dettagliato di Addizione in $\\mathbb{Z}\_p$**](#esempio-dettagliato-di-addizione-in-mathbbz_p)
+      - [**Ordine della Curva e Ordine del Punto**](#ordine-della-curva-e-ordine-del-punto)
       - [**Il Cofattore**](#il-cofattore)
       - [**Scelta dei Parametri di Dominio**](#scelta-dei-parametri-di-dominio)
     - [**3.3 Cenni di Curve Ellittiche su Campi Binari $GF(2^m)$**](#33-cenni-di-curve-ellittiche-su-campi-binari-gf2m)
   - [**Capitolo 4: Il Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP)**](#capitolo-4-il-problema-del-logaritmo-discreto-su-curve-ellittiche-ecdlp)
     - [**4.1 Definizione e Natura dell'ECDLP**](#41-definizione-e-natura-dellecdlp)
     - [**4.2 Difficoltà Computazionale dell'ECDLP**](#42-difficoltà-computazionale-dellecdlp)
-      - [**L'Attacco di Pohlig-Hellman: Sfruttare la Struttura dell'Ordine**](#lattacco-di-pohlig-hellman-sfruttare-la-struttura-dellordine)
-      - [**Contromisure e la Complessità degli Algoritmi Generici**](#contromisure-e-la-complessità-degli-algoritmi-generici)
+      - [**Attacco di Pohlig-Hellman e Contromisure con Algoritmi Generici**](#attacco-di-pohlig-hellman-e-contromisure-con-algoritmi-generici)
     - [**4.3 Implicazioni sulla Sicurezza e Confronto con RSA**](#43-implicazioni-sulla-sicurezza-e-confronto-con-rsa)
-  - [**Capitolo 5: Applicazioni Crittografiche Pratiche delle Curve Ellittiche**](#capitolo-5-applicazioni-crittografiche-pratiche-delle-curve-ellittiche)
+  - [**Capitolo 5: Applicazioni Crittografiche delle Curve Ellittiche**](#capitolo-5-applicazioni-crittografiche-delle-curve-ellittiche)
     - [**5.1 Scambio di Chiavi Diffie-Hellman su Curve Ellittiche (ECDH)**](#51-scambio-di-chiavi-diffie-hellman-su-curve-ellittiche-ecdh)
-      - [**5.1.1 Descrizione del Protocollo**](#511-descrizione-del-protocollo)
-      - [**Analisi della Sicurezza**](#analisi-della-sicurezza)
     - [**5.2 Cifratura Asimmetrica basata su ECC**](#52-cifratura-asimmetrica-basata-su-ecc)
       - [**Incorporazione del Messaggio o Embedding**](#incorporazione-del-messaggio-o-embedding)
       - [**Architettura del Protocollo**](#architettura-del-protocollo)
-      - [**Analisi della Sicurezza**](#analisi-della-sicurezza-1)
     - [**5.3 Algoritmo di Firma Digitale su Curve Ellittiche (ECDSA)**](#53-algoritmo-di-firma-digitale-su-curve-ellittiche-ecdsa)
-      - [**Generazione delle Chiavi**](#generazione-delle-chiavi)
-      - [**Algoritmo di Generazione della Firma**](#algoritmo-di-generazione-della-firma)
-      - [**Algoritmo di Verifica della Firma**](#algoritmo-di-verifica-della-firma)
-  - [**Capitolo 6: Parametri di Sicurezza e Implementazione: Dalla Teoria alla Pratica**](#capitolo-6-parametri-di-sicurezza-e-implementazione-dalla-teoria-alla-pratica)
-    - [**6.1 Generazione Trasparente e "Nothing-Up-My-Sleeve Numbers"**](#61-generazione-trasparente-e-nothing-up-my-sleeve-numbers)
+  - [**Capitolo 6: Parametri di Sicurezza e Implementazione**](#capitolo-6-parametri-di-sicurezza-e-implementazione)
+    - [**6.1 Generazione Trasparente di Curve Ellitiche"**](#61-generazione-trasparente-di-curve-ellitiche)
       - [**Scelta di Campi Finiti Ottimizzati per l'Aritmetica Modulare**](#scelta-di-campi-finiti-ottimizzati-per-laritmetica-modulare)
-        - [Riduzione di Barrett e Varianti Specializzate](#riduzione-di-barrett-e-varianti-specializzate)
-        - [Esempio Pratico: il primo di Curve25519](#esempio-pratico-il-primo-di-curve25519)
-        - [Il Caso di secp256k1: Primi di Solinas](#il-caso-di-secp256k1-primi-di-solinas)
+        - [**Riduzione di Barrett e Varianti Specializzate**](#riduzione-di-barrett-e-varianti-specializzate)
+        - [**Il primo di Curve25519**](#il-primo-di-curve25519)
+        - [**Primi di Solinas**](#primi-di-solinas)
         - [**Nota sulla Primalità**](#nota-sulla-primalità)
-      - [**Curve Speciali per l'Efficienza: Montgomery ed Edwards**](#curve-speciali-per-lefficienza-montgomery-ed-edwards)
+      - [**Curve Selezionate per l'Efficienza: Montgomery ed Edwards**](#curve-selezionate-per-lefficienza-montgomery-ed-edwards)
     - [**6.2 Strategie di Implementazione per l'Efficienza e la Sicurezza**](#62-strategie-di-implementazione-per-lefficienza-e-la-sicurezza)
-      - [**Sistemi di Coordinate non Affini: il Caso delle Coordinate Jacobiane**](#sistemi-di-coordinate-non-affini-il-caso-delle-coordinate-jacobiane)
-      - [**Algoritmi di Moltiplicazione Scalare a Tempo Costante**](#algoritmi-di-moltiplicazione-scalare-a-tempo-costante)
+      - [**Ottimizzazione tramite Sistemi di Coordinate non Affini**](#ottimizzazione-tramite-sistemi-di-coordinate-non-affini)
+        - [**Le Coordinate Jacobiane**](#le-coordinate-jacobiane)
+      - [**Attacchi a Canali Laterali ed Algoritmi di Moltiplicazione Scalare a Tempo Costante**](#attacchi-a-canali-laterali-ed-algoritmi-di-moltiplicazione-scalare-a-tempo-costante)
       - [**Compressione dei Punti**](#compressione-dei-punti)
     - [**6.3 Considerazioni Avanzate sulla Sicurezza Implementativa**](#63-considerazioni-avanzate-sulla-sicurezza-implementativa)
       - [**Attacchi a Iniezione di Errore (Fault Attacks)**](#attacchi-a-iniezione-di-errore-fault-attacks)
@@ -86,15 +78,13 @@ Le curve ellittiche sono oggetti matematici affascinanti, definiti da semplici e
 
 L'obiettivo di questo documento è fornire una trattazione tecnica esaustiva dei principi matematici e delle applicazioni crittografiche delle curve ellittiche. Si partirà dai fondamenti algebrici, come la teoria dei campi, per poi definire formalmente le curve ellittiche e la loro operazione di gruppo. Successivamente, l'analisi si sposterà sui campi finiti, che costituiscono l'ambiente operativo della crittografia pratica. Verrà esaminato in dettaglio il Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP), la sua intrattabilità computazionale e il suo ruolo come funzione *one-way*. Infine, verranno illustrate le principali applicazioni crittografiche, come lo scambio di chiavi Diffie-Hellman (ECDH) e i sistemi di cifratura, analizzando i protocolli e i parametri di sicurezza.
 
----
-
 ## **Capitolo 1: Fondamenti Matematici delle Curve Ellittiche**
 
-### **1.1 Campi Matematici**
+### **1.1 I Campi Matematici**
 
-Per comprendere appieno la struttura delle curve ellittiche, è indispensabile introdurre il concetto algebrico di **campo**. Un campo è l'ambiente matematico in cui le coordinate dei punti di una curva e i coefficienti della sua equazione sono definiti. Prima di definire un campo, è necessario introdurre una struttura più fondamentale: il gruppo.
+Per comprendere appieno la struttura delle curve ellittiche, è indispensabile introdurre il concetto algebrico di **campo**. Un campo è l'ambiente matematico in cui le coordinate dei punti di una curva e i coefficienti della sua equazione sono definiti. Prima di definire un campo, è necessario introdurre una struttura più fondamentale: **il gruppo**.
 
-#### **Strutture Algebriche Fondamentali: Il Gruppo**
+#### **I Gruppi**
 
 Un **gruppo** è costituito da un insieme non vuoto $G$ e un'unica operazione binaria che indicheremo genericamente con $*$ che soddisfa quattro proprietà fondamentali, note come assiomi di gruppo:
 
@@ -103,30 +93,28 @@ Un **gruppo** è costituito da un insieme non vuoto $G$ e un'unica operazione bi
 3.  **Esistenza dell'Elemento Neutro:** Esiste un elemento unico $e \in G$, chiamato elemento neutro, tale che per ogni $a \in G$, si ha $a * e = e * a = a$.
 4.  **Esistenza dell'Inverso:** Per ogni elemento $a \in G$, esiste un elemento unico $a^{-1} \in G$, chiamato inverso di $a$, tale che $a * a^{-1} = a^{-1} * a = e$.
 
-Se un gruppo soddisfa anche un quinto assioma, quello della commutatività, prende il nome di **gruppo abeliano** (o commutativo).
+Se un gruppo soddisfa anche un quinto assioma, quello della commutatività, prende il nome di **gruppo abeliano** o commutativo.
 
 5.  **Commutatività:** Per ogni $a, b \in G$, vale l'equazione $a * b = b * a$. L'ordine degli operandi non influisce sul risultato.
 
 #### **Definizione Formale di Campo**
 
-Possiamo ora definire formalmente un campo. Un **campo** è una struttura algebrica costituita da un insieme non vuoto $K$ e due operazioni binarie, chiamate addizione ($+$) e moltiplicazione ($\cdot$), che soddisfano i seguenti assiomi:
+Possiamo ora definire formalmente un campo. Un campo è una struttura algebrica costituita da un insieme non vuoto $K$ e due operazioni binarie, chiamate addizione ($+$) e moltiplicazione ($\cdot$), che soddisfano i seguenti assiomi:
 
-1.  **Struttura di Gruppo Abeliano rispetto all'Addizione:** L'insieme $K$ con l'operazione di addizione, denotato come $(K, +)$, forma un **gruppo abeliano**. L'elemento neutro è $0$ e l'inverso di $a$ è $-a$.
+1.  **Struttura di Gruppo Abeliano rispetto all'Addizione:** L'insieme $K$ con l'operazione di addizione, denotato come $(K, +)$, forma un gruppo abeliano. L'elemento neutro è $0$ e l'inverso di $a$ è $-a$.
 
-2.  **Struttura di Gruppo Abeliano rispetto alla Moltiplicazione (escluso lo zero):** L'insieme $K \setminus \{0\}$ (tutti gli elementi di $K$ eccetto l'elemento neutro additivo) con l'operazione di moltiplicazione, denotato come $(K \setminus \{0\}, \cdot)$, forma un **gruppo abeliano**. L'elemento neutro è $1$ e l'inverso di $a$ è $a^{-1}$.
+2.  **Struttura di Gruppo Abeliano rispetto alla Moltiplicazione (escluso lo zero):** L'insieme $K \setminus \{0\}$ ovvero l'insieme di tutti gli elementi di $K$ eccetto l'elemento neutro additivo con l'operazione di moltiplicazione, denotato come $(K \setminus \{0\}, \cdot)$, forma un gruppo abeliano. L'elemento neutro è $1$ e l'inverso di $a$ è $a^{-1}$.
 
 3.  **Proprietà Distributiva:** La moltiplicazione è distributiva rispetto all'addizione. Per ogni $a, b, c \in K$, vale $a \cdot (b + c) = (a \cdot b) + (a \cdot c)$.
 
-In sintesi, un campo è un insieme in cui è possibile eseguire addizioni, sottrazioni, moltiplicazioni e divisioni (eccetto la divisione per zero) con le consuete proprietà algebriche.
-
-#### **Esempi di Campi**
+In sintesi, un campo è un insieme in cui è possibile eseguire addizioni, sottrazioni, moltiplicazioni e divisioni, eccetto la divisione per zero, con le consuete proprietà algebriche. Sono un esempip di campi:
 
 * **$(\mathbb{Q}, +, \cdot)$:** Il campo dei numeri **razionali**.
 * **$(\mathbb{R}, +, \cdot)$:** Il campo dei numeri **reali**.
 * **$(\mathbb{C}, +, \cdot)$:** Il campo dei numeri **complessi**.
 * **$(\mathbb{Z}_p, +, \cdot)$:** Il campo dei numeri **interi modulo un numero primo $p$**. Questo è un esempio di **campo finito**, fondamentale per la crittografia. L'insieme è $\{0, 1, 2, \ldots, p-1\}$ e le operazioni sono eseguite modulo $p$. L'esistenza dell'inverso moltiplicativo per ogni elemento non nullo è garantita dal fatto che $p$ è primo.
 
-L'insieme dei numeri interi $(\mathbb{Z}, +, \cdot)$ **non** è un campo. Pur formando un gruppo abeliano rispetto all'addizione, non soddisfa l'assioma dell'esistenza dell'inverso moltiplicativo. Ad esempio, per $2 \in \mathbb{Z}$, non esiste alcun intero $z$ tale che $2 \cdot z = 1$.
+L'insieme dei numeri interi $(\mathbb{Z}, +, \cdot)$ non è un campo. Pur formando un gruppo abeliano rispetto all'addizione, non soddisfa l'assioma dell'esistenza dell'inverso moltiplicativo. Ad esempio, per $2 \in \mathbb{Z}$, non esiste alcun intero $z$ tale che $2 \cdot z = 1$.
 
 #### **Caratteristica di un Campo**
 
@@ -137,13 +125,9 @@ Se un tale intero positivo $k$ non esiste, la caratteristica del campo è defini
 * $char(\mathbb{Q}) = char(\mathbb{R}) = char(\mathbb{C}) = 0$.
 * $char(\mathbb{Z}_p) = p$, poiché in aritmetica modulare $p$, la somma di $p$ uni è congrua a $p$, che è congruo a $0 \pmod p$.
 
-La caratteristica di un campo, se non è zero, è sempre un numero primo.
+La caratteristica di un campo, se non è zero, è sempre un numero primo. Ci è possibile dimostriamo per assurdo che la caratteristica $k$ di un campo $K$, se $k \neq 0$, deve necessariamente essere un numero primo.
 
-#### **Dimostrazione della Primalità della Caratteristica**
-
-Dimostriamo per assurdo perché la caratteristica $k$ di un campo $K$, se $k \neq 0$, deve essere un numero primo.
-
-1.  **Ipotesi per Assurdo:** Assumiamo che $k$ sia la caratteristica non nulla del campo $K$ e che $k$ **non** sia un numero primo. Per definizione, $k$ è il più piccolo intero positivo tale che $k \cdot 1 = 0$.
+1.  **Ipotesi per Assurdo:** Assumiamo che $k$ sia la caratteristica non nulla del campo $K$ e che $k$ non sia un numero primo. Per definizione, $k$ è il più piccolo intero positivo tale che $k \cdot 1 = 0$.
 
 2.  **Decomposizione:** Se $k$ non è primo, allora è un numero composto. Ciò significa che può essere scritto come il prodotto di due interi $m$ e $n$, tali che $1 < m < k$ e $1 < n < k$. Quindi, $k = m \cdot n$.
 
@@ -161,7 +145,7 @@ Dimostriamo per assurdo perché la caratteristica $k$ di un campo $K$, se $k \ne
 
 7.  **Conclusione:** L'ipotesi iniziale che $k$ sia un numero composto deve essere falsa. Pertanto, la caratteristica $k$ di un campo, se non è zero, deve necessariamente essere un numero primo.
 
-### **1.2 Definizione e Geometria delle Curve Ellittiche**
+### **1.2 Definizione delle Curve Ellittiche**
 
 Una curva ellittica non è un'ellisse, come il suon nome potrebbe suggerire, ma una curva cubica piana non singolare. la sua nomenclatura deriva storicamente dalla sua relazione con gli integrali ellittici.
 
@@ -187,25 +171,25 @@ Il piano proiettivo $\mathbb{P}^2(K)$ può essere concepito come il piano affine
 
 Il motivo per cui si **omogeneizza l'equazione** è per renderla compatibile con questa nuova struttura di coordinate. Un'equazione come $y^2 = x^3 + ax + b$ non è ben definita in coordinate omogenee, poiché il suo soddisfacimento dipenderebbe dal fattore di scala scelto. Sostituendo $x=X/Z$ e $y=Y/Z$ e moltiplicando per la potenza di $Z$ necessaria a eliminare i denominatori, si ottiene l'equazione omogenea $Y^2Z = X^3 + aXZ^2 + bZ^3$. Questa nuova equazione ha la proprietà cruciale che tutti i suoi termini hanno lo stesso grado totale che nel nostro caso si attesta a 3. Ciò garantisce che se la terna $(X,Y,Z)$ la soddisfa, allora anche qualsiasi sua multipla $(\lambda X, \lambda Y, \lambda Z)$ la soddisferà, rendendo il concetto di "punto sulla curva" matematicamente consistente nel piano proiettivo.
 
-È proprio questo processo formale che rivela l'esistenza di un unico punto aggiuntivo sulla curva: il **punto all'infinito**, $O$. Imponendo la condizione $Z=0$ nell'equazione omogenea, si trova che l'unica soluzione è $(0:Y:0)$, che per convenzione si normalizza a $(0:1:0)$. Questo punto, assente nel piano affine, è essenziale per la struttura algebrica della curva, agendo da **elemento neutro** del gruppo e garantendo che le operazioni siano sempre definite.
+È proprio questo processo formale che rivela l'esistenza di un unico punto aggiuntivo sulla curva: il **punto all'infinito**, $O$. Imponendo la condizione $Z=0$ nell'equazione omogenea, si trova che l'unica soluzione è $(0:Y:0)$, che per convenzione si normalizza a $(0:1:0)$. Questo punto, assente nel piano affine, è essenziale per la struttura algebrica della curva, agendo da elemento neutro del gruppo e garantendo che le operazioni siano sempre definite.
 
 Da un punto di vista geometrico, $O$ può essere interpretato in due modi complementari:
 
-1.  **Come Intersezione di Rette Verticali:** È il punto di intersezione comune a **tutte le rette verticali** del piano. Ogni retta della forma $x=c$ interseca la curva in due punti affini $(c, y)$ e $(c, -y)$ (se esistono nel campo $K$) e nel punto all'infinito $O$.
+1.  **Come Intersezione di Rette Verticali:** È il punto di intersezione comune a tutte le rette verticali del piano. Ogni retta della forma $x=c$ interseca la curva in due punti affini $(c, y)$ e $(c, -y)$ (se esistono nel campo $K$) e nel punto all'infinito $O$.
 
-2.  **Come Chiusura della Curva:** È fondamentale comprendere che $O$ è un punto **singolo**. Le due "braccia" della curva che si estendono indefinitamente per valori di $y$ positivi e negativi si incontrano in questo unico punto. Questa proprietà di unicità è ciò che "chiude" la curva, ma descriverla come un "anello" è un'analogia topologica che può essere fuorviante. La sua funzione primaria in questo contesto non è topologica, ma algebrica: agire come **elemento neutro** del gruppo, garantendo che le operazioni siano sempre definite.
+2.  **Come Chiusura della Curva:** È fondamentale comprendere che $O$ è un punto singolo. Le due "braccia" della curva che si estendono indefinitamente per valori di $y$ positivi e negativi si incontrano in questo unico punto. Questa proprietà di unicità è ciò che chiude la curva, ma descriverla come un anello è un'analogia topologica che può essere fuorviante. La sua funzione primaria in questo contesto non è topologica, ma algebrica: agire come elemento neutro del gruppo, garantendo che le operazioni siano sempre definite.
 
 L'inclusione del punto $O$ ha implicazioni strutturali cruciali:
 
-1.  **Esistenza dell'Elemento Neutro:** $O$ funge da **elemento neutro** per l'operazione di addizione, soddisfacendo l'assioma fondamentale $P + O = P$ per ogni punto $P$ sulla curva.
+1.  **Esistenza dell'Elemento Neutro:** $O$ funge da elemento neutro per l'operazione di addizione, soddisfacendo l'assioma fondamentale $P + O = P$ per ogni punto $P$ sulla curva.
 
-2.  **Chiusura del Gruppo:** $O$ garantisce la **chiusura** dell'operazione, risolvendo casi che nel piano affine sarebbero indefiniti. L'esempio cruciale è la somma di un punto $P=(x,y)$ con il suo inverso $-P=(x,-y)$. La retta verticale che li unisce interseca la curva proprio in $O$, portando alla relazione fondamentale $P + (-P) = O$. Senza $O$, l'operazione non sarebbe definita per ogni coppia di punti, e la struttura di gruppo verrebbe meno.
+2.  **Chiusura del Gruppo:** $O$ garantisce la chiusura dell'operazione, risolvendo casi che nel piano affine sarebbero indefiniti. L'esempio cruciale è la somma di un punto $P=(x,y)$ con il suo inverso $-P=(x,-y)$. La retta verticale che li unisce interseca la curva proprio in $O$, portando alla relazione fondamentale $P + (-P) = O$. Senza $O$, l'operazione non sarebbe definita per ogni coppia di punti, e la struttura di gruppo verrebbe meno.
 
 3.  **Coerenza Algebrica:** La sua presenza assicura che la legge di gruppo sia **sempre ben definita**. Ad esempio, se la tangente a un punto $P$ è verticale ovvero ha equanzione $y_P=0$, l'operazione di raddoppio $2P$ risulta correttamente in $O$, evitando singolarità nel calcolo.
 
 #### **La Condizione di Non-Singolarità**
 
-Perché una curva definita dall'equazione $y^2 = x^3 + ax + b$ possa essere utilizzata per la crittografia, deve essere **non singolare**. Una curva è **singolare** se possiede punti in cui la tangente non è definita in modo univoco, come nodi o cuspidi.
+Perché una curva definita dall'equazione $y^2 = x^3 + ax + b$ possa essere utilizzata per la crittografia, deve essere **non singolare**. Una curva è singolare se possiede punti in cui la tangente non è definita in modo univoco, come nodi o cuspidi.
 
 [IMMAGINE: Esempio di curva ellittica singolare con un nodo e una con una cuspide.]
 
@@ -229,43 +213,41 @@ Tutte le curve ellittiche non singolari sono simmetriche rispetto all'asse delle
 
 #### **Intersezione tra Curve Ellittiche e Rette**
 
-Una proprietà geometrica fondamentale, che costituisce la base della legge di gruppo, è che ogni retta interseca una curva ellittica in **esattamente tre punti**, a condizione che questi punti siano contati nel piano proiettivo e con la loro corretta **molteplicità**.
+Una proprietà geometrica fondamentale, che costituisce la base della legge di gruppo, è che ogni retta interseca una curva ellittica in esattamente tre punti. Questa affermazione è rigorosa a condizione che i punti siano contati nel piano proiettivo e con la loro corretta molteplicità.
 
-L'analisi si fonda sull'intersezione algebrica. Per una retta non verticale di equazione $y = \lambda x + \nu$, la sostituzione nell'equazione della curva $y^2 = x^3 + ax + b$ produce un'equazione polinomiale di terzo grado in $x$:
+Il fondamento teorico di questa proprietà risiede nel Teorema di Bézout che affarma che, nel piano proiettivo, due curve algebriche di grado $m$ e $n$ che non hanno componenti in comune si intersecano in esattamente $m \cdot n$ punti, a patto di contare le intersezioni con la loro molteplicità e di considerare le coordinate dei punti nel campo algebricamente chiuso che contiene il campo base.
+
+Nel nostro caso, una retta è una curva di grado $m=1$ e una curva ellittica è una curva di grado $n=3$. Pertanto, il Teorema di Bézout garantisce che l'intersezione tra le due conterà sempre **$1 \times 3 = 3$ punti**.
+
+Questa garanzia teorica trova la sua controparte algebrica. Per una retta non verticale di equazione $y = \lambda x + \nu$, la sostituzione nell'equazione della curva $y^2 = x^3 + ax + b$ produce un'equazione polinomiale di terzo grado in $x$:
 $$x^3 - \lambda^2 x^2 + (a - 2\lambda\nu)x + (b - \nu^2) = 0$$
-Il Teorema Fondamentale dell'Algebra garantisce che questa equazione abbia sempre tre radici assumendo di trovarsi in un campo algebricamente chiuso come $\mathbb{C}$ e contate con molteplicità. Questa proprietà algebrica si traduce geometricamente nei seguenti scenari:
+Le radici di questo polinomio corrispondono alle coordinate $x$ dei punti di intersezione. Mentre su un campo non algebricamente chiuso (come i campi finiti $\mathbb{F}_p$ usati in crittografia) non è garantito che esistano tre radici *nel campo stesso*, il Teorema di Bézout ci assicura che la struttura algebrica per tre intersezioni è sempre presente.
+
+Il concetto di "molteplicità" si manifesta geometricamente nei seguenti scenari:
 
 *   **Tre intersezioni distinte:** L'equazione ha tre radici distinte, corrispondenti a tre punti $(x_1, y_1), (x_2, y_2), (x_3, y_3)$ distinti sulla curva.
-*   **Un punto di tangenza:** Se la retta è tangente alla curva in un punto $P$, l'equazione ha una radice doppia. Tale punto $P$ conta come **due** intersezioni ovvero presenterà una molteplicità pari a 2 e la retta interseca la curva in un terzo punto distinto $R$.
+*   **Un punto di tangenza:** Se la retta è tangente alla curva in un punto $P$, l'equazione ha una radice doppia. Tale punto $P$ conta come due intersezioni (molteplicità 2) e la retta interseca la curva in un terzo punto distinto $R$.
 *   **Un punto di flesso:** In casi particolari, una retta può intersecare la curva in un unico punto $P$ con molteplicità 3. Ciò corrisponde a una radice tripla dell'equazione.
 
-Il caso di una retta verticale $x=c$ si adatta perfettamente a questa regola nel piano proiettivo: essa interseca la curva nei due punti affini $(c, y)$ e $(c, -y)$ e nel **punto all'infinito $O$**, totalizzando anche in questo caso tre intersezioni.
+Il caso di una retta verticale $x=c$ si adatta perfettamente a questa regola grazie al piano proiettivo: essa interseca la curva nei due punti affini $(c, y)$ e $(c, -y)$ e nel punto all'infinito $O$, totalizzando anche in questo caso tre intersezioni.
 
-Questa invarianza, garantita da un principio più generale noto come **Teorema di Bézout**, è ciò che rende la legge di gruppo robusta. Assicura che, dati due punti $P$ e $Q$, la retta che li congiunge determinerà *sempre* un terzo punto di intersezione. Ciò ci permette di definire la somma $P+Q$ in modo universale e senza eccezioni.
+È questa invarianza, garantita dal Teorema di Bézout, a rendere la legge di gruppo ben definita e robusta. Essa assicura che, dati due punti $P$ e $Q$ con coordinate in un campo $K$, la retta che li congiunge determinerà sempre un terzo punto di intersezione. L'aspetto cruciale è che la legge di gruppo è definita in modo tale che, anche se le coordinate del terzo punto non appartenessero a $K$, le coordinate del punto risultante dalla somma ($P+Q$) apparterranno sempre a $K$. Questo garantisce la chiusura dell'operazione, requisito fondamentale per la definizione di un gruppo.
 
----
+## **Capitolo 2: L'Algebra sulle Curve Ellittiche**
 
-## **Capitolo 2: L'Algebra delle Curve Ellittiche: L'Operazione di Gruppo**
+Il motivo principale per cui le curve ellittiche sono così potenti in crittografia è che l'insieme dei loro punti, $E(K)$, forma un gruppo abeliano rispetto a un'operazione di addizione definita geometricamente.
 
-Il motivo principale per cui le curve ellittiche sono così potenti in crittografia è che l'insieme dei loro punti, $E(K)$, forma un **gruppo abeliano** rispetto a un'operazione di addizione definita geometricamente.
-
-### **2.1 La Struttura di Gruppo Abeliano**
-
-Un gruppo abeliano è un insieme dotato di un'operazione binaria che soddisfa le proprietà di chiusura, associatività, commutatività, esistenza dell'elemento neutro e dell'inverso per ogni elemento. Vedremo come l'operazione di "somma" tra punti di una curva ellittica soddisfi tutti questi requisiti. L'elemento neutro del gruppo è il punto all'infinito $O$.
-
-### **2.2 L'Operazione di Addizione di Punti**
+### **2.1 Addizione di Punti**
 
 L'operazione di addizione è definita a partire da una regola geometrica basata sulla collinearità.
 
-#### **Definizione Geometrica**
-
-La regola fondamentale è: **Se tre punti $P, Q, R$ di una curva ellittica sono allineati, la loro somma è l'elemento neutro $O$**:
+La regola fondamentale è: Se tre punti $P, Q, R$ di una curva ellittica sono allineati, la loro somma è l'elemento neutro $O$:
 $$P + Q + R = O$$
 Da questa regola, possiamo derivare come sommare due punti qualsiasi $P$ e $Q$ per ottenere un terzo punto $S = P+Q$.
 
 1.  **Tracciare la retta:** Si traccia una retta passante per i punti $P$ e $Q$.
 2.  **Trovare il terzo punto:** Per la proprietà vista in precedenza, questa retta intersecherà la curva in un terzo punto, che chiamiamo $R$. (Se $P=Q$, la retta è la tangente alla curva in $P$).
-3.  **Definire la somma:** La somma $P+Q$ non è $R$, ma il suo **riflesso rispetto all'asse delle $x$**. Chiamiamo questo punto $S = -R$.
+3.  **Definire la somma:** La somma $P+Q$ non è $R$, ma il suo riflesso rispetto all'asse delle $x$. Chiamiamo questo punto $S = -R$.
 
 Quindi, $P+Q = -R$. Sostituendo nella regola fondamentale, abbiamo $P+Q+(-S)=O$, che è coerente.
 
@@ -276,39 +258,39 @@ Quindi, $P+Q = -R$. Sostituendo nella regola fondamentale, abbiamo $P+Q+(-S)=O$,
 
 Vediamo ora come tradurre questa costruzione geometrica in formule algebriche per una curva $y^2 = x^3 + ax + b$.
 
-##### **Caso 1: Addizione di due punti distinti ($P \neq Q$)**
+* **Caso 1: Addizione di due punti distinti ($P \neq Q$):**
 
-Siano $P = (x_P, y_P)$ e $Q = (x_Q, y_Q)$. Poiché $P \neq Q$, se $x_P = x_Q$, allora $y_P = -y_Q$. In questo caso, la retta che li congiunge è verticale e interseca la curva nel punto all'infinito. Quindi $P+Q=O$.
+  Siano $P = (x_P, y_P)$ e $Q = (x_Q, y_Q)$. Poiché $P \neq Q$, se $x_P = x_Q$, allora $y_P = -y_Q$. In questo caso, la retta che li congiunge è verticale e interseca la curva nel punto all'infinito. Quindi $P+Q=O$.
 
-Se $x_P \neq x_Q$, la retta passante per $P$ e $Q$ ha equazione $y = \lambda x + \nu$, dove il coefficiente angolare $\lambda$ è:
-$$\lambda = \frac{y_Q - y_P}{x_Q - x_P}$$
-Sostituendo $y$ nell'equazione della curva, otteniamo l'equazione cubica per le ascisse dei punti di intersezione:
-$$(\lambda x + \nu)^2 = x^3 + ax + b$$
-$$x^3 - \lambda^2 x^2 + \dots = 0$$
-Le radici di questo polinomio sono $x_P, x_Q, x_R$, dove $R=(x_R, y_R)$ è il terzo punto di intersezione. Per le formule di Viète, la somma delle radici di un polinomio monico di grado 3 è uguale al coefficiente del termine di secondo grado cambiato di segno. Pertanto:
-$$x_P + x_Q + x_R = \lambda^2$$
-Da cui possiamo ricavare l'ascissa di $R$:
-$$x_R = \lambda^2 - x_P - x_Q$$
-L'ordinata $y_R$ si trova sulla retta:
-$$y_R = \lambda(x_R - x_P) + y_P$$
-La somma $S = P+Q$ è il punto $-R$. Quindi, $S = (x_S, y_S) = (x_R, -y_R)$. Le coordinate di $S = P+Q$ sono:
-$$x_S = \lambda^2 - x_P - x_Q$$
-$$y_S = -(y_P + \lambda(x_S - x_P)) = \lambda(x_P - x_S) - y_P$$
+  Se $x_P \neq x_Q$, la retta passante per $P$ e $Q$ ha equazione $y = \lambda x + \nu$, dove il coefficiente angolare $\lambda$ è:
+  $$\lambda = \frac{y_Q - y_P}{x_Q - x_P}$$
+  Sostituendo $y$ nell'equazione della curva, otteniamo l'equazione cubica per le ascisse dei punti di intersezione:
+  $$(\lambda x + \nu)^2 = x^3 + ax + b$$
+  $$x^3 - \lambda^2 x^2 + \dots = 0$$
+  Le radici di questo polinomio sono $x_P, x_Q, x_R$, dove $R=(x_R, y_R)$ è il terzo punto di intersezione. Per le formule di Viète, la somma delle radici di un polinomio monico di grado 3 è uguale al coefficiente del termine di secondo grado cambiato di segno. Pertanto:
+  $$x_P + x_Q + x_R = \lambda^2$$
+  Da cui possiamo ricavare l'ascissa di $R$:
+  $$x_R = \lambda^2 - x_P - x_Q$$
+  L'ordinata $y_R$ si trova sulla retta:
+  $$y_R = \lambda(x_R - x_P) + y_P$$
+  La somma $S = P+Q$ è il punto $-R$. Quindi, $S = (x_S, y_S) = (x_R, -y_R)$. Le coordinate di $S = P+Q$ sono:
+  $$x_S = \lambda^2 - x_P - x_Q$$
+  $$y_S = -(y_P + \lambda(x_S - x_P)) = \lambda(x_P - x_S) - y_P$$
 
-##### **Caso 2: Raddoppio di un punto ($P = Q$)**
+* **Caso 2: Raddoppio di un punto ($P = Q$):**
 
-Se $P=Q$, la retta da considerare è la tangente alla curva in $P=(x_P, y_P)$. Per trovare il coefficiente angolare $\lambda$, deriviamo implicitamente l'equazione della curva rispetto a $x$:
-$$2y \frac{dy}{dx} = 3x^2 + a$$
-$$\lambda = \frac{dy}{dx} = \frac{3x_P^2 + a}{2y_P}$$
-Questa formula è valida solo se $y_P \neq 0$. Se $y_P = 0$, la tangente è verticale e interseca la curva nel punto all'infinito. In questo caso, $2P = O$.
+  Se $P=Q$, la retta da considerare è la tangente alla curva in $P=(x_P, y_P)$. Per trovare il coefficiente angolare $\lambda$, deriviamo implicitamente l'equazione della curva rispetto a $x$:
+  $$2y \frac{dy}{dx} = 3x^2 + a$$
+  $$\lambda = \frac{dy}{dx} = \frac{3x_P^2 + a}{2y_P}$$
+  Questa formula è valida solo se $y_P \neq 0$. Se $y_P = 0$, la tangente è verticale e interseca la curva nel punto all'infinito. In questo caso, $2P = O$.
 
-Se $y_P \neq 0$, le formule sono analoghe al caso precedente, ma con $x_Q = x_P$ e $y_Q = y_P$:
-$$x_R = \lambda^2 - 2x_P$$
-E di nuovo, $S=2P=(x_S, y_S) = (x_R, -y_R)$. Le coordinate di $S=2P$ sono:
-$$x_S = \left(\frac{3x_P^2 + a}{2y_P}\right)^2 - 2x_P$$
-$$y_S = \left(\frac{3x_P^2 + a}{2y_P}\right)(x_P - x_S) - y_P$$
+  Se $y_P \neq 0$, le formule sono analoghe al caso precedente, ma con $x_Q = x_P$ e $y_Q = y_P$:
+  $$x_R = \lambda^2 - 2x_P$$
+  E di nuovo, $S=2P=(x_S, y_S) = (x_R, -y_R)$. Le coordinate di $S=2P$ sono:
+  $$x_S = \left(\frac{3x_P^2 + a}{2y_P}\right)^2 - 2x_P$$
+  $$y_S = \left(\frac{3x_P^2 + a}{2y_P}\right)(x_P - x_S) - y_P$$
 
-#### **Proprietà di Gruppo**
+Vediamo ora come l'operazione di somma sopra desritta presenti tutte le proprietà di un gruppo abeliano:
 
 * **Chiusura:** Le formule algebriche mostrano che la somma di due punti sulla curva produce sempre un altro punto le cui coordinate soddisfano l'equazione della curva.
 * **Elemento Neutro:** Il punto all'infinito $O$ agisce da elemento neutro. Per ogni punto $P$, $P + O = P$. Geometricamente, la retta che passa per $P$ e $O$ è una retta verticale che interseca la curva in $P$ e $-P$. Quindi il terzo punto di intersezione è $-P$. Il suo riflesso è $-(-P) = P$.
@@ -316,9 +298,9 @@ $$y_S = \left(\frac{3x_P^2 + a}{2y_P}\right)(x_P - x_S) - y_P$$
 * **Commutatività:** $P+Q = Q+P$. Questa proprietà è evidente, poiché la retta che passa per $P$ e $Q$ è la stessa che passa per $Q$ e $P$.
 * **Associatività:** $(P+Q)+R = P+(Q+R)$. Questa è la proprietà più complessa da dimostrare algebricamente. La sua dimostrazione rigorosa esula dagli scopi di questo documento, ma è una proprietà fondamentale che garantisce la coerenza della struttura di gruppo.
 
-### **2.3 Moltiplicazione Scalare di un Punto ($kP$)**
+### **2.2 Moltiplicazione Scalare di un Punto ($kP$)**
 
-La **moltiplicazione scalare** è l'operazione di sommare un punto $P$ a se stesso un numero intero $k$ di volte:
+La moltiplicazione scalare è l'operazione di sommare un punto $P$ a se stesso un numero intero $k$ di volte:
 $$kP = \underbrace{P + P + \dots + P}_{k \text{ volte}}$$
 Questa operazione è l'analogo della potenza nell'aritmetica modulare ed è centrale in crittografia. Ad esempio, $3P = P + P + P = (2P) + P$.
 
@@ -353,9 +335,7 @@ La rappresentazione binaria di $13$ è $1101_2$. ($b_3=1, b_2=1, b_1=0, b_0=1$).
 
 Il risultato finale è $13P$. La complessità di questo algoritmo è di circa $\log_2(k)$ raddoppi e $\log_2(k)/2$ somme in media, rendendolo estremamente efficiente.
 
----
-
-## **Capitolo 3: Curve Ellittiche su Campi Finiti: Il Cuore della Crittografia**
+## **Capitolo 3: Curve Ellittiche su Campi Finiti**
 
 ### **3.1 Motivazioni per l'Uso di Campi Finiti**
 
@@ -368,8 +348,6 @@ I **campi finiti**, come $\mathbb{Z}_p$, risolvono entrambi i problemi. L'aritme
 ### **3.2 Curve Ellittiche su $\mathbb{Z}_p$**
 
 Una curva ellittica su un campo finito primo $\mathbb{Z}_p$ con $p>3$ e primo è definita in modo analogo al caso reale, ma tutte le operazioni sono eseguite in modulo $p$.
-
-#### **Definizione Formale**
 
 Dati $a, b \in \mathbb{Z}_p$ tali che $4a^3 + 27b^2 \not\equiv 0 \pmod p$, la curva ellittica $E_p(a, b)$ è l'insieme dei punti $(x, y)$ con $x, y \in \mathbb{Z}_p$ che soddisfano l'equazione:
 $$y^2 \equiv x^3 + ax + b \pmod p$$
@@ -409,7 +387,7 @@ Considerando questa equazione modulo 23:
 $10 \cdot 7 \equiv 1 \pmod{23}$.
 Quindi, $7^{-1} \equiv 10 \pmod{23}$.
 
-### **Esempio Dettagliato di Addizione in $\mathbb{Z}_p$**
+#### **Esempio Dettagliato di Addizione in $\mathbb{Z}_p$**
 
 Consideriamo la curva $E$ definita dall'equazione $y^2 \equiv x^3 + x + 1 \pmod{23}$.
 Scegliamo due punti sulla curva: $P = (1, 7)$ e $Q = (3, 10)$.
@@ -462,11 +440,9 @@ Per confermare la correttezza del calcolo, verifichiamo che il punto $S=(4,0)$ g
 *   Poiché $69 = 3 \cdot 23$, abbiamo $69 \equiv 0 \pmod{23}$.
 Il punto $S$ appartiene alla curva, confermando la proprietà di chiusura del gruppo e la correttezza dei nostri calcoli.
 
-### **Ordine della Curva e Ordine del Punto**
+#### **Ordine della Curva e Ordine del Punto**
 
 La sicurezza della crittografia su curve ellittiche non deriva semplicemente dall'esistenza della struttura di gruppo, ma dalla sua **dimensione** e dalla sua **struttura interna**. I concetti di *ordine della curva* e *ordine di un punto* sono quindi fondamentali, poiché definiscono la grandezza del campo di gioco per un crittanalista e determinano la reale difficoltà del Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP).
-
-#### **Ordine della Curva e il Teorema di Hasse: Quantificare lo Spazio delle Soluzioni**
 
 L'**ordine** di una curva ellittica $E_p(a, b)$, denotato $|E_p(a,b)|$, è il numero totale di punti discreti che soddisfano la sua equazione sul campo $\mathbb{Z}_p$, incluso il punto all'infinito $O$. Questo valore rappresenta la cardinalità del gruppo $(E_p(a,b), +)$.
 
@@ -476,8 +452,6 @@ $$ p + 1 - 2\sqrt{p} \le |E_p(a,b)| \le p + 1 + 2\sqrt{p} $$
 Il teorema ci dice che l'ordine di una curva è sempre "vicino" alla dimensione del campo $p+1$. Per la crittografia, questo è un risultato cruciale:
 1.  **Garanzia di Grandezza:** Scegliendo un numero primo $p$ sufficientemente grande (es. 256 bit), il Teorema di Hasse ci garantisce che l'ordine della curva sarà anch'esso un numero molto grande, dello stesso ordine di grandezza di $p$. Questo assicura che lo spazio totale dei punti sia vasto, rendendo impraticabili attacchi di forza bruta che consistono nell'enumerare tutti i punti.
 2.  **Prevedibilità:** Fornisce un intervallo entro cui cercare l'ordine esatto della curva, un passo fondamentale nella selezione di curve sicure (eseguito con algoritmi di conteggio dei punti come l'algoritmo di Schoof).
-
-#### **Ordine di un Punto e Sottogruppi Ciclici: Il Vero Campo di Gioco Crittografico**
 
 Mentre l'ordine della curva è importante, la sicurezza pratica si basa su un concetto più specifico: l'**ordine di un punto**. L'ordine di un punto $P \in E_p(a,b)$ è il più piccolo intero positivo $n$ tale che:
 $$ nP = \underbrace{P + P + \dots + P}_{n \text{ volte}} = O $$
@@ -499,11 +473,11 @@ La principale motivazione per un'attenta selezione del cofattore è la mitigazio
 
 La scelta più sicura e computazionalmente semplice da gestire è un cofattore unitario. Quando $h=1$, l'ordine della curva $|E(\mathbb{Z}_p)|$ è esso stesso un grande numero primo, e di conseguenza $n = |E(\mathbb{Z}_p)|$. Il sottogruppo di lavoro coincide con l'intero gruppo di punti della curva (escluso $O$).
 
-Alcune curve ad alte prestazioni, progettate specificamente per massimizzare l'efficienza e la resistenza ad attacchi a canali laterali, utilizzano deliberatamente un cofattore piccolo, ma maggiore di 1. Un cofattore è considerato sicuro se è una piccola potenza di due, tipicamente $h=4$ o $h=8$. Un cofattore come $h=8$ è ritenuto sicuro perché la massima quantità di informazione sulla chiave privata che un attacco a sottogruppi potrebbe teoricamente rivelare è $d_V \pmod 8$, ovvero solo 3 bit, un valore trascurabile per chiavi di 256 bit o più. Il beneficio ottenuto in termini di performance e sicurezza fisica supera ampiamente questo rischio teorico minimo.
+Alcune curve ad alte prestazioni, progettate specificamente per massimizzare l'efficienza e la resistenza ad attacchi a canali laterali, dei quali ci occuperemo in seguito , utilizzano deliberatamente un cofattore piccolo, ma maggiore di 1. Un cofattore è considerato sicuro se è una piccola potenza di due, tipicamente $h=4$ o $h=8$. Un cofattore come $h=8$ è ritenuto sicuro perché la massima quantità di informazione sulla chiave privata che un attacco a sottogruppi potrebbe teoricamente rivelare è $d_V \pmod 8$, ovvero solo 3 bit, un valore trascurabile per chiavi di 256 bit o più. Il beneficio ottenuto in termini di performance e sicurezza fisica supera ampiamente questo rischio teorico minimo.
 
 #### **Scelta dei Parametri di Dominio**
 
-Possiamo dunque dire che la selezione di una curva sicura è un processo di selezione che consiste nel trovare una tupla di **parametri di dominio** $(p, a, b, B, n, h)$, dove:
+Possiamo dunque dire che la selezione di una curva sicura è un processo di selezione che consiste nel trovare una tupla di parametri di dominio $(p, a, b, B, n, h)$, dove:
 *   $p$ è un primo che definisce il campo.
 *   $a, b$ definiscono la curva.
 *   $|E_p(a,b)|$ è l'ordine della curva.
@@ -521,8 +495,6 @@ Poiché la caratteristica è 2, la forma normale di Weierstrass non è valida. S
 * **Supersingolare:** $y^2 + ay = x^3 + bx + c$
 Le formule per l'addizione dei punti sono diverse ma derivate con principi simili. Le curve su campi binari sono state storicamente vantaggiose per le implementazioni hardware, anche se oggi le implementazioni su campi primi sono spesso preferite per la loro maggiore semplicità concettuale e sicurezza contro alcuni attacchi specifici.
 
----
-
 ## **Capitolo 4: Il Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP)**
 
 La sicurezza di tutti i sistemi crittografici basati su curve ellittiche si fonda sulla difficoltà computazionale di un problema specifico: il Problema del Logaritmo Discreto su Curve Ellittiche (ECDLP). La sua intrattabilità è il pilastro che garantisce la robustezza di protocolli come ECDH ed ECDSA.
@@ -536,7 +508,7 @@ L'ECDLP è la trasposizione di questo problema nel gruppo additivo dei punti di 
 **Definizione Formale dell'ECDLP:**
 Dati una curva ellittica $E$ su un campo finito, un punto base $P$ sulla curva di ordine $n$, e un altro punto $Q$ che è un multiplo scalare di $P$ (ovvero $Q \in \langle P \rangle$), il problema consiste nel trovare l'unico intero $k \in \{0, 1, \dots, n-1\}$ tale che:
 $$Q = kP$$
-Questo intero $k$ è chiamato il **logaritmo discreto di $Q$ in base $P$**.
+Questo intero $k$ è chiamato il logaritmo discreto di $Q$ in base $P$.
 
 La natura dell'ECDLP ne fa una funzione crittografica ideale, in quanto è una funzione one-way ovvero unidirezionale.
 
@@ -547,9 +519,9 @@ La natura dell'ECDLP ne fa una funzione crittografica ideale, in quanto è una f
 
 La robustezza crittografica di un sistema ECC è determinata dalla complessità computazionale richiesta per risolvere l'ECDLP. Questa difficoltà non è assoluta, ma dipende criticamente dalla scelta dei parametri del gruppo, in particolare dalla struttura matematica del suo ordine.
 
-#### **L'Attacco di Pohlig-Hellman: Sfruttare la Struttura dell'Ordine**
+#### **Attacco di Pohlig-Hellman e Contromisure con Algoritmi Generici**
 
-Come anticipato nel capitolo precedente, la sicurezza dell'ECDLP è legata non solo alla grandezza dell'ordine $n$ del sottogruppo, ma alla sua **struttura aritmetica**. L'attacco di Pohlig-Hellman è un algoritmo di tipo "divide et impera" che dimostra come un ordine $n$ composto da piccoli fattori primi renda l'ECDLP computazionalmente trattabile, indipendentemente dalla grandezza di $n$ stesso.
+Come anticipato nel capitolo precedente, la sicurezza dell'ECDLP è legata non solo alla grandezza dell'ordine $n$ del sottogruppo, ma alla sua struttura aritmetica. L'attacco di Pohlig-Hellman è un algoritmo di tipo "divide et impera" che dimostra come un ordine $n$ composto da piccoli fattori primi renda l'ECDLP computazionalmente trattabile, indipendentemente dalla grandezza di $n$ stesso.
 
 Il principio matematico dell'attacco è il seguente: dato il problema $Q = kP$, l'algoritmo non cerca di trovare $k$ direttamente. Invece, sfrutta la fattorizzazione di $n = q_1^{e_1} \cdot q_2^{e_2} \cdot \ldots \cdot q_r^{e_r}$ per determinare il valore di $k$ modulo ciascun fattore primo $q_i^{e_i}$. Una volta ottenute tutte le congruenze:
 $$ k \equiv k_1 \pmod{q_1^{e_1}}, \quad k \equiv k_2 \pmod{q_2^{e_2}}, \quad \dots, \quad k \equiv k_r \pmod{q_r^{e_r}} $$
@@ -557,11 +529,9 @@ L'attaccante può ricombinare queste soluzioni parziali per calcolare in modo ef
 
 La complessità totale dell'attacco di Pohlig-Hellman è dominata dal passo più difficile, che è la soluzione dell'ECDLP nel sottogruppo corrispondente al più grande fattore primo di $n$. La complessità è quindi dell'ordine di $\mathcal{O}(\sqrt{q_{max}})$, dove $q_{max}$ è il più grande fattore primo di $n$. Questo significa che se tutti i fattori primi di $n$ sono piccoli, l'intero problema può essere risolto rapidamente, rendendo il sistema crittografico insicuro.
 
-#### **Contromisure e la Complessità degli Algoritmi Generici**
-
 La vulnerabilità all'attacco di Pohlig-Hellman impone una contromisura non negoziabile: l'ordine $n$ del sottogruppo generato dal punto base $B$ deve essere un numero primo molto grande.
 
-Se $n$ è primo, la sua unica fattorizzazione è $n$ stesso. L'attacco di Pohlig-Hellman non offre alcun vantaggio, poiché il "sotto-problema" da risolvere ha la stessa dimensione del problema originale. Un crittanalista è quindi costretto a ricorrere ad algoritmi generici, che non sfruttano alcuna proprietà algebrica dell'ordine del gruppo, ma trattano il gruppo come una "scatola nera". I più noti sono:
+Se $n$ è primo, la sua unica fattorizzazione è $n$ stesso. L'attacco di Pohlig-Hellman non offre alcun vantaggio, poiché il sotto-problema da risolvere ha la stessa dimensione del problema originale. Un crittanalista è quindi costretto a ricorrere ad algoritmi generici, che non sfruttano alcuna proprietà algebrica dell'ordine del gruppo, ma trattano il gruppo come una "scatola nera". I più noti sono:
 
 *   **L'Algoritmo Baby-step Giant-step (BSGS):** Questo è un algoritmo deterministico basato su una tecnica "meet-in-the-middle". Per risolvere $Q = kP$, si riscrive $k = i \cdot m + j$ (con $m = \lceil\sqrt{n}\rceil$), riarrangiando l'equazione in $Q - i(mP) = jP$. L'algoritmo pre-calcola e memorizza tutti i possibili valori del lato destro detto baby steps in una struttuara dati consona come una tabella hash. Successivamente, calcola iterativamente i valori del lato sinistro ovvero il giant steps, cercando una corrispondenza nella tabella. La sua complessità temporale e spaziale è di $\mathcal{O}(\sqrt{n})$. L'elevato requisito di memoria lo rende però impraticabile per i parametri crittografici moderni.
 
@@ -569,25 +539,21 @@ Se $n$ è primo, la sua unica fattorizzazione è $n$ stesso. L'attacco di Pohlig
 
 ### **4.3 Implicazioni sulla Sicurezza e Confronto con RSA**
 
-La complessità di $\mathcal{O}(\sqrt{n})$ degli algoritmi generici è **esponenziale** rispetto alla dimensione in bit ($m$) della chiave. Poiché $n \approx 2^m$, la complessità è $\mathcal{O}(\sqrt{2^m}) = \mathcal{O}(2^{m/2})$. È questa natura esponenziale che rende l'ECDLP un problema difficile e l'ECC un sistema sicuro.
+La complessità di $\mathcal{O}(\sqrt{n})$ degli algoritmi generici è esponenziale rispetto alla dimensione in bit ($m$) della chiave. Poiché $n \approx 2^m$, la complessità è $\mathcal{O}(\sqrt{2^m}) = \mathcal{O}(2^{m/2})$. È questa natura esponenziale che rende l'ECDLP un problema difficile e l'ECC un sistema sicuro.
 
-Al contrario, i migliori algoritmi noti per i problemi alla base di RSA ovvero la fattorizzazione e del DLP classico, come il **General Number Field Sieve (GNFS)**, hanno una complessità **sub-esponenziale**.Questa differenza fondamentale nella difficoltà dei problemi sottostanti implica che per ottenere lo stesso livello di sicurezza, l'ECC richiede chiavi di dimensioni molto più piccole.
+Al contrario, i migliori algoritmi noti per i problemi alla base di RSA ovvero la fattorizzazione e del DLP classico, come il General Number Field Sieve (GNFS), hanno una complessità sub-esponenziale.Questa differenza fondamentale nella difficoltà dei problemi sottostanti implica che per ottenere lo stesso livello di sicurezza, l'ECC richiede chiavi di dimensioni molto più piccole.
 
-Ad esempio si stima che una chiave ECC di **256 bit** offra una resistenza paragonabile a una chiave RSA di **3072 bit**. Questo si traduce in un notevole risparmio di memoria, larghezza di banda e potenza di calcolo, rendendo l'ECC la scelta preferita per ambienti con risorse limitate.
+Ad esempio si stima che una chiave ECC di 256 bit offra una resistenza paragonabile a una chiave RSA di 3072 bit. Questo si traduce in un notevole risparmio di memoria, larghezza di banda e potenza di calcolo, rendendo l'ECC la scelta preferita per ambienti con risorse limitate.
 
----
+## **Capitolo 5: Applicazioni Crittografiche delle Curve Ellittiche**
 
-## **Capitolo 5: Applicazioni Crittografiche Pratiche delle Curve Ellittiche**
+La struttura di gruppo abeliano dei punti di una curva ellittica, unita alla difficoltà computazionale dell'ECDLP, costituisce un ambiente ideale per la costruzione di primitive crittografiche a chiave pubblica. L'ECDLP stesso è un esempio paradigmatico di funzione a senso unico (one-way function): dato uno scalare $k$ e un punto $P$, il calcolo di $Q=kP$ è efficiente; l'operazione inversa, ovvero il calcolo di $k$ dati $P$ e $Q$, è computazionalmente intrattabile.
 
-La struttura di gruppo abeliano dei punti di una curva ellittica, unita alla difficoltà computazionale dell'ECDLP, costituisce un ambiente ideale per la costruzione di primitive crittografiche a chiave pubblica. L'ECDLP stesso è un esempio paradigmatico di **funzione a senso unico (one-way function)**: dato uno scalare $k$ e un punto $P$, il calcolo di $Q=kP$ è efficiente; l'operazione inversa, ovvero il calcolo di $k$ dati $P$ e $Q$, è computazionalmente intrattabile.
-
-Tuttavia, la cifratura asimmetrica e le firme digitali richiedono un meccanismo più sofisticato: una **funzione a senso unico con trappola (trapdoor one-way function)**. Si tratta di una funzione facile da calcolare in una direzione e difficile da invertire, a meno che non si possieda un'informazione segreta — la "trappola" (trapdoor) — che rende l'inversione computazionalmente banale. Nei sistemi basati su ECC, la chiave privata funge da trappola, mentre la chiave pubblica definisce la funzione a senso unico. Questo capitolo analizza i protocolli fondamentali che sfruttano questi principi.
+Tuttavia, la cifratura asimmetrica e le firme digitali richiedono un meccanismo più sofisticato: una funzione a senso unico con trappola (trapdoor one-way function). Si tratta di una funzione facile da calcolare in una direzione e difficile da invertire, a meno che non si possieda un'informazione segreta — la "trappola" (trapdoor) — che rende l'inversione computazionalmente banale. Nei sistemi basati su ECC, la chiave privata funge da trappola, mentre la chiave pubblica definisce la funzione a senso unico. Questo capitolo analizza i protocolli fondamentali che sfruttano questi principi.
 
 ### **5.1 Scambio di Chiavi Diffie-Hellman su Curve Ellittiche (ECDH)**
 
-Il protocollo ECDH è un meccanismo per la negoziazione di chiavi segrete costruito direttamente sulla difficoltà della funzione a senso unico (l'ECDLP) e sulle proprietà algebriche del gruppo. Il suo scopo è permettere a due parti di stabilire una chiave simmetrica condivisa comunicando esclusivamente su un canale insicuro.
-
-#### **5.1.1 Descrizione del Protocollo**
+Il protocollo ECDH è un meccanismo per la negoziazione di chiavi segrete costruito direttamente sulla difficoltà della funzione a senso unico e sulle proprietà algebriche del gruppo. Il suo scopo è permettere a due parti di stabilire una chiave simmetrica condivisa comunicando esclusivamente su un canale insicuro, attraverso i seguenti passaggi:
 
 1.  **Parametri Comuni:** Alice e Bob si accordano pubblicamente sui parametri di dominio della curva $(p, a, b, B, n, h)$.
 2.  **Generazione Chiavi:** Ciascuna parte genera una coppia di chiavi indipendente. Alice sceglie una chiave privata $d_A \in \{1, \dots, n-1\}$ e calcola la sua chiave pubblica $Q_A = d_A B$. Analogamente, Bob sceglie $d_B$ e calcola $Q_B = d_B B$.
@@ -597,8 +563,6 @@ Il protocollo ECDH è un meccanismo per la negoziazione di chiavi segrete costru
     *   Bob calcola: $S = d_B Q_A = d_B (d_A B) = (d_B d_A) B$
 
 Grazie all'associatività e commutatività della moltiplicazione scalare, entrambi ottengono lo stesso punto $S$. Una Funzione di Derivazione di Chiave (KDF), come una funzione di hash, viene applicata a una rappresentazione canonica di $S$, come per esempio la sua coordinata, $x$ per generare la chiave simmetrica finale.
-
-#### **Analisi della Sicurezza**
 
 Un avversario passivo (Eve) che osserva il canale intercetta i parametri di dominio e le chiavi pubbliche $Q_A$ e $Q_B$. Per derivare il segreto $S$, Eve deve risolvere il Problema Computazionale di Diffie-Hellman su Curve Ellittiche (ECDHP) ovvero, dati $B$, $d_A B$ e $d_B B$, calcolare $(d_A d_B) B$.
 Poiché non sono noti algoritmi efficienti per risolvere l'ECDHP senza prima risolvere l'ECDLP che risulta essere intrattabile, il protocollo è sicuro contro l'intercettazione passiva. Tuttavia, ECDH non fornisce autenticazione intrinseca ed è vulnerabile ad attacchi attivi di tipo Man-in-the-Middle (MITM).
@@ -632,19 +596,15 @@ Si adotta quindi un approccio probabilistico robusto:
     2.  Sottrae $S$ da $C_2$ per annullare il mascheramento e recuperare il punto del messaggio: $P_m' = C_2 - S = (P_m + rQ_B) - rQ_B = P_m$.
     3.  Estrae il messaggio in chiaro da $P_m'$.
 
-#### **Analisi della Sicurezza**
-
 La sicurezza semantica dello schema si fonda sull'intrattabilità dell'ECDHP. Un avversario, in possesso delle informazioni pubbliche $(B, Q_B)$ e del testo cifrato $(C_1, C_2)$, per recuperare $P_m$ dovrebbe essere in grado di calcolare il punto di mascheramento $rQ_B$. Il calcolo di $rQ_B$ a partire da $B$, $C_1=rB$ e $Q_B=d_B B$ è l'ECDHP. La chiave privata $d_B$ agisce come trappola perché fornisce l'unico collegamento computazionalmente efficiente noto tra $C_1$ e il punto di mascheramento $S$.
 
 ### **5.3 Algoritmo di Firma Digitale su Curve Ellittiche (ECDSA)**
 
-L'ECDSA implementa la firma digitale utilizzando il paradigma della funzione con trappola: solo il possessore della chiave privata (la trappola) può generare una firma valida, ma chiunque con la chiave pubblica può verificarla, garantendo autenticità e non ripudio.
-
-#### **Generazione delle Chiavi**
+L'ECDSA implementa la firma digitale utilizzando il paradigma della funzione con trappola, così facendo solo il possessore della chiave privata può generare una firma valida, ma chiunque con la chiave pubblica può verificarla, garantendo autenticità e non ripudio. Si procede da prima generando una coppia di chiavi:
 
 Il firmatario sceglie una chiave privata $d \in \{1, \dots, n-1\}$ e pubblica la corrispondente chiave pubblica $Q = dB$.
 
-#### **Algoritmo di Generazione della Firma**
+Per poi successivamente firmare il messaggio:
 
 Per firmare un messaggio $M$:
 1.  **Hashing:** Calcola $e = \text{HASH}(M)$ e ne deriva un intero $z$ (tipicamente troncando o convertendo $e$).
@@ -653,7 +613,7 @@ Per firmare un messaggio $M$:
 4.  **Calcolo Componente $s$:** Calcola $s = k^{-1}(z + rd) \pmod n$. Se $s=0$, si sceglie un nuovo $k$.
 5.  **Firma:** La firma è la coppia $(r, s)$. La chiave privata $d$ è la trappola indispensabile per legare l'hash $z$ al nonce $k$ nell'equazione per $s$.
 
-#### **Algoritmo di Verifica della Firma**
+Il ricevente potrà autenticare la firma per mezzo di un passaggio di verifica che sia rticola in più momenti:
 
 Per verificare una firma $(r, s)$ su un messaggio $M$ usando la chiave pubblica $Q$:
 1.  **Verifica Preliminare:** Controlla che $r, s \in [1, n-1]$.
@@ -669,13 +629,11 @@ Sostituendo $w = s^{-1} = k(z+rd)^{-1} \pmod n$, si ottiene:
 $$ (z+rd)(k(z+rd)^{-1})B = kB $$
 Il punto calcolato è quindi $kB$, la cui coordinata $x$ ridotta modulo $n$ è, per definizione, $r$. Questo conferma la validità della firma.
 
----
-
-## **Capitolo 6: Parametri di Sicurezza e Implementazione: Dalla Teoria alla Pratica**
+## **Capitolo 6: Parametri di Sicurezza e Implementazione**
 
 La sicurezza teorica di un sistema ECC, fondata sull'intrattabilità dell'ECDLP, è solo il punto di partenza. La sua robustezza pratica dipende in modo critico da una serie di decisioni di basso livello relative alla selezione dei parametri di dominio e all'implementazione degli algoritmi. Scelte sub-ottimali possono introdurre vulnerabilità catastrofiche, indipendentemente dalla dimensione della chiave utilizzata. Questo capitolo analizza gli aspetti tecnici e implementativi avanzati che costituiscono il ponte tra la matematica astratta e la crittografia applicata.
 
-### **6.1 Generazione Trasparente e "Nothing-Up-My-Sleeve Numbers"**
+### **6.1 Generazione Trasparente di Curve Ellitiche"**
 
 La selezione dei parametri $(p, a, b, B, n, h)$ non è un processo arbitrario, ma segue criteri rigorosi volti a massimizzare sia la sicurezza che l'efficienza.
 
@@ -689,9 +647,9 @@ L'efficienza di tutte le operazioni sulla curva come: addizione, raddoppio e qui
 
 Su un processore generico, questa operazione viene implementata tramite un'istruzione di divisione intera, che è notoriamente una delle istruzioni più lente, con una latenza di decine di cicli di clock. Per aggirare questo collo di bottiglia, le curve ad alte prestazioni non utilizzano primi arbitrari, ma selezionano numeri primi $p$ la cui struttura algebrica permette di sostituire la divisione con una sequenza di operazioni molto più veloci, come shift di bit, addizioni e moltiplicazioni per costanti di piccole dimensioni.
 
-##### Riduzione di Barrett e Varianti Specializzate
+##### **Riduzione di Barrett e Varianti Specializzate**
 
-Il principio si basa su una semplice ma potente identità modulare. Consideriamo un primo della forma **primo di Mersenne generalizzato** ovvero:
+Il principio si basa su una semplice ma potente identità modulare. Consideriamo un primo della forma primo di Mersenne generalizzato ovvero:
 $$ p = 2^k - c $$
 dove $k$ è un intero e $c$ è una costante intera di piccole dimensioni. Dall'equazione di definizione del campo, sappiamo che $p \equiv 0 \pmod p$, il che implica:
 $$ 2^k - c \equiv 0 \pmod p \implies 2^k \equiv c \pmod p $$
@@ -705,7 +663,7 @@ Applicando la nostra identità, la riduzione di $N$ diventa:
 $$ N \pmod p \equiv (q \cdot 2^k + r) \pmod p \equiv (q \cdot c + r) \pmod p $$
 Il risultato, $N' = q \cdot c + r$, è un numero significativamente più piccolo di $N$, ma congruo a esso modulo $p$. Questa operazione ha sostituito una divisione lenta con una serie di operazioni decisamente più rapide a livello computazionale ovvero: uno shift, una maschera, una moltiplicazione per la costante piccola $c$ e un'addizione. Se $N'$ è ancora maggiore di $p$, il processo può essere applicato iterativamente fino a quando il risultato non è completamente ridotto.
 
-##### Esempio Pratico: il primo di Curve25519
+##### **Il primo di Curve25519**
 
 La curva **Curve25519** utilizza il primo $p = 2^{255} - 19$. Qui, $k=255$ e $c=19$. L'identità di riduzione è:
 $$ 2^{255} \equiv 19 \pmod p $$
@@ -713,10 +671,10 @@ Supponiamo di dover ridurre un numero a 510 bit, risultato di una moltiplicazion
 $$ N \equiv 19q + r \pmod p $$
 Il risultato è la somma di due numeri a circa 255 bit (poiché 19 è piccolo), che può essere ridotto ulteriormente con pochi altri passaggi simili, senza mai eseguire una divisione a 512 bit.
 
-##### Il Caso di secp256k1: Primi di Solinas
+##### **Primi di Solinas**
 
-Un'altra classe di primi ottimizzati sono i **primi di Solinas**, che hanno la forma $p = 2^k - \sum_{i=0}^{m} c_i 2^{j_i}$, dove i coefficienti $c_i$ sono $\pm 1$ e gli esponenti $j_i$ sono scelti per allinearsi con le dimensioni delle parole della macchina (es. 32 o 64 bit).
-Il primo della curva **secp256k1** è:
+Un'altra classe di primi ottimizzati sono i primi di Solinas, che hanno la forma $p = 2^k - \sum_{i=0}^{m} c_i 2^{j_i}$, dove i coefficienti $c_i$ sono $\pm 1$ e gli esponenti $j_i$ sono scelti per allinearsi con le dimensioni delle parole della macchina (es. 32 o 64 bit).
+Il primo della curva secp256k1 è:
 $$ p = 2^{256} - 2^{32} - 2^9 - 2^8 - 2^7 - 2^6 - 2^4 - 1 $$
 Qui, $k=256$ e la costante $c$ è $c = 2^{32} + 977$. L'identità di riduzione è $2^{256} \equiv c \pmod p$. Sebbene $c$ non sia una costante piccola come 19, la sua rappresentazione binaria è molto sparsa. La moltiplicazione per $c$ non viene eseguita come un'operazione generica, ma implementata come una serie di shift di bit e addizioni, che sono comunque ordini di grandezza più veloci di una divisione.
 
@@ -724,7 +682,7 @@ Qui, $k=256$ e la costante $c$ è $c = 2^{32} + 977$. L'identità di riduzione �
 
 È fondamentale sottolineare che la forma di un numero non ne garantisce la primalità. La selezione di questi primi è un processo a due stadi. In principio si identificano candidati che hanno una forma algebrica adatta all'ottimizzazione aritmetica. Ciascun candidato viene poi rigorosamente testato per la primalità utilizzando algoritmi probabilistici come, per esempio, Miller-Rabin. Pertanto, $p = 2^{255} - 19$ non viene utilizzato solo perché ha una forma conveniente, ma perché è un numero che, dopo essere stato testato, è risultato essere primo.
 
-#### **Curve Speciali per l'Efficienza: Montgomery ed Edwards**
+#### **Curve Selezionate per l'Efficienza: Montgomery ed Edwards**
 
 Sebbene questo documento si sia concentrato sulla forma di Weierstrass, esistono altre forme di equazioni per le curve ellittiche che offrono vantaggi implementativi significativi.
 *   **Curve di Montgomery:** Definite dall'equazione $By^2 = x^3 + Ax^2 + x$. La loro proprietà più notevole è la possibilità di eseguire la moltiplicazione scalare utilizzando solo la coordinata $x$ dei punti, tramite un algoritmo noto come Montgomery Ladder che descriveremo nel dettaglio in seguito. Questo non solo è efficiente, ma fornisce una protezione naturale contro alcuni specifici attacchi. Curve25519 è un esempio di curva di Montgomery.
@@ -734,28 +692,48 @@ Sebbene questo documento si sia concentrato sulla forma di Weierstrass, esistono
 
 L'efficienza della moltiplicazione scalare $kP$ è il fattore determinante per le prestazioni di qualsiasi protocollo ECC.
 
-#### **Sistemi di Coordinate non Affini: il Caso delle Coordinate Jacobiane**
+#### **Ottimizzazione tramite Sistemi di Coordinate non Affini**
 
-L'operazione più costosa nell'aritmetica di un campo finito è l'inversione modulare. Le formule di addizione e raddoppio in coordinate affini $(x, y)$ richiedono un'inversione a ogni passo. Per ovviare a questo problema, le implementazioni pratiche utilizzano sistemi di coordinate proiettive.
+L'operazione più costosa nell'aritmetica di un campo finito è l'inversione modulare, richiesta ripetutamente dalle formule in coordinate affini $(x,y)$ durante il calcolo della moltiplicazione scalare. Poiché un'operazione come $kP$ può richiedere centinaia di addizioni e raddoppi di punti, l'accumulo di queste costose inversioni rappresenta il principale collo di bottiglia prestazionale.
 
-Nelle **coordinate Jacobiane**, un punto affine $(x, y)$ è rappresentato da una tripla $(X, Y, Z)$ con $Z \neq 0$, tale che:
+Per ovviare a questo problema, le implementazioni pratiche abbandonano il piano affine in favore del piano proiettivo. L'idea fondamentale è rappresentare un punto non più con una coppia $(x,y)$, ma con una tripla di coordinate omogenee che condividono un denominatore comune. Questo permette di eliminare le divisioni e dunque le inversioni a favore di operazioni algebriche sul denominatore stesso. Invece di calcolare $y_1/x_1$, si lavora con frazioni del tipo $Y_1/Z_1$ e $X_1/Z_1$, combinandole tramite moltiplicazioni incrociate per mantenere un denominatore comune.
+
+Esistono diverse varianti di coordinate proiettive, ciascuna con un diverso bilanciamento tra costo computazionale per l'addizione e il raddoppio. Le più note sono le coordinate proiettive standard ($x=X/Z, y=Y/Z$) e le coordinate Jacobiane, quest'ultime particolarmente diffuse per la loro efficienza.
+
+##### **Le Coordinate Jacobiane**
+
+Le coordinate Jacobiane rappresentano un punto affine $(x, y)$ tramite una tripla $(X, Y, Z)$ con $Z \neq 0$, secondo la relazione:
 $$ x = \frac{X}{Z^2}, \quad y = \frac{Y}{Z^3} $$
-L'equazione della curva $y^2 = x^3 + ax + b$ diventa:
+La scelta di potenze diverse per il denominatore ($Z^2$ e $Z^3$) non è casuale, ma è una specifica ottimizzazione che minimizza il numero totale di moltiplicazioni necessarie nelle formule di addizione di punti, rendendole più veloci rispetto ad altre rappresentazioni proiettive.
+
+Sostituendo queste relazioni nell'equazione di Weierstrass $y^2 = x^3 + ax + b$, si ottiene la sua forma in coordinate Jacobiane:
+$$ \left(\frac{Y}{Z^3}\right)^2 = \left(\frac{X}{Z^2}\right)^3 + a\left(\frac{X}{Z^2}\right) + b $$
+Moltiplicando entrambi i lati per $Z^6$ per eliminare i denominatori, si arriva all'equazione omogenea:
 $$ Y^2 = X^3 + aXZ^4 + bZ^6 $$
-Riformulando le leggi di addizione e raddoppio in queste coordinate, si ottengono formule che richiedono solo moltiplicazioni e addizioni modulari. L'inversione modulare, molto più lenta, viene eseguita una sola volta, alla fine della moltiplicazione scalare, per riconvertire il risultato da coordinate Jacobiane a coordinate affini. Questo approccio riduce drasticamente il costo computazionale.
+Il vantaggio cruciale è che le leggi di gruppo (addizione e raddoppio) possono essere riformulate per operare direttamente su queste triple $(X,Y,Z)$ utilizzando esclusivamente addizioni, sottrazioni e moltiplicazioni modulari. L'inversione modulare, operazione onerosa, viene così completamente eliminata dal ciclo principale dell'algoritmo di moltiplicazione scalare.
 
-#### **Algoritmi di Moltiplicazione Scalare a Tempo Costante**
+Essa viene eseguita una sola volta, al termine del calcolo complessivo, per riconvertire il punto risultato da coordinate Jacobiane a coordinate affini. Dato un punto Jacobiano finale $(X_f, Y_f, Z_f)$, le coordinate affini $(x_f, y_f)$ si ottengono calcolando prima l'inverso di $Z_f$ e poi applicandolo:
+1.  Calcolare $Z_f^{-1} \pmod p$.
+2.  Calcolare $Z_f^{-2} \equiv (Z_f^{-1})^2 \pmod p$.
+3.  Calcolare $Z_f^{-3} \equiv Z_f^{-2} \cdot Z_f^{-1} \pmod p$.
+4.  Ottenere le coordinate affini:
+    $$ x_f = X_f \cdot Z_f^{-2} \pmod p $$
+    $$ y_f = Y_f \cdot Z_f^{-3} \pmod p $$
 
-L'algoritmo Double-and-Add, se implementato in modo naïf, è vulnerabile ad attacchi a canali laterali basati sull'analisi dei tempi (Timing Attacks) o della potenza consumata (Power Analysis). La sua struttura `if bit is 1, then add` crea una dipendenza osservabile tra l'esecuzione e i bit della chiave segreta. Per mitigare ciò, si utilizzano algoritmi a **tempo costante**.
+Questo approccio, che concentra il costo di una singola inversione alla fine di centinaia di operazioni di gruppo, riduce drasticamente il costo computazionale complessivo della moltiplicazione scalare, rendendola fattibile in contesti ad alte prestazioni.
 
-La **Montgomery Ladder** è un algoritmo canonico per la moltiplicazione scalare che esegue la stessa sequenza di operazioni per ogni bit della chiave, indipendentemente dal suo valore (0 o 1). L'algoritmo mantiene due registri, $R_0$ e $R_1$, e per ogni bit dello scalare $k$ (scansionato da sinistra a destra) esegue sempre un raddoppio e un'addizione. A seconda del valore del bit, i risultati vengono scambiati tra i registri. Poiché il flusso di operazioni è identico per ogni bit, l'algoritmo non rivela informazioni sulla chiave attraverso canali laterali.
+#### **Attacchi a Canali Laterali ed Algoritmi di Moltiplicazione Scalare a Tempo Costante**
+
+L'algoritmo Double-and-Add, se implementato in modo naïf, è vulnerabile ad attacchi a canali laterali ossia i Side-Channel Attacks, una classe di attacchi non invasivi che non mirano a "rompere" la matematica dell'algoritmo, ma a estrarre informazioni segrete osservando le caratteristiche fisiche della sua esecuzione. Basandosi infatti sull'analisi dei tempi o della potenza consumata si possono reperire inforazione sulla struttura del dato occultato. La sua struttura `if bit is 1, then add` crea una dipendenza osservabile tra l'esecuzione e i bit della chiave segreta. Per mitigare ciò, si utilizzano algoritmi a tempo costante.
+
+Il **Montgomery Ladder** è un algoritmo canonico per la moltiplicazione scalare che esegue la stessa sequenza di operazioni per ogni bit della chiave, indipendentemente dal suo valore (0 o 1). L'algoritmo mantiene due registri, $R_0$ e $R_1$, e per ogni bit dello scalare $k$ esegue sempre un raddoppio e un'addizione. A seconda del valore del bit, i risultati vengono scambiati tra i registri. Poiché il flusso di operazioni è identico per ogni bit, l'algoritmo non rivela informazioni sulla chiave attraverso canali laterali.
 
 #### **Compressione dei Punti**
 
-Per ridurre l'occupazione di banda e lo spazio di archiviazione, le chiavi pubbliche (che sono punti sulla curva) possono essere trasmesse in formato compresso. Data la coordinata $x$ di un punto e l'equazione della curva $y^2 = x^3+ax+b$, esistono al più due soluzioni per $y$: $y_0$ e $-y_0 \equiv p-y_0$. In un campo primo $\mathbb{Z}_p$ (con $p>2$), una di queste soluzioni sarà un intero "pari" e l'altra "dispari".
+Per ridurre l'occupazione di banda e lo spazio di archiviazione, le chiavi pubbliche ovvero punti della curva possono essere trasmesse in formato compresso. Data la coordinata $x$ di un punto e l'equazione della curva $y^2 = x^3+ax+b$, esistono al più due soluzioni per $y$: $y_0$ e $-y_0 \equiv p-y_0$. In un campo primo $\mathbb{Z}_p$ (con $p>2$), una di queste soluzioni sarà un intero pari e l'altra dispari.
 
-*   **Formato non compresso:** Si trasmette un byte di prefisso (es. `0x04`) seguito dalle coordinate $x$ e $y$ complete.
-*   **Formato compresso:** Si trasmette un byte di prefisso (es. `0x02` se $y$ è pari, `0x03` se $y$ è dispari) seguito solo dalla coordinata $x$. Il destinatario può ricostruire la coordinata $y$ calcolando $\sqrt{x^3+ax+b} \pmod p$ e scegliendo la radice con la parità corretta. Questo dimezza quasi la dimensione della chiave pubblica.
+*   **Formato non compresso:** Si trasmette un byte di prefisso come, `0x04` per esempio, seguito dalle coordinate $x$ e $y$ complete.
+*   **Formato compresso:** Si trasmette un byte di prefisso, `0x02` se $y$ è pari, `0x03` se $y$ è dispari, seguito solo dalla coordinata $x$. Il destinatario può ricostruire la coordinata $y$ calcolando $\sqrt{x^3+ax+b} \pmod p$ e scegliendo la radice con la parità corretta. Questo dimezza quasi la dimensione della chiave pubblica.
 
 ### **6.3 Considerazioni Avanzate sulla Sicurezza Implementativa**
 
@@ -763,17 +741,17 @@ Oltre agli attacchi a canali laterali, un'implementazione deve difendersi da alt
 
 #### **Attacchi a Iniezione di Errore (Fault Attacks)**
 
-Un avversario con accesso fisico al dispositivo può tentare di indurre un errore hardware (es. tramite glitch di tensione o laser) durante un'operazione crittografica. Se un bit viene alterato durante il calcolo di una firma ECDSA, il risultato errato, confrontato con la firma corretta, può rivelare informazioni sulla chiave privata.
+Un avversario con accesso fisico al dispositivo può tentare di indurre un errore hardware durante un'operazione crittografica. Se un bit viene alterato durante il calcolo di una firma ECDSA, il risultato errato, confrontato con la firma corretta, può rivelare informazioni sulla chiave privata.
 
-La contromisura principale è la **verifica del risultato**. Dopo aver calcolato una moltiplicazione scalare $Q=kP$, l'implementazione deve sempre verificare che il punto risultante $Q$ appartenga effettivamente alla curva (soddisfacendo la sua equazione) prima di utilizzarlo. Per le firme, il firmatario può generare la firma e poi verificarla immediatamente con la propria chiave pubblica prima di rilasciarla.
+La contromisura principale è la verifica del risultato. Dopo aver calcolato una moltiplicazione scalare $Q=kP$, l'implementazione deve sempre verificare che il punto risultante $Q$ appartenga effettivamente alla curva prima di utilizzarlo. Per le firme, il firmatario può generare la firma e poi verificarla immediatamente con la propria chiave pubblica prima di rilasciarla.
 
 #### **Validazione dei Punti e Attacchi "Invalid Curve"**
 
-Come discusso nel capitolo precedente, è fondamentale validare i punti ricevuti dall'esterno (es. una chiave pubblica in ECDH). Un'implementazione robusta deve eseguire una validazione completa:
+Come già messo sotto analisi, è fondamentale validare i punti ricevuti dall'esterno. Un'implementazione robusta deve eseguire una validazione completa:
 1.  Verificare che le coordinate del punto siano nel campo $\mathbb{Z}_p$.
 2.  Verificare che il punto non sia il punto all'infinito $O$.
-3.  Verificare che il punto soddisfi l'equazione della curva (contromisura per gli **attacchi "Invalid Curve"**, in cui l'avversario fornisce un punto su una curva diversa e più debole).
-4.  Verificare che il punto appartenga al sottogruppo corretto, moltiplicandolo per l'ordine $n$ e controllando che il risultato sia $O$ (contromisura per gli **attacchi a sottogruppi di ordine minore**).
+3.  Verificare che il punto soddisfi l'equazione della curva come contromisura per gli attacchi Invalid Curve, in cui l'avversario fornisce un punto su una curva diversa e più debole.
+4.  Verificare che il punto appartenga al sottogruppo corretto, moltiplicandolo per l'ordine $n$ e controllando che il risultato sia $O$ per prevenire gli attacchi a sottogruppi di ordine minore.
 
 ## **Conclusioni**
 
@@ -781,14 +759,24 @@ La crittografia basata sulle curve ellittiche rappresenta un pilastro della sicu
 
 Dall'analisi tecnica dettagliata è emerso come ogni aspetto, dalla scelta del campo e dei parametri della curva fino all'implementazione degli algoritmi, sia cruciale per garantire la sicurezza del sistema. Protocolli come ECDH e schemi di cifratura basati su ElGamal-ECC dimostrano la versatilità e la potenza di questa tecnologia.
 
-Guardando al futuro, la principale minaccia per l'ECC, così come per RSA e altri sistemi a chiave pubblica classici, proviene dall'avvento dei **computer quantistici**. L'**algoritmo di Shor** sarebbe in grado di risolvere l'ECDLP (e la fattorizzazione) in tempo polinomiale, rendendo questi sistemi insicuri. La comunità crittografica è già attivamente impegnata nello sviluppo e nella standardizzazione di una nuova generazione di algoritmi, noti come **crittografia post-quantistica (PQC)**, progettati per resistere agli attacchi sia dei computer classici che di quelli quantistici. Tuttavia, fino a quando i computer quantistici su larga scala non diventeranno una realtà pratica, la crittografia su curve ellittiche continuerà a essere uno degli strumenti più efficaci e affidabili per proteggere le nostre informazioni digitali.
-
----
+Guardando al futuro, la principale minaccia per l'ECC, così come per RSA e altri sistemi a chiave pubblica classici, proviene dall'avvento dei computer quantistici. L'algoritmo di Shor sarebbe in grado di risolvere l'ECDLP come anche la fattorizzazione in tempo polinomiale, rendendo questi sistemi insicuri. La comunità crittografica è già attivamente impegnata nello sviluppo e nella standardizzazione di una nuova generazione di algoritmi, noti come crittografia post-quantistica (PQC), progettati per resistere agli attacchi sia dei computer classici che di quelli quantistici. Tuttavia, fino a quando i computer quantistici su larga scala non diventeranno una realtà pratica, la crittografia su curve ellittiche continuerà a essere uno degli strumenti più efficaci e affidabili per proteggere le nostre informazioni digitali.
 
 ## **Bibliografia**
 
-* Koblitz, N. (1987). *Elliptic Curve Cryptosystems*. Mathematics of Computation, 48(177), 203-209.
-* Miller, V. S. (1986). *Use of Elliptic Curves in Cryptography*. In Advances in Cryptology — CRYPTO ’85 Proceedings (pp. 417-426). Springer Berlin Heidelberg.
-* Hankerson, D., Menezes, A., & Vanstone, S. (2004). *Guide to Elliptic Curve Cryptography*. Springer-Verlag.
-* Silverman, J. H. (2009). *The Arithmetic of Elliptic Curves*. Springer.
-* National Institute of Standards and Technology (NIST). (2013). *FIPS PUB 186-4: Digital Signature Standard (DSS)*.
+[Margara, Crittografia su Curve Ellittiche.](https://virtuale.unibo.it/pluginfile.php/2543364/mod_resource/content/0/EC.pdf)
+
+[Koblitz, Elliptic Curve Cryptosystems.](https://www.ams.org/journals/mcom/1987-48-177/S0025-5718-1987-0866109-5/S0025-5718-1987-0866109-5.pdf)
+
+[Corbellini, Elliptic Curve Cryptography: a gentle introduction.](https://andrea.corbellini.name/2015/05/17/elliptic-curve-cryptography-a-gentle-introduction/)
+
+[National Institute of Standards and Technology (NIST), Digital Signature Standard (DSS).](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf)
+
+[Bernstein & Lange, SafeCurves: choosing safe curves for elliptic-curve cryptography.](https://safecurves.cr.yp.to/)
+
+[Washington, Elliptic Curves: Number Theory and Cryptography, Second Edition. Chapman & Hall/CRC.](https://fog.misty.com/perry/ccs/ec/Washington/EC-NTC-Washington.pdf)
+
+[Silverman, The Arithmetic of Elliptic Curves. Springer.](https://cs.brown.edu/people/ngillman/expository/elliptic_curves_s2021.pdf)
+
+[Bernstein, Curve25519: new Diffie-Hellman speed records.](https://iacr.org/archive/pkc2006/39580209/39580209.pdf)
+
+[University of Cambridge, Implementing Curve25519/X25519: A Tutorial on Elliptic Curve Cryptography.](https://www.cl.cam.ac.uk/teaching/2122/Crypto/curve25519.pdf)
